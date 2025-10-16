@@ -7,10 +7,15 @@ var GRAVITY = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
+@onready var vrheadset = $Head/Camera3D/VRHeadset
+@onready var dash = $Dashboard
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	get_viewport().files_dropped.connect(_on_files_dropped)
+	for mi in vrheadset.find_children("*", "MeshInstance3D", true, false):
+		mi.set_layer_mask(10)
+	camera.cull_mask &= ~10
 	
 func _on_files_dropped(files: PackedStringArray) -> void:
 	for path in files:
@@ -45,3 +50,10 @@ func _physics_process(delta):
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 
 	move_and_slide()
+
+func _input(event):
+	if event is not InputEventKey:
+		return
+	if Input.is_action_just_pressed("escape"):
+		dash.visible = !dash.visible
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE if dash.visible else Input.MOUSE_MODE_CAPTURED)
