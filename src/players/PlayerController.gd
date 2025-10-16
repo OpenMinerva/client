@@ -10,7 +10,18 @@ var GRAVITY = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	get_viewport().files_dropped.connect(_on_files_dropped)
 	
+func _on_files_dropped(files: PackedStringArray) -> void:
+	for path in files:
+		if path.ends_with(".glb") or path.ends_with(".gltf"):
+			var gltf := GLTFDocument.new()
+			var state := GLTFState.new()
+			var err := gltf.append_from_file(path, state)
+			if err == OK:
+				var root := gltf.generate_scene(state)
+				get_tree().root.add_child(root)
+
 func _unhandled_input(event):
 	if event is InputEventMouseMotion:
 		rotate_y(-event.relative.x * SENSITIVITY)
