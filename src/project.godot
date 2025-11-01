@@ -11,8 +11,12 @@ config_version=5
 [application]
 
 config/name="PrismLens"
+run/main_scene="uid://c8tt7qgbrkyqy"
 config/features=PackedStringArray("4.5", "Forward Plus")
-config/icon="res://icon.svg"
+run/max_fps=144
+boot_splash/image="/home/adragon/Pictures/PrismLens_1_background.png"
+config/icon="uid://cdukvnkmlkl0e"
+boot_splash/minimum_display_time=1000
 
 [display]
 

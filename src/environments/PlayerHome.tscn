@@ -27,3 +27,7 @@ size = Vector3(10, 9.433105, 10)
 
 [node name="DesktopPlayer" parent="." instance=ExtResource("1_mlc1h")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24027586, 0.2974944, -0.039989352)
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://k2v75doml11j")
+spawn_path = NodePath("..")
