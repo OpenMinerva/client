@@ -18,6 +18,10 @@ boot_splash/image="/home/adragon/Pictures/PrismLens_1_background.png"
 config/icon="uid://cdukvnkmlkl0e"
 boot_splash/minimum_display_time=1000
 
+[autoload]
+
+Networking="*res://ui/networking.gd"
+
 [display]
 
 window/size/viewport_width=1920

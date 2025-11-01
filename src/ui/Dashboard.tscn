@@ -167,6 +167,15 @@ layout_mode = 2
 layout_mode = 2
 text = "Start Server"
 
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/PanelContainer/VBoxContainer/Center/Center/Home/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/Center/Center/Home/MarginContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+text = "IP: 
+Port:
+Type: "
+
 [node name="Sessions" type="Control" parent="MarginContainer/PanelContainer/VBoxContainer/Center/Center"]
 visible = false
 layout_mode = 2
@@ -295,3 +304,6 @@ size_flags_horizontal = 3
 text = "Exit"
 
 [connection signal="pressed" from="MarginContainer/PanelContainer/VBoxContainer/Center/Center/Home/MarginContainer/HBoxContainer/VBoxContainer/StartServer" to="." method="_on_start_server_pressed"]
+[connection signal="pressed" from="MarginContainer/PanelContainer/VBoxContainer/Center/Center/Sessions/MarginContainer/HBoxContainer/Listing/SERVER1/MarginContainer/HBoxContainer/PanelContainer/VBoxContainer/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="MarginContainer/PanelContainer/VBoxContainer/Bottom/Bottom/Home" to="." method="_on_home_pressed"]
+[connection signal="pressed" from="MarginContainer/PanelContainer/VBoxContainer/Bottom/Bottom/Sessions" to="." method="_on_sessions_pressed"]

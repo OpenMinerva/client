@@ -5,19 +5,38 @@ const JUMP_VELOCITY = 4.5
 const SENSITIVITY = 0.01
 var GRAVITY = ProjectSettings.get_setting("physics/3d/default_gravity")
 
+
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
 @onready var vrheadset = $Head/Camera3D/VRHeadset
-@onready var dash = $Dashboard
+@onready var dash
+
+func _enter_tree():
+	set_multiplayer_authority(name.to_int())
 
 func _ready():
+	if not is_multiplayer_authority():
+			camera.current = false
+			return
+
+	var local_dash = preload("res://ui/Dashboard.tscn").instantiate()
+	local_dash.set_multiplayer_authority(-1)
+	add_child(local_dash)
+	local_dash.visible = false
+	dash = local_dash
+
+	camera.set_multiplayer_authority(-1)
+	camera.current = true
+
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	get_viewport().files_dropped.connect(_on_files_dropped)
 	for mi in vrheadset.find_children("*", "MeshInstance3D", true, false):
 		mi.set_layer_mask(10)
 	camera.cull_mask &= ~10
-	
+
 func _on_files_dropped(files: PackedStringArray) -> void:
+	if not is_multiplayer_authority():
+			return
 	for path in files:
 		if path.ends_with(".glb") or path.ends_with(".gltf"):
 			var gltf := GLTFDocument.new()
@@ -28,20 +47,24 @@ func _on_files_dropped(files: PackedStringArray) -> void:
 				get_tree().root.add_child(root)
 
 func _unhandled_input(event):
+	if not is_multiplayer_authority():
+		return
 	if event is InputEventMouseMotion:
 		rotate_y(-event.relative.x * SENSITIVITY)
 		camera.rotate_x(-event.relative.y * SENSITIVITY)
 		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 
 func _physics_process(delta):
+	if not is_multiplayer_authority():
+			return
 	if not is_on_floor():
 		velocity.y -= GRAVITY * delta
-	
+
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
 	var input_dir = Input.get_vector("left", "right", "forward", "backward")
 	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-	
+
 	if direction:
 		velocity.x = direction.x * SPEED
 		velocity.z = direction.z * SPEED
@@ -52,6 +75,8 @@ func _physics_process(delta):
 	move_and_slide()
 
 func _input(event):
+	if not is_multiplayer_authority():
+			return
 	if event is not InputEventKey:
 		return
 	if Input.is_action_just_pressed("escape"):

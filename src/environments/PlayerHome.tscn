@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://c8tt7qgbrkyqy"]
 
-[ext_resource type="PackedScene" uid="uid://k2v75doml11j" path="res://players/PlayerController.tscn" id="1_mlc1h"]
+[ext_resource type="Script" uid="uid://bq6hy37484aq5" path="res://environments/world.gd" id="1_mlc1h"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_6v4rx"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -16,6 +16,7 @@ tonemap_mode = 2
 glow_enabled = true
 
 [node name="PlayerHome" type="Node3D"]
+script = ExtResource("1_mlc1h")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_b1m2s")
@@ -24,9 +25,6 @@ environment = SubResource("Environment_b1m2s")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5915527, 0)
 use_collision = true
 size = Vector3(10, 9.433105, 10)
-
-[node name="DesktopPlayer" parent="." instance=ExtResource("1_mlc1h")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24027586, 0.2974944, -0.039989352)
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://k2v75doml11j")
