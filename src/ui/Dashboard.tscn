@@ -208,7 +208,7 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="Button" type="Button" parent="MarginContainer/PanelContainer/VBoxContainer/Center/Center/Home/MarginContainer/HBoxContainer/VBoxContainer3/UserListTemplate/MarginContainer/HBoxContainer/MarginContainer"]
+[node name="Kick" type="Button" parent="MarginContainer/PanelContainer/VBoxContainer/Center/Center/Home/MarginContainer/HBoxContainer/VBoxContainer3/UserListTemplate/MarginContainer/HBoxContainer/MarginContainer"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Kick"

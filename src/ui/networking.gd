@@ -52,7 +52,9 @@ func create_server(port: int = 5996, max_clients: int = 16) -> void:
 	var args = get_command_line_args()
 
 	_clients = {"1": {
-		"name": args.get("name", "NOT_SET")
+		"name": args.get("name", "NOT_SET"),
+		"moderator": true,
+		"admin": true,
 	}}
 
 func join_server(host: String, port: int = 5996) -> void:
@@ -159,7 +161,11 @@ func validate_client_info(info: Dictionary) -> void:
 	print(info)
 
 	if _verify_info(info):
-		_clients[str(peer_id)] = info
+		var client_dict = info.duplicate()
+		client_dict["moderator"] = false
+		client_dict["admin"] = false
+		_clients[str(peer_id)] = client_dict
+
 		rpc_id(peer_id, "client_approved")
 		request_session_list()
 	else:
@@ -175,9 +181,29 @@ func client_approved() -> void:
 	print("Approved by server")
 	# NetworkStatus.client_approved = true
 
-
 @rpc("authority", "call_local")
 func session_list(clients: Dictionary) -> void:
 	print("Got clients: ", clients)
 	ServerInfo.users = clients
 	emit_signal("clients_updated")
+
+@rpc("any_peer", "call_local")
+func kick_player(id: int, reason: String) -> void:
+	print("Trying to kick player %d for reason: %s" % [id, reason])
+	if not NetworkStatus.server:
+		# Not the server, we don't care.
+		return
+
+	var caller_id = multiplayer.get_remote_sender_id()
+
+	if not _clients[str(caller_id)].moderator:
+		print("User %s tried to kick without permission" % _clients[str(caller_id)].name)
+		return
+
+	multiplayer.disconnect_peer(id)
+	_on_peer_disconnected(id)
+
+
+func request_kick(id: int, reason: String) -> void:
+	print("Requesting kick for player %d for reason: %s" % [id, reason])
+	rpc_id(1, "kick_player", id, reason)

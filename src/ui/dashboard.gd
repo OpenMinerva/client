@@ -53,8 +53,10 @@ func list_clients():
 
 		user_list_item.visible = true
 
-		template_node.get_parent().add_child(user_list_item)
+		var kick_node = user_list_item.get_node("MarginContainer/HBoxContainer/MarginContainer/Kick")
+		kick_node.connect("pressed", func(): Networking.request_kick(int(client), ""))
 
+		template_node.get_parent().add_child(user_list_item)
 
 func clear_listed_clients():
 	var template_node = $"MarginContainer/PanelContainer/VBoxContainer/Center/Center/Home/MarginContainer/HBoxContainer/VBoxContainer3/UserListTemplate"
