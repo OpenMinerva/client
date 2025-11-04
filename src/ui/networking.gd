@@ -200,6 +200,10 @@ func kick_player(id: int, reason: String) -> void:
 		print("User %s tried to kick without permission" % _clients[str(caller_id)].name)
 		return
 
+	if id == 1:
+		print("Cannot kick server")
+		return
+
 	multiplayer.disconnect_peer(id)
 	_on_peer_disconnected(id)
 
