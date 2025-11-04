@@ -169,12 +169,49 @@ text = "Start Server"
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/PanelContainer/VBoxContainer/Center/Center/Home/MarginContainer/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="Label" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/Center/Center/Home/MarginContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 text = "IP: 
 Port:
 Type: "
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="MarginContainer/PanelContainer/VBoxContainer/Center/Center/Home/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="UserListTemplate" type="PanelContainer" parent="MarginContainer/PanelContainer/VBoxContainer/Center/Center/Home/MarginContainer/HBoxContainer/VBoxContainer3"]
+visible = false
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/PanelContainer/VBoxContainer/Center/Center/Home/MarginContainer/HBoxContainer/VBoxContainer3/UserListTemplate"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/PanelContainer/VBoxContainer/Center/Center/Home/MarginContainer/HBoxContainer/VBoxContainer3/UserListTemplate/MarginContainer"]
+layout_mode = 2
+
+[node name="Username" type="Label" parent="MarginContainer/PanelContainer/VBoxContainer/Center/Center/Home/MarginContainer/HBoxContainer/VBoxContainer3/UserListTemplate/MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "NOT_SET"
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/PanelContainer/VBoxContainer/Center/Center/Home/MarginContainer/HBoxContainer/VBoxContainer3/UserListTemplate/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Button" type="Button" parent="MarginContainer/PanelContainer/VBoxContainer/Center/Center/Home/MarginContainer/HBoxContainer/VBoxContainer3/UserListTemplate/MarginContainer/HBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Kick"
 
 [node name="Sessions" type="Control" parent="MarginContainer/PanelContainer/VBoxContainer/Center/Center"]
 visible = false

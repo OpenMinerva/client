@@ -1,5 +1,8 @@
 extends Control
 
+func _ready() -> void:
+	Networking.connect("clients_updated", list_clients)
+
 func _process(_delta) -> void:
 	# Networking.NetworkStatus.server
 	# Networking.NetworkStatus.client
@@ -35,3 +38,28 @@ func _close_all_dashboard_tabs():
 
 	home_page.visible = false
 	session_page.visible = false
+
+func list_clients():
+	var template_node = $"MarginContainer/PanelContainer/VBoxContainer/Center/Center/Home/MarginContainer/HBoxContainer/VBoxContainer3/UserListTemplate"
+	clear_listed_clients()
+
+	for client in Networking.ServerInfo.users.keys():
+		var user_list_item = template_node.duplicate() as Control
+		user_list_item.name = "UserListItem_%s" % str(client)
+
+		var label_node = user_list_item.get_node("MarginContainer/HBoxContainer/Username")
+		if label_node:
+			label_node.text = Networking.ServerInfo.users[client].name
+
+		user_list_item.visible = true
+
+		template_node.get_parent().add_child(user_list_item)
+
+
+func clear_listed_clients():
+	var template_node = $"MarginContainer/PanelContainer/VBoxContainer/Center/Center/Home/MarginContainer/HBoxContainer/VBoxContainer3/UserListTemplate"
+	for child in template_node.get_parent().get_children():
+		if child.name.begins_with("UserListItem_"):
+			child.queue_free()
+		if child.name.begins_with("@PanelContainer@"):
+			child.queue_free()
