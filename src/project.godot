@@ -20,7 +20,7 @@ boot_splash/minimum_display_time=1000
 
 [autoload]
 
-Networking="*res://ui/networking.gd"
+Networking="*res://libs/networking.gd"
 
 [display]
 
