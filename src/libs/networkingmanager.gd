@@ -1,4 +1,4 @@
-extends Node
+extends AwaitableHTTPRequest
 signal clients_updated
 
 # TODO: Implement SERVER user functionality
@@ -12,12 +12,19 @@ signal clients_updated
 	"max_clients": 16
 }
 @onready var ServerInfo = {
+	"session_id": null,
+	"session_name": null,
+	"session_description": "",
+	"session_key": "",
+	"session_max_clients": 0,
+	"session_join_privacy": "",
 	"users": {}
 }
 @onready var _clients : Dictionary = {}
 
 var world_scene : PackedScene = preload("res://environments/PlayerHome.tscn")
 var world_instance : Node3D
+var _advertise_server_timer: SceneTreeTimer = null
 
 var peer := ENetMultiplayerPeer.new()
 
@@ -56,6 +63,9 @@ func create_server(port: int = 5996, max_clients: int = 16) -> void:
 		"moderator": true,
 		"admin": true,
 	}}
+
+	advertise_server()
+	start_advertising_server()
 
 func join_server(host: String, port: int = 5996) -> void:
 	_remove_all_players()
@@ -198,7 +208,44 @@ func kick_player(id: int, reason: String) -> void:
 	multiplayer.disconnect_peer(id)
 	_on_peer_disconnected(id)
 
-
 func request_kick(id: int, reason: String) -> void:
 	LoggerManager.log_string("Requesting kick for player %d for reason: \"%s\"" % [id, reason], 1)
 	rpc_id(1, "kick_player", id, reason)
+
+# TODO: Ban players
+
+func start_advertising_server() -> void:
+	stop_advertising_server()
+	_advertise_server_timer = get_tree().create_timer(30, false, false, true)
+	_advertise_server_timer.timeout.connect(advertise_server)
+
+func stop_advertising_server() -> void:
+	if _advertise_server_timer == null:
+		return
+	_advertise_server_timer.timeout.disconnect(advertise_server)
+	_advertise_server_timer = null
+
+func advertise_server() -> void:
+	# TODO: Separate server creation with updating / heartbeating
+	# When server is created, print that the server is created, otherwise print that the server was updated
+	if NetworkStatus.server:
+		LoggerManager.log_string("Trying to advertise the server", 0)
+		var advertisement_response
+		var need_to_create_session : bool = ServerInfo.session_id == null
+
+		if need_to_create_session:
+			LoggerManager.log_string("Registering server", 1)
+			advertisement_response = await async_request("http://localhost:5000/api/sessions", [], HTTPClient.Method.METHOD_POST)
+			ServerInfo.session_id = advertisement_response.body_as_json().sessionId
+		else:
+			LoggerManager.log_string("Updating server", 1)
+			var http_url = "http://localhost:5000/api/sessions/%s" % ServerInfo.session_id
+			advertisement_response = await async_request(http_url, [], HTTPClient.Method.METHOD_POST)
+			LoggerManager.log_string(advertisement_response.body_as_string(), 0)
+
+		if advertisement_response.success() and advertisement_response.status_ok():
+			LoggerManager.log_string("Successfully advertised with id: \"%s\"" % advertisement_response.body_as_json().sessionId, 0)
+
+		# TODO: Handle when server can not contact session-manager server
+		# TODO: Handle when server validation fails
+	start_advertising_server()
