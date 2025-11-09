@@ -20,7 +20,10 @@ boot_splash/minimum_display_time=1000
 
 [autoload]
 
-Networking="*res://libs/networking.gd"
+Networking="*res://libs/networkingmanager.gd"
+LoggerManager="*res://libs/logger.gd"
+FileManager="*res://libs/files.gd"
+LaunchManager="*res://libs/launchmanager.gd"
 
 [display]
 

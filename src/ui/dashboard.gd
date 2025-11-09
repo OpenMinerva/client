@@ -1,6 +1,8 @@
 extends Control
 
 func _ready() -> void:
+	var args = LaunchManager.get_command_line_args()
+	$"MarginContainer/PanelContainer/VBoxContainer/Top/Top/User/Label".text = args.name
 	Networking.connect("clients_updated", list_clients)
 
 func _process(_delta) -> void:
@@ -16,11 +18,9 @@ func _on_start_server_pressed():
 	# Networking.increase_server_max_clients(16)
 	pass # Replace with function body.
 
-
 func _on_button_pressed():
 	Networking.join_server("127.0.0.1", 5996)
 	pass # Replace with function body.
-
 
 func _on_home_pressed():
 	_close_all_dashboard_tabs()

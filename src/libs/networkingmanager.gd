@@ -30,7 +30,7 @@ func create_server(port: int = 5996, max_clients: int = 16) -> void:
 	var err = peer.create_server(port, max_clients)
 	# TODO: Handle port conflicts
 	if err != OK:
-		push_error("Failed to start server on port %d: %s" % [port, str(err)])
+		LoggerManager.log_string("Failed to start server on port %d: %s" % [port, str(err)], 3)
 		port = port + 1
 		peer.create_server(port, max_clients)
 
@@ -49,7 +49,7 @@ func create_server(port: int = 5996, max_clients: int = 16) -> void:
 	NetworkStatus.server = true
 	NetworkStatus.max_clients = max_clients
 
-	var args = get_command_line_args()
+	var args = LaunchManager.get_command_line_args()
 
 	_clients = {"1": {
 		"name": args.get("name", "NOT_SET"),
@@ -63,7 +63,7 @@ func join_server(host: String, port: int = 5996) -> void:
 	peer = ENetMultiplayerPeer.new()
 	var err = peer.create_client(host, port)
 	if err != OK:
-		push_error("Failed to connect to %s:%d: %s" % [host, port, str(err)])
+		LoggerManager.log_string("Failed to connect to %s:%d: %s" % [host, port, str(err)], 3)
 		return
 
 	multiplayer.multiplayer_peer = peer
@@ -76,27 +76,18 @@ func join_server(host: String, port: int = 5996) -> void:
 	NetworkStatus.server = false
 	# TODO: Max clients
 
-func get_command_line_args() -> Dictionary:
-	var arguments = {}
-	for argument in OS.get_cmdline_args():
-			if argument.contains("="):
-				var key_value = argument.split("=")
-				arguments[key_value[0].trim_prefix("--")] = key_value[1]
-			else:
-				# Options without an argument will be present in the dictionary,
-				# with the value set to an empty string.
-				arguments[argument.trim_prefix("--")] = ""
-	return arguments
-
 func _verify_info(info: Dictionary) -> bool:
 	# TODO: Verify client info
 	# This is placeholder function for actual validation
-	print("Verifying client info:", info)
+	LoggerManager.log_string("Verifying client info: %s" %info, 1)
+	# Is account banned (IP address / Account ID / Prism ID)
+	# Is account anonymous (Does server allow anonymous players)
+	# Is account blocked by host
 	return true
 
 func _on_connected_to_server() -> void:
 	var local_id = peer.get_unique_id()
-	var args = get_command_line_args()
+	var args = LaunchManager.get_command_line_args()
 
 	var client_info = {
 		"name": args.get("name", "Anonymous")
@@ -112,7 +103,7 @@ func _add_player(id: int) -> void:
 	add_child(player)
 
 func _on_peer_connected(id: int) -> void:
-	print("Peer attempting connection:", id)
+	LoggerManager.log_string("Peer attempting connection: %d" %id, 1)
 	_add_player(id)
 
 	if NetworkStatus.server:
@@ -169,7 +160,7 @@ func validate_client_info(info: Dictionary) -> void:
 		rpc_id(peer_id, "client_approved")
 		request_session_list()
 	else:
-		print("Validation failed for peer %d" % peer_id)
+		LoggerManager.log_string("Validation failed for peer %d" % peer_id, 1)
 		multiplayer.disconnect_peer(peer_id)
 
 @rpc("any_peer", "call_local")
@@ -178,18 +169,18 @@ func request_session_list() -> void:
 
 @rpc("any_peer", "call_local")
 func client_approved() -> void:
-	print("Approved by server")
+	LoggerManager.log_string("Client approved by server", 1)
 	# NetworkStatus.client_approved = true
 
 @rpc("authority", "call_local")
 func session_list(clients: Dictionary) -> void:
-	print("Got clients: ", clients)
+	LoggerManager.log_string("Received client list: %s" % clients, 1)
 	ServerInfo.users = clients
 	emit_signal("clients_updated")
 
 @rpc("any_peer", "call_local")
 func kick_player(id: int, reason: String) -> void:
-	print("Trying to kick player %d for reason: %s" % [id, reason])
+	LoggerManager.log_string("Trying to kick player %d for reason: %s" % [id, reason], 1)
 	if not NetworkStatus.server:
 		# Not the server, we don't care.
 		return
@@ -197,11 +188,11 @@ func kick_player(id: int, reason: String) -> void:
 	var caller_id = multiplayer.get_remote_sender_id()
 
 	if not _clients[str(caller_id)].moderator:
-		print("User %s tried to kick without permission" % _clients[str(caller_id)].name)
+		LoggerManager.log_string("User %s tried to kick without permission" % _clients[str(caller_id)].name, 1)
 		return
 
 	if id == 1:
-		print("Cannot kick server")
+		LoggerManager.log_string("Cannot kick server", 1)
 		return
 
 	multiplayer.disconnect_peer(id)
@@ -209,5 +200,5 @@ func kick_player(id: int, reason: String) -> void:
 
 
 func request_kick(id: int, reason: String) -> void:
-	print("Requesting kick for player %d for reason: %s" % [id, reason])
+	LoggerManager.log_string("Requesting kick for player %d for reason: \"%s\"" % [id, reason], 1)
 	rpc_id(1, "kick_player", id, reason)
