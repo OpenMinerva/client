@@ -116,3 +116,6 @@ func _input(event):
 	if Input.is_action_just_pressed("escape"):
 		visible = !visible
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE if visible else Input.MOUSE_MODE_CAPTURED)
+
+func _on_leave_server_pressed():
+	Networking.leave_server()

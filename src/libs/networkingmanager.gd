@@ -88,6 +88,24 @@ func join_server(host: String, port: int = 5996) -> void:
 	NetworkStatus.server = false
 	# TODO: Max clients
 
+func leave_server() -> void:
+	if multiplayer.has_multiplayer_peer():
+		multiplayer.get_multiplayer_peer().close()
+
+		multiplayer.multiplayer_peer = null
+
+		NetworkStatus.host = ""
+		NetworkStatus.port = 0
+		NetworkStatus.client = false
+		NetworkStatus.server = false
+
+		if get_tree().root.get_node("PlayerSpace/Sessions/World"):
+			get_tree().root.get_node("PlayerSpace/Sessions/World").queue_free()
+
+func _on_disconnected_from_server() -> void:
+	LoggerManager.log_string("Disconnected from server", 1)
+	_remove_all_players()
+
 func _verify_info(info: Dictionary) -> bool:
 	# TODO: Verify client info
 	# This is placeholder function for actual validation
@@ -112,7 +130,7 @@ func _add_player(id: int) -> void:
 	var player : Node3D = player_scene.instantiate()
 	player.name = str(id)
 	player.set_multiplayer_authority(id)
-	add_child(player)
+	get_tree().root.get_node("PlayerSpace/Sessions/World").add_child(player)
 
 func _on_peer_connected(id: int) -> void:
 	LoggerManager.log_string("Peer attempting connection: %d" %id, 1)

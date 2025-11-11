@@ -35,8 +35,11 @@ func _unhandled_input(event):
 		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 
 func _physics_process(delta):
+	if not multiplayer.has_multiplayer_peer():
+		return
+
 	if not is_multiplayer_authority():
-			return
+		return
 	if not is_on_floor():
 		velocity.y -= GRAVITY * delta
 
@@ -55,7 +58,9 @@ func _physics_process(delta):
 	move_and_slide()
 
 func _input(event):
+	if !multiplayer.has_multiplayer_peer():
+		return
 	if not is_multiplayer_authority():
-			return
+		return
 	if event is not InputEventKey:
 		return
