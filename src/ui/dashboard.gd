@@ -34,6 +34,7 @@ func _on_sessions_pressed():
 	_close_all_dashboard_tabs()
 	var session_page = $"MarginContainer/PanelContainer/VBoxContainer/Center/Center/Sessions"
 	session_page.visible = true
+	update_session_list()
 
 func _close_all_dashboard_tabs():
 	var home_page = $"MarginContainer/PanelContainer/VBoxContainer/Center/Center/Home"
