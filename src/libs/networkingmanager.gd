@@ -18,6 +18,8 @@ signal clients_updated
 	"session_key": "",
 	"session_max_clients": 0,
 	"session_join_privacy": "",
+	"session_ip": "",
+	"session_port": 0,
 	"users": {}
 }
 @onready var _clients : Dictionary = {}
@@ -236,6 +238,7 @@ func advertise_server() -> void:
 		if need_to_create_session:
 			LoggerManager.log_string("Registering server", 1)
 			advertisement_response = await async_request("http://localhost:5000/api/sessions", [], HTTPClient.Method.METHOD_POST)
+			LoggerManager.log_string(advertisement_response.body_as_string(), 0)
 			ServerInfo.session_id = advertisement_response.body_as_json().sessionId
 		else:
 			LoggerManager.log_string("Updating server", 1)
@@ -249,3 +252,10 @@ func advertise_server() -> void:
 		# TODO: Handle when server can not contact session-manager server
 		# TODO: Handle when server validation fails
 	start_advertising_server()
+
+func get_servers_from_session_server() -> Array:
+	var http_url = "http://localhost:5000/api/sessions"
+	var response = await async_request(http_url, [], HTTPClient.Method.METHOD_GET)
+	if response.success() and response.status_ok():
+		return response.body_as_json().sessions
+	return []
