@@ -36,19 +36,20 @@ func _ready() -> void:
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 
 func create_server(port: int = 5996, max_clients: int = 16) -> void:
+	peer = ENetMultiplayerPeer.new()
 	var err = peer.create_server(port, max_clients)
 	# TODO: Handle port conflicts
 	if err != OK:
 		LoggerManager.log_string("Failed to start server on port %d: %s" % [port, str(err)], 3)
-		port = port + 1
-		peer.create_server(port, max_clients)
+		return
 
 	multiplayer.multiplayer_peer = peer
 	multiplayer.peer_connected.connect(_on_peer_connected)
 
 	world_instance = world_scene.instantiate()
 	world_instance.name = "World"
-	get_tree().root.add_child(world_instance)
+	get_tree().root.get_node("PlayerSpace/Sessions").add_child(world_instance)
+	print(get_tree().root.get_node("PlayerSpace/Sessions"))
 
 	_add_player(1)
 
@@ -149,10 +150,11 @@ func _remove_all_players() -> void:
 
 @rpc("any_peer", "call_local")
 func receive_world(world_packed: PackedScene) -> void:
+	LoggerManager.log_string("Received world", 1)
 	# Client receives the packed scene, instantiates it, and adds it to the root.
 	var world_node = world_packed.instantiate()
 	world_node.name = "World"
-	get_tree().root.add_child(world_node)
+	get_tree().root.get_node("PlayerSpace/Sessions").add_child(world_node)
 
 @rpc("any_peer")
 func validate_client_info(info: Dictionary) -> void:

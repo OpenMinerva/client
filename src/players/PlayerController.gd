@@ -9,7 +9,6 @@ var GRAVITY = ProjectSettings.get_setting("physics/3d/default_gravity")
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
 @onready var vrheadset = $Head/Camera3D/VRHeadset
-@onready var dash
 
 func _enter_tree():
 	set_multiplayer_authority(name.to_int())
@@ -18,12 +17,6 @@ func _ready():
 	if not is_multiplayer_authority():
 			camera.current = false
 			return
-
-	var local_dash = preload("res://ui/Dashboard.tscn").instantiate()
-	local_dash.set_multiplayer_authority(-1)
-	add_child(local_dash)
-	local_dash.visible = false
-	dash = local_dash
 
 	camera.set_multiplayer_authority(-1)
 	camera.current = true
@@ -79,6 +72,3 @@ func _input(event):
 			return
 	if event is not InputEventKey:
 		return
-	if Input.is_action_just_pressed("escape"):
-		dash.visible = !dash.visible
-		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE if dash.visible else Input.MOUSE_MODE_CAPTURED)

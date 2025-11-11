@@ -18,7 +18,7 @@ func _process(_delta) -> void:
 
 func _on_start_server_pressed():
 	# Networking.increase_server_max_clients(16)
-	Networking.create_timer()
+	Networking.create_server()
 	pass # Replace with function body.
 
 func _on_button_pressed():
@@ -108,3 +108,10 @@ func stop_updating_session_list() -> void:
 		return
 	_update_session_list_timer.timeout.disconnect(update_session_list)
 	_update_session_list_timer = null
+
+func _input(event):
+	if event is not InputEventKey:
+		return
+	if Input.is_action_just_pressed("escape"):
+		visible = !visible
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE if visible else Input.MOUSE_MODE_CAPTURED)

@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://btqqebrr17xv6"]
+
+[ext_resource type="PackedScene" uid="uid://77r0lic3hcqm" path="res://ui/Dashboard.tscn" id="1_ljo3h"]
+
+[node name="PlayerSpace" type="Node3D"]
+
+[node name="Sessions" type="Node3D" parent="."]
+
+[node name="UI" type="Node" parent="."]
+
+[node name="Dashboard" parent="UI" instance=ExtResource("1_ljo3h")]
