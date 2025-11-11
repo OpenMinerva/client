@@ -1,5 +1,6 @@
 extends Node3D
 
+@onready var spawner = $MultiplayerSpawner
+
 func _ready():
-	Networking.create_server(5996, 2)
 	pass

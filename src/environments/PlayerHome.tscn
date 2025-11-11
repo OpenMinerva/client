@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://c8tt7qgbrkyqy"]
+[gd_scene load_steps=6 format=3 uid="uid://c8tt7qgbrkyqy"]
 
 [ext_resource type="Script" uid="uid://bq6hy37484aq5" path="res://environments/world.gd" id="1_mlc1h"]
 
@@ -15,6 +15,8 @@ sky = SubResource("Sky_mlc1h")
 tonemap_mode = 2
 glow_enabled = true
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_mlc1h"]
+
 [node name="PlayerHome" type="Node3D"]
 script = ExtResource("1_mlc1h")
 
@@ -29,3 +31,6 @@ size = Vector3(10, 9.433105, 10)
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://k2v75doml11j")
 spawn_path = NodePath("..")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_mlc1h")

@@ -22,22 +22,9 @@ func _ready():
 	camera.current = true
 
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	get_viewport().files_dropped.connect(_on_files_dropped)
 	for mi in vrheadset.find_children("*", "MeshInstance3D", true, false):
 		mi.set_layer_mask(10)
 	camera.cull_mask &= ~10
-
-func _on_files_dropped(files: PackedStringArray) -> void:
-	if not is_multiplayer_authority():
-			return
-	for path in files:
-		if path.ends_with(".glb") or path.ends_with(".gltf"):
-			var gltf := GLTFDocument.new()
-			var state := GLTFState.new()
-			var err := gltf.append_from_file(path, state)
-			if err == OK:
-				var root := gltf.generate_scene(state)
-				get_tree().root.add_child(root)
 
 func _unhandled_input(event):
 	if not is_multiplayer_authority():

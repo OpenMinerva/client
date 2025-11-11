@@ -49,7 +49,6 @@ func create_server(port: int = 5996, max_clients: int = 16) -> void:
 	world_instance = world_scene.instantiate()
 	world_instance.name = "World"
 	get_tree().root.get_node("PlayerSpace/Sessions").add_child(world_instance)
-	print(get_tree().root.get_node("PlayerSpace/Sessions"))
 
 	_add_player(1)
 
@@ -119,9 +118,9 @@ func _on_peer_connected(id: int) -> void:
 	LoggerManager.log_string("Peer attempting connection: %d" %id, 1)
 	_add_player(id)
 
-	if NetworkStatus.server:
-		# Send the world to the client
-		rpc_id(id, "receive_world", world_scene)
+	if is_multiplayer_authority():
+		LoggerManager.log_string("Sending world to peer %d" %id, 1)
+		rpc_id(id, "receive_world")
 
 func _on_peer_disconnected(id: int) -> void:
 	rpc_id(id, "_del_player", id)
@@ -148,11 +147,11 @@ func _remove_all_players() -> void:
 		if child is Node3D and child.name.is_valid_int():
 			child.queue_free()
 
-@rpc("any_peer", "call_local")
-func receive_world(world_packed: PackedScene) -> void:
+@rpc("authority", "call_local")
+func receive_world() -> void:
 	LoggerManager.log_string("Received world", 1)
 	# Client receives the packed scene, instantiates it, and adds it to the root.
-	var world_node = world_packed.instantiate()
+	var world_node = world_scene.instantiate()
 	world_node.name = "World"
 	get_tree().root.get_node("PlayerSpace/Sessions").add_child(world_node)
 
@@ -163,7 +162,6 @@ func validate_client_info(info: Dictionary) -> void:
 		return
 
 	var peer_id = multiplayer.get_remote_sender_id()
-	print(info)
 
 	if _verify_info(info):
 		var client_dict = info.duplicate()
