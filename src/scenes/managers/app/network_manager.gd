@@ -1,0 +1,216 @@
+extends Node
+
+const n_c = preload("res://scripts/network_compression.gd")
+
+# TODO: Bandwidth toggles
+@onready var scene_manager = get_tree().current_scene.get_node("SceneManager")
+@onready var multiplayer_manager = get_tree().current_scene.get_node("MultiplayerManager")
+
+# This file contains all of the session management and client communication.
+# Anything that goes through the network should first route through here at some point.
+enum server_privacy {PRIVATE, INVITE, FRIENDS, PUBLIC}
+
+var status = {
+	"hosting": false,
+	"client": false
+}
+
+var config = {
+	"port": 20205,
+	"max_clients": 4,
+	"privacy": 0,
+
+	"networking": {
+		"use_steam": false,
+		"use_lan": false
+	}
+}
+
+var info = {
+	"level": "res://scenes/levels/home.tscn",
+	"level_node_name": "",
+	"clients": []
+}
+
+func _ready():
+	multiplayer.peer_connected.connect(_on_peer_connected)
+	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
+
+	multiplayer.connected_to_server.connect(_on_connected)
+	multiplayer.connection_failed.connect(_on_connection_failed)
+
+func start_server(port: int = config.port, max_clients: int = config.max_clients) -> void:
+	if status.hosting:
+		# This ideally should not trigger
+		GlobalLogger.log_string("Can not start server: Server is already running.", 2)
+		status.hosting = false
+		status.client = false
+		return
+
+	var new_peer = ENetMultiplayerPeer.new()
+	# FIXME: Error handling is required here
+	var err = new_peer.create_server(port, max_clients)
+	# FIXME: This client append is happening too early, this is a debug position
+	info.clients.append({"display_name": "Me!", "multiplayer_id": 1})
+	if err != OK:
+		GlobalLogger.log_string("Failed to start server.", 3)
+		status.hosting = false
+		status.client = false
+		return
+
+	multiplayer.multiplayer_peer = new_peer
+	GlobalLogger.log_string("Successfully started server.", 1)
+
+	while status.hosting == false:
+		await get_tree().process_frame
+		status.hosting = true
+		status.client = false
+	
+		
+func close_server():
+	# Disconnect all players.
+	# Remove listings from all used networking.
+	# Update server config.
+	# TODO: OfflineMultiplayerPeer is a test. Check to see if this actually works.
+	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
+	status.hosting = false
+	status.client = false
+
+	return
+
+func update_server():
+	# Update our config.
+	# Submit a update to any active networking service.
+	return
+
+func join_server(ip: String = "", port: int = config.port) -> void:
+	# Client connects to a server.
+	if ip.is_empty():
+		GlobalLogger.log_string("No IP to connect to.", 2)
+		return
+	
+	if status.hosting:
+		# This ideally should not trigger
+		GlobalLogger.log_string("Can not join server: We are currently hosting a server.", 2)
+		return
+	
+	var new_peer = ENetMultiplayerPeer.new()
+	new_peer.create_client(ip, port)
+	multiplayer.multiplayer_peer = new_peer
+
+	status.hosting = false
+	status.client = true
+	GlobalLogger.log_string("Connected to the server.", 1)
+	return
+
+func kick_player(player_id: int, reason: String = "No reason specified"):
+	# Server kicks a player from the session.
+	return
+
+func ban_player():
+	# Server permanatly bans a user.
+	return
+
+func _on_connected():
+	# We are connected to the server.
+	GlobalLogger.log_string("Connected to the server as '%s'." % multiplayer.get_unique_id(), 1)
+	return
+
+func _on_connection_failed():
+	GlobalLogger.log_string("Connection to server failed.", 1)
+	return
+
+func _on_peer_connected(client_id):
+	info.level_node_name = get_tree().current_scene.get_node("Scenes").get_child(0).name
+
+	# A client has been connected to our server.
+	if multiplayer.is_server() == false:
+		return
+
+	# TODO: Preform validation to determine if the player is allowed to be here
+
+	GlobalLogger.log_string("'%s' connected to us. Sending our server info." % multiplayer.get_unique_id(), 1)
+	_receive_server_info.rpc_id(client_id, info)
+
+	return
+
+func _on_peer_disconnected():
+	return
+
+func set_networking_config(options: Dictionary) -> void:
+	if !options:
+		GlobalLogger.log_string("Tried to set networking config without options", 2)
+		return
+	
+	# LAN connections
+	if options.lan == true:
+		config.use_lan = true
+	else:
+		config.use_lan = false
+
+	# Steam connections
+	if options.steam == true:
+		config.use_steam = true
+	else:
+		config.use_steam = false
+
+@rpc("authority", "reliable")
+func _receive_server_info(server_info: Dictionary):
+	GlobalLogger.log_string("Received server information.")
+	print(server_info)
+
+	if server_info.level:
+		scene_manager.load_multiplayer_scene(server_info.level, server_info.level_node_name)
+
+	_send_player_info({"display_name": "Client"})
+
+@rpc("any_peer", "reliable")
+func _receive_player_info(player_info: Dictionary):
+	GlobalLogger.log_string("Received '%s' player info." % multiplayer.get_remote_sender_id())
+
+	if multiplayer.is_server() == false:
+		return
+	
+	# TODO: Preform validation to determine if the player is allowed to be here
+	# TODO: Preform validation to determine if the player supplied cridentials are good, where they need to be.
+
+	player_info = _sanity_check_player_info(player_info, multiplayer.get_remote_sender_id())
+
+	info.clients.append(player_info)
+	
+	# Spawn player
+	multiplayer_manager.spawn_player(player_info.multiplayer_id)
+	multiplayer_manager.rpc("spawn_player", player_info.multiplayer_id)
+	multiplayer_manager.rpc("spawn_player", 1)
+	send_server_session_info()
+	
+func _send_player_info(player_info: Dictionary):
+	GlobalLogger.log_string("Starting server handshake: Sending information about ourself.")
+	_receive_player_info.rpc_id(1, player_info)
+
+func send_server_session_info() -> void:
+	rpc("received_server_session_info", info)
+
+@rpc("authority", "reliable")
+func received_server_session_info(received_info: Dictionary) -> void:
+	GlobalLogger.log_string("Session information updated.")
+	info = received_info
+	return
+
+# TODO: Handle kick from server
+# TODO: Handle ban from server
+# TODO: Add item to player inventory
+# TODO: Remove item from player inventory
+# TODO: Check if item exists in player inventory
+# TODO: Get player inventory
+
+func _sanity_check_player_info(player_info: Dictionary, multiplayer_id: int) -> Dictionary:
+	var sane_player_info = {
+		"display_name": "",
+		"multiplayer_id": ""
+	}
+
+	sane_player_info.display_name = str(player_info.display_name)
+	sane_player_info.multiplayer_id = int(multiplayer_id)
+
+	return sane_player_info

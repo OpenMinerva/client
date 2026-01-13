@@ -1,0 +1,50 @@
+[gd_scene load_steps=5 format=3 uid="uid://dvx1vs2ig7st4"]
+
+[ext_resource type="Script" uid="uid://dxa60xi5uelay" path="res://scenes/players/player.gd" id="1_plyga"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_p1mvi"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_plyga"]
+
+[sub_resource type="SeparationRayShape3D" id="SeparationRayShape3D_xrm3l"]
+length = 0.25
+
+[node name="Player" type="CharacterBody3D" groups=["Players"]]
+script = ExtResource("1_plyga")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_p1mvi")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CylinderShape3D_plyga")
+
+[node name="Head" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, -0.15)
+
+[node name="Camera3D" type="Camera3D" parent="Head"]
+fov = 40.0
+
+[node name="InteractionRay" type="RayCast3D" parent="Head/Camera3D"]
+target_position = Vector3(0, 0, -2)
+collision_mask = 2
+hit_back_faces = false
+
+[node name="AimSight" type="RayCast3D" parent="Head/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.74228e-08, 0, 8.74228e-08, -1, 0, 0, 0)
+target_position = Vector3(0, 0, 3000)
+hit_back_faces = false
+
+[node name="Hands" type="Node3D" parent="Head/Camera3D"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+
+[node name="StairStep" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.3, -0.5194253)
+shape = SubResource("SeparationRayShape3D_xrm3l")
+
+[node name="PlayerMovement" type="Node" parent="."]
+
+[node name="PlayerInput" type="Node" parent="."]
+
+[node name="PlayerInventory" type="Node" parent="."]
