@@ -1,10 +1,12 @@
 extends Node
 
+# TODO: Allow multiple sessions
+# Right now only one session is allowed and is destroyed when the player joins another session.
+
 # Game managers
 @onready var network_manager = get_tree().current_scene.get_node("NetworkManager")
 @onready var multiplayer_manager = get_tree().current_scene.get_node("MultiplayerManager")
 
-# 
 @onready var scene_work_root = get_tree().current_scene.get_node("Scenes")
 @onready var player_home_scene: PackedScene = load("res://scenes/levels/home.tscn")
 
@@ -28,6 +30,8 @@ func load_multiplayer_scene(scene_dir: String, scene_name: String):
 	scene.name = scene_name
 	scene_work_root.add_child(scene)
 	multiplayer_manager.active_session = scene_name
+	await get_tree().process_frame
+	return
 
 func _clean_scene_work_root():
 	multiplayer_manager.active_session = ""

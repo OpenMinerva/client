@@ -66,7 +66,6 @@ func start_server(port: int = config.port, max_clients: int = config.max_clients
 		status.hosting = true
 		status.client = false
 	
-		
 func close_server():
 	# Disconnect all players.
 	# Remove listings from all used networking.
@@ -160,7 +159,7 @@ func _receive_server_info(server_info: Dictionary):
 	print(server_info)
 
 	if server_info.level:
-		scene_manager.load_multiplayer_scene(server_info.level, server_info.level_node_name)
+		await scene_manager.load_multiplayer_scene(server_info.level, server_info.level_node_name)
 
 	_send_player_info({"display_name": "Client"})
 
@@ -169,6 +168,7 @@ func _receive_player_info(player_info: Dictionary):
 	GlobalLogger.log_string("Received '%s' player info." % multiplayer.get_remote_sender_id())
 
 	if multiplayer.is_server() == false:
+		# We are a client. We should not process any farther.
 		return
 	
 	# TODO: Preform validation to determine if the player is allowed to be here
@@ -181,7 +181,13 @@ func _receive_player_info(player_info: Dictionary):
 	# Spawn player
 	multiplayer_manager.spawn_player(player_info.multiplayer_id)
 	multiplayer_manager.rpc("spawn_player", player_info.multiplayer_id)
-	multiplayer_manager.rpc("spawn_player", 1)
+
+	# Spawn all connected clients on the new client
+	for client in info.clients:
+		if client.multiplayer_id == player_info.multiplayer_id:
+			continue
+		multiplayer_manager.rpc_id(player_info.multiplayer_id, "spawn_player", client.multiplayer_id)
+
 	send_server_session_info()
 	
 func _send_player_info(player_info: Dictionary):
