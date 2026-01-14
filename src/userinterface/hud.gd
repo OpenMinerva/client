@@ -20,3 +20,32 @@ func _update_hud_state():
 	%ClientBool.text = "Client: %s" % network_manager.status.client
 	%ConnectedUserCount.text = "Total Users: %s" % len(network_manager.info.clients)
 	%UserList.text = "User List: %s" % ", ".join(user_list_formatted)
+
+
+func _on_nav_exit_pressed():
+	_show_dashboard_page("Exit")
+
+func _on_nav_debug_pressed():
+	_show_dashboard_page("Debug")
+
+func _on_nav_inventory_pressed():
+	_show_dashboard_page("Inventory")
+
+func _on_nav_contacts_pressed():
+	_show_dashboard_page("Contacts")
+
+func _on_nav_sessions_pressed():
+	_show_dashboard_page("Sessions")
+
+func _on_nav_home_pressed():
+	_show_dashboard_page("Home")
+
+func _show_dashboard_page(page_name: String = "Home"):
+	if page_name not in ["Home", "Sessions", "Contacts", "Inventory", "Debug", "Exit"]:
+		GlobalLogger.log_string("Tried to switch to an invalid dashboard page: '%s'" % page_name)
+		return
+
+	for page in get_node("MarginContainer/VBoxContainer/PrimaryDashboard/").get_children():
+		page.visible = false
+
+	get_node("MarginContainer/VBoxContainer/PrimaryDashboard/%s" % page_name).visible = true
