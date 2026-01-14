@@ -65,7 +65,7 @@ func c_32_pos(provided_data: Vector3) -> PackedByteArray:
 	var o_z = int(provided_data.z / OCTREE_OCTANT_SIZE)
 
 	# HINT: octree_compressed_position
-	var o_c_pos = c_32_vec3(Vector3(o_x, o_y, o_z))
+	# var o_c_pos = c_32_vec3(Vector3(o_x, o_y, o_z))
 
 	# Get the position in that octree
 	# HINT: i_x = internal_x_position
@@ -73,7 +73,7 @@ func c_32_pos(provided_data: Vector3) -> PackedByteArray:
 	var i_y = _float_to_int(fmod(provided_data.y, OCTREE_OCTANT_SIZE))
 	var i_z = _float_to_int(fmod(provided_data.z, OCTREE_OCTANT_SIZE))
 
-	var i_c_pos = c_32_vec3(Vector3(i_x, i_y, i_z))
+	# var i_c_pos = c_32_vec3(Vector3(i_x, i_y, i_z))
 
 	# HINT: packed_compressed_position
 	# FIXME: Appending the array does not work for some reason. Try and figure that out

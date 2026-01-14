@@ -35,7 +35,7 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 func _enter_tree():
 	set_multiplayer_authority(name.to_int())
-
+	
 func _ready():
 	camera.fov = base_fov
 	camera.current = is_multiplayer_authority()
@@ -66,7 +66,6 @@ func _physics_process(delta):
 	if not is_on_floor():
 		velocity.y -= gravity * delta + 0.05
 
-	
 	if Input.is_action_pressed("sprint"):
 		speed = lerp(speed, SPRINT_SPEED, delta * 7.0)
 		var pos = Vector3.ZERO
