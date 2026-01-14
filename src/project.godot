@@ -15,7 +15,7 @@ run/main_scene="uid://cxk6c0uipjjpo"
 config/features=PackedStringArray("4.5", "Forward Plus")
 run/max_fps=144
 boot_splash/image="/home/adragon/Pictures/PrismLens_1_background.png"
-config/icon="uid://cdukvnkmlkl0e"
+config/icon="uid://du0bhthwac604"
 boot_splash/minimum_display_time=1000
 
 [autoload]
