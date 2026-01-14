@@ -1,10 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://dvx1vs2ig7st4"]
+[gd_scene load_steps=4 format=3 uid="uid://dvx1vs2ig7st4"]
 
 [ext_resource type="Script" uid="uid://dxa60xi5uelay" path="res://scenes/players/player.gd" id="1_plyga"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_p1mvi"]
-
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_plyga"]
 
 [sub_resource type="SeparationRayShape3D" id="SeparationRayShape3D_xrm3l"]
 length = 0.25
@@ -15,10 +13,6 @@ script = ExtResource("1_plyga")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("CapsuleMesh_p1mvi")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-shape = SubResource("CylinderShape3D_plyga")
 
 [node name="Head" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, -0.15)
