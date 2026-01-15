@@ -1,6 +1,7 @@
 extends Control
 
 @onready var network_manager = get_tree().current_scene.get_node("NetworkManager")
+var http = preload("res://scripts/http.gd").new()
 
 func _ready():
 	while true:
@@ -49,3 +50,10 @@ func _show_dashboard_page(page_name: String = "Home"):
 		page.visible = false
 
 	get_node("MarginContainer/VBoxContainer/PrimaryDashboard/%s" % page_name).visible = true
+	
+func _on_login_button_pressed():
+	var username_field_value = $"MarginContainer/VBoxContainer/Panel/SignIn/Panel/MarginContainer/VBoxContainer/UsernameField".text
+	var password_field_value = $"MarginContainer/VBoxContainer/Panel/SignIn/Panel/MarginContainer/VBoxContainer/PasswordField".text
+	var data = {"username": username_field_value, "password": password_field_value}
+	var response = await http.req(HTTPClient.Method.METHOD_POST, "http://localhost", "/api/v1/authenticate", 40400, ["Accept: application/json", "Content-Type: application/json"], JSON.stringify(data))
+	print(response)

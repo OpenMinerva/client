@@ -91,7 +91,7 @@ size_flags_vertical = 4
 layout_mode = 2
 text = "Username"
 
-[node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/MarginContainer/VBoxContainer"]
+[node name="UsernameField" type="LineEdit" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 clear_button_enabled = true
 caret_blink = true
@@ -100,7 +100,7 @@ caret_blink = true
 layout_mode = 2
 text = "Password"
 
-[node name="LineEdit2" type="LineEdit" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/MarginContainer/VBoxContainer"]
+[node name="PasswordField" type="LineEdit" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 clear_button_enabled = true
 secret = true
