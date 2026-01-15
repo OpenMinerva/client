@@ -50,10 +50,17 @@ func _show_dashboard_page(page_name: String = "Home"):
 		page.visible = false
 
 	get_node("MarginContainer/VBoxContainer/PrimaryDashboard/%s" % page_name).visible = true
-	
+
 func _on_login_button_pressed():
-	var username_field_value = $"MarginContainer/VBoxContainer/Panel/SignIn/Panel/MarginContainer/VBoxContainer/UsernameField".text
-	var password_field_value = $"MarginContainer/VBoxContainer/Panel/SignIn/Panel/MarginContainer/VBoxContainer/PasswordField".text
+	var username_field_value = $"MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/MarginContainer/VBoxContainer/UsernameField".text
+	var password_field_value = $"MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/MarginContainer/VBoxContainer/PasswordField".text
 	var data = {"username": username_field_value, "password": password_field_value}
+
+	# TODO: Replace localhost with proper account server url + port
 	var response = await http.req(HTTPClient.Method.METHOD_POST, "http://localhost", "/api/v1/authenticate", 40400, ["Accept: application/json", "Content-Type: application/json"], JSON.stringify(data))
-	print(response)
+	
+	if response["ok"]:
+		var token = response["response_headers"]["Set-Cookie"].split("; ")
+		token[0] = token[0].replace("token=", "")
+		CredentialStore.set_account_credential(token)
+		_show_dashboard_page("Home")
