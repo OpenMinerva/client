@@ -24,6 +24,7 @@ LaunchArguments="*res://scripts/LaunchArguments.gd"
 GlobalLogger="*res://scripts/Logger.gd"
 FileManager="*res://scripts/Files.gd"
 Util="*res://scripts/Util.gd"
+CredentialStore="*res://scripts/credential_store.gd"
 
 [display]
 

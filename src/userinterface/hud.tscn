@@ -50,7 +50,6 @@ theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
 [node name="SignIn" type="MarginContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -91,7 +90,7 @@ size_flags_vertical = 4
 layout_mode = 2
 text = "Username"
 
-[node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/MarginContainer/VBoxContainer"]
+[node name="UsernameField" type="LineEdit" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 clear_button_enabled = true
 caret_blink = true
@@ -100,7 +99,7 @@ caret_blink = true
 layout_mode = 2
 text = "Password"
 
-[node name="LineEdit2" type="LineEdit" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/MarginContainer/VBoxContainer"]
+[node name="PasswordField" type="LineEdit" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 clear_button_enabled = true
 secret = true
@@ -321,6 +320,7 @@ theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
 [node name="Debug" type="MarginContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
