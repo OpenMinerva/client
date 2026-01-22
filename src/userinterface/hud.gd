@@ -2,6 +2,7 @@ extends Control
 
 @onready var network_manager = get_tree().current_scene.get_node("NetworkManager")
 var http = preload("res://scripts/http.gd").new()
+var keys = preload("res://scripts/keys.gd").new()
 
 func _ready():
 	while true:
@@ -55,9 +56,13 @@ func _on_login_button_pressed():
 	var username_field_value = $"MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/MarginContainer/VBoxContainer/UsernameField".text
 	var password_field_value = $"MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/MarginContainer/VBoxContainer/PasswordField".text
 	var data = {"username": username_field_value, "password": password_field_value, "scope": "appAuth"}
+	# TODO: Make sure we have a keypair generated
+	
+	var keyPair = keys.read_keys_from_disk(username_field_value)
+	data["pubKey"] = keyPair[0]
 
 	# TODO: Replace localhost with proper account server url + port
-	var response = await http.req(HTTPClient.Method.METHOD_POST, "http://localhost", "/api/v1/login", 40400, ["Accept: application/json", "Content-Type: application/json"], JSON.stringify(data))
+	var response = await http.req(HTTPClient.Method.METHOD_POST, "http://localhost", "/api/v1/device/auth", 40400, ["Accept: application/json", "Content-Type: application/json"], JSON.stringify(data))
 	
 	if response["ok"] == false:
 		GlobalLogger.log_string("Response failed for unknown reason.", 1)
