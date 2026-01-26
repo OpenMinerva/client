@@ -47,7 +47,6 @@ func _write_keys_to_disk(username):
 func _generate_keys():
 	var crypto = Crypto.new()
 
-	# keys.private = crypto.generate_rsa(2048)
 	var generated_keys = crypto.generate_rsa(2048)
 
 	keys.private = generated_keys.save_to_string(false)

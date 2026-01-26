@@ -25,6 +25,7 @@ GlobalLogger="*res://scripts/Logger.gd"
 FileManager="*res://scripts/Files.gd"
 Util="*res://scripts/Util.gd"
 CredentialStore="*res://scripts/credential_store.gd"
+AccountServers="*res://scripts/account_servers.gd"
 
 [display]
 

@@ -1,6 +1,7 @@
 extends Node
 
-const n_c = preload("res://scripts/network_compression.gd")
+var n_c = preload("res://scripts/network_compression.gd").new()
+var jwt = preload("res://scripts/jwt.gd").new()
 
 # TODO: Bandwidth toggles
 @onready var scene_manager = get_tree().current_scene.get_node("SceneManager")
@@ -156,41 +157,45 @@ func set_networking_config(options: Dictionary) -> void:
 @rpc("authority", "reliable")
 func _receive_server_info(server_info: Dictionary):
 	GlobalLogger.log_string("Received server information.")
-	print(server_info)
 
 	if server_info.level:
 		await scene_manager.load_multiplayer_scene(server_info.level, server_info.level_node_name)
 
-	_send_player_info({"display_name": "Client"})
+	_send_player_info(CredentialStore.info.token)
 
 @rpc("any_peer", "reliable")
-func _receive_player_info(player_info: Dictionary):
-	GlobalLogger.log_string("Received '%s' player info." % multiplayer.get_remote_sender_id())
-
+func _receive_player_info(player_info: String):
+	# TODO: Error checks for JWT
 	if multiplayer.is_server() == false:
 		# We are a client. We should not process any farther.
 		return
+
+	GlobalLogger.log_string("Received '%s' player info." % multiplayer.get_remote_sender_id())
 	
 	# TODO: Preform validation to determine if the player is allowed to be here
 	# TODO: Preform validation to determine if the player supplied cridentials are good, where they need to be.
 
-	player_info = _sanity_check_player_info(player_info, multiplayer.get_remote_sender_id())
+	var player_info_dic = _sanity_check_player_info(player_info, multiplayer.get_remote_sender_id())
+	var player_decoded_jwt = jwt.decode_jwt(player_info_dic.jwt)
+	# player_decoded_jwt.payload.issuer
+	# print()
+	# print(jwt.verify(player_info_dic.jwt))
 
-	info.clients.append(player_info)
+	info.clients.append(player_info_dic)
 	
 	# Spawn player
-	multiplayer_manager.spawn_player(player_info.multiplayer_id)
-	multiplayer_manager.rpc("spawn_player", player_info.multiplayer_id)
+	multiplayer_manager.spawn_player(player_info_dic.multiplayer_id)
+	multiplayer_manager.rpc("spawn_player", player_info_dic.multiplayer_id)
 
 	# Spawn all connected clients on the new client
 	for client in info.clients:
-		if client.multiplayer_id == player_info.multiplayer_id:
+		if client.multiplayer_id == player_info_dic.multiplayer_id:
 			continue
-		multiplayer_manager.rpc_id(player_info.multiplayer_id, "spawn_player", client.multiplayer_id)
+		multiplayer_manager.rpc_id(player_info_dic.multiplayer_id, "spawn_player", client.multiplayer_id)
 
 	send_server_session_info()
 	
-func _send_player_info(player_info: Dictionary):
+func _send_player_info(player_info: String):
 	GlobalLogger.log_string("Starting server handshake: Sending information about ourself.")
 	_receive_player_info.rpc_id(1, player_info)
 
@@ -210,13 +215,14 @@ func received_server_session_info(received_info: Dictionary) -> void:
 # TODO: Check if item exists in player inventory
 # TODO: Get player inventory
 
-func _sanity_check_player_info(player_info: Dictionary, multiplayer_id: int) -> Dictionary:
+func _sanity_check_player_info(player_info: String, multiplayer_id: int) -> Dictionary:
 	var sane_player_info = {
-		"display_name": "",
-		"multiplayer_id": ""
+		"jwt": "",
+		"multiplayer_id": "",
+		"display_name": "Greetings!"
 	}
 
-	sane_player_info.display_name = str(player_info.display_name)
+	sane_player_info.jwt = str(player_info)
 	sane_player_info.multiplayer_id = int(multiplayer_id)
 
 	return sane_player_info
