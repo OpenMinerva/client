@@ -2,6 +2,7 @@ extends Node
 
 var n_c = preload("res://scripts/network_compression.gd").new()
 var jwt = preload("res://scripts/jwt.gd").new()
+var url_regex = RegEx.create_from_string("^(https?)://([^/:]+)(?::(\\d+))?(.*)$")
 
 # TODO: Bandwidth toggles
 @onready var scene_manager = get_tree().current_scene.get_node("SceneManager")
@@ -157,6 +158,7 @@ func set_networking_config(options: Dictionary) -> void:
 @rpc("authority", "reliable")
 func _receive_server_info(server_info: Dictionary):
 	GlobalLogger.log_string("Received server information.")
+	# TODO: Do not change scene until connection is finalized.
 
 	if server_info.level:
 		await scene_manager.load_multiplayer_scene(server_info.level, server_info.level_node_name)
@@ -175,11 +177,20 @@ func _receive_player_info(player_info: String):
 	# TODO: Preform validation to determine if the player is allowed to be here
 	# TODO: Preform validation to determine if the player supplied cridentials are good, where they need to be.
 
+	# Preform validation of JWT token
 	var player_info_dic = _sanity_check_player_info(player_info, multiplayer.get_remote_sender_id())
 	var player_decoded_jwt = jwt.decode_jwt(player_info_dic.jwt)
-	# player_decoded_jwt.payload.issuer
-	# print()
-	# print(jwt.verify(player_info_dic.jwt))
+
+	# TODO: util function to break down a url to the key parts.
+	var url_parts = parse_url(player_decoded_jwt.payload.issuer)
+	var host_pub_key = await AccountServers._request_server_pem(url_parts.host, url_parts.port)
+
+	var jwt_is_valid = jwt.verify(player_info_dic.jwt, host_pub_key)
+
+	if jwt_is_valid == false:
+		# TODO: Refuse connection
+		multiplayer.multiplayer_peer.disconnect_peer(multiplayer.get_remote_sender_id())
+		return
 
 	info.clients.append(player_info_dic)
 	
@@ -226,3 +237,21 @@ func _sanity_check_player_info(player_info: String, multiplayer_id: int) -> Dict
 	sane_player_info.multiplayer_id = int(multiplayer_id)
 
 	return sane_player_info
+
+
+func parse_url(url: String) -> Dictionary:
+	var result = {
+		"scheme": "",
+		"host": "",
+		"port": 0,
+		"path": ""
+	}
+
+	var matches = url_regex.search(url)
+	if matches:
+		result["scheme"] = matches.get_string(1).to_lower()
+		result["host"] = matches.get_string(2)
+		result["port"] = int(matches.get_string(3)) if matches.get_string(3) != "" else (443 if result["scheme"] == "https" else 80)
+		result["path"] = matches.get_string(4) if matches.get_string(4) != "" else "/"
+
+	return result
