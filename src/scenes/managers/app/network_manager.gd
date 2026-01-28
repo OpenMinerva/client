@@ -45,7 +45,7 @@ func _ready():
 func start_server(port: int = config.port, max_clients: int = config.max_clients) -> void:
 	if status.hosting:
 		# This ideally should not trigger
-		GlobalLogger.log_string("Can not start server: Server is already running.", 2)
+		GlobalLogger.logs("Can not start server: Server is already running.", 2)
 		status.hosting = false
 		status.client = false
 		return
@@ -56,13 +56,13 @@ func start_server(port: int = config.port, max_clients: int = config.max_clients
 	# FIXME: This client append is happening too early, this is a debug position
 	info.clients.append({"display_name": "Me!", "multiplayer_id": 1})
 	if err != OK:
-		GlobalLogger.log_string("Failed to start server.", 3)
+		GlobalLogger.logs("Failed to start server.", 3)
 		status.hosting = false
 		status.client = false
 		return
 
 	multiplayer.multiplayer_peer = new_peer
-	GlobalLogger.log_string("Successfully started server.", 1)
+	GlobalLogger.logs("Successfully started server.", 1)
 
 	while status.hosting == false:
 		await get_tree().process_frame
@@ -88,12 +88,12 @@ func update_server():
 func join_server(ip: String = "", port: int = config.port) -> void:
 	# Client connects to a server.
 	if ip.is_empty():
-		GlobalLogger.log_string("No IP to connect to.", 2)
+		GlobalLogger.logs("No IP to connect to.", 2)
 		return
 	
 	if status.hosting:
 		# This ideally should not trigger
-		GlobalLogger.log_string("Can not join server: We are currently hosting a server.", 2)
+		GlobalLogger.logs("Can not join server: We are currently hosting a server.", 2)
 		return
 	
 	var new_peer = ENetMultiplayerPeer.new()
@@ -102,7 +102,7 @@ func join_server(ip: String = "", port: int = config.port) -> void:
 
 	status.hosting = false
 	status.client = true
-	GlobalLogger.log_string("Connected to the server.", 1)
+	GlobalLogger.logs("Connected to the server.", 1)
 	return
 
 func kick_player(player_id: int, reason: String = "No reason specified"):
@@ -115,11 +115,11 @@ func ban_player():
 
 func _on_connected():
 	# We are connected to the server.
-	GlobalLogger.log_string("Connected to the server as '%s'." % multiplayer.get_unique_id(), 1)
+	GlobalLogger.logs("Connected to the server as '%s'." % multiplayer.get_unique_id(), 1)
 	return
 
 func _on_connection_failed():
-	GlobalLogger.log_string("Connection to server failed.", 1)
+	GlobalLogger.logs("Connection to server failed.", 1)
 	return
 
 func _on_peer_connected(client_id):
@@ -131,7 +131,7 @@ func _on_peer_connected(client_id):
 
 	# TODO: Preform validation to determine if the player is allowed to be here
 
-	GlobalLogger.log_string("'%s' connected to us. Sending our server info." % multiplayer.get_unique_id(), 1)
+	GlobalLogger.logs("'%s' connected to us. Sending our server info." % multiplayer.get_unique_id(), 1)
 	_receive_server_info.rpc_id(client_id, info)
 
 	return
@@ -141,7 +141,7 @@ func _on_peer_disconnected():
 
 func set_networking_config(options: Dictionary) -> void:
 	if !options:
-		GlobalLogger.log_string("Tried to set networking config without options", 2)
+		GlobalLogger.logs("Tried to set networking config without options", 2)
 		return
 	
 	# LAN connections
@@ -158,7 +158,7 @@ func set_networking_config(options: Dictionary) -> void:
 
 @rpc("authority", "reliable")
 func _receive_server_info(server_info: Dictionary):
-	GlobalLogger.log_string("Received server information.")
+	GlobalLogger.logs("Received server information.")
 	# TODO: Do not change scene until connection is finalized.
 
 	if server_info.level:
@@ -173,7 +173,7 @@ func _receive_player_info(player_info: String):
 		# We are a client. We should not process any farther.
 		return
 
-	GlobalLogger.log_string("Received '%s' player info." % multiplayer.get_remote_sender_id())
+	GlobalLogger.logs("Received '%s' player info." % multiplayer.get_remote_sender_id())
 	
 	# TODO: Preform validation to determine if the player is allowed to be here
 	# TODO: Preform validation to determine if the player supplied cridentials are good, where they need to be.
@@ -210,7 +210,7 @@ func _receive_player_info(player_info: String):
 	send_server_session_info()
 	
 func _send_player_info(player_info: String):
-	GlobalLogger.log_string("Starting server handshake: Sending information about ourself.")
+	GlobalLogger.logs("Starting server handshake: Sending information about ourself.")
 	_receive_player_info.rpc_id(1, player_info)
 
 func send_server_session_info() -> void:
@@ -218,7 +218,7 @@ func send_server_session_info() -> void:
 
 @rpc("authority", "reliable")
 func received_server_session_info(received_info: Dictionary) -> void:
-	GlobalLogger.log_string("Session information updated.")
+	GlobalLogger.logs("Session information updated.")
 	info = received_info
 	return
 

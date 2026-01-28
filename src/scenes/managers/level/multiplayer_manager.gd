@@ -10,7 +10,7 @@ func _ready():
 @rpc("authority", "reliable")
 func spawn_player(id: int):
 	var player_scene: PackedScene = load("res://scenes/players/player.tscn")
-	GlobalLogger.log_string("Spawning player %s" % id)
+	GlobalLogger.logs("Spawning player %s" % id)
 	var new_player = player_scene.instantiate()
 	new_player.name = str(id)
 	new_player.position = Vector3(0, 0, 0)

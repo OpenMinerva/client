@@ -26,7 +26,7 @@ boot_splash/minimum_display_time=1000
 
 LaunchArguments="*res://scripts/LaunchArguments.gd"
 GlobalLogger="*res://scripts/Logger.gd"
-FileManager="*res://scripts/Files.gd"
+FileManager="*uid://d2s50p717g3n"
 Util="*res://scripts/Util.gd"
 CredentialStore="*res://scripts/credential_store.gd"
 AccountServers="*res://scripts/account_servers.gd"

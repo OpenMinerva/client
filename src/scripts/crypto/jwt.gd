@@ -18,14 +18,14 @@ func verify(jwt_string: String, public_key: CryptoKey) -> bool:
 	var crypto: Crypto = Crypto.new()
 	var jwt_parts: Dictionary = _get_jwt_parts(jwt_string)
 	if jwt_parts.ok != true:
-		GlobalLogger.log_string("Failed to deconstruct jwt when verifying jwt.", 2)
-		GlobalLogger.log_string(str(jwt_string), 0)
+		GlobalLogger.logs("Failed to deconstruct jwt when verifying jwt.", 2)
+		GlobalLogger.logs(str(jwt_string), 0)
 		return false
 
 	var formatted_payload: Dictionary = _format_jwt_payload(jwt_parts.head, jwt_parts.payload)
 	if formatted_payload.ok != true:
-		GlobalLogger.log_string("Failed to format the jwt payload when verifying jwt.", 2)
-		GlobalLogger.log_string(str(jwt_parts), 0)
+		GlobalLogger.logs("Failed to format the jwt payload when verifying jwt.", 2)
+		GlobalLogger.logs(str(jwt_parts), 0)
 		return false
 
 	return crypto.verify(
@@ -71,7 +71,7 @@ func _get_jwt_parts(jwt_string: String = "") -> Dictionary:
 	var jwt_split = jwt_string.split(".")
 
 	if len(jwt_split) != 3:
-		GlobalLogger.log_string("JWT token is not formatted correctly.", 2)
+		GlobalLogger.logs("JWT token is not formatted correctly.", 2)
 		return return_dict
 	
 	return_dict.head = jwt_split[0]

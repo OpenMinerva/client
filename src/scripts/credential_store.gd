@@ -13,4 +13,4 @@ var info = {
 func set_account_credential(credentials: PackedStringArray = []):
     info.token = credentials[0]
     info.expire_time = credentials[1]
-    GlobalLogger.log_string("Saved JWT to memory.")
+    GlobalLogger.logs("Saved JWT to memory.")

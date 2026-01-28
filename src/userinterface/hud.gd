@@ -44,7 +44,7 @@ func _on_nav_home_pressed():
 
 func _show_dashboard_page(page_name: String = "Home"):
 	if page_name not in ["Home", "Sessions", "Contacts", "Inventory", "Debug", "Exit"]:
-		GlobalLogger.log_string("Tried to switch to an invalid dashboard page: '%s'" % page_name)
+		GlobalLogger.logs("Tried to switch to an invalid dashboard page: '%s'" % page_name)
 		return
 
 	for page in get_node("MarginContainer/VBoxContainer/PrimaryDashboard/").get_children():
@@ -65,17 +65,17 @@ func _on_login_button_pressed():
 	var response = await http.req(HTTPClient.Method.METHOD_POST, "http://localhost", "/api/v1/device/auth", 40400, ["Accept: application/json", "Content-Type: application/json"], JSON.stringify(data))
 	
 	if response["ok"] == false:
-		GlobalLogger.log_string("Response failed for unknown reason.", 1)
+		GlobalLogger.logs("Response failed for unknown reason.", 1)
 		return
 
 	if response["body"] == null:
-		GlobalLogger.log_string("No body provided for login request.", 3)
+		GlobalLogger.logs("No body provided for login request.", 3)
 		return
 
 	var res_body = JSON.parse_string(response["body"])
 
 	if "error" in res_body.keys():
-		GlobalLogger.log_string("Login request returned an error. '%s'" % res_body["error"], 1)
+		GlobalLogger.logs("Login request returned an error. '%s'" % res_body["error"], 1)
 		return
 		
 	var token = response["response_headers"]["Set-Cookie"].split("; ")
