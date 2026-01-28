@@ -28,8 +28,8 @@ LaunchArguments="*res://scripts/LaunchArguments.gd"
 GlobalLogger="*res://scripts/Logger.gd"
 FileManager="*uid://d2s50p717g3n"
 Util="*res://scripts/Util.gd"
-CredentialStore="*res://scripts/credential_store.gd"
 AccountServers="*uid://bpysjoq7n0ytu"
+CredentialStore="*uid://cs4c0ctis2flp"
 
 [display]
 
