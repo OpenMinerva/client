@@ -1,7 +1,8 @@
 extends Node
 
 var n_c = preload("res://scripts/network_compression.gd").new()
-var jwt = preload("res://scripts/jwt.gd").new()
+var jwt = preload("res://scripts/crypto/jwt.gd").new()
+var rsa = preload("res://scripts/crypto/rsa.gd").new()
 var url_regex = RegEx.create_from_string("^(https?)://([^/:]+)(?::(\\d+))?(.*)$")
 
 # TODO: Bandwidth toggles
@@ -179,13 +180,15 @@ func _receive_player_info(player_info: String):
 
 	# Preform validation of JWT token
 	var player_info_dic = _sanity_check_player_info(player_info, multiplayer.get_remote_sender_id())
-	var player_decoded_jwt = jwt.decode_jwt(player_info_dic.jwt)
+	var player_decoded_jwt = jwt.decode(player_info_dic.jwt)
 
 	# TODO: util function to break down a url to the key parts.
-	var url_parts = parse_url(player_decoded_jwt.payload.issuer)
+	var url_parts = parse_url(player_decoded_jwt.data.payload.issuer)
 	var host_pub_key = await AccountServers._request_server_pem(url_parts.host, url_parts.port)
 
-	var jwt_is_valid = jwt.verify(player_info_dic.jwt, host_pub_key)
+	var host_pub_key_cryptokey: CryptoKey = rsa.pem_to_cryptokey(host_pub_key)
+
+	var jwt_is_valid = jwt.verify(player_info_dic.jwt, host_pub_key_cryptokey)
 
 	if jwt_is_valid == false:
 		# TODO: Refuse connection
