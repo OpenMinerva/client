@@ -186,6 +186,14 @@ func _receive_player_info(player_info: String):
 	var url_parts = parse_url(player_decoded_jwt.data.payload.issuer)
 	var host_pub_key = await AccountServers._request_server_pem(url_parts.host, url_parts.port)
 
+	if host_pub_key.ok == false:
+		GlobalLogger.logs("Failed to get the host public key.\n%s" % host_pub_key, 3)
+		multiplayer.multiplayer_peer.disconnect_peer(multiplayer.get_remote_sender_id())
+		return
+		
+	host_pub_key = host_pub_key.data
+	GlobalLogger.logs("Got the host public key.\n%s" % host_pub_key)
+
 	var host_pub_key_cryptokey: CryptoKey = rsa.pem_to_cryptokey(host_pub_key)
 
 	var jwt_is_valid = jwt.verify(player_info_dic.jwt, host_pub_key_cryptokey)
