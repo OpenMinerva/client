@@ -1,8 +1,8 @@
 extends Control
 
 @onready var network_manager = get_tree().current_scene.get_node("NetworkManager")
-var http = preload("res://scripts/http.gd").new()
-var keys = preload("res://scripts/keys.gd").new()
+var http = preload("res://scripts/network/http.gd").new()
+var keys = preload("res://scripts/crypto/keys.gd").new()
 
 func _ready():
 	while true:

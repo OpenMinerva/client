@@ -5,8 +5,8 @@ signal _completed(result: Dictionary)
 # TODO: When the http client fails to connect to server, no error appears.
 
 func req(method: HTTPClient.Method, host: String, path: String = "/", port: int = 443, headers: PackedStringArray = [], body: String = "") -> Dictionary:
-	var thread := Thread.new()
-	var params := {
+	var thread: Thread = Thread.new()
+	var params: Dictionary = {
 		"method": method,
 		"host": host,
 		"path": path,
@@ -20,17 +20,15 @@ func req(method: HTTPClient.Method, host: String, path: String = "/", port: int 
 	return await _completed
 
 func _thread_main(params: Dictionary) -> void:
-	var client := HTTPClient.new()
-	var result := {
-		"ok": false
-	}
+	var client: HTTPClient = HTTPClient.new()
+	var return_dict: Dictionary = {"ok": false, "body": ""}
 
-	var err := client.connect_to_host(params.host, params.port)
+	var err: int = client.connect_to_host(params.host, params.port)
 
 	# Could not connect to host
 	if err != OK:
-		result.error = "Connection failed"
-		_finish(params, result)
+		return_dict.error = "Connection failed"
+		_finish(params, return_dict)
 		return
 		
    # Wait for connection
@@ -49,23 +47,23 @@ func _thread_main(params: Dictionary) -> void:
 		client.poll()
 		OS.delay_msec(10)
 
-	result.status_code = client.get_response_code()
-	result.response_headers = client.get_response_headers_as_dictionary()
+	return_dict.status_code = client.get_response_code()
+	return_dict.response_headers = client.get_response_headers_as_dictionary()
 	
-	var response_body := ""
+	var response_body: String = ""
 	while client.get_status() == HTTPClient.STATUS_BODY:
 		client.poll()
-		var chunk := client.read_response_body_chunk()
+		var chunk: PackedByteArray = client.read_response_body_chunk()
 		if chunk.size() > 0:
 			response_body += chunk.get_string_from_utf8()
 		OS.delay_msec(10)
 
 	client.close()
 
-	result.ok = true
-	result.body = response_body
+	return_dict.ok = true
+	return_dict.body = response_body
 
-	_finish(params, result)
+	_finish(params, return_dict)
 
 func _finish(params: Dictionary, result: Dictionary) -> void:
 	call_deferred("_emit_completed", params.thread, result)

@@ -1,7 +1,7 @@
 extends Node
 
 @onready var scene_manager = get_tree().current_scene.get_node("SceneManager")
-var n_c = preload("res://scripts/network_compression.gd").new()
+var n_c = preload("res://scripts/network/network_compression.gd").new()
 var active_session: String = ""
 
 func _ready():

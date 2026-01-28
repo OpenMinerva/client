@@ -1,6 +1,6 @@
 extends Node
 
-var _http = preload("res://scripts/http.gd").new()
+var _http = preload("res://scripts/network/http.gd").new()
 var _database = {}
 
 # TODO: Save public account server keys to disk

@@ -5,7 +5,7 @@ var speed = 5.0
 @onready var multiplayer_manager = get_tree().current_scene.get_node("MultiplayerManager")
 @onready var hud = get_tree().current_scene.get_node("Hud")
 
-var n_c = preload("res://scripts/network_compression.gd").new()
+var n_c = preload("res://scripts/network/network_compression.gd").new()
 
 @onready var body = $"."
 @onready var head = $Head

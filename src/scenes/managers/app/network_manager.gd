@@ -1,6 +1,6 @@
 extends Node
 
-var n_c = preload("res://scripts/network_compression.gd").new()
+var n_c = preload("res://scripts/network/network_compression.gd").new()
 var jwt = preload("res://scripts/crypto/jwt.gd").new()
 var rsa = preload("res://scripts/crypto/rsa.gd").new()
 var url_regex = RegEx.create_from_string("^(https?)://([^/:]+)(?::(\\d+))?(.*)$")
