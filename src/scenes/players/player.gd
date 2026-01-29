@@ -1,8 +1,9 @@
 extends CharacterBody3D
 
+@onready var rpc_lib = get_tree().current_scene.get_node("RpcManager")
+
 var speed = 5.0
 
-@onready var multiplayer_manager = get_tree().current_scene.get_node("MultiplayerManager")
 @onready var hud = get_tree().current_scene.get_node("Hud")
 
 var n_c = preload("res://scripts/network/network_compression.gd").new()
@@ -144,5 +145,5 @@ func _send_player_synchronization_info():
 
 	# HACK: We are just appending the rotation bits at the end here. It should probably be more efficient somewhere else.
 	compressed_position.append_array(compressed_rotation)
-
-	multiplayer_manager.rpc("player_position", compressed_position)
+	
+	rpc_lib.com.rpc("on_player_transform", compressed_position)

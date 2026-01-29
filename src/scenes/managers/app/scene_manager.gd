@@ -5,7 +5,7 @@ extends Node
 
 # Game managers
 @onready var network_manager = get_tree().current_scene.get_node("NetworkManager")
-@onready var multiplayer_manager = get_tree().current_scene.get_node("MultiplayerManager")
+@onready var multiplayer_manager = MultiplayerManager
 
 @onready var scene_work_root = get_tree().current_scene.get_node("Scenes")
 @onready var player_home_scene: PackedScene = load("res://scenes/levels/home.tscn")

@@ -16,9 +16,9 @@ func set_active_state(state: bool = false):
 	visible = state
 
 func _update_hud_state():
-	var user_list_formatted = network_manager.info.clients.map(func(elem): return elem.display_name)
+	var user_list_formatted = network_manager.info.clients.map(func(elem): return elem.username)
 	%HostingBool.text = "Host: %s" % network_manager.status.hosting
-	%SessionHost.text = "Server Host: %s" % network_manager.info.clients[0].display_name
+	%SessionHost.text = "Server Host: %s" % network_manager.info.clients[0].username
 	%ClientBool.text = "Client: %s" % network_manager.status.client
 	%ConnectedUserCount.text = "Total Users: %s" % len(network_manager.info.clients)
 	%UserList.text = "User List: %s" % ", ".join(user_list_formatted)
