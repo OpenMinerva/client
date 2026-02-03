@@ -1,11 +1,12 @@
 extends Node
 
 var n_c = preload("res://scripts/network/network_compression.gd").new()
+@onready var network_manager = get_tree().current_scene.get_node("NetworkManager")
 
 @rpc("any_peer", "unreliable")
 func on_player_transform(info):
 	# TODO: Authenticate
-	var target_node = MultiplayerManager.player_exists(str(multiplayer.get_remote_sender_id()))
+	var target_node = network_manager.player_exists(str(multiplayer.get_remote_sender_id()))
 
 	if target_node == null:
 		return
@@ -30,7 +31,7 @@ func on_spawn_player(id) -> void:
 	var new_player = player_scene.instantiate()
 	new_player.name = str(id)
 	new_player.position = Vector3(0, 0, 0)
-	MultiplayerManager.spawn_player(new_player)
+	network_manager.spawn_player(new_player)
 	return
 
 @rpc("authority", "reliable")

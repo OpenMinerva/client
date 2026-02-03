@@ -8,7 +8,8 @@ var url_regex = RegEx.create_from_string("^(https?)://([^/:]+)(?::(\\d+))?(.*)$"
 # TODO: Bandwidth toggles
 @onready var scene_manager = get_tree().current_scene.get_node("SceneManager")
 @onready var rpc_lib = get_tree().current_scene.get_node("RpcManager")
-@onready var multiplayer_manager = MultiplayerManager
+
+var active_session = ""
 
 # This file contains all of the session management and client communication.
 # Anything that goes through the network should first route through here at some point.
@@ -158,3 +159,16 @@ func parse_url(url: String) -> Dictionary:
 		result["path"] = matches.get_string(4) if matches.get_string(4) != "" else "/"
 
 	return result
+
+func spawn_player(player):
+	# FIXME: Placeholder for refactor
+	while scene_manager.get_current_session_node() == null:
+		await get_tree().process_frame
+	
+	scene_manager.get_current_session_node().call_deferred("add_child", player)
+
+func player_exists(name: String) -> Node3D:
+	# FIXME: Placeholder for refactor
+	var target_node = scene_manager.get_current_session_node().get_node_or_null(name)
+	
+	return target_node
