@@ -12,3 +12,6 @@ func get_command_line_args() -> Dictionary:
 				# with the value set to an empty string.
 				arguments[argument.trim_prefix("--")] = ""
 	return arguments
+
+func _ready():
+	get_command_line_args()

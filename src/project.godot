@@ -24,12 +24,12 @@ boot_splash/minimum_display_time=1000
 
 [autoload]
 
-LaunchArguments="*res://scripts/LaunchArguments.gd"
-GlobalLogger="*res://scripts/Logger.gd"
-FileManager="*res://scripts/Files.gd"
-Util="*res://scripts/Util.gd"
-CredentialStore="*res://scripts/credential_store.gd"
-AccountServers="*res://scripts/account_servers.gd"
+LaunchArguments="*uid://c45jrfmrjtnyn"
+GlobalLogger="*uid://dgmfafi41y1nk"
+FileManager="*uid://d2s50p717g3n"
+AccountServers="*uid://bpysjoq7n0ytu"
+CredentialStore="*uid://cs4c0ctis2flp"
+Random="*uid://1js68qt8w0mv"
 
 [display]
 
