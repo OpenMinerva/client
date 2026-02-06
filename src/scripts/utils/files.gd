@@ -3,28 +3,37 @@ extends Node
 ## Create a config file at a given relative directory.
 ## Example: /system/cool.json
 ## @returns void
-func create_config_file(dir: String) -> void:
-	GlobalLogger.logs("Creating '%s'" % dir, 0)
+func create_config_file(dir: String, file_name: String) -> void:
+	var config = ConfigFile.new()
+	GlobalLogger.logs("Creating '%s/%s'" % [dir, file_name], 0)
 	_maybe_make_directory("user://config/")
 	# TODO: Sanataize param
 	# TODO: Error checks
 	var dir_access = DirAccess.open("user://config/")
 	dir_access.make_dir_recursive("user://config/%s" % dir)
+	var err = config.save("user://config/%s/%s" % [dir, file_name])
+	if err != OK:
+		GlobalLogger.logs("Failed to create config file! '%s'" % err, 3)
 	return
 
 ## Read a config file from a directory.
 ## Example: /system/cool.json
 ## @returns String
-func read_config_file(dir: String) -> String:
+func read_config_file(dir: String, file_name: String) -> Variant:
+	var config = ConfigFile.new()
 	# TODO: Error checks
 	GlobalLogger.logs("Reading '%s'" % dir, 0)
 	dir = "user://config/%s" % dir
-	var file_contents = FileAccess.open(dir, FileAccess.READ).get_as_text()
-	return file_contents
+	# var file_contents = FileAccess.open(dir, FileAccess.READ).get_as_text()
+	var file_contents = config.load("%s/%s" % [dir, file_name])
 
-## Create a config file at a given relative directory.
-## Example: /system/cool.json
-## @returns String
+	if file_contents != OK:
+		return
+
+	return config
+
+## Creates a log file following the internal format.
+## @returns String - Directory of the log file.
 func create_log_file() -> String:
 	GlobalLogger.logs("Creating a log file for this session.", 0)
 	_maybe_make_directory("user://logs/")

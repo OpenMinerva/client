@@ -4,15 +4,21 @@
 # As a result, there just isn't a safe spot to store this data.
 extends Node
 
-var info = {
+var private_account_server_jwt = {
     "token": "",
     "expire_time": ""
 }
 
-func set_account_credential(credentials: PackedStringArray = []):
-    info.token = credentials[0]
-    info.expire_time = credentials[1]
-    GlobalLogger.logs("Saved JWT to memory.")
+var public_account_server_passport = ""
 
-# TODO: Save account credentials to disk.
-# TODO: Read account credentials from disk.
+func set_public_account_server_passport(token: String):
+    public_account_server_passport = token
+    GlobalLogger.logs("Saved public_account_server_passport to memory.")
+
+func set_private_account_server_jwt(credentials: PackedStringArray = []):
+    private_account_server_jwt.token = credentials[0]
+    private_account_server_jwt.expire_time = credentials[1]
+    GlobalLogger.logs("Saved private_account_server_jwt to memory.")
+
+func get_public_account_server_passport() -> String:
+    return public_account_server_passport

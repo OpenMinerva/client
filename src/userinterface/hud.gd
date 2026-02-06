@@ -14,6 +14,7 @@ func _on_join_pressed():
 
 func set_active_state(state: bool = false):
 	visible = state
+	get_node("MarginContainer/VBoxContainer/PrimaryDashboard/SignIn")._get_account_list()
 
 func _update_hud_state():
 	var user_list_formatted = network_manager.info.clients.map(func(elem): return elem.username)
@@ -51,34 +52,3 @@ func _show_dashboard_page(page_name: String = "Home"):
 		page.visible = false
 
 	get_node("MarginContainer/VBoxContainer/PrimaryDashboard/%s" % page_name).visible = true
-
-func _on_login_button_pressed():
-	var username_field_value = $"MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/MarginContainer/VBoxContainer/UsernameField".text
-	var password_field_value = $"MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/MarginContainer/VBoxContainer/PasswordField".text
-	var data = {"username": username_field_value, "password": password_field_value, "scope": "appAuth"}
-	# TODO: Make sure we have a keypair generated
-	
-	var keyPair = keys.read_keys_from_disk(username_field_value)
-	data["pubKey"] = keyPair[0]
-
-	# TODO: Replace localhost with proper account server url + port
-	var response = await http.req(HTTPClient.Method.METHOD_POST, "http://localhost", "/api/v1/device/auth", 40400, ["Accept: application/json", "Content-Type: application/json"], JSON.stringify(data))
-	
-	if response["ok"] == false:
-		GlobalLogger.logs("Response failed for unknown reason.", 1)
-		return
-
-	if response["body"] == null:
-		GlobalLogger.logs("No body provided for login request.", 3)
-		return
-
-	var res_body = JSON.parse_string(response["body"])
-
-	if "error" in res_body.keys():
-		GlobalLogger.logs("Login request returned an error. '%s'" % res_body["error"], 1)
-		return
-		
-	var token = response["response_headers"]["Set-Cookie"].split("; ")
-	token[0] = token[0].replace("token=", "")
-	CredentialStore.set_account_credential(token)
-	_show_dashboard_page("Home")
