@@ -8,14 +8,13 @@ var private_account_server_jwt = {
     "token": "",
     "expire_time": ""
 }
-
 var public_account_server_passport = ""
 
-func set_public_account_server_passport(token: String):
+func set_public_account_server_passport(token: String) -> void:
     public_account_server_passport = token
     GlobalLogger.logs("Saved public_account_server_passport to memory.")
 
-func set_private_account_server_jwt(credentials: PackedStringArray = []):
+func set_private_account_server_jwt(credentials: PackedStringArray = []) -> void:
     private_account_server_jwt.token = credentials[0]
     private_account_server_jwt.expire_time = credentials[1]
     GlobalLogger.logs("Saved private_account_server_jwt to memory.")

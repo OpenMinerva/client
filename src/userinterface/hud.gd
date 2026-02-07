@@ -14,7 +14,7 @@ func _on_join_pressed():
 
 func set_active_state(state: bool = false):
 	visible = state
-	get_node("MarginContainer/VBoxContainer/PrimaryDashboard/SignIn")._get_account_list()
+	get_node("MarginContainer/VBoxContainer/PrimaryDashboard/SignIn")._render_account_list()
 
 func _update_hud_state():
 	var user_list_formatted = network_manager.info.clients.map(func(elem): return elem.username)
