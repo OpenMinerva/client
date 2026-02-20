@@ -22,7 +22,7 @@ func create_config_file(dir: String, file_name: String) -> void:
 func read_config_file(dir: String, file_name: String) -> Variant:
 	var config = ConfigFile.new()
 	# TODO: Error checks
-	GlobalLogger.logs("Reading '%s'" % dir, 0)
+	GlobalLogger.logs("Reading config file: '%s'" % dir, 0)
 	dir = "user://config/%s" % dir
 	# var file_contents = FileAccess.open(dir, FileAccess.READ).get_as_text()
 	var file_contents = config.load("%s/%s" % [dir, file_name])

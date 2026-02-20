@@ -24,7 +24,6 @@ func _update_hud_state():
 	%ConnectedUserCount.text = "Total Users: %s" % len(network_manager.info.clients)
 	%UserList.text = "User List: %s" % ", ".join(user_list_formatted)
 
-
 func _on_nav_exit_pressed():
 	_show_dashboard_page("Exit")
 

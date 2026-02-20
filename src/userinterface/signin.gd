@@ -94,18 +94,18 @@ func _create_account() -> void:
 	_account_config.save(ACCOUNT_DATABASE_DIRECTORY)
 
 	if local_account == false && account_server != "":
-		_connect_to_account_server(local_id, username, password, account_server, remember_me)
+		_connect_to_account_server(local_id, username, password, account_server, device_keys.public, remember_me)
 
 	_render_account_list()
 	return
 
-func _connect_to_account_server(local_id: String, username: String, password: String, account_server: String, remember_me: bool = false):
+func _connect_to_account_server(local_id: String, username: String, password: String, account_server: String, public_device_key: String, remember_me: bool = false):
 	# TODO: Invalid passwords.
 	# TODO: Account not found.
 	# TODO: Account server unreachable.
 	GlobalLogger.logs("Attempting to authorize the connection to the account server.")
 
-	var data = {"username": username, "password": password}
+	var data = {"username": username, "password": password, "pubKey": public_device_key}
 	var response = await http.req(HTTPClient.Method.METHOD_POST, account_server, "/api/v1/login", 40400, ["Accept: application/json", "Content-Type: application/json"], JSON.stringify(data))
 	
 	# Get the private JWT for use between this device and the account server only.

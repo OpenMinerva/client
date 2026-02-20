@@ -44,6 +44,7 @@ func _ready():
 func _input(event):
 	if is_multiplayer_authority() == false:
 		return
+
 	if Input.is_action_just_pressed("escape"):
 		if mouse_captured:
 			capture_mouse(false)
