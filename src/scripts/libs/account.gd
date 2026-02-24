@@ -14,12 +14,10 @@ var active_account = {}
 var _database = []
 
 ## Get a list of all accounts and return their information.
-## @returns Array
 func get_all() -> Array:
 	return _database
 
 ## Adds an account to the account database.
-## @returns Dictionary
 func create(account: Dictionary) -> Dictionary:
 	# Make sure we are only recording data we are intending on.
 	var _clean_account = {}
@@ -39,7 +37,6 @@ func create(account: Dictionary) -> Dictionary:
 	return {"ok": true, "id": account.id}
 
 ## Removes an account from the account database.
-## @returns Dictionary
 func remove(id: String) -> Dictionary:
 	var target_entry = _database.find_custom(func(entry): return entry.get("id") == id)
 	_database.remove_at(target_entry)
@@ -47,18 +44,20 @@ func remove(id: String) -> Dictionary:
 	return {}
 
 ## Sets an account as the active account.
-## @returns Dictionary.
-func use(id: String) -> Dictionary:
-	return {}
+func use(id: String) -> void:
+	GlobalLogger.logs("Setting active account to '%s'." % id, 1)
+	var _account = _get_account_by_id(id)
+	active_account = _account
+	return
 
 ## Signs out of the active account.
-## @returns void.
 func clear() -> void:
+	active_account = {}
 	return
 
 ## Makes an attempt to authenticate an account with the accounts account server.
 ## @returns Dictionary
-func authenticate(id: String, password: String, remember_me: bool = false) -> Dictionary:
+func authenticate(id: String, password: String, remember_me: bool = false) -> void:
 	GlobalLogger.logs("Attempting to connect account '%s' to their account server." % id)
 
 	var account = _get_account_by_id(id)
@@ -69,17 +68,17 @@ func authenticate(id: String, password: String, remember_me: bool = false) -> Di
 	
 	if response["ok"] == false:
 		GlobalLogger.logs("Response failed for unknown reason.", 3)
-		return {}
+		return
 
 	if response["body"] == null:
 		GlobalLogger.logs("No body provided for login request.", 3)
-		return {}
+		return
 
 	var res_body = JSON.parse_string(response["body"])
 
 	if "error" in res_body.keys():
 		GlobalLogger.logs("Login request returned an error. '%s'" % res_body["error"], 1)
-		return {}
+		return
 
 	var _private_account_server_jwt = response["response_headers"]["Set-Cookie"].split("; ")
 	
@@ -93,7 +92,7 @@ func authenticate(id: String, password: String, remember_me: bool = false) -> Di
 	GlobalLogger.logs("Successfully authorized login with the account server.", 1)
 
 	await get_passport(id)
-	return {}
+	return
 
 func get_passport(id: String) -> void:
 	GlobalLogger.logs("Attempting to authorize this device with the provided account.")
@@ -104,9 +103,23 @@ func get_passport(id: String) -> void:
 		"expires": 0
 	}
 
-	# Check if the account passport is still good.
-	# Check if the account is authenticated with the account server. (If not a local account)
+	var _auth_status = get_account_authentication_status(id)
+
+	if _auth_status.valid_passport == true:
+		GlobalLogger.logs("Device passport is still valid. Not requesting a new one.", 1)
+		return
+
 	# If local account, generate a new passport on our machine
+	if _account.get("local_account", false) == true:
+		# TODO: JWT library
+		_update_account_by_key(id, "public_account_server_passport", _public_passport)
+		_save_account_database()
+		return
+
+	if _auth_status.valid_private_jwt == false:
+		GlobalLogger.logs("Tried to get a new device passport, but the account is not connected to the account server.", 1)
+		return
+
 	# If authenticated, send request to authorize the device
 	var _request_data = {"pubKey": _account.public_device_key}
 	var _device_response = await http.req(HTTPClient.Method.METHOD_POST, _account.account_server, "/api/v1/device/auth", 40400, ["Accept: application/json", "Content-Type: application/json", "Cookie: token=%s" % _account.private_account_server_jwt.token], JSON.stringify(_request_data))
@@ -133,6 +146,7 @@ func get_passport(id: String) -> void:
 	_update_account_by_key(id, "public_account_server_passport", _public_passport)
 	_save_account_database()
 	
+	GlobalLogger.logs("Successfully received a passport from the account server.", 1)
 	return
 
 ## Save the current account database we have in memory to the disk.

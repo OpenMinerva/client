@@ -3,21 +3,20 @@ extends Node
 var rsa = preload("res://scripts/crypto/rsa.gd").new()
 var http = preload("res://scripts/network/http.gd").new()
 var random = preload("res://scripts/utils/random.gd").new()
-var account_lib = preload("res://scripts/libs/account.gd").new()
 
 const ACCOUNT_DATABASE_DIRECTORY = "user://config/accounts/accounts_db.cfg"
 
 enum _message_type {NORMAL, ERROR, SUCCESS}
 
 func _ready():
-	await account_lib._load_account_database()
+	await GlobalAccount._load_account_database()
 	_render_account_list()
 	return
 
 func _render_account_list():
 	_clear_account_list()
 
-	var _all_accounts: Array = await account_lib.get_all()
+	var _all_accounts: Array = await GlobalAccount.get_all()
 
 	for account in _all_accounts:
 		_display_account_in_list(account)
@@ -41,7 +40,7 @@ func _display_account_in_list(account):
 	account_button.pressed.connect(_login.bind(account.id))
 
 	# Account status indicators
-	var _auth_status = account_lib.get_account_authentication_status(account.id)
+	var _auth_status = GlobalAccount.get_account_authentication_status(account.id)
 
 	account_button.get_node("HBoxContainer/MarginContainer/AccountStatus").color = "#ff0000"
 
@@ -57,22 +56,13 @@ func _display_account_in_list(account):
 	return
 
 func _login(local_id: String):
-	var _account_config = await FileManager.read_config_file("accounts", "accounts_db.cfg")
-
-	var passport = _account_config.get_value(local_id, "public_account_server_passport")
-	var private_account_server_jwt = _account_config.get_value(local_id, "private_account_server_jwt")
-
-	CredentialStore.set_public_account_server_passport(passport)
-	CredentialStore.set_private_account_server_jwt(private_account_server_jwt)
-	return
+	GlobalAccount.use(local_id)
 	
 func _delete_account(local_id: String):
-	account_lib.remove(local_id)
+	GlobalAccount.remove(local_id)
 	return
 
 func _create_account() -> void:
-	var _account_config = await FileManager.read_config_file("accounts", "accounts_db.cfg")
-
 	var username = get_node("Panel/CreateLocalAccount/VBoxContainer/CLAUsername").text
 	var password = get_node("Panel/CreateLocalAccount/VBoxContainer/CLAPassword").text
 	var account_server = get_node("Panel/CreateLocalAccount/VBoxContainer/CLAAccountServer").text
@@ -96,12 +86,10 @@ func _create_account() -> void:
 		"private_account_server_jwt": {"token": "", "expires": 0},
 		"public_account_server_passport": {"token": "", "expires": 0}
 	}
-	
-	_account_config.save(ACCOUNT_DATABASE_DIRECTORY)
-	account_lib.create(_account_dictionary)
+	GlobalAccount.create(_account_dictionary)
 
 	if local_account == false && account_server != "":
-		account_lib.authenticate(local_id, password, remember_me)
+		GlobalAccount.authenticate(local_id, password, remember_me)
 
 	_render_account_list()
 	_change_primary_view("AccountList")
