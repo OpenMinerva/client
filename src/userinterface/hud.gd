@@ -23,6 +23,9 @@ func _update_hud_state():
 	%ClientBool.text = "Client: %s" % network_manager.status.client
 	%ConnectedUserCount.text = "Total Users: %s" % len(network_manager.info.clients)
 	%UserList.text = "User List: %s" % ", ".join(user_list_formatted)
+	
+	# Active User
+	%CurrentUserButton.get_node("MarginContainer/HBoxContainer/Label").text = GlobalAccount.active_account.get("username", "Local Account")
 
 func _on_nav_exit_pressed():
 	_show_dashboard_page("Exit")
@@ -43,7 +46,7 @@ func _on_nav_home_pressed():
 	_show_dashboard_page("Home")
 
 func _show_dashboard_page(page_name: String = "Home"):
-	if page_name not in ["Home", "Sessions", "Contacts", "Inventory", "Debug", "Exit"]:
+	if page_name not in ["Home", "SignIn", "Sessions", "Contacts", "Inventory", "Debug", "Exit"]:
 		GlobalLogger.logs("Tried to switch to an invalid dashboard page: '%s'" % page_name)
 		return
 
@@ -51,3 +54,7 @@ func _show_dashboard_page(page_name: String = "Home"):
 		page.visible = false
 
 	get_node("MarginContainer/VBoxContainer/PrimaryDashboard/%s" % page_name).visible = true
+
+func _on_current_user_button_pressed():
+	_show_dashboard_page("SignIn")
+	pass

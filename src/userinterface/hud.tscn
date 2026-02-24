@@ -4,9 +4,9 @@
 [ext_resource type="Texture2D" uid="uid://coqi7w7inqyv1" path="res://resources/icons/account.svg" id="2_lco6c"]
 [ext_resource type="Script" uid="uid://bi6v2rx4blo7t" path="res://userinterface/signin.gd" id="2_tfojp"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tfojp"]
-
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lco6c"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tfojp"]
 
 [node name="Hud" type="Control" unique_id=502603164]
 layout_mode = 3
@@ -37,7 +37,6 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="Home" type="MarginContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard" unique_id=981734763]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -50,7 +49,81 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Home" unique_id=1981928479]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Home/HBoxContainer" unique_id=563188592]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CurrentUserButton" type="Button" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Home/HBoxContainer/VBoxContainer" unique_id=1007669575]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 75)
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lco6c")
+text = "
+"
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Home/HBoxContainer/VBoxContainer/CurrentUserButton" unique_id=1397072269]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Home/HBoxContainer/VBoxContainer/CurrentUserButton/MarginContainer" unique_id=407643281]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Home/HBoxContainer/VBoxContainer/CurrentUserButton/MarginContainer/HBoxContainer" unique_id=1581043895]
+custom_minimum_size = Vector2(65, 65)
+layout_mode = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Home/HBoxContainer/VBoxContainer/CurrentUserButton/MarginContainer/HBoxContainer/MarginContainer" unique_id=1511122760]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Home/HBoxContainer/VBoxContainer/CurrentUserButton/MarginContainer/HBoxContainer/MarginContainer/Panel" unique_id=1531193278]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Home/HBoxContainer/VBoxContainer/CurrentUserButton/MarginContainer/HBoxContainer/MarginContainer/Panel/MarginContainer" unique_id=412151424]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("2_lco6c")
+expand_mode = 5
+stretch_mode = 4
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Home/HBoxContainer/VBoxContainer/CurrentUserButton/MarginContainer/HBoxContainer" unique_id=133477798]
+layout_mode = 2
+text = "Myself"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Home/HBoxContainer" unique_id=836721063]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Home/HBoxContainer" unique_id=502231864]
+layout_mode = 2
+size_flags_horizontal = 3
+
 [node name="SignIn" type="MarginContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard" unique_id=461264105]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -577,6 +650,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Exit"
 
+[connection signal="pressed" from="MarginContainer/VBoxContainer/PrimaryDashboard/Home/HBoxContainer/VBoxContainer/CurrentUserButton" to="." method="_on_current_user_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/AccountList/VBoxContainer/HBoxContainer/AddAccount" to="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn" method="_on_add_account_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/CreateLocalAccount/VBoxContainer/CreateLocalAccountButton" to="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn" method="_on_create_local_account_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/CreateLocalAccount/VBoxContainer/BackFromCreateLocalAccount" to="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn" method="_on_back_from_create_local_account_pressed"]

@@ -57,6 +57,7 @@ func _display_account_in_list(account):
 
 func _login(local_id: String):
 	GlobalAccount.use(local_id)
+	get_tree().current_scene.get_node("Hud")._show_dashboard_page("Home")
 	
 func _delete_account(local_id: String):
 	GlobalAccount.remove(local_id)
