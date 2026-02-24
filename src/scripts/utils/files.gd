@@ -2,7 +2,6 @@ extends Node
 
 ## Create a config file at a given relative directory.
 ## Example: /system/cool.json
-## @returns void
 func create_config_file(dir: String, file_name: String) -> void:
 	var config = ConfigFile.new()
 	GlobalLogger.logs("Creating '%s/%s'" % [dir, file_name], 0)
@@ -18,7 +17,6 @@ func create_config_file(dir: String, file_name: String) -> void:
 
 ## Read a config file from a directory.
 ## Example: /system/cool.json
-## @returns String
 func read_config_file(dir: String, file_name: String) -> Variant:
 	var config = ConfigFile.new()
 	# TODO: Error checks
@@ -33,7 +31,6 @@ func read_config_file(dir: String, file_name: String) -> Variant:
 	return config
 
 ## Creates a log file following the internal format.
-## @returns String - Directory of the log file.
 func create_log_file() -> String:
 	GlobalLogger.logs("Creating a log file for this session.", 0)
 	_maybe_make_directory("user://logs/")

@@ -3,23 +3,24 @@ extends Node
 var rsa = preload("res://scripts/crypto/rsa.gd").new()
 var http = preload("res://scripts/network/http.gd").new()
 var random = preload("res://scripts/utils/random.gd").new()
+var account_lib = preload("res://scripts/libs/account.gd").new()
 
 const ACCOUNT_DATABASE_DIRECTORY = "user://config/accounts/accounts_db.cfg"
 
 enum _message_type {NORMAL, ERROR, SUCCESS}
 
 func _ready():
-	await _maybe_create_account_database()
+	await account_lib._load_account_database()
 	_render_account_list()
 	return
 
 func _render_account_list():
 	_clear_account_list()
 
-	var _account_config = await FileManager.read_config_file("accounts", "accounts_db.cfg")
+	var _all_accounts: Array = await account_lib.get_all()
 
-	for local_id in _account_config.get_sections():
-		_display_account_in_list(local_id, _account_config)
+	for account in _all_accounts:
+		_display_account_in_list(account)
 	return
 
 func _clear_account_list():
@@ -29,19 +30,15 @@ func _clear_account_list():
 		listing.queue_free()
 	return
 
-func _display_account_in_list(local_id, account_database):
+func _display_account_in_list(account):
 	var account_list_container_node = get_node("Panel/AccountList/VBoxContainer/ScrollContainer/VBoxContainer")
-	var _account_config = account_database
-
-	var account_username = _account_config.get_value(local_id, "username", "Anonymous")
-	var account_account_server = _account_config.get_value(local_id, "account_server", "Local Account")
 
 	# Duplicate the account button.
 	var account_button = get_node("Templates/AccountListSelection").duplicate()
-	account_button.get_node("HBoxContainer/VBoxContainer/Username").text = account_username
-	account_button.get_node("HBoxContainer/VBoxContainer/AccountServer").text = account_account_server if account_account_server != "" else "Local Account"
-	account_button.get_node("HBoxContainer/DeleteEntry").pressed.connect(_delete_account.bind(local_id))
-	account_button.pressed.connect(_login.bind(local_id))
+	account_button.get_node("HBoxContainer/VBoxContainer/Username").text = account.username
+	account_button.get_node("HBoxContainer/VBoxContainer/AccountServer").text = account.account_server # if account.account_server != "" else "Local Account"
+	account_button.get_node("HBoxContainer/DeleteEntry").pressed.connect(_delete_account.bind(account.id))
+	account_button.pressed.connect(_login.bind(account.id))
 
 	# Insert the account into our list.
 	account_list_container_node.add_child(account_button)
@@ -59,9 +56,7 @@ func _login(local_id: String):
 	return
 	
 func _delete_account(local_id: String):
-	var _account_config = await FileManager.read_config_file("accounts", "accounts_db.cfg")
-	_account_config.erase_section(local_id)
-	_account_config.save(ACCOUNT_DATABASE_DIRECTORY)
+	account_lib.remove(local_id)
 	return
 
 func _create_account() -> void:
@@ -72,31 +67,34 @@ func _create_account() -> void:
 	var account_server = get_node("Panel/CreateLocalAccount/VBoxContainer/CLAAccountServer").text
 	var remember_me: bool = get_node("Panel/CreateLocalAccount/VBoxContainer/CLARememberMe").button_pressed
 	var local_account: bool = get_node("Panel/CreateLocalAccount/VBoxContainer/CLALocalAccount").button_pressed
-	# TODO: Check to see if ID exists
+	# TODO: Check to see if ID exists already
 	var local_id = random.random_string()
 	var device_keys = rsa.generate_keypair(0)
 
 	GlobalLogger.logs("Creating an account configuration file: '%s'" % username, 1)
 	GlobalLogger.logs("username: '%s', account_server: '%s', remember_me: '%s', local_account: '%s'" % [username, account_server, remember_me, local_account])
 
-	_account_config.set_value(local_id, "username", username)
-	_account_config.set_value(local_id, "account_server", account_server)
-	_account_config.set_value(local_id, "remember_me", remember_me)
-	_account_config.set_value(local_id, "local_account", local_account)
-
-	_account_config.set_value(local_id, "private_device_key", device_keys.private)
-	_account_config.set_value(local_id, "public_device_key", device_keys.public)
-
-	if local_account == false:
-		_account_config.set_value(local_id, "private_account_server_jwt", "")
-		_account_config.set_value(local_id, "public_account_server_passport", "")
+	var _account_dictionary = {
+		"id": local_id,
+		"username": username,
+		"account_server": account_server,
+		"remember_me": remember_me,
+		"local_account": local_account,
+		"private_device_key": device_keys.private,
+		"public_device_key": device_keys.public,
+		"private_account_server_jwt": "",
+		"public_account_server_passport": ""
+	}
 	
 	_account_config.save(ACCOUNT_DATABASE_DIRECTORY)
+	account_lib.create(_account_dictionary)
 
 	if local_account == false && account_server != "":
-		_connect_to_account_server(local_id, username, password, account_server, device_keys.public, remember_me)
+		account_lib.authenticate(local_id, password, remember_me)
+		# _connect_to_account_server(local_id, username, password, account_server, device_keys.public, remember_me)
 
 	_render_account_list()
+	_change_primary_view("AccountList")
 	return
 
 func _connect_to_account_server(local_id: String, username: String, password: String, account_server: String, public_device_key: String, remember_me: bool = false):
@@ -162,13 +160,6 @@ func _connect_to_account_server(local_id: String, username: String, password: St
 		_account_config.save(ACCOUNT_DATABASE_DIRECTORY)
 		GlobalLogger.logs("Saved the private JWT and the passport to the account database.", 1)
 
-	return
-
-func _maybe_create_account_database():
-	var config_file_exists = await FileAccess.file_exists(ACCOUNT_DATABASE_DIRECTORY)
-
-	if config_file_exists == false:
-		FileManager.create_config_file("accounts", "accounts_db.cfg")
 	return
 
 # Buttons:
