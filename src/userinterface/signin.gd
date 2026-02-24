@@ -40,6 +40,17 @@ func _display_account_in_list(account):
 	account_button.get_node("HBoxContainer/DeleteEntry").pressed.connect(_delete_account.bind(account.id))
 	account_button.pressed.connect(_login.bind(account.id))
 
+	# Account status indicators
+	var _auth_status = account_lib.get_account_authentication_status(account.id)
+
+	account_button.get_node("HBoxContainer/MarginContainer/AccountStatus").color = "#ff0000"
+
+	if _auth_status.valid_private_jwt == true:
+		account_button.get_node("HBoxContainer/MarginContainer/AccountStatus").color = "#ffff00"
+
+	if _auth_status.valid_passport == true:
+		account_button.get_node("HBoxContainer/MarginContainer/AccountStatus").color = "#00ff00"
+
 	# Insert the account into our list.
 	account_list_container_node.add_child(account_button)
 	account_button.visible = true
@@ -82,8 +93,8 @@ func _create_account() -> void:
 		"local_account": local_account,
 		"private_device_key": device_keys.private,
 		"public_device_key": device_keys.public,
-		"private_account_server_jwt": "",
-		"public_account_server_passport": ""
+		"private_account_server_jwt": {"token": "", "expires": 0},
+		"public_account_server_passport": {"token": "", "expires": 0}
 	}
 	
 	_account_config.save(ACCOUNT_DATABASE_DIRECTORY)
@@ -105,6 +116,9 @@ func _on_add_account_pressed():
 func _change_primary_view(target_node_name: String):
 	for view in get_node("Panel").get_children():
 		view.visible = false
+
+	if target_node_name == "AccountList":
+		_render_account_list()
 
 	get_node("Panel/%s" % target_node_name).visible = true
 	return

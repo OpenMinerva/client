@@ -176,10 +176,10 @@ layout_mode = 2
 visible = false
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 0
-offset_left = 744.0
-offset_top = 348.0
-offset_right = 1174.0
-offset_bottom = 408.0
+offset_left = 695.0
+offset_top = 298.0
+offset_right = 1125.0
+offset_bottom = 358.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Templates/AccountListSelection" unique_id=947020224]
 layout_mode = 1
@@ -196,9 +196,25 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Templates/AccountListSelection/HBoxContainer/MarginContainer" unique_id=1529699803]
+[node name="AccountStatus" type="ColorRect" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Templates/AccountListSelection/HBoxContainer/MarginContainer" unique_id=1520295763]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
+color = Color(0, 1, 0.0666666, 1)
+
+[node name="Picture" type="TextureRect" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Templates/AccountListSelection/HBoxContainer/MarginContainer/AccountStatus" unique_id=1529699803]
+custom_minimum_size = Vector2(46, 46)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -23.0
+offset_top = -23.0
+offset_right = 23.0
+offset_bottom = 23.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Templates/AccountListSelection/HBoxContainer" unique_id=1199466499]
 layout_mode = 2
@@ -208,6 +224,7 @@ theme_override_constants/separation = 0
 [node name="Username" type="Label" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Templates/AccountListSelection/HBoxContainer/VBoxContainer" unique_id=1186504851]
 layout_mode = 2
 size_flags_vertical = 6
+text = "PLACEHOLDER"
 horizontal_alignment = 1
 
 [node name="AccountServer" type="Label" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Templates/AccountListSelection/HBoxContainer/VBoxContainer" unique_id=325216536]
@@ -215,6 +232,7 @@ layout_mode = 2
 size_flags_vertical = 6
 theme_override_colors/font_color = Color(0.78352344, 0.7835234, 0.7835234, 1)
 theme_override_font_sizes/font_size = 12
+text = "PLACEHOLDER"
 horizontal_alignment = 1
 
 [node name="DeleteEntry" type="Button" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Templates/AccountListSelection/HBoxContainer" unique_id=1294984525]

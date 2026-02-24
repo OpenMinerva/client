@@ -30,8 +30,8 @@ func create(account: Dictionary) -> Dictionary:
 	_clean_account.local_account = account.get("local_account", null)
 	_clean_account.private_device_key = account.get("private_device_key", null)
 	_clean_account.public_device_key = account.get("public_device_key", null)
-	_clean_account.private_account_server_jwt = account.get("private_account_server_jwt", null)
-	_clean_account.public_account_server_passport = account.get("public_account_server_passport", null)
+	_clean_account.private_account_server_jwt = account.get("private_account_server_jwt", {})
+	_clean_account.public_account_server_passport = account.get("public_account_server_passport", {})
 
 	_database.append(_clean_account)
 	_save_account_database()
@@ -132,6 +132,7 @@ func get_passport(id: String) -> void:
 	# Record passport if successful
 	_update_account_by_key(id, "public_account_server_passport", _public_passport)
 	_save_account_database()
+	
 	return
 
 ## Save the current account database we have in memory to the disk.
@@ -177,3 +178,16 @@ func _update_account_by_key(id: String, key: String, value: Variant) -> void:
 	_database[index][key] = value
 	_save_account_database()
 	return
+
+func get_account_authentication_status(id) -> Dictionary:
+	var status = {
+		"valid_passport": false,
+		"valid_private_jwt": false
+	}
+
+	var _account = _get_account_by_id(id)
+
+	status.valid_passport = _account.get("public_account_server_passport", {"expires": 0}).get("expires", 0) > int(Time.get_unix_time_from_system())
+	status.valid_private_jwt = _account.get("private_account_server_jwt", {"expires": 0}).get("expires", 0) > int(Time.get_unix_time_from_system())
+
+	return status
