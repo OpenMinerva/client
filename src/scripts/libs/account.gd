@@ -56,25 +56,23 @@ func clear() -> void:
 	return
 
 ## Makes an attempt to authenticate an account with the accounts account server.
-## @returns Dictionary
 func authenticate(id: String, password: String, remember_me: bool = false) -> void:
 	GlobalLogger.logs("Attempting to connect account '%s' to their account server." % id)
 
 	var account = _get_account_by_id(id)
 
-	# TODO: Error checks for not providing password?
-	var request_data = {"username": account.username, "password": password, "pubKey": account.public_device_key}
+	if password == "":
+		GlobalLogger.logs("Can not authenticate with the account server without a password.", 3)
+		return
+
+	var request_data = {"username": account.username, "password": password, "pubKey": account.public_device_key, "rememberMe": remember_me}
 	var response = await http.req(HTTPClient.Method.METHOD_POST, account.account_server, "/api/v1/login", 40400, ["Accept: application/json", "Content-Type: application/json"], JSON.stringify(request_data))
 	
-	if response["ok"] == false:
-		GlobalLogger.logs("Response failed for unknown reason.", 3)
+	var _raw_response = _handle_response(response)
+	if _raw_response.get("ok", false) == false:
 		return
 
-	if response["body"] == null:
-		GlobalLogger.logs("No body provided for login request.", 3)
-		return
-
-	var res_body = JSON.parse_string(response["body"])
+	var res_body = _raw_response.get("body")
 
 	if "error" in res_body.keys():
 		GlobalLogger.logs("Login request returned an error. '%s'" % res_body["error"], 1)
@@ -91,7 +89,6 @@ func authenticate(id: String, password: String, remember_me: bool = false) -> vo
 
 	GlobalLogger.logs("Successfully authorized login with the account server.", 1)
 
-	await get_passport(id)
 	return
 
 func get_passport(id: String) -> void:
@@ -124,15 +121,11 @@ func get_passport(id: String) -> void:
 	var _request_data = {"pubKey": _account.public_device_key}
 	var _device_response = await http.req(HTTPClient.Method.METHOD_POST, _account.account_server, "/api/v1/device/auth", 40400, ["Accept: application/json", "Content-Type: application/json", "Cookie: token=%s" % _account.private_account_server_jwt.token], JSON.stringify(_request_data))
 
-	if _device_response["ok"] == false:
-		GlobalLogger.logs("Authorizing this device failed for unknown reason.", 1)
+	var _raw_response = _handle_response(_device_response)
+	if _raw_response.get("ok", false) == false:
 		return
 
-	if _device_response["body"] == null:
-		GlobalLogger.logs("No body provided for device authorization request.", 3)
-		return
-
-	var _device_response_body = JSON.parse_string(_device_response["body"])
+	var _device_response_body = _raw_response.get("body")
 
 	if "error" in _device_response_body.keys():
 		GlobalLogger.logs("Device authorization request returned an error. '%s'" % _device_response_body["error"], 1)
@@ -205,3 +198,21 @@ func get_account_authentication_status(id) -> Dictionary:
 	status.valid_private_jwt = _account.get("private_account_server_jwt", {"expires": 0}).get("expires", 0) > int(Time.get_unix_time_from_system())
 
 	return status
+
+func _handle_response(response: Dictionary) -> Dictionary:
+	var response_data = {"ok": false, "error": "", "body": {}}
+
+	if response.get("ok", false) == false:
+		response_data.error = "Request failed for unknown reason."
+		GlobalLogger.logs(response_data.error, 3)
+		return response_data
+
+	if response.get("body", null) == null:
+		response_data.error = "No body provided from the request."
+		GlobalLogger.logs(response_data.error, 3)
+		return response_data
+
+	response_data.ok = true
+	response_data.body = JSON.parse_string(response.get("body"))
+
+	return response_data

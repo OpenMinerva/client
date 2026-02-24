@@ -90,7 +90,8 @@ func _create_account() -> void:
 	GlobalAccount.create(_account_dictionary)
 
 	if local_account == false && account_server != "":
-		GlobalAccount.authenticate(local_id, password, remember_me)
+		await GlobalAccount.authenticate(local_id, password, remember_me)
+		await GlobalAccount.get_passport(local_id)
 
 	_render_account_list()
 	_change_primary_view("AccountList")
