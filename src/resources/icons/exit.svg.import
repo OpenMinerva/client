@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://coqi7w7inqyv1"
-path="res://.godot/imported/account.svg-4dd6f4e3bd6806ac9bb3535ef447dd9a.ctex"
+uid="uid://8fwxg1ipf0fp"
+path="res://.godot/imported/exit.svg-b4526ff8097e7b69e7a3907e51f5cfd2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/icons/account.svg"
-dest_files=["res://.godot/imported/account.svg-4dd6f4e3bd6806ac9bb3535ef447dd9a.ctex"]
+source_file="res://resources/icons/exit.svg"
+dest_files=["res://.godot/imported/exit.svg-b4526ff8097e7b69e7a3907e51f5cfd2.ctex"]
 
 [params]
 
@@ -28,8 +28,8 @@ mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""
 process/channel_remap/red=0
-process/channel_remap/green=1
-process/channel_remap/blue=2
+process/channel_remap/green=8
+process/channel_remap/blue=8
 process/channel_remap/alpha=3
 process/fix_alpha_border=true
 process/premult_alpha=false

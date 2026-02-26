@@ -8,6 +8,8 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tfojp"]
 
+[sub_resource type="Theme" id="Theme_tfojp"]
+
 [node name="Hud" type="Control" unique_id=502603164]
 layout_mode = 3
 anchors_preset = 15
@@ -623,6 +625,7 @@ layout_mode = 2
 [node name="NavHome" type="Button" parent="MarginContainer/VBoxContainer/Panel2/MarginContainer/HBoxContainer" unique_id=1952022570]
 layout_mode = 2
 size_flags_horizontal = 3
+theme = SubResource("Theme_tfojp")
 text = "Home"
 
 [node name="NavSessions" type="Button" parent="MarginContainer/VBoxContainer/Panel2/MarginContainer/HBoxContainer" unique_id=1636224086]
