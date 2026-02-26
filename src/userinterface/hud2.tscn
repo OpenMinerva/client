@@ -18,6 +18,7 @@
 [ext_resource type="Texture2D" uid="uid://b8fed1h3aqw1s" path="res://resources/icons/debug.svg" id="8_fgqsp"]
 [ext_resource type="Texture2D" uid="uid://8fwxg1ipf0fp" path="res://resources/icons/exit.svg" id="9_amc1p"]
 [ext_resource type="Texture2D" uid="uid://ckoajckje5mq2" path="res://resources/icons/edit.svg" id="9_xdslj"]
+[ext_resource type="Texture2D" uid="uid://ddchrocw45muh" path="res://resources/icons/flowchart.svg" id="12_hq11n"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q6jcb"]
 bg_color = Color(1, 0, 0, 1)
@@ -109,6 +110,7 @@ size_flags_vertical = 3
 theme = ExtResource("1_cx7w0")
 
 [node name="Home" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=675278383]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -321,7 +323,6 @@ theme_override_font_sizes/font_size = 12
 text = "157 ms"
 
 [node name="Sessions" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=2135749463]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -340,7 +341,7 @@ theme_override_constants/separation = 20
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer" unique_id=687228975]
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 5
 
 [node name="Art" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer" unique_id=8787651]
 layout_mode = 2
@@ -2255,7 +2256,7 @@ layout_mode = 2
 
 [node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Sessions/CenterContainer/VBoxContainer/CenterContainer" unique_id=1479063914]
 layout_mode = 2
-texture = ExtResource("3_v4ccx")
+texture = ExtResource("12_hq11n")
 expand_mode = 1
 
 [node name="CenterContainer2" type="CenterContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Sessions/CenterContainer/VBoxContainer" unique_id=739110456]
@@ -2272,6 +2273,50 @@ stretch_mode = 4
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "Sessions"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Instance" type="Button" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer" unique_id=1199197758]
+custom_minimum_size = Vector2(75, 75)
+layout_mode = 2
+theme = ExtResource("1_cx7w0")
+toggle_mode = true
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Instance" unique_id=1968696261]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Instance/CenterContainer" unique_id=524033554]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="CenterContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Instance/CenterContainer/VBoxContainer" unique_id=1551725689]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Instance/CenterContainer/VBoxContainer/CenterContainer" unique_id=1325848905]
+layout_mode = 2
+texture = ExtResource("3_v4ccx")
+expand_mode = 1
+
+[node name="CenterContainer2" type="CenterContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Instance/CenterContainer/VBoxContainer" unique_id=1007113927]
+custom_minimum_size = Vector2(0, 15)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Instance/CenterContainer/VBoxContainer/CenterContainer2" unique_id=1992088652]
+layout_mode = 2
+texture = SubResource("CompressedTexture2D_hq11n")
+expand_mode = 5
+stretch_mode = 4
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Instance/CenterContainer/VBoxContainer/CenterContainer2" unique_id=1993490483]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Instance"
 horizontal_alignment = 1
 vertical_alignment = 1
 
