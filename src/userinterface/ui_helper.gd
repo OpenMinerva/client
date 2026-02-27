@@ -5,6 +5,8 @@ var dashboard_nav_container
 var dashboard_home_account
 
 var dashboard_home_used_storage
+var create_account_button
+var create_account_back_button
 
 const COLOR_RED = "#ff0000"
 const COLOR_RED_SOFT = "#ffc8c8"
@@ -25,8 +27,12 @@ func init(caller_node: Node):
 
 	dashboard_home_used_storage = root.get_node("Hud2/MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/PanelContainer2/MarginContainer/VBoxContainer")
 	
+	create_account_button = root.get_node("Hud2/MarginContainer/VBoxContainer/Master/AccountDisplay/List/HBoxContainer/NewAccount")
+	create_account_back_button = root.get_node("Hud2/MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/HBoxContainer/CreateAccountBack")
+	
 	display_dashboard_section("Home")
 	_add_account_display_button()
+	_add_event_listener_create_account_button()
 	return
 
 func display_account_on_home() -> void:
@@ -73,7 +79,7 @@ func display_account_on_home() -> void:
 
 func display_dashboard_section(page_name: String = "") -> void:
 	# TODO: Replace variable with a list of children with names from the dashboard page list.
-	if page_name not in ["Home", "AccountDisplay", "Sessions", "SessionFocus", "Contacts", "Inventory", "Apps", "Settings", "Debug", "Exit"]:
+	if page_name not in ["Home", "AccountDisplay", "AccountCreate", "Sessions", "SessionFocus", "Contacts", "Inventory", "Apps", "Settings", "Debug", "Exit"]:
 		GlobalLogger.logs("Tried to switch to an invalid dashboard page: '%s'" % page_name)
 		return
 
@@ -119,4 +125,9 @@ func _add_account_display_button() -> void:
 	var panel = root.get_node("Hud2/MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay")
 
 	panel.get_node("Button").pressed.connect(display_dashboard_section.bind("AccountDisplay"))
+	return
+
+func _add_event_listener_create_account_button() -> void:
+	create_account_button.pressed.connect(display_dashboard_section.bind("AccountCreate"))
+	create_account_back_button.pressed.connect(display_dashboard_section.bind("AccountDisplay"))
 	return
