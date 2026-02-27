@@ -26,6 +26,7 @@ func init(caller_node: Node):
 	dashboard_home_used_storage = root.get_node("Hud2/MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/PanelContainer2/MarginContainer/VBoxContainer")
 	
 	display_dashboard_section("Home")
+	_add_account_display_button()
 	return
 
 func display_account_on_home() -> void:
@@ -72,19 +73,26 @@ func display_account_on_home() -> void:
 
 func display_dashboard_section(page_name: String = "") -> void:
 	# TODO: Replace variable with a list of children with names from the dashboard page list.
-	if page_name not in ["Home", "SignIn", "Sessions", "SessionFocus", "Contacts", "Inventory", "Apps", "Settings", "Debug", "Exit"]:
+	if page_name not in ["Home", "AccountDisplay", "Sessions", "SessionFocus", "Contacts", "Inventory", "Apps", "Settings", "Debug", "Exit"]:
 		GlobalLogger.logs("Tried to switch to an invalid dashboard page: '%s'" % page_name)
 		return
 
 	for page in dashboard_page_container.get_children():
 		# FIXME: Why do I need to format this specifically as a string like this?
-		dashboard_nav_container.get_node("%s" % page.name).button_pressed = false
-		page.visible = false
+		var dashboard_page = dashboard_page_container.get_node_or_null("%s" % page.name)
+		var nav_button = dashboard_nav_container.get_node_or_null("%s" % page.name)
+
+		if dashboard_page:
+			dashboard_page.visible = false
+		if nav_button:
+			nav_button.button_pressed = false
 
 	var page = dashboard_page_container.get_node_or_null(page_name)
 	if page:
+		var nav_button_page = dashboard_nav_container.get_node_or_null("%s" % page.name)
 		page.visible = true
-		dashboard_nav_container.get_node("%s" % page.name).button_pressed = true
+		if nav_button_page:
+			nav_button_page.button_pressed = true
 	
 	return
 
@@ -105,4 +113,10 @@ func add_event_listeners_to_nav_buttons() -> void:
 func display_used_storage(used_bytes: int, total_bytes: int) -> void:
 	dashboard_home_used_storage.get_node("ProgressBar").value = (float(used_bytes) / float(total_bytes)) * 100
 	dashboard_home_used_storage.get_node("Label2").text = "%s bytes / %s bytes" % [used_bytes, total_bytes]
+	return
+
+func _add_account_display_button() -> void:
+	var panel = root.get_node("Hud2/MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay")
+
+	panel.get_node("Button").pressed.connect(display_dashboard_section.bind("AccountDisplay"))
 	return

@@ -41,6 +41,9 @@ corner_radius_top_right = 100
 corner_radius_bottom_right = 100
 corner_radius_bottom_left = 100
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kgckq"]
+draw_center = false
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6vaiq"]
 bg_color = Color(0, 0, 0, 1)
 expand_margin_left = 2.0
@@ -227,6 +230,10 @@ theme_override_colors/font_color = Color(0.9595, 1, 0.73, 1)
 theme_override_font_sizes/font_size = 12
 text = "Cloud"
 
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay" unique_id=58113697]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_kgckq")
+
 [node name="PanelContainer2" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer" unique_id=1169784328]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -320,6 +327,205 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_dr1q3")
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "157 ms"
+
+[node name="AccountDisplay" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=1554068867]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay" unique_id=1462685937]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer" unique_id=1122975855]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer" unique_id=156940286]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Account" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1270586344]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account" unique_id=1691936720]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account/MarginContainer" unique_id=877904178]
+layout_mode = 2
+
+[node name="AspectRatioContainer2" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account/MarginContainer/HBoxContainer" unique_id=905758712]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account/MarginContainer/HBoxContainer/AspectRatioContainer2" unique_id=1092421664]
+layout_mode = 2
+texture = ExtResource("2_bucoy")
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account/MarginContainer/HBoxContainer" unique_id=1076341750]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1381439920]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Account username"
+
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1458428898]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.54, 0.54, 0.54, 1)
+theme_override_font_sizes/font_size = 14
+text = "https://accounts.openminerva.org"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1566413473]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=249423624]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Login"
+
+[node name="Button2" type="Button" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1395695382]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Configure"
+
+[node name="Button3" type="Button" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1778567672]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Remove"
+
+[node name="Account2" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1664617529]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account2" unique_id=1818190980]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account2/MarginContainer" unique_id=971678293]
+layout_mode = 2
+
+[node name="AspectRatioContainer2" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account2/MarginContainer/HBoxContainer" unique_id=650016934]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account2/MarginContainer/HBoxContainer/AspectRatioContainer2" unique_id=730006828]
+layout_mode = 2
+texture = ExtResource("2_bucoy")
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account2/MarginContainer/HBoxContainer" unique_id=1177232818]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account2/MarginContainer/HBoxContainer/VBoxContainer" unique_id=286051187]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Account username"
+
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account2/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1960473662]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.54, 0.54, 0.54, 1)
+theme_override_font_sizes/font_size = 14
+text = "https://accounts.openminerva.org"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account2/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1866096320]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account2/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=516469713]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Login"
+
+[node name="Button2" type="Button" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account2/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1592629284]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Configure"
+
+[node name="Button3" type="Button" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account2/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1818700850]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Remove"
+
+[node name="Account3" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1873083485]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account3" unique_id=443938870]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account3/MarginContainer" unique_id=1911351179]
+layout_mode = 2
+
+[node name="AspectRatioContainer2" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account3/MarginContainer/HBoxContainer" unique_id=2037985280]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account3/MarginContainer/HBoxContainer/AspectRatioContainer2" unique_id=798872916]
+layout_mode = 2
+texture = ExtResource("2_bucoy")
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account3/MarginContainer/HBoxContainer" unique_id=1542497634]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account3/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1813359995]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Account username"
+
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account3/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1097399801]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.54, 0.54, 0.54, 1)
+theme_override_font_sizes/font_size = 14
+text = "https://accounts.openminerva.org"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account3/MarginContainer/HBoxContainer/VBoxContainer" unique_id=711636756]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account3/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=832967770]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Login"
+
+[node name="Button2" type="Button" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account3/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1178591018]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Configure"
+
+[node name="Button3" type="Button" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/ScrollContainer/VBoxContainer/Account3/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1047756092]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Remove"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer" unique_id=1849303399]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/VBoxContainer/HBoxContainer" unique_id=1573695902]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "New Account"
 
 [node name="Sessions" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=2135749463]
 visible = false
