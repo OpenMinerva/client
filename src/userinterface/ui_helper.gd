@@ -4,6 +4,8 @@ var dashboard_page_container
 var dashboard_nav_container
 var dashboard_home_account
 
+var dashboard_home_used_storage
+
 const COLOR_RED = "#ff0000"
 const COLOR_RED_SOFT = "#ffc8c8"
 const COLOR_BLUE = "#00bbff"
@@ -20,6 +22,8 @@ func init(caller_node: Node):
 	dashboard_page_container = root.get_node("Hud2/MarginContainer/VBoxContainer/Master")
 	dashboard_nav_container = root.get_node("Hud2/MarginContainer/VBoxContainer/NavBar/HBoxContainer")
 	dashboard_home_account = root.get_node("Hud2/MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer")
+
+	dashboard_home_used_storage = root.get_node("Hud2/MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/PanelContainer2/MarginContainer/VBoxContainer")
 	
 	display_dashboard_section("Home")
 	return
@@ -96,4 +100,9 @@ func add_event_listeners_to_nav_buttons() -> void:
 			button.pressed.connect(display_dashboard_section.bind(button.name))
 		else:
 			button.disabled = true
+	return
+
+func display_used_storage(used_bytes: int, total_bytes: int) -> void:
+	dashboard_home_used_storage.get_node("ProgressBar").value = (float(used_bytes) / float(total_bytes)) * 100
+	dashboard_home_used_storage.get_node("Label2").text = "%s bytes / %s bytes" % [used_bytes, total_bytes]
 	return

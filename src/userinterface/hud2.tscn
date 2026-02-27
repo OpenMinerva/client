@@ -110,7 +110,6 @@ size_flags_vertical = 3
 theme = ExtResource("1_cx7w0")
 
 [node name="Home" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=675278383]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -323,6 +322,7 @@ theme_override_font_sizes/font_size = 12
 text = "157 ms"
 
 [node name="Sessions" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=2135749463]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

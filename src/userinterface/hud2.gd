@@ -6,4 +6,5 @@ func _ready():
 	await ui.init(self )
 	ui.add_event_listeners_to_nav_buttons()
 	ui.display_account_on_home()
+	ui.display_used_storage(512, 1024)
 	return
