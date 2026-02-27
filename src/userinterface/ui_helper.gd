@@ -85,7 +85,15 @@ func display_dashboard_section(page_name: String = "") -> void:
 	return
 
 func add_event_listeners_to_nav_buttons() -> void:
-	for button in dashboard_nav_container.get_children():
-		button.pressed.connect(display_dashboard_section.bind(button.name))
+	var _list_of_valid_pages = dashboard_page_container.get_children()
+	var _list_of_valid_pages_names = []
 
+	for page in _list_of_valid_pages:
+		_list_of_valid_pages_names.append(page.name)
+
+	for button in dashboard_nav_container.get_children():
+		if button.name in _list_of_valid_pages_names:
+			button.pressed.connect(display_dashboard_section.bind(button.name))
+		else:
+			button.disabled = true
 	return
