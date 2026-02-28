@@ -1,10 +1,29 @@
 extends Control
 
-var ui = preload("res:///userinterface/ui_helper.gd").new()
+var ui_helper = preload("res:///userinterface/ui_helper.gd").new()
+var ui_account_create = preload("res:///userinterface/account_create.gd").new()
+var ui_account_display = preload("res:///userinterface/account_display.gd").new()
 
 func _ready():
-	await ui.init(self )
-	ui.add_event_listeners_to_nav_buttons()
-	ui.display_account_on_home()
-	ui.display_used_storage(512, 1024)
+	await ui_helper.init(self )
+	await ui_account_create.init(self )
+	await ui_account_display.init(self )
+
+	ui_helper.add_event_listeners_to_nav_buttons()
+	ui_helper.display_account_on_home()
+	ui_helper.display_used_storage(512, 1024)
+
+	_add_button_event_listeners()
+	ui_account_display.render_account_list()
+	return
+
+func _add_button_event_listeners() -> void:
+	var create_account_confirm = get_node("MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/HBoxContainer/ConfirmCreateAccount")
+	await create_account_confirm.pressed.connect(_handle_add_account)
+	return
+
+func _handle_add_account() -> void:
+	await ui_account_create.create_account()
+	ui_account_create.clear_form()
+	ui_account_display.render_account_list()
 	return

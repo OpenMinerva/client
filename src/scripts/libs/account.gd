@@ -38,10 +38,11 @@ func create(account: Dictionary) -> Dictionary:
 
 ## Removes an account from the account database.
 func remove(id: String) -> Dictionary:
+	GlobalLogger.logs("Attempting to remove account '%s'" % id)
 	var target_entry = _database.find_custom(func(entry): return entry.get("id") == id)
 	_database.remove_at(target_entry)
 	_save_account_database()
-	return {}
+	return {"ok": true}
 
 ## Sets an account as the active account.
 func use(id: String) -> void:
@@ -177,7 +178,11 @@ func _load_account_database() -> Array:
 
 func _get_account_by_id(id: String) -> Dictionary:
 	var index = _database.find_custom(func(entry): return entry.get("id") == id)
-	return _database[index]
+
+	if index > -1:
+		return _database[index]
+
+	return {}
 
 func _update_account_by_key(id: String, key: String, value: Variant) -> void:
 	var index = _database.find_custom(func(entry): return entry.get("id") == id)

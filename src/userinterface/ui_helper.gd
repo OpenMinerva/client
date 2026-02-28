@@ -5,8 +5,10 @@ var dashboard_nav_container
 var dashboard_home_account
 
 var dashboard_home_used_storage
+var account_list_node
 var create_account_button
 var create_account_back_button
+var create_account_confirm
 
 const COLOR_RED = "#ff0000"
 const COLOR_RED_SOFT = "#ffc8c8"
@@ -27,8 +29,11 @@ func init(caller_node: Node):
 
 	dashboard_home_used_storage = root.get_node("Hud2/MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/PanelContainer2/MarginContainer/VBoxContainer")
 	
+	account_list_node = root.get_node("Hud2/MarginContainer/VBoxContainer/Master/AccountDisplay")
+
 	create_account_button = root.get_node("Hud2/MarginContainer/VBoxContainer/Master/AccountDisplay/List/HBoxContainer/NewAccount")
 	create_account_back_button = root.get_node("Hud2/MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/HBoxContainer/CreateAccountBack")
+	create_account_confirm = root.get_node("Hud2/MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/HBoxContainer/ConfirmCreateAccount")
 	
 	display_dashboard_section("Home")
 	_add_account_display_button()

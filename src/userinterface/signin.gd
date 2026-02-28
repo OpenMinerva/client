@@ -94,30 +94,4 @@ func _create_account() -> void:
 		await GlobalAccount.get_passport(local_id)
 
 	_render_account_list()
-	_change_primary_view("AccountList")
-	return
-
-# Buttons:
-# These just initiate the functions otherwise in this file
-func _on_add_account_pressed():
-	_change_primary_view("CreateLocalAccount")
-	return
-
-func _change_primary_view(target_node_name: String):
-	for view in get_node("Panel").get_children():
-		view.visible = false
-
-	if target_node_name == "AccountList":
-		_render_account_list()
-
-	get_node("Panel/%s" % target_node_name).visible = true
-	return
-
-func _on_back_from_create_local_account_pressed():
-	_change_primary_view("AccountList")
-	# TODO: Clear line entries
-	return
-
-func _on_create_local_account_button_pressed():
-	_create_account()
 	return
