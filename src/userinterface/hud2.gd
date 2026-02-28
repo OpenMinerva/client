@@ -20,6 +20,7 @@ func _ready():
 func _add_button_event_listeners() -> void:
 	var create_account_confirm = get_node("MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/HBoxContainer/ConfirmCreateAccount")
 	await create_account_confirm.pressed.connect(_handle_add_account)
+	ui_account_display.using_account.connect(ui_helper.display_account_on_home)
 	return
 
 func _handle_add_account() -> void:

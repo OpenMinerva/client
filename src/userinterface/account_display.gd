@@ -1,5 +1,7 @@
 extends Node
 
+signal using_account
+
 var root
 
 func init(caller_node: Node) -> void:
@@ -24,6 +26,7 @@ func render_account_list() -> void:
 		_username_node.text = local_account.username
 		_account_server_node.text = local_account.account_server
 
+		_login_button.pressed.connect(_handle_login_account.bind(local_account.id))
 		_remove_button.pressed.connect(_handle_remove_account.bind(local_account.id))
 
 		_account_list_node.add_child(_account_listing)
@@ -35,6 +38,11 @@ func _clear_account_list() -> void:
 	var _account_list_node = root.get_node("List/ScrollContainer/AccountList")
 	for _entry in _account_list_node.get_children():
 		_entry.queue_free()
+	return
+
+func _handle_login_account(account_id: String) -> void:
+	await GlobalAccount.use(account_id)
+	using_account.emit()
 	return
 
 func _handle_remove_account(account_id: String) -> void:

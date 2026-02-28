@@ -74,7 +74,6 @@ func authenticate(id: String, password: String, remember_me: bool = false) -> vo
 		return
 
 	var res_body = _raw_response.get("body")
-
 	if "error" in res_body.keys():
 		GlobalLogger.logs("Login request returned an error. '%s'" % res_body["error"], 1)
 		return
