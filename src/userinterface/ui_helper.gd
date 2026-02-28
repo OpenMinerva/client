@@ -20,20 +20,22 @@ const COLOR_YELLOW = "#d0ff00"
 const COLOR_YELLOW_SOFT = "#f5ffba"
 
 var root
+var tree
 
 func init(caller_node: Node):
 	root = caller_node.get_tree().current_scene
-	dashboard_page_container = root.get_node("Hud2/MarginContainer/VBoxContainer/Master")
-	dashboard_nav_container = root.get_node("Hud2/MarginContainer/VBoxContainer/NavBar/HBoxContainer")
-	dashboard_home_account = root.get_node("Hud2/MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer")
+	tree = caller_node.get_tree()
+	dashboard_page_container = root.get_node("Hud/MarginContainer/VBoxContainer/Master")
+	dashboard_nav_container = root.get_node("Hud/MarginContainer/VBoxContainer/NavBar/HBoxContainer")
+	dashboard_home_account = root.get_node("Hud/MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer")
 
-	dashboard_home_used_storage = root.get_node("Hud2/MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/PanelContainer2/MarginContainer/VBoxContainer")
+	dashboard_home_used_storage = root.get_node("Hud/MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/PanelContainer2/MarginContainer/VBoxContainer")
 	
-	account_list_node = root.get_node("Hud2/MarginContainer/VBoxContainer/Master/AccountDisplay")
+	account_list_node = root.get_node("Hud/MarginContainer/VBoxContainer/Master/AccountDisplay")
 
-	create_account_button = root.get_node("Hud2/MarginContainer/VBoxContainer/Master/AccountDisplay/List/HBoxContainer/NewAccount")
-	create_account_back_button = root.get_node("Hud2/MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/HBoxContainer/CreateAccountBack")
-	create_account_confirm = root.get_node("Hud2/MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/HBoxContainer/ConfirmCreateAccount")
+	create_account_button = root.get_node("Hud/MarginContainer/VBoxContainer/Master/AccountDisplay/List/HBoxContainer/NewAccount")
+	create_account_back_button = root.get_node("Hud/MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/HBoxContainer/CreateAccountBack")
+	create_account_confirm = root.get_node("Hud/MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/HBoxContainer/ConfirmCreateAccount")
 	
 	display_dashboard_section("Home")
 	_add_account_display_button()
@@ -105,6 +107,11 @@ func display_dashboard_section(page_name: String = "") -> void:
 		if nav_button_page:
 			nav_button_page.button_pressed = true
 	
+	match page_name:
+		"Contacts":
+			await tree.process_frame
+			move_chat_scroll_to_bottom()
+
 	return
 
 func add_event_listeners_to_nav_buttons() -> void:
@@ -127,7 +134,7 @@ func display_used_storage(used_bytes: int, total_bytes: int) -> void:
 	return
 
 func _add_account_display_button() -> void:
-	var panel = root.get_node("Hud2/MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay")
+	var panel = root.get_node("Hud/MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay")
 
 	panel.get_node("Button").pressed.connect(display_dashboard_section.bind("AccountDisplay"))
 	return
@@ -135,4 +142,12 @@ func _add_account_display_button() -> void:
 func _add_event_listener_create_account_button() -> void:
 	create_account_button.pressed.connect(display_dashboard_section.bind("AccountCreate"))
 	create_account_back_button.pressed.connect(display_dashboard_section.bind("AccountDisplay"))
+	return
+
+# TODO: This function is here as a test, it should be moved to its own file when the file is created.
+func move_chat_scroll_to_bottom() -> void:
+	var chat_scroll_container = root.get_node("Hud/MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer")
+
+	var max_scroll = chat_scroll_container.get_v_scroll_bar().max_value
+	chat_scroll_container.scroll_vertical = int(max_scroll)
 	return

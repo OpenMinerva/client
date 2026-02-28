@@ -3,8 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://by0vghgshvbhd" path="res://scenes/managers/app/rpc_manager.tscn" id="1_h2qy3"]
 [ext_resource type="PackedScene" uid="uid://5v8rbnp716b0" path="res://scenes/managers/app/network_manager.tscn" id="1_jooxx"]
 [ext_resource type="PackedScene" uid="uid://cmknpdx5ba15o" path="res://scenes/managers/app/scene_manager.tscn" id="2_h2qy3"]
-[ext_resource type="PackedScene" uid="uid://bdsc5kvle3jgd" path="res://userinterface/hud.tscn" id="2_rnotf"]
-[ext_resource type="PackedScene" uid="uid://ckl5gw0xbduiv" path="res://userinterface/hud2.tscn" id="5_q3f5g"]
+[ext_resource type="PackedScene" uid="uid://ckl5gw0xbduiv" path="res://userinterface/hud.tscn" id="5_q3f5g"]
 
 [node name="Master" type="Node3D" unique_id=420526444]
 
@@ -14,9 +13,7 @@
 
 [node name="SceneManager" parent="." unique_id=5477810 instance=ExtResource("2_h2qy3")]
 
-[node name="Hud" parent="." unique_id=1305621179 instance=ExtResource("2_rnotf")]
+[node name="Hud" parent="." unique_id=1053137144 instance=ExtResource("5_q3f5g")]
 visible = false
-
-[node name="Hud2" parent="." unique_id=1053137144 instance=ExtResource("5_q3f5g")]
 
 [node name="Scenes" type="Node3D" parent="." unique_id=308239834]

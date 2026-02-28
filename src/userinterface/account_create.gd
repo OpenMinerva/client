@@ -15,7 +15,7 @@ var local_account_form_node
 const ACCOUNT_DATABASE_DIRECTORY = "user://config/accounts/accounts_db.cfg"
 
 func init(caller_node: Node) -> void:
-	root = caller_node.get_tree().current_scene.get_node("Hud2/MarginContainer/VBoxContainer/Master/AccountCreate")
+	root = caller_node.get_tree().current_scene.get_node("Hud/MarginContainer/VBoxContainer/Master/AccountCreate")
 	
 	username_form_node = root.get_node("Create/MarginContainer/Create/VBoxContainer/CAUsername")
 	password_form_node = root.get_node("Create/MarginContainer/Create/VBoxContainer2/CAPassword")

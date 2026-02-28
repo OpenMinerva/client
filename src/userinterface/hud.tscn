@@ -1,16 +1,91 @@
-[gd_scene format=3 uid="uid://bdsc5kvle3jgd"]
+[gd_scene format=3 uid="uid://ckl5gw0xbduiv"]
 
-[ext_resource type="Script" uid="uid://7j31we0siswq" path="res://userinterface/hud.gd" id="1_go5o5"]
-[ext_resource type="Texture2D" uid="uid://coqi7w7inqyv1" path="res://resources/icons/account.svg" id="2_lco6c"]
-[ext_resource type="Script" uid="uid://bi6v2rx4blo7t" path="res://userinterface/signin.gd" id="2_tfojp"]
+[ext_resource type="Texture2D" uid="uid://7mgxvhy58nhp" path="res://resources/icons/home.svg" id="1_3b2ci"]
+[ext_resource type="Theme" uid="uid://bg2nbganyysst" path="res://openminerva_default.tres" id="1_cx7w0"]
+[ext_resource type="Script" uid="uid://ilnwyivgoxev" path="res://userinterface/hud.gd" id="1_go5o5"]
+[ext_resource type="Texture2D" uid="uid://coqi7w7inqyv1" path="res://resources/icons/account.svg" id="2_bucoy"]
+[ext_resource type="Texture2D" uid="uid://crrjk7c2g4q55" path="res://resources/icons/art.svg" id="3_6vaiq"]
+[ext_resource type="Texture2D" uid="uid://c7ofnclcof0ud" path="res://resources/icons/world.svg" id="3_v4ccx"]
+[ext_resource type="StyleBox" uid="uid://cxx1q037xaswi" path="res://openminerva_darkpanel.tres" id="4_6rlgq"]
+[ext_resource type="Texture2D" uid="uid://dfckge3u00boi" path="res://resources/icons/contacts.svg" id="4_cyduv"]
+[ext_resource type="Script" uid="uid://dv4joq6xcww25" path="res://userinterface/account_display.gd" id="4_pg41k"]
+[ext_resource type="Script" uid="uid://dt060wcxkdwip" path="res://userinterface/account_create.gd" id="4_q6jcb"]
+[ext_resource type="Texture2D" uid="uid://cnhy47i7saehq" path="res://resources/icons/environment.svg" id="4_tkvwg"]
+[ext_resource type="Texture2D" uid="uid://rdp5i1i18jus" path="res://resources/icons/search.svg" id="4_wfski"]
+[ext_resource type="Texture2D" uid="uid://fkfiymss8p57" path="res://resources/icons/science.svg" id="5_hu6eh"]
+[ext_resource type="Texture2D" uid="uid://br6hpysqvuhek" path="res://resources/icons/inventory.svg" id="5_r82dk"]
+[ext_resource type="Texture2D" uid="uid://blkl4og334med" path="res://resources/icons/dummy16-9.webp" id="5_tkvwg"]
+[ext_resource type="Texture2D" uid="uid://dp5u16rwxd0bp" path="res://resources/icons/apps.svg" id="6_6ybpt"]
+[ext_resource type="Texture2D" uid="uid://b0qo67fgifqe8" path="res://resources/icons/circus.svg" id="6_hu6eh"]
+[ext_resource type="Texture2D" uid="uid://basvqob80u3l6" path="res://resources/icons/settings.svg" id="7_tixj4"]
+[ext_resource type="Texture2D" uid="uid://b8fed1h3aqw1s" path="res://resources/icons/debug.svg" id="8_fgqsp"]
+[ext_resource type="Texture2D" uid="uid://8fwxg1ipf0fp" path="res://resources/icons/exit.svg" id="9_amc1p"]
+[ext_resource type="Texture2D" uid="uid://ckoajckje5mq2" path="res://resources/icons/edit.svg" id="9_xdslj"]
+[ext_resource type="Texture2D" uid="uid://ddchrocw45muh" path="res://resources/icons/flowchart.svg" id="12_hq11n"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lco6c"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q6jcb"]
+bg_color = Color(1, 0, 0, 1)
+corner_radius_top_left = 100
+corner_radius_top_right = 100
+corner_radius_bottom_right = 100
+corner_radius_bottom_left = 100
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tfojp"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pg41k"]
+bg_color = Color(0, 0.73333335, 1, 1)
+corner_radius_top_left = 100
+corner_radius_top_right = 100
+corner_radius_bottom_right = 100
+corner_radius_bottom_left = 100
 
-[sub_resource type="Theme" id="Theme_tfojp"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_02ixq"]
+bg_color = Color(0.8166667, 1, 0, 1)
+corner_radius_top_left = 100
+corner_radius_top_right = 100
+corner_radius_bottom_right = 100
+corner_radius_bottom_left = 100
 
-[node name="Hud" type="Control" unique_id=502603164]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kgckq"]
+draw_center = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6vaiq"]
+bg_color = Color(0, 0, 0, 1)
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wfski"]
+bg_color = Color(0, 0.73333335, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bucoy"]
+bg_color = Color(1, 0, 0, 1)
+corner_radius_top_left = 100
+corner_radius_top_right = 100
+corner_radius_bottom_right = 100
+corner_radius_bottom_left = 100
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dr1q3"]
+bg_color = Color(0, 0.73333335, 1, 1)
+corner_radius_top_left = 100
+corner_radius_top_right = 100
+corner_radius_bottom_right = 100
+corner_radius_bottom_left = 100
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xdslj"]
+bg_color = Color(2.466701e-07, 0.13600668, 0.20061767, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6rlgq"]
+bg_color = Color(0.099985994, 0.09998601, 0.099985965, 1)
+
+[sub_resource type="Theme" id="Theme_q6jcb"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hq11n"]
+bg_color = Color(0.60038817, 0.60038817, 0.60038817, 0)
+draw_center = false
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_hq11n"]
+
+[node name="Hud" type="Control" unique_id=1053137144]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,244 +94,1902 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_go5o5")
 
-[node name="MarginContainer" type="MarginContainer" parent="." unique_id=683900331]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1988156212]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 50
-theme_override_constants/margin_top = 50
-theme_override_constants/margin_right = 50
-theme_override_constants/margin_bottom = 50
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1974869044]
-layout_mode = 2
-
-[node name="PrimaryDashboard" type="Panel" parent="MarginContainer/VBoxContainer" unique_id=2007546341]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Home" type="MarginContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard" unique_id=981734763]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_vertical = 3
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Home" unique_id=1981928479]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1376103708]
 layout_mode = 2
+theme_override_constants/separation = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Home/HBoxContainer" unique_id=563188592]
+[node name="Master" type="Panel" parent="MarginContainer/VBoxContainer" unique_id=911098732]
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_cx7w0")
 
-[node name="CurrentUserButton" type="Button" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Home/HBoxContainer/VBoxContainer" unique_id=1007669575]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(200, 75)
-layout_mode = 2
-theme_override_styles/focus = SubResource("StyleBoxEmpty_lco6c")
-text = "
-"
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Home/HBoxContainer/VBoxContainer/CurrentUserButton" unique_id=1397072269]
+[node name="Home" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=675278383]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Home" unique_id=581087957]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer" unique_id=2138031361]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 20
+
+[node name="AccountDisplay" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer" unique_id=383858349]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay" unique_id=2024761038]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer" unique_id=133275778]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Container" type="CenterContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer" unique_id=539177141]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/Container" unique_id=1941945009]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/Container/AspectRatioContainer" unique_id=1382039916]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("2_bucoy")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer" unique_id=1966375622]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Username" type="Label" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer" unique_id=2128745035]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "My username"
+
+[node name="AccountServer" type="Label" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer" unique_id=881790720]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7977378, 0.7977378, 0.7977378, 1)
+theme_override_font_sizes/font_size = 14
+text = "https://accounts.openminerva.org"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer" unique_id=959799361]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="AccountServerStatus" type="CenterContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=625401222]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/AccountServerStatus" unique_id=1031297018]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/AccountServerStatus/HBoxContainer" unique_id=797877828]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_q6jcb")
+
+[node name="AccountServer2" type="Label" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/AccountServerStatus/HBoxContainer" unique_id=735797380]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.78431374, 0.78431374, 1)
+theme_override_font_sizes/font_size = 12
+text = "Account Server"
+
+[node name="PassportStatus" type="CenterContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1041229647]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/PassportStatus" unique_id=290049645]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/PassportStatus/HBoxContainer" unique_id=863774185]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_pg41k")
+
+[node name="AccountServer2" type="Label" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/PassportStatus/HBoxContainer" unique_id=1104150622]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.67460716, 0.88117504, 0.99999994, 1)
+theme_override_font_sizes/font_size = 12
+text = "Passport"
+
+[node name="AccountType" type="CenterContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=19784871]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/AccountType" unique_id=637179577]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/AccountType/HBoxContainer" unique_id=1785723394]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_02ixq")
+
+[node name="AccountServer2" type="Label" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/AccountType/HBoxContainer" unique_id=485889637]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9595, 1, 0.73, 1)
+theme_override_font_sizes/font_size = 12
+text = "Cloud"
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay" unique_id=58113697]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_kgckq")
+
+[node name="PanelContainer2" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer" unique_id=1169784328]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/PanelContainer2" unique_id=1944750319]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/PanelContainer2/MarginContainer" unique_id=1039592827]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/PanelContainer2/MarginContainer/VBoxContainer" unique_id=21628856]
+layout_mode = 2
+text = "Used Storage"
+horizontal_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/PanelContainer2/MarginContainer/VBoxContainer" unique_id=1535856991]
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_6vaiq")
+theme_override_styles/fill = SubResource("StyleBoxFlat_wfski")
+value = 25.0
+
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/PanelContainer2/MarginContainer/VBoxContainer" unique_id=749951536]
+layout_mode = 2
+text = "2.5 GiB / 5 GiB"
+horizontal_alignment = 1
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer" unique_id=1873874176]
+custom_minimum_size = Vector2(1000, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer" unique_id=1863434109]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PanelContainer3" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer3" unique_id=368133605]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer3/PanelContainer3" unique_id=993828895]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer3/PanelContainer3/MarginContainer" unique_id=1881644944]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer3/PanelContainer3/MarginContainer/HBoxContainer" unique_id=2054814657]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Username" type="Label" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer3/PanelContainer3/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1586628075]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Session Name"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer3/PanelContainer3/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1575315261]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer3/PanelContainer3/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=408001748]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer3/PanelContainer3/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/HBoxContainer" unique_id=770415475]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bucoy")
+
+[node name="AccountServer2" type="Label" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer3/PanelContainer3/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/HBoxContainer" unique_id=415378036]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Spectator"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer3/PanelContainer3/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1848382474]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer3/PanelContainer3/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/HBoxContainer2" unique_id=1133926083]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_dr1q3")
+
+[node name="AccountServer2" type="Label" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer3/PanelContainer3/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/HBoxContainer2" unique_id=36948057]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "157 ms"
+
+[node name="AccountDisplay" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=1554068867]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+script = ExtResource("4_pg41k")
+
+[node name="List" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay" unique_id=1462685937]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/List" unique_id=1122975855]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="AccountList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/List/ScrollContainer" unique_id=156940286]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/List" unique_id=1849303399]
+layout_mode = 2
+
+[node name="NewAccount" type="Button" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/List/HBoxContainer" unique_id=1573695902]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "New Account"
+
+[node name="Templates" type="Control" parent="MarginContainer/VBoxContainer/Master/AccountDisplay" unique_id=1889394597]
+visible = false
+layout_mode = 2
+
+[node name="Account" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/Templates" unique_id=1270586344]
+layout_mode = 0
+offset_left = 690.0
+offset_right = 1190.0
+offset_bottom = 106.0
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/Templates/Account" unique_id=1691936720]
+layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Home/HBoxContainer/VBoxContainer/CurrentUserButton/MarginContainer" unique_id=407643281]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/Templates/Account/MarginContainer" unique_id=877904178]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="AspectRatioContainer2" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/Templates/Account/MarginContainer/HBoxContainer" unique_id=905758712]
+custom_minimum_size = Vector2(75, 50)
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Home/HBoxContainer/VBoxContainer/CurrentUserButton/MarginContainer/HBoxContainer" unique_id=1581043895]
-custom_minimum_size = Vector2(65, 65)
+[node name="ProfilePicture" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/Templates/Account/MarginContainer/HBoxContainer/AspectRatioContainer2" unique_id=1092421664]
 layout_mode = 2
-theme_override_constants/margin_left = 2
-theme_override_constants/margin_top = 2
-theme_override_constants/margin_right = 2
-theme_override_constants/margin_bottom = 2
+texture = ExtResource("2_bucoy")
+expand_mode = 1
 
-[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Home/HBoxContainer/VBoxContainer/CurrentUserButton/MarginContainer/HBoxContainer/MarginContainer" unique_id=1511122760]
-custom_minimum_size = Vector2(50, 50)
-layout_mode = 2
-mouse_filter = 1
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Home/HBoxContainer/VBoxContainer/CurrentUserButton/MarginContainer/HBoxContainer/MarginContainer/Panel" unique_id=1531193278]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Home/HBoxContainer/VBoxContainer/CurrentUserButton/MarginContainer/HBoxContainer/MarginContainer/Panel/MarginContainer" unique_id=412151424]
-custom_minimum_size = Vector2(50, 50)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-texture = ExtResource("2_lco6c")
-expand_mode = 5
-stretch_mode = 4
-
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Home/HBoxContainer/VBoxContainer/CurrentUserButton/MarginContainer/HBoxContainer" unique_id=133477798]
-layout_mode = 2
-text = "Myself"
-
-[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Home/HBoxContainer" unique_id=836721063]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 2.0
-
-[node name="VBoxContainer3" type="VBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Home/HBoxContainer" unique_id=502231864]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/Templates/Account/MarginContainer/HBoxContainer" unique_id=1076341750]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="SignIn" type="MarginContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard" unique_id=461264105]
+[node name="Username" type="Label" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/Templates/Account/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1381439920]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Account username"
+
+[node name="AccountServer" type="Label" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/Templates/Account/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1458428898]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.54, 0.54, 0.54, 1)
+theme_override_font_sizes/font_size = 14
+text = "https://accounts.openminerva.org"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/Templates/Account/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1566413473]
+layout_mode = 2
+
+[node name="Login" type="Button" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/Templates/Account/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=249423624]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Login"
+
+[node name="Configure" type="Button" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/Templates/Account/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1395695382]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Configure"
+
+[node name="Remove" type="Button" parent="MarginContainer/VBoxContainer/Master/AccountDisplay/Templates/Account/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1778567672]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Remove"
+
+[node name="AccountCreate" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=476222424]
 visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -1.0
-offset_right = -1.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_vertical = 3
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
-script = ExtResource("2_tfojp")
+script = ExtResource("4_q6jcb")
 
-[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn" unique_id=1206375667]
-custom_minimum_size = Vector2(450, 350)
+[node name="Create" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate" unique_id=1338768232]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+theme_override_styles/panel = ExtResource("4_6rlgq")
 
-[node name="AccountList" type="MarginContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel" unique_id=2089676358]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create" unique_id=83231436]
+layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/AccountList" unique_id=1099829115]
+[node name="Create" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer" unique_id=1027080501]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create" unique_id=44400410]
 layout_mode = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/AccountList/VBoxContainer" unique_id=304838729]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/AccountList/VBoxContainer/ScrollContainer" unique_id=341223167]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/AccountList/VBoxContainer" unique_id=1276970635]
-layout_mode = 2
-size_flags_vertical = 8
-
-[node name="AddAccount" type="Button" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/AccountList/VBoxContainer/HBoxContainer" unique_id=1781740605]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Add Account"
-
-[node name="SignUp" type="Button" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/AccountList/VBoxContainer/HBoxContainer" unique_id=450727202]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-text = "Sign Up"
-
-[node name="CreateLocalAccount" type="MarginContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel" unique_id=472736695]
-visible = false
-layout_mode = 1
-anchors_preset = 14
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_top = -153.5
-offset_bottom = 153.5
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/CreateLocalAccount" unique_id=1759971386]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/CreateLocalAccount/VBoxContainer" unique_id=1216433782]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/VBoxContainer" unique_id=1919638633]
 layout_mode = 2
 text = "Username"
 
-[node name="CLAUsername" type="LineEdit" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/CreateLocalAccount/VBoxContainer" unique_id=1420086584]
+[node name="CAUsername" type="LineEdit" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/VBoxContainer" unique_id=925907901]
+layout_mode = 2
+placeholder_text = "Username"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create" unique_id=1696617473]
 layout_mode = 2
 
-[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/CreateLocalAccount/VBoxContainer" unique_id=413979212]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/VBoxContainer2" unique_id=1480122353]
 layout_mode = 2
 text = "Password"
 
-[node name="CLAPassword" type="LineEdit" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/CreateLocalAccount/VBoxContainer" unique_id=208702930]
+[node name="CAPassword" type="LineEdit" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/VBoxContainer2" unique_id=8617011]
 layout_mode = 2
+placeholder_text = "Password"
 secret = true
 
-[node name="Label3" type="Label" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/CreateLocalAccount/VBoxContainer" unique_id=1204687428]
+[node name="VBoxContainer3" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create" unique_id=2026306086]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/VBoxContainer3" unique_id=252202476]
 layout_mode = 2
 text = "Account Server"
 
-[node name="CLAAccountServer" type="LineEdit" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/CreateLocalAccount/VBoxContainer" unique_id=416873139]
+[node name="CAAccountServer" type="LineEdit" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/VBoxContainer3" unique_id=783276815]
 layout_mode = 2
-placeholder_text = "https://accounts.prismlens.org"
+placeholder_text = "https://accounts.openminerva.org"
 
-[node name="CLARememberMe" type="CheckButton" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/CreateLocalAccount/VBoxContainer" unique_id=607245238]
+[node name="CARememberMe" type="CheckButton" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create" unique_id=1627203869]
 layout_mode = 2
 text = "Remember Me"
+flat = true
 
-[node name="CLALocalAccount" type="CheckButton" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/CreateLocalAccount/VBoxContainer" unique_id=2028737900]
+[node name="CALocalAccount" type="CheckButton" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create" unique_id=869022482]
 layout_mode = 2
 text = "Local Account"
+flat = true
 
-[node name="CreateLocalAccountButton" type="Button" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/CreateLocalAccount/VBoxContainer" unique_id=922681416]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create" unique_id=700361537]
 layout_mode = 2
-text = "Create Account"
 
-[node name="BackFromCreateLocalAccount" type="Button" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/CreateLocalAccount/VBoxContainer" unique_id=1626124083]
+[node name="CreateAccountBack" type="Button" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/HBoxContainer" unique_id=2040294501]
 layout_mode = 2
-text = "Go Back"
+size_flags_horizontal = 3
+text = "Back"
 
-[node name="Templates" type="Control" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn" unique_id=665239039]
+[node name="ConfirmCreateAccount" type="Button" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/HBoxContainer" unique_id=1706811869]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Create"
+
+[node name="Sessions" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=2135749463]
 visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions" unique_id=1830116526]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer" unique_id=687228975]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Art" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer" unique_id=8787651]
 layout_mode = 2
 
-[node name="AccountListSelection" type="Button" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Templates" unique_id=1372063521]
-visible = false
-custom_minimum_size = Vector2(0, 60)
-layout_mode = 0
-offset_left = 695.0
-offset_top = 298.0
-offset_right = 1125.0
-offset_bottom = 358.0
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer/Art" unique_id=1704752065]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Templates/AccountListSelection" unique_id=947020224]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer/Art/MarginContainer" unique_id=723755098]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer/Art/MarginContainer/HBoxContainer" unique_id=1631358950]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer/Art/MarginContainer/HBoxContainer/AspectRatioContainer" unique_id=421186792]
+layout_mode = 2
+texture = ExtResource("3_6vaiq")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer/Art/MarginContainer/HBoxContainer" unique_id=1515682350]
+layout_mode = 2
+text = "Art"
+
+[node name="Environment" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer" unique_id=1460467440]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer/Environment" unique_id=1960994802]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer/Environment/MarginContainer" unique_id=1078127539]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer/Environment/MarginContainer/HBoxContainer" unique_id=43665461]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer/Environment/MarginContainer/HBoxContainer/AspectRatioContainer" unique_id=1826253390]
+layout_mode = 2
+texture = ExtResource("4_tkvwg")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer/Environment/MarginContainer/HBoxContainer" unique_id=1155183315]
+layout_mode = 2
+text = "Environment"
+
+[node name="Science" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer" unique_id=508195085]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer/Science" unique_id=1375241018]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer/Science/MarginContainer" unique_id=1476810827]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer/Science/MarginContainer/HBoxContainer" unique_id=588549540]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer/Science/MarginContainer/HBoxContainer/AspectRatioContainer" unique_id=1091425181]
+layout_mode = 2
+texture = ExtResource("5_hu6eh")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer/Science/MarginContainer/HBoxContainer" unique_id=1662831340]
+layout_mode = 2
+text = "Science"
+
+[node name="Games" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer" unique_id=369382614]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer/Games" unique_id=1896102711]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer/Games/MarginContainer" unique_id=1907169258]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer/Games/MarginContainer/HBoxContainer" unique_id=2118476409]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer/Games/MarginContainer/HBoxContainer/AspectRatioContainer" unique_id=1606136766]
+layout_mode = 2
+texture = ExtResource("6_hu6eh")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer/Games/MarginContainer/HBoxContainer" unique_id=1728001482]
+layout_mode = 2
+text = "Games"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer" unique_id=275712777]
+custom_minimum_size = Vector2(1000, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 15
+
+[node name="Search" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2" unique_id=917704848]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/Search" unique_id=726470197]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/Search/MarginContainer" unique_id=65014822]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/Search/MarginContainer/HBoxContainer" unique_id=903609424]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/Search/MarginContainer/HBoxContainer/AspectRatioContainer" unique_id=1429839469]
+layout_mode = 2
+texture = ExtResource("4_wfski")
+expand_mode = 4
+
+[node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/Search/MarginContainer/HBoxContainer" unique_id=670617857]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Search..."
+emoji_menu_enabled = false
+clear_button_enabled = true
+middle_mouse_paste_enabled = false
+flat = true
+caret_blink = true
+icon_expand_mode = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2" unique_id=242318771]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer" unique_id=164218999]
+layout_mode = 2
+theme_override_constants/h_separation = 15
+theme_override_constants/v_separation = 15
+columns = 4
+
+[node name="WorldListing" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer" unique_id=72097487]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing" unique_id=1805185846]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing/VBoxContainer" unique_id=1942216951]
+custom_minimum_size = Vector2(350, 210)
+layout_mode = 2
+ratio = 1.7778
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing/VBoxContainer/AspectRatioContainer" unique_id=467585571]
+layout_mode = 2
+texture = ExtResource("5_tkvwg")
+expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing/VBoxContainer" unique_id=1711734675]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 15
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing/VBoxContainer/MarginContainer" unique_id=72959204]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Example test world that actuall really exists. Also another example of something being really cool!"
+autowrap_mode = 3
+text_overrun_behavior = 3
+max_lines_visible = 2
+
+[node name="WorldListing2" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer" unique_id=536349374]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing2" unique_id=1668182649]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing2/VBoxContainer" unique_id=2059453721]
+custom_minimum_size = Vector2(350, 210)
+layout_mode = 2
+ratio = 1.7778
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing2/VBoxContainer/AspectRatioContainer" unique_id=1701263601]
+layout_mode = 2
+texture = ExtResource("5_tkvwg")
+expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing2/VBoxContainer" unique_id=969705443]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 15
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing2/VBoxContainer/MarginContainer" unique_id=925302443]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Example test world that actuall really exists. Also another example of something being really cool!"
+autowrap_mode = 3
+text_overrun_behavior = 3
+max_lines_visible = 2
+
+[node name="WorldListing3" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer" unique_id=1068422016]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing3" unique_id=1171639239]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing3/VBoxContainer" unique_id=1823498012]
+custom_minimum_size = Vector2(350, 210)
+layout_mode = 2
+ratio = 1.7778
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing3/VBoxContainer/AspectRatioContainer" unique_id=224427286]
+layout_mode = 2
+texture = ExtResource("5_tkvwg")
+expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing3/VBoxContainer" unique_id=1983590670]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 15
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing3/VBoxContainer/MarginContainer" unique_id=1182281080]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Example test world that actuall really exists. Also another example of something being really cool!"
+autowrap_mode = 3
+text_overrun_behavior = 3
+max_lines_visible = 2
+
+[node name="WorldListing4" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer" unique_id=1272654877]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing4" unique_id=44004522]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing4/VBoxContainer" unique_id=684739377]
+custom_minimum_size = Vector2(350, 210)
+layout_mode = 2
+ratio = 1.7778
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing4/VBoxContainer/AspectRatioContainer" unique_id=775612232]
+layout_mode = 2
+texture = ExtResource("5_tkvwg")
+expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing4/VBoxContainer" unique_id=2076427482]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 15
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing4/VBoxContainer/MarginContainer" unique_id=1542369134]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Example test world that actuall really exists. Also another example of something being really cool!"
+autowrap_mode = 3
+text_overrun_behavior = 3
+max_lines_visible = 2
+
+[node name="WorldListing5" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer" unique_id=502721862]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing5" unique_id=1422523028]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing5/VBoxContainer" unique_id=2104633633]
+custom_minimum_size = Vector2(350, 210)
+layout_mode = 2
+ratio = 1.7778
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing5/VBoxContainer/AspectRatioContainer" unique_id=1340850999]
+layout_mode = 2
+texture = ExtResource("5_tkvwg")
+expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing5/VBoxContainer" unique_id=1085130516]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 15
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing5/VBoxContainer/MarginContainer" unique_id=1235572658]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Example test world that actuall really exists. Also another example of something being really cool!"
+autowrap_mode = 3
+text_overrun_behavior = 3
+max_lines_visible = 2
+
+[node name="WorldListing6" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer" unique_id=886702167]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing6" unique_id=571121164]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing6/VBoxContainer" unique_id=1647835786]
+custom_minimum_size = Vector2(350, 210)
+layout_mode = 2
+ratio = 1.7778
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing6/VBoxContainer/AspectRatioContainer" unique_id=644952396]
+layout_mode = 2
+texture = ExtResource("5_tkvwg")
+expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing6/VBoxContainer" unique_id=630480358]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 15
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing6/VBoxContainer/MarginContainer" unique_id=1591667899]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Example test world that actuall really exists. Also another example of something being really cool!"
+autowrap_mode = 3
+text_overrun_behavior = 3
+max_lines_visible = 2
+
+[node name="WorldListing7" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer" unique_id=1793074987]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing7" unique_id=1047423560]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing7/VBoxContainer" unique_id=514583078]
+custom_minimum_size = Vector2(350, 210)
+layout_mode = 2
+ratio = 1.7778
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing7/VBoxContainer/AspectRatioContainer" unique_id=1677760804]
+layout_mode = 2
+texture = ExtResource("5_tkvwg")
+expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing7/VBoxContainer" unique_id=1909700952]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 15
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing7/VBoxContainer/MarginContainer" unique_id=732288817]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Example test world that actuall really exists. Also another example of something being really cool!"
+autowrap_mode = 3
+text_overrun_behavior = 3
+max_lines_visible = 2
+
+[node name="WorldListing8" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer" unique_id=774422407]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing8" unique_id=1603622578]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing8/VBoxContainer" unique_id=910974868]
+custom_minimum_size = Vector2(350, 210)
+layout_mode = 2
+ratio = 1.7778
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing8/VBoxContainer/AspectRatioContainer" unique_id=2089434396]
+layout_mode = 2
+texture = ExtResource("5_tkvwg")
+expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing8/VBoxContainer" unique_id=118183461]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 15
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing8/VBoxContainer/MarginContainer" unique_id=1355563408]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Example test world that actuall really exists. Also another example of something being really cool!"
+autowrap_mode = 3
+text_overrun_behavior = 3
+max_lines_visible = 2
+
+[node name="WorldListing9" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer" unique_id=41675036]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing9" unique_id=1960680163]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing9/VBoxContainer" unique_id=1178627687]
+custom_minimum_size = Vector2(350, 210)
+layout_mode = 2
+ratio = 1.7778
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing9/VBoxContainer/AspectRatioContainer" unique_id=1776544938]
+layout_mode = 2
+texture = ExtResource("5_tkvwg")
+expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing9/VBoxContainer" unique_id=186850142]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 15
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing9/VBoxContainer/MarginContainer" unique_id=1030586810]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Example test world that actuall really exists. Also another example of something being really cool!"
+autowrap_mode = 3
+text_overrun_behavior = 3
+max_lines_visible = 2
+
+[node name="WorldListing10" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer" unique_id=2084109082]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing10" unique_id=225495079]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing10/VBoxContainer" unique_id=376527793]
+custom_minimum_size = Vector2(350, 210)
+layout_mode = 2
+ratio = 1.7778
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing10/VBoxContainer/AspectRatioContainer" unique_id=1875807404]
+layout_mode = 2
+texture = ExtResource("5_tkvwg")
+expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing10/VBoxContainer" unique_id=1306717136]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 15
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing10/VBoxContainer/MarginContainer" unique_id=1142312026]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Example test world that actuall really exists. Also another example of something being really cool!"
+autowrap_mode = 3
+text_overrun_behavior = 3
+max_lines_visible = 2
+
+[node name="WorldListing11" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer" unique_id=1953856482]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing11" unique_id=1886181112]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing11/VBoxContainer" unique_id=248643867]
+custom_minimum_size = Vector2(350, 210)
+layout_mode = 2
+ratio = 1.7778
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing11/VBoxContainer/AspectRatioContainer" unique_id=251176411]
+layout_mode = 2
+texture = ExtResource("5_tkvwg")
+expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing11/VBoxContainer" unique_id=209004049]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 15
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing11/VBoxContainer/MarginContainer" unique_id=1801139647]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Example test world that actuall really exists. Also another example of something being really cool!"
+autowrap_mode = 3
+text_overrun_behavior = 3
+max_lines_visible = 2
+
+[node name="WorldListing12" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer" unique_id=497402337]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing12" unique_id=602024177]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing12/VBoxContainer" unique_id=437664178]
+custom_minimum_size = Vector2(350, 210)
+layout_mode = 2
+ratio = 1.7778
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing12/VBoxContainer/AspectRatioContainer" unique_id=625417018]
+layout_mode = 2
+texture = ExtResource("5_tkvwg")
+expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing12/VBoxContainer" unique_id=1397258169]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 15
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing12/VBoxContainer/MarginContainer" unique_id=954774566]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Example test world that actuall really exists. Also another example of something being really cool!"
+autowrap_mode = 3
+text_overrun_behavior = 3
+max_lines_visible = 2
+
+[node name="WorldListing13" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer" unique_id=1177446667]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing13" unique_id=226169753]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing13/VBoxContainer" unique_id=1228661081]
+custom_minimum_size = Vector2(350, 210)
+layout_mode = 2
+ratio = 1.7778
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing13/VBoxContainer/AspectRatioContainer" unique_id=1369580510]
+layout_mode = 2
+texture = ExtResource("5_tkvwg")
+expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing13/VBoxContainer" unique_id=1763383998]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 15
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing13/VBoxContainer/MarginContainer" unique_id=1551226535]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Example test world that actuall really exists. Also another example of something being really cool!"
+autowrap_mode = 3
+text_overrun_behavior = 3
+max_lines_visible = 2
+
+[node name="WorldListing14" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer" unique_id=1483002573]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing14" unique_id=1690659101]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing14/VBoxContainer" unique_id=926780909]
+custom_minimum_size = Vector2(350, 210)
+layout_mode = 2
+ratio = 1.7778
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing14/VBoxContainer/AspectRatioContainer" unique_id=541609792]
+layout_mode = 2
+texture = ExtResource("5_tkvwg")
+expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing14/VBoxContainer" unique_id=838350665]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 15
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing14/VBoxContainer/MarginContainer" unique_id=516725602]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Example test world that actuall really exists. Also another example of something being really cool!"
+autowrap_mode = 3
+text_overrun_behavior = 3
+max_lines_visible = 2
+
+[node name="WorldListing15" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer" unique_id=422150807]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing15" unique_id=1056594161]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing15/VBoxContainer" unique_id=122088462]
+custom_minimum_size = Vector2(350, 210)
+layout_mode = 2
+ratio = 1.7778
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing15/VBoxContainer/AspectRatioContainer" unique_id=339376271]
+layout_mode = 2
+texture = ExtResource("5_tkvwg")
+expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing15/VBoxContainer" unique_id=1196852953]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 15
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing15/VBoxContainer/MarginContainer" unique_id=263662711]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Example test world that actuall really exists. Also another example of something being really cool!"
+autowrap_mode = 3
+text_overrun_behavior = 3
+max_lines_visible = 2
+
+[node name="WorldListing16" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer" unique_id=570486665]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing16" unique_id=1216909486]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing16/VBoxContainer" unique_id=1663707523]
+custom_minimum_size = Vector2(350, 210)
+layout_mode = 2
+ratio = 1.7778
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing16/VBoxContainer/AspectRatioContainer" unique_id=1455460820]
+layout_mode = 2
+texture = ExtResource("5_tkvwg")
+expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing16/VBoxContainer" unique_id=2097737858]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 15
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing16/VBoxContainer/MarginContainer" unique_id=199551998]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Example test world that actuall really exists. Also another example of something being really cool!"
+autowrap_mode = 3
+text_overrun_behavior = 3
+max_lines_visible = 2
+
+[node name="WorldListing17" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer" unique_id=1480341877]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing17" unique_id=173416367]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing17/VBoxContainer" unique_id=1856884492]
+custom_minimum_size = Vector2(350, 210)
+layout_mode = 2
+ratio = 1.7778
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing17/VBoxContainer/AspectRatioContainer" unique_id=755706003]
+layout_mode = 2
+texture = ExtResource("5_tkvwg")
+expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing17/VBoxContainer" unique_id=1890260584]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 15
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing17/VBoxContainer/MarginContainer" unique_id=942789936]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Example test world that actuall really exists. Also another example of something being really cool!"
+autowrap_mode = 3
+text_overrun_behavior = 3
+max_lines_visible = 2
+
+[node name="WorldListing18" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer" unique_id=431108879]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing18" unique_id=1854699654]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing18/VBoxContainer" unique_id=147007928]
+custom_minimum_size = Vector2(350, 210)
+layout_mode = 2
+ratio = 1.7778
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing18/VBoxContainer/AspectRatioContainer" unique_id=834337291]
+layout_mode = 2
+texture = ExtResource("5_tkvwg")
+expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing18/VBoxContainer" unique_id=195884175]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 15
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing18/VBoxContainer/MarginContainer" unique_id=1704660755]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Example test world that actuall really exists. Also another example of something being really cool!"
+autowrap_mode = 3
+text_overrun_behavior = 3
+max_lines_visible = 2
+
+[node name="WorldListing19" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer" unique_id=113973206]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing19" unique_id=856575337]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing19/VBoxContainer" unique_id=2030015789]
+custom_minimum_size = Vector2(350, 210)
+layout_mode = 2
+ratio = 1.7778
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing19/VBoxContainer/AspectRatioContainer" unique_id=1203134025]
+layout_mode = 2
+texture = ExtResource("5_tkvwg")
+expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing19/VBoxContainer" unique_id=796654597]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 15
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing19/VBoxContainer/MarginContainer" unique_id=1022681998]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Example test world that actuall really exists. Also another example of something being really cool!"
+autowrap_mode = 3
+text_overrun_behavior = 3
+max_lines_visible = 2
+
+[node name="WorldListing20" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer" unique_id=1373407292]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing20" unique_id=616061903]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing20/VBoxContainer" unique_id=1272360847]
+custom_minimum_size = Vector2(350, 210)
+layout_mode = 2
+ratio = 1.7778
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing20/VBoxContainer/AspectRatioContainer" unique_id=1244955368]
+layout_mode = 2
+texture = ExtResource("5_tkvwg")
+expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing20/VBoxContainer" unique_id=1231885986]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 15
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Sessions/HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer/WorldListing20/VBoxContainer/MarginContainer" unique_id=7766220]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Example test world that actuall really exists. Also another example of something being really cool!"
+autowrap_mode = 3
+text_overrun_behavior = 3
+max_lines_visible = 2
+
+[node name="Contacts" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=1935681612]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts" unique_id=609852715]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="PeopleList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer" unique_id=495048038]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+
+[node name="Search" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList" unique_id=1778670362]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/Search" unique_id=1330638996]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/Search/MarginContainer" unique_id=552152395]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/Search/MarginContainer/HBoxContainer" unique_id=1034644707]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/Search/MarginContainer/HBoxContainer/AspectRatioContainer" unique_id=1362549755]
+layout_mode = 2
+texture = ExtResource("4_wfski")
+expand_mode = 4
+
+[node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/Search/MarginContainer/HBoxContainer" unique_id=532774583]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Search..."
+emoji_menu_enabled = false
+clear_button_enabled = true
+middle_mouse_paste_enabled = false
+flat = true
+caret_blink = true
+icon_expand_mode = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList" unique_id=1230683167]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PeopleContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer" unique_id=1138665112]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Contact" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer" unique_id=1376762730]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact" unique_id=1957164778]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact/MarginContainer" unique_id=530564555]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact/MarginContainer/HBoxContainer" unique_id=2037557771]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact/MarginContainer/HBoxContainer/AspectRatioContainer" unique_id=213812101]
+layout_mode = 2
+texture = ExtResource("2_bucoy")
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact/MarginContainer/HBoxContainer" unique_id=123418873]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1963379470]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Contact Username"
+
+[node name="OnlineStatus" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1790589234]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.48570347, 0.48570353, 0.48570347, 1)
+theme_override_font_sizes/font_size = 14
+text = "Offline"
+
+[node name="Contact2" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer" unique_id=1917384234]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact2" unique_id=248931094]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact2/MarginContainer" unique_id=1105136801]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact2/MarginContainer/HBoxContainer" unique_id=1042937322]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact2/MarginContainer/HBoxContainer/AspectRatioContainer" unique_id=945263631]
+layout_mode = 2
+texture = ExtResource("2_bucoy")
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact2/MarginContainer/HBoxContainer" unique_id=72060891]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact2/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1790458992]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Contact Username"
+
+[node name="OnlineStatus" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact2/MarginContainer/HBoxContainer/VBoxContainer" unique_id=655308943]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.48570347, 0.48570353, 0.48570347, 1)
+theme_override_font_sizes/font_size = 14
+text = "Offline"
+
+[node name="Contact3" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer" unique_id=1002559792]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact3" unique_id=2110329168]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact3/MarginContainer" unique_id=587970321]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact3/MarginContainer/HBoxContainer" unique_id=1155569374]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact3/MarginContainer/HBoxContainer/AspectRatioContainer" unique_id=363334467]
+layout_mode = 2
+texture = ExtResource("2_bucoy")
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact3/MarginContainer/HBoxContainer" unique_id=1291298320]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact3/MarginContainer/HBoxContainer/VBoxContainer" unique_id=58329549]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Contact Username"
+
+[node name="OnlineStatus" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact3/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1652527413]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.48570347, 0.48570353, 0.48570347, 1)
+theme_override_font_sizes/font_size = 14
+text = "Offline"
+
+[node name="Contact4" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer" unique_id=1117539841]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact4" unique_id=882936545]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact4/MarginContainer" unique_id=1983831238]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact4/MarginContainer/HBoxContainer" unique_id=1797575450]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact4/MarginContainer/HBoxContainer/AspectRatioContainer" unique_id=1904659656]
+layout_mode = 2
+texture = ExtResource("2_bucoy")
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact4/MarginContainer/HBoxContainer" unique_id=1195268824]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact4/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1911785678]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Contact Username"
+
+[node name="OnlineStatus" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact4/MarginContainer/HBoxContainer/VBoxContainer" unique_id=673745301]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.48570347, 0.48570353, 0.48570347, 1)
+theme_override_font_sizes/font_size = 14
+text = "Offline"
+
+[node name="Contact5" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer" unique_id=785320451]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact5" unique_id=488007093]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact5/MarginContainer" unique_id=1702189485]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact5/MarginContainer/HBoxContainer" unique_id=181066723]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact5/MarginContainer/HBoxContainer/AspectRatioContainer" unique_id=858326702]
+layout_mode = 2
+texture = ExtResource("2_bucoy")
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact5/MarginContainer/HBoxContainer" unique_id=1622164735]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact5/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1525652223]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Contact Username"
+
+[node name="OnlineStatus" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact5/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1764447998]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.48570347, 0.48570353, 0.48570347, 1)
+theme_override_font_sizes/font_size = 14
+text = "Offline"
+
+[node name="Contact6" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer" unique_id=1223741083]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact6" unique_id=1886365158]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact6/MarginContainer" unique_id=1000938433]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact6/MarginContainer/HBoxContainer" unique_id=1412410708]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact6/MarginContainer/HBoxContainer/AspectRatioContainer" unique_id=1838408715]
+layout_mode = 2
+texture = ExtResource("2_bucoy")
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact6/MarginContainer/HBoxContainer" unique_id=602696783]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact6/MarginContainer/HBoxContainer/VBoxContainer" unique_id=266752489]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Contact Username"
+
+[node name="OnlineStatus" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact6/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1455339639]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.48570347, 0.48570353, 0.48570347, 1)
+theme_override_font_sizes/font_size = 14
+text = "Offline"
+
+[node name="Contact7" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer" unique_id=285355074]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact7" unique_id=496124961]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact7/MarginContainer" unique_id=2125957011]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact7/MarginContainer/HBoxContainer" unique_id=1679355086]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact7/MarginContainer/HBoxContainer/AspectRatioContainer" unique_id=1263285591]
+layout_mode = 2
+texture = ExtResource("2_bucoy")
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact7/MarginContainer/HBoxContainer" unique_id=1944026472]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact7/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1929228588]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Contact Username"
+
+[node name="OnlineStatus" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact7/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1247873814]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.48570347, 0.48570353, 0.48570347, 1)
+theme_override_font_sizes/font_size = 14
+text = "Offline"
+
+[node name="Contact8" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer" unique_id=1645072851]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact8" unique_id=778625893]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact8/MarginContainer" unique_id=2038217778]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact8/MarginContainer/HBoxContainer" unique_id=1122556879]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact8/MarginContainer/HBoxContainer/AspectRatioContainer" unique_id=1092189046]
+layout_mode = 2
+texture = ExtResource("2_bucoy")
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact8/MarginContainer/HBoxContainer" unique_id=1922829072]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact8/MarginContainer/HBoxContainer/VBoxContainer" unique_id=584730902]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Contact Username"
+
+[node name="OnlineStatus" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact8/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1752589710]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.48570347, 0.48570353, 0.48570347, 1)
+theme_override_font_sizes/font_size = 14
+text = "Offline"
+
+[node name="Contact9" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer" unique_id=2101167709]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact9" unique_id=618543179]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact9/MarginContainer" unique_id=1966106535]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact9/MarginContainer/HBoxContainer" unique_id=2145573781]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact9/MarginContainer/HBoxContainer/AspectRatioContainer" unique_id=1400837203]
+layout_mode = 2
+texture = ExtResource("2_bucoy")
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact9/MarginContainer/HBoxContainer" unique_id=300879442]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact9/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1887730979]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Contact Username"
+
+[node name="OnlineStatus" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact9/MarginContainer/HBoxContainer/VBoxContainer" unique_id=591472536]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.48570347, 0.48570353, 0.48570347, 1)
+theme_override_font_sizes/font_size = 14
+text = "Offline"
+
+[node name="Contact10" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer" unique_id=1338233000]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact10" unique_id=1193164329]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact10/MarginContainer" unique_id=1302175277]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact10/MarginContainer/HBoxContainer" unique_id=547714522]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact10/MarginContainer/HBoxContainer/AspectRatioContainer" unique_id=207327638]
+layout_mode = 2
+texture = ExtResource("2_bucoy")
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact10/MarginContainer/HBoxContainer" unique_id=292040170]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact10/MarginContainer/HBoxContainer/VBoxContainer" unique_id=800144392]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Contact Username"
+
+[node name="OnlineStatus" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact10/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1643413008]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.48570347, 0.48570353, 0.48570347, 1)
+theme_override_font_sizes/font_size = 14
+text = "Offline"
+
+[node name="Contact11" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer" unique_id=1413470422]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact11" unique_id=2134138405]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact11/MarginContainer" unique_id=1392258180]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact11/MarginContainer/HBoxContainer" unique_id=643752280]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact11/MarginContainer/HBoxContainer/AspectRatioContainer" unique_id=1015674972]
+layout_mode = 2
+texture = ExtResource("2_bucoy")
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact11/MarginContainer/HBoxContainer" unique_id=157488074]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact11/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1826758548]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Contact Username"
+
+[node name="OnlineStatus" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact11/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1006838147]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.48570347, 0.48570353, 0.48570347, 1)
+theme_override_font_sizes/font_size = 14
+text = "Offline"
+
+[node name="Contact12" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer" unique_id=758373763]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact12" unique_id=182319459]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact12/MarginContainer" unique_id=1225511965]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact12/MarginContainer/HBoxContainer" unique_id=833329707]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact12/MarginContainer/HBoxContainer/AspectRatioContainer" unique_id=288160845]
+layout_mode = 2
+texture = ExtResource("2_bucoy")
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact12/MarginContainer/HBoxContainer" unique_id=956311638]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact12/MarginContainer/HBoxContainer/VBoxContainer" unique_id=291815739]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Contact Username"
+
+[node name="OnlineStatus" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact12/MarginContainer/HBoxContainer/VBoxContainer" unique_id=142605013]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.48570347, 0.48570353, 0.48570347, 1)
+theme_override_font_sizes/font_size = 14
+text = "Offline"
+
+[node name="Contact13" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer" unique_id=110651033]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact13" unique_id=722964887]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact13/MarginContainer" unique_id=1681556310]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact13/MarginContainer/HBoxContainer" unique_id=1064996853]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact13/MarginContainer/HBoxContainer/AspectRatioContainer" unique_id=273745914]
+layout_mode = 2
+texture = ExtResource("2_bucoy")
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact13/MarginContainer/HBoxContainer" unique_id=4372347]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact13/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1378094667]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Contact Username"
+
+[node name="OnlineStatus" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact13/MarginContainer/HBoxContainer/VBoxContainer" unique_id=959498741]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.48570347, 0.48570353, 0.48570347, 1)
+theme_override_font_sizes/font_size = 14
+text = "Offline"
+
+[node name="Contact14" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer" unique_id=1765333158]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact14" unique_id=1834888416]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact14/MarginContainer" unique_id=1667692749]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact14/MarginContainer/HBoxContainer" unique_id=296732179]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact14/MarginContainer/HBoxContainer/AspectRatioContainer" unique_id=246164239]
+layout_mode = 2
+texture = ExtResource("2_bucoy")
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact14/MarginContainer/HBoxContainer" unique_id=1729440618]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact14/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1697000745]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Contact Username"
+
+[node name="OnlineStatus" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact14/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1424300167]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.48570347, 0.48570353, 0.48570347, 1)
+theme_override_font_sizes/font_size = 14
+text = "Offline"
+
+[node name="Contact15" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer" unique_id=608987246]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact15" unique_id=68254041]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact15/MarginContainer" unique_id=799897191]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact15/MarginContainer/HBoxContainer" unique_id=1562246438]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact15/MarginContainer/HBoxContainer/AspectRatioContainer" unique_id=1995651580]
+layout_mode = 2
+texture = ExtResource("2_bucoy")
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact15/MarginContainer/HBoxContainer" unique_id=1071607904]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact15/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1418212751]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Contact Username"
+
+[node name="OnlineStatus" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact15/MarginContainer/HBoxContainer/VBoxContainer" unique_id=345858069]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.48570347, 0.48570353, 0.48570347, 1)
+theme_override_font_sizes/font_size = 14
+text = "Offline"
+
+[node name="Contact16" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer" unique_id=976707612]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact16" unique_id=1155713213]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact16/MarginContainer" unique_id=1444756375]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact16/MarginContainer/HBoxContainer" unique_id=1973316902]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact16/MarginContainer/HBoxContainer/AspectRatioContainer" unique_id=235764742]
+layout_mode = 2
+texture = ExtResource("2_bucoy")
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact16/MarginContainer/HBoxContainer" unique_id=550050191]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact16/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1145402858]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Contact Username"
+
+[node name="OnlineStatus" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/PeopleList/ScrollContainer/PeopleContainer/Contact16/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1572016901]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.48570347, 0.48570353, 0.48570347, 1)
+theme_override_font_sizes/font_size = 14
+text = "Offline"
+
+[node name="Messages" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer" unique_id=847433634]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages" unique_id=478337139]
+layout_mode = 2
+size_flags_vertical = 3
+color = Color(0, 0, 0, 0.1)
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect" unique_id=2057620318]
+process_mode = 3
+process_thread_group = 2
+process_thread_group_order = 0
+process_thread_messages = 0
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -264,119 +1997,409 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Templates/AccountListSelection/HBoxContainer" unique_id=303118743]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer" unique_id=385628332]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer/MarginContainer" unique_id=87127683]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="OurMessage" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer/MarginContainer/VBoxContainer" unique_id=2017134431]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_xdslj")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer/MarginContainer/VBoxContainer/OurMessage" unique_id=227036190]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer/MarginContainer/VBoxContainer/OurMessage/MarginContainer" unique_id=1039151222]
+custom_minimum_size = Vector2(800, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+focus_mode = 2
+bbcode_enabled = true
+text = "This is a dummy text message made to simulate an actual message...  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vulputate enim at scelerisque accumsan. Ut aliquam sapien sem, venenatis ullamcorper felis pellentesque vitae. Nulla blandit dictum turpis, id viverra metus fermentum quis. Nulla dictum eros at lorem porta mattis. Nam rutrum et lacus vitae vehicula."
+fit_content = true
+scroll_active = false
+selection_enabled = true
+
+[node name="OurMessage2" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer/MarginContainer/VBoxContainer" unique_id=890209952]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_xdslj")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer/MarginContainer/VBoxContainer/OurMessage2" unique_id=1387435291]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer/MarginContainer/VBoxContainer/OurMessage2/MarginContainer" unique_id=309283686]
+custom_minimum_size = Vector2(800, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+focus_mode = 2
+bbcode_enabled = true
+text = "This is a dummy text message made to simulate an actual message...  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vulputate enim at scelerisque accumsan. Ut aliquam sapien sem, venenatis ullamcorper felis pellentesque vitae. Nulla blandit dictum turpis, id viverra metus fermentum quis. Nulla dictum eros at lorem porta mattis. Nam rutrum et lacus vitae vehicula."
+fit_content = true
+scroll_active = false
+selection_enabled = true
+
+[node name="ContactMessage3" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1175570338]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_6rlgq")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer/MarginContainer/VBoxContainer/ContactMessage3" unique_id=1197627479]
+layout_mode = 2
+size_flags_horizontal = 0
+theme = SubResource("Theme_q6jcb")
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer/MarginContainer/VBoxContainer/ContactMessage3/MarginContainer" unique_id=1326683365]
+custom_minimum_size = Vector2(800, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+focus_mode = 2
+bbcode_enabled = true
+text = "This is a dummy text message made to simulate an actual message...  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vulputate enim at scelerisque accumsan. Ut aliquam sapien sem, venenatis ullamcorper felis pellentesque vitae. Nulla blandit dictum turpis, id viverra metus fermentum quis. Nulla dictum eros at lorem porta mattis. Nam rutrum et lacus vitae vehicula."
+fit_content = true
+scroll_active = false
+selection_enabled = true
+
+[node name="ContactMessage4" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer/MarginContainer/VBoxContainer" unique_id=374331530]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_6rlgq")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer/MarginContainer/VBoxContainer/ContactMessage4" unique_id=624597713]
+layout_mode = 2
+size_flags_horizontal = 0
+theme = SubResource("Theme_q6jcb")
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer/MarginContainer/VBoxContainer/ContactMessage4/MarginContainer" unique_id=1957773675]
+custom_minimum_size = Vector2(800, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+focus_mode = 2
+bbcode_enabled = true
+text = "This is a dummy text message made to simulate an actual message...  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vulputate enim at scelerisque accumsan. Ut aliquam sapien sem, venenatis ullamcorper felis pellentesque vitae. Nulla blandit dictum turpis, id viverra metus fermentum quis. Nulla dictum eros at lorem porta mattis. Nam rutrum et lacus vitae vehicula."
+fit_content = true
+scroll_active = false
+selection_enabled = true
+
+[node name="OurMessage3" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1739574120]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_xdslj")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer/MarginContainer/VBoxContainer/OurMessage3" unique_id=1666305266]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer/MarginContainer/VBoxContainer/OurMessage3/MarginContainer" unique_id=1972401865]
+custom_minimum_size = Vector2(800, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+focus_mode = 2
+bbcode_enabled = true
+text = "This is a dummy text message made to simulate an actual message...  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vulputate enim at scelerisque accumsan. Ut aliquam sapien sem, venenatis ullamcorper felis pellentesque vitae. Nulla blandit dictum turpis, id viverra metus fermentum quis. Nulla dictum eros at lorem porta mattis. Nam rutrum et lacus vitae vehicula."
+fit_content = true
+scroll_active = false
+selection_enabled = true
+
+[node name="OurMessage4" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer/MarginContainer/VBoxContainer" unique_id=851557100]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_xdslj")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer/MarginContainer/VBoxContainer/OurMessage4" unique_id=16272845]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer/MarginContainer/VBoxContainer/OurMessage4/MarginContainer" unique_id=1788643846]
+custom_minimum_size = Vector2(800, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+focus_mode = 2
+bbcode_enabled = true
+text = "This is a dummy text message made to simulate an actual message...  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vulputate enim at scelerisque accumsan. Ut aliquam sapien sem, venenatis ullamcorper felis pellentesque vitae. Nulla blandit dictum turpis, id viverra metus fermentum quis. Nulla dictum eros at lorem porta mattis. Nam rutrum et lacus vitae vehicula."
+fit_content = true
+scroll_active = false
+selection_enabled = true
+
+[node name="ContactMessage5" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1504758173]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_6rlgq")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer/MarginContainer/VBoxContainer/ContactMessage5" unique_id=1387589042]
+layout_mode = 2
+size_flags_horizontal = 0
+theme = SubResource("Theme_q6jcb")
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer/MarginContainer/VBoxContainer/ContactMessage5/MarginContainer" unique_id=493655798]
+custom_minimum_size = Vector2(800, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+focus_mode = 2
+bbcode_enabled = true
+text = "This is a dummy text message made to simulate an actual message...  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vulputate enim at scelerisque accumsan. Ut aliquam sapien sem, venenatis ullamcorper felis pellentesque vitae. Nulla blandit dictum turpis, id viverra metus fermentum quis. Nulla dictum eros at lorem porta mattis. Nam rutrum et lacus vitae vehicula."
+fit_content = true
+scroll_active = false
+selection_enabled = true
+
+[node name="OurMessage5" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1120772320]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_xdslj")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer/MarginContainer/VBoxContainer/OurMessage5" unique_id=1684659846]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer/MarginContainer/VBoxContainer/OurMessage5/MarginContainer" unique_id=303214310]
+custom_minimum_size = Vector2(800, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+focus_mode = 2
+bbcode_enabled = true
+text = "This is a dummy text message made to simulate an actual message...  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vulputate enim at scelerisque accumsan. Ut aliquam sapien sem, venenatis ullamcorper felis pellentesque vitae. Nulla blandit dictum turpis, id viverra metus fermentum quis. Nulla dictum eros at lorem porta mattis. Nam rutrum et lacus vitae vehicula."
+fit_content = true
+scroll_active = false
+selection_enabled = true
+
+[node name="OurMessage6" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer/MarginContainer/VBoxContainer" unique_id=903773050]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_xdslj")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer/MarginContainer/VBoxContainer/OurMessage6" unique_id=200480297]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/ColorRect/ScrollContainer/MarginContainer/VBoxContainer/OurMessage6/MarginContainer" unique_id=1921158391]
+custom_minimum_size = Vector2(800, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+focus_mode = 2
+bbcode_enabled = true
+text = "This is a dummy text message made to simulate an actual message...  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vulputate enim at scelerisque accumsan. Ut aliquam sapien sem, venenatis ullamcorper felis pellentesque vitae. Nulla blandit dictum turpis, id viverra metus fermentum quis. Nulla dictum eros at lorem porta mattis. Nam rutrum et lacus vitae vehicula."
+fit_content = true
+scroll_active = false
+selection_enabled = true
+
+[node name="Entry" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages" unique_id=657008232]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/Entry" unique_id=1730343636]
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="AccountStatus" type="ColorRect" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Templates/AccountListSelection/HBoxContainer/MarginContainer" unique_id=1520295763]
-custom_minimum_size = Vector2(50, 0)
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/Entry/MarginContainer" unique_id=2107826533]
 layout_mode = 2
-color = Color(0, 1, 0.0666666, 1)
 
-[node name="Picture" type="TextureRect" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Templates/AccountListSelection/HBoxContainer/MarginContainer/AccountStatus" unique_id=1529699803]
-custom_minimum_size = Vector2(46, 46)
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/Entry/MarginContainer/HBoxContainer" unique_id=1490241753]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/Entry/MarginContainer/HBoxContainer/AspectRatioContainer" unique_id=1577549022]
+layout_mode = 2
+texture = ExtResource("9_xdslj")
+expand_mode = 4
+
+[node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Messages/Entry/MarginContainer/HBoxContainer" unique_id=1536400606]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/focus = SubResource("StyleBoxFlat_hq11n")
+placeholder_text = "Send a message..."
+emoji_menu_enabled = false
+clear_button_enabled = true
+middle_mouse_paste_enabled = false
+flat = true
+caret_blink = true
+icon_expand_mode = 1
+
+[node name="Bio" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer" unique_id=1343094501]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Bio" unique_id=501129495]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Bio/HBoxContainer" unique_id=584912787]
+custom_minimum_size = Vector2(75, 75)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Bio/HBoxContainer/AspectRatioContainer" unique_id=917984378]
+layout_mode = 2
+texture = ExtResource("2_bucoy")
+expand_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Bio/HBoxContainer" unique_id=1940231142]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Bio/HBoxContainer/VBoxContainer" unique_id=1117926921]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "My contact"
+
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Bio/HBoxContainer/VBoxContainer" unique_id=1343091322]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6651851, 0.6651851, 0.6651851, 1)
+text = "https://accounts.openminerva.org"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Bio" unique_id=526473658]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vulputate enim at scelerisque accumsan. Ut aliquam sapien sem, venenatis ullamcorper felis pellentesque vitae. Nulla blandit dictum turpis, id viverra metus fermentum quis. Nulla dictum eros at lorem porta mattis. Nam rutrum et lacus vitae vehicula. Quisque dictum diam nec felis aliquet auctor. Morbi placerat enim at finibus convallis. Curabitur non convallis mi, interdum ultricies augue.
+
+Ut eget varius libero, vitae porta ipsum. Integer sapien dui, ornare et semper et, sagittis sed libero. Nullam volutpat tempus nunc, id semper orci. Maecenas egestas tincidunt justo at ultricies. Vivamus ut nisi vestibulum, cursus dui non, ullamcorper sem. Cras sed ligula ante. Morbi eget pretium mi. Nullam iaculis sed ligula ut fermentum. Aenean cursus felis nibh, nec malesuada ante bibendum sed. Sed sed congue nunc. Duis purus odio, efficitur in eros sit amet, aliquam laoreet est. Interdum et malesuada fames ac ante ipsum primis in faucibus. Morbi fringilla mattis pharetra. Suspendisse ornare sagittis velit, sit amet rhoncus velit. "
+fit_content = true
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Bio" unique_id=485642944]
+layout_mode = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 2
+
+[node name="Button" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Bio/GridContainer" unique_id=1404765838]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Bio/GridContainer/Button" unique_id=1507499146]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Bio/GridContainer/Button/MarginContainer" unique_id=89047822]
+layout_mode = 2
+text = "Add Contact"
+horizontal_alignment = 1
+
+[node name="Button2" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Bio/GridContainer" unique_id=873002479]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Bio/GridContainer/Button2" unique_id=1360585472]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Bio/GridContainer/Button2/MarginContainer" unique_id=155640440]
+layout_mode = 2
+text = "Add Friend"
+horizontal_alignment = 1
+
+[node name="Button3" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Bio/GridContainer" unique_id=343372836]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Bio/GridContainer/Button3" unique_id=1968315918]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Bio/GridContainer/Button3/MarginContainer" unique_id=1104766121]
+layout_mode = 2
+text = "Block User"
+horizontal_alignment = 1
+
+[node name="Button4" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Bio/GridContainer" unique_id=2134122873]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Bio/GridContainer/Button4" unique_id=193076607]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Contacts/HBoxContainer/Bio/GridContainer/Button4/MarginContainer" unique_id=1437723678]
+layout_mode = 2
+text = "Block Avatar"
+horizontal_alignment = 1
+
+[node name="NavBar" type="Panel" parent="MarginContainer/VBoxContainer" unique_id=1428960291]
+custom_minimum_size = Vector2(0, 75)
+layout_mode = 2
+theme = ExtResource("1_cx7w0")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/NavBar" unique_id=1728990786]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -23.0
-offset_top = -23.0
-offset_right = 23.0
-offset_bottom = 23.0
+offset_left = -37.5
+offset_top = -37.5
+offset_right = 37.5
+offset_bottom = 37.5
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Templates/AccountListSelection/HBoxContainer" unique_id=1199466499]
+[node name="Home" type="Button" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer" unique_id=344464958]
+custom_minimum_size = Vector2(75, 75)
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 0
+theme = ExtResource("1_cx7w0")
+toggle_mode = true
 
-[node name="Username" type="Label" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Templates/AccountListSelection/HBoxContainer/VBoxContainer" unique_id=1186504851]
-layout_mode = 2
-size_flags_vertical = 6
-text = "PLACEHOLDER"
-horizontal_alignment = 1
-
-[node name="AccountServer" type="Label" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Templates/AccountListSelection/HBoxContainer/VBoxContainer" unique_id=325216536]
-layout_mode = 2
-size_flags_vertical = 6
-theme_override_colors/font_color = Color(0.78352344, 0.7835234, 0.7835234, 1)
-theme_override_font_sizes/font_size = 12
-text = "PLACEHOLDER"
-horizontal_alignment = 1
-
-[node name="DeleteEntry" type="Button" parent="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Templates/AccountListSelection/HBoxContainer" unique_id=1294984525]
-layout_mode = 2
-size_flags_vertical = 4
-text = "Delete"
-
-[node name="Sessions" type="MarginContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard" unique_id=1692617481]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_vertical = 3
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="Contacts" type="MarginContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard" unique_id=1087632700]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_vertical = 3
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Contacts" unique_id=1425938827]
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Contacts/HBoxContainer" unique_id=974654070]
-layout_mode = 2
-
-[node name="Search" type="Panel" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Contacts/HBoxContainer/VBoxContainer" unique_id=1245663674]
-custom_minimum_size = Vector2(350, 50)
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Contacts/HBoxContainer/VBoxContainer/Search" unique_id=487871724]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Contacts/HBoxContainer/VBoxContainer/Search/MarginContainer" unique_id=495741621]
-layout_mode = 2
-theme_override_styles/focus = SubResource("StyleBoxEmpty_tfojp")
-placeholder_text = "Search for users"
-
-[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Contacts/HBoxContainer/VBoxContainer" unique_id=1129205305]
-custom_minimum_size = Vector2(350, 0)
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Contacts/HBoxContainer/VBoxContainer/Panel" unique_id=798973806]
-custom_minimum_size = Vector2(350, 0)
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Home" unique_id=2077541755]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -384,283 +2407,384 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Contacts/HBoxContainer/VBoxContainer/Panel/ScrollContainer" unique_id=724543236]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Home/CenterContainer" unique_id=2146637607]
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
+theme_override_constants/separation = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Contacts/HBoxContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer" unique_id=99987902]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="UserContainer" type="Button" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Contacts/HBoxContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=2088271147]
-custom_minimum_size = Vector2(0, 75)
-layout_mode = 2
-theme_override_styles/focus = SubResource("StyleBoxEmpty_lco6c")
-text = "
-"
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Contacts/HBoxContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/UserContainer" unique_id=1379011515]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Contacts/HBoxContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/UserContainer/MarginContainer" unique_id=1983709175]
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Contacts/HBoxContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/UserContainer/MarginContainer/HBoxContainer" unique_id=930789613]
-custom_minimum_size = Vector2(65, 65)
-layout_mode = 2
-theme_override_constants/margin_left = 2
-theme_override_constants/margin_top = 2
-theme_override_constants/margin_right = 2
-theme_override_constants/margin_bottom = 2
-
-[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Contacts/HBoxContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/UserContainer/MarginContainer/HBoxContainer/MarginContainer" unique_id=1239223060]
+[node name="CenterContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Home/CenterContainer/VBoxContainer" unique_id=95810640]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
-mouse_filter = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Contacts/HBoxContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/UserContainer/MarginContainer/HBoxContainer/MarginContainer/Panel" unique_id=323632943]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Contacts/HBoxContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/UserContainer/MarginContainer/HBoxContainer/MarginContainer/Panel/MarginContainer" unique_id=614298686]
-custom_minimum_size = Vector2(50, 50)
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Home/CenterContainer/VBoxContainer/CenterContainer" unique_id=1070773413]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-texture = ExtResource("2_lco6c")
+texture = ExtResource("1_3b2ci")
+expand_mode = 1
+
+[node name="CenterContainer2" type="CenterContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Home/CenterContainer/VBoxContainer" unique_id=1142003763]
+custom_minimum_size = Vector2(0, 15)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Home/CenterContainer/VBoxContainer/CenterContainer2" unique_id=862944763]
+layout_mode = 2
+texture = SubResource("CompressedTexture2D_hq11n")
 expand_mode = 5
 stretch_mode = 4
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Contacts/HBoxContainer/VBoxContainer/Panel/ScrollContainer/MarginContainer/VBoxContainer/UserContainer/MarginContainer/HBoxContainer" unique_id=1321388715]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Home/CenterContainer/VBoxContainer/CenterContainer2" unique_id=1897372055]
 layout_mode = 2
-text = "Myself"
-
-[node name="Panel2" type="Panel" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Contacts/HBoxContainer" unique_id=140457127]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Contacts/HBoxContainer/Panel2" unique_id=573198731]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 4
-
-[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Contacts/HBoxContainer/Panel2/VBoxContainer2" unique_id=1936169340]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="TextContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Contacts/HBoxContainer/Panel2/VBoxContainer2/MarginContainer2" unique_id=858679953]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Contacts/HBoxContainer/Panel2/VBoxContainer2" unique_id=1886082742]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Contacts/HBoxContainer/Panel2/VBoxContainer2/MarginContainer" unique_id=1641020710]
-layout_mode = 2
-
-[node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Contacts/HBoxContainer/Panel2/VBoxContainer2/MarginContainer/HBoxContainer" unique_id=1451893364]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Contacts/HBoxContainer/Panel2/VBoxContainer2/MarginContainer/HBoxContainer" unique_id=1414956869]
-layout_mode = 2
-text = "Send"
-
-[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Contacts/HBoxContainer" unique_id=951791439]
-custom_minimum_size = Vector2(350, 0)
-layout_mode = 2
-
-[node name="VBoxContainer3" type="VBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Contacts/HBoxContainer/Panel" unique_id=421279950]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Inventory" type="MarginContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard" unique_id=418643763]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_vertical = 3
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="Debug" type="MarginContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard" unique_id=1848699502]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_vertical = 3
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Debug" unique_id=1865356196]
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Debug/HBoxContainer" unique_id=1786153763]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
-
-[node name="Join" type="Button" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Debug/HBoxContainer/VBoxContainer" unique_id=899336546]
-layout_mode = 2
-text = "Join"
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Debug/HBoxContainer" unique_id=1500011650]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="ServerList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Debug/HBoxContainer/MarginContainer" unique_id=171572955]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Debug" type="VBoxContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Debug/HBoxContainer" unique_id=1665905991]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="HostingBool" type="Label" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Debug/HBoxContainer/Debug" unique_id=967398991]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Hosting: ?"
-
-[node name="SessionHost" type="Label" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Debug/HBoxContainer/Debug" unique_id=809544486]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Server Host: ?"
-
-[node name="ClientBool" type="Label" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Debug/HBoxContainer/Debug" unique_id=249921304]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Client: ?"
-
-[node name="ConnectedUserCount" type="Label" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Debug/HBoxContainer/Debug" unique_id=1418758985]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Connected Users: ?"
-
-[node name="UserList" type="Label" parent="MarginContainer/VBoxContainer/PrimaryDashboard/Debug/HBoxContainer/Debug" unique_id=1346201071]
-unique_name_in_owner = true
-layout_mode = 2
-text = "User List: [?]"
-
-[node name="Exit" type="MarginContainer" parent="MarginContainer/VBoxContainer/PrimaryDashboard" unique_id=295436901]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_vertical = 3
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="Panel2" type="Panel" parent="MarginContainer/VBoxContainer" unique_id=1190646095]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Panel2" unique_id=1547259902]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_vertical = 3
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Panel2/MarginContainer" unique_id=1133139193]
-layout_mode = 2
-
-[node name="NavHome" type="Button" parent="MarginContainer/VBoxContainer/Panel2/MarginContainer/HBoxContainer" unique_id=1952022570]
-layout_mode = 2
-size_flags_horizontal = 3
-theme = SubResource("Theme_tfojp")
+theme_override_font_sizes/font_size = 12
 text = "Home"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="NavSessions" type="Button" parent="MarginContainer/VBoxContainer/Panel2/MarginContainer/HBoxContainer" unique_id=1636224086]
+[node name="Sessions" type="Button" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer" unique_id=1779312894]
+custom_minimum_size = Vector2(75, 75)
 layout_mode = 2
-size_flags_horizontal = 3
+theme = ExtResource("1_cx7w0")
+toggle_mode = true
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Sessions" unique_id=1414128034]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Sessions/CenterContainer" unique_id=1222935685]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="CenterContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Sessions/CenterContainer/VBoxContainer" unique_id=1794611439]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Sessions/CenterContainer/VBoxContainer/CenterContainer" unique_id=1479063914]
+layout_mode = 2
+texture = ExtResource("12_hq11n")
+expand_mode = 1
+
+[node name="CenterContainer2" type="CenterContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Sessions/CenterContainer/VBoxContainer" unique_id=739110456]
+custom_minimum_size = Vector2(0, 15)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Sessions/CenterContainer/VBoxContainer/CenterContainer2" unique_id=1283313696]
+layout_mode = 2
+texture = SubResource("CompressedTexture2D_hq11n")
+expand_mode = 5
+stretch_mode = 4
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Sessions/CenterContainer/VBoxContainer/CenterContainer2" unique_id=1726576248]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "Sessions"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="NavContacts" type="Button" parent="MarginContainer/VBoxContainer/Panel2/MarginContainer/HBoxContainer" unique_id=1083660641]
+[node name="Instance" type="Button" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer" unique_id=1199197758]
+custom_minimum_size = Vector2(75, 75)
 layout_mode = 2
-size_flags_horizontal = 3
+theme = ExtResource("1_cx7w0")
+toggle_mode = true
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Instance" unique_id=1968696261]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Instance/CenterContainer" unique_id=524033554]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="CenterContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Instance/CenterContainer/VBoxContainer" unique_id=1551725689]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Instance/CenterContainer/VBoxContainer/CenterContainer" unique_id=1325848905]
+layout_mode = 2
+texture = ExtResource("3_v4ccx")
+expand_mode = 1
+
+[node name="CenterContainer2" type="CenterContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Instance/CenterContainer/VBoxContainer" unique_id=1007113927]
+custom_minimum_size = Vector2(0, 15)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Instance/CenterContainer/VBoxContainer/CenterContainer2" unique_id=1992088652]
+layout_mode = 2
+texture = SubResource("CompressedTexture2D_hq11n")
+expand_mode = 5
+stretch_mode = 4
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Instance/CenterContainer/VBoxContainer/CenterContainer2" unique_id=1993490483]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Instance"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Contacts" type="Button" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer" unique_id=2052926333]
+custom_minimum_size = Vector2(75, 75)
+layout_mode = 2
+theme = ExtResource("1_cx7w0")
+toggle_mode = true
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Contacts" unique_id=247880075]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Contacts/CenterContainer" unique_id=1493676986]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="CenterContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Contacts/CenterContainer/VBoxContainer" unique_id=993865409]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Contacts/CenterContainer/VBoxContainer/CenterContainer" unique_id=939575854]
+layout_mode = 2
+texture = ExtResource("4_cyduv")
+expand_mode = 1
+
+[node name="CenterContainer2" type="CenterContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Contacts/CenterContainer/VBoxContainer" unique_id=327218435]
+custom_minimum_size = Vector2(0, 15)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Contacts/CenterContainer/VBoxContainer/CenterContainer2" unique_id=1753921793]
+layout_mode = 2
+texture = SubResource("CompressedTexture2D_hq11n")
+expand_mode = 5
+stretch_mode = 4
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Contacts/CenterContainer/VBoxContainer/CenterContainer2" unique_id=1239993332]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "Contacts"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="NavInventory" type="Button" parent="MarginContainer/VBoxContainer/Panel2/MarginContainer/HBoxContainer" unique_id=257597425]
+[node name="Inventory" type="Button" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer" unique_id=1154242515]
+custom_minimum_size = Vector2(75, 75)
 layout_mode = 2
-size_flags_horizontal = 3
+theme = ExtResource("1_cx7w0")
+toggle_mode = true
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Inventory" unique_id=477611878]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Inventory/CenterContainer" unique_id=1029784273]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="CenterContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Inventory/CenterContainer/VBoxContainer" unique_id=1434684623]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Inventory/CenterContainer/VBoxContainer/CenterContainer" unique_id=355063981]
+layout_mode = 2
+texture = ExtResource("5_r82dk")
+expand_mode = 1
+
+[node name="CenterContainer2" type="CenterContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Inventory/CenterContainer/VBoxContainer" unique_id=150216954]
+custom_minimum_size = Vector2(0, 15)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Inventory/CenterContainer/VBoxContainer/CenterContainer2" unique_id=2129474918]
+layout_mode = 2
+texture = SubResource("CompressedTexture2D_hq11n")
+expand_mode = 5
+stretch_mode = 4
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Inventory/CenterContainer/VBoxContainer/CenterContainer2" unique_id=436784442]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "Inventory"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="NavDebug" type="Button" parent="MarginContainer/VBoxContainer/Panel2/MarginContainer/HBoxContainer" unique_id=1256252710]
+[node name="Apps" type="Button" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer" unique_id=2035455386]
+custom_minimum_size = Vector2(75, 75)
 layout_mode = 2
-size_flags_horizontal = 3
-text = "DEBUG"
+theme = ExtResource("1_cx7w0")
+toggle_mode = true
 
-[node name="NavExit" type="Button" parent="MarginContainer/VBoxContainer/Panel2/MarginContainer/HBoxContainer" unique_id=284700403]
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Apps" unique_id=1234174942]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Apps/CenterContainer" unique_id=2137480982]
 layout_mode = 2
-size_flags_horizontal = 3
+theme_override_constants/separation = 2
+
+[node name="CenterContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Apps/CenterContainer/VBoxContainer" unique_id=1172100987]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Apps/CenterContainer/VBoxContainer/CenterContainer" unique_id=1104376878]
+layout_mode = 2
+texture = ExtResource("6_6ybpt")
+expand_mode = 1
+
+[node name="CenterContainer2" type="CenterContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Apps/CenterContainer/VBoxContainer" unique_id=1849886021]
+custom_minimum_size = Vector2(0, 15)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Apps/CenterContainer/VBoxContainer/CenterContainer2" unique_id=573515185]
+layout_mode = 2
+texture = SubResource("CompressedTexture2D_hq11n")
+expand_mode = 5
+stretch_mode = 4
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Apps/CenterContainer/VBoxContainer/CenterContainer2" unique_id=1090534310]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Apps"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Settings" type="Button" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer" unique_id=326520049]
+custom_minimum_size = Vector2(75, 75)
+layout_mode = 2
+theme = ExtResource("1_cx7w0")
+toggle_mode = true
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Settings" unique_id=803794329]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Settings/CenterContainer" unique_id=639771866]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="CenterContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Settings/CenterContainer/VBoxContainer" unique_id=42256113]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Settings/CenterContainer/VBoxContainer/CenterContainer" unique_id=121107602]
+layout_mode = 2
+texture = ExtResource("7_tixj4")
+expand_mode = 1
+
+[node name="CenterContainer2" type="CenterContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Settings/CenterContainer/VBoxContainer" unique_id=301796775]
+custom_minimum_size = Vector2(0, 15)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Settings/CenterContainer/VBoxContainer/CenterContainer2" unique_id=1389137151]
+layout_mode = 2
+texture = SubResource("CompressedTexture2D_hq11n")
+expand_mode = 5
+stretch_mode = 4
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Settings/CenterContainer/VBoxContainer/CenterContainer2" unique_id=463454723]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Settings"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Debug" type="Button" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer" unique_id=239205402]
+custom_minimum_size = Vector2(75, 75)
+layout_mode = 2
+theme = ExtResource("1_cx7w0")
+toggle_mode = true
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Debug" unique_id=2128143430]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Debug/CenterContainer" unique_id=189425462]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="CenterContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Debug/CenterContainer/VBoxContainer" unique_id=1205603038]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Debug/CenterContainer/VBoxContainer/CenterContainer" unique_id=1576187531]
+layout_mode = 2
+texture = ExtResource("8_fgqsp")
+expand_mode = 1
+
+[node name="CenterContainer2" type="CenterContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Debug/CenterContainer/VBoxContainer" unique_id=1369920063]
+custom_minimum_size = Vector2(0, 15)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Debug/CenterContainer/VBoxContainer/CenterContainer2" unique_id=229165988]
+layout_mode = 2
+texture = SubResource("CompressedTexture2D_hq11n")
+expand_mode = 5
+stretch_mode = 4
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Debug/CenterContainer/VBoxContainer/CenterContainer2" unique_id=305966204]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Debug"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Exit" type="Button" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer" unique_id=1604895221]
+custom_minimum_size = Vector2(75, 75)
+layout_mode = 2
+theme = ExtResource("1_cx7w0")
+toggle_mode = true
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Exit" unique_id=1519067308]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Exit/CenterContainer" unique_id=36849769]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="CenterContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Exit/CenterContainer/VBoxContainer" unique_id=1840012224]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Exit/CenterContainer/VBoxContainer/CenterContainer" unique_id=806908628]
+layout_mode = 2
+texture = ExtResource("9_amc1p")
+expand_mode = 1
+
+[node name="CenterContainer2" type="CenterContainer" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Exit/CenterContainer/VBoxContainer" unique_id=817841049]
+custom_minimum_size = Vector2(0, 15)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Exit/CenterContainer/VBoxContainer/CenterContainer2" unique_id=71500259]
+layout_mode = 2
+texture = SubResource("CompressedTexture2D_hq11n")
+expand_mode = 5
+stretch_mode = 4
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/NavBar/HBoxContainer/Exit/CenterContainer/VBoxContainer/CenterContainer2" unique_id=1611628376]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "Exit"
-
-[connection signal="pressed" from="MarginContainer/VBoxContainer/PrimaryDashboard/Home/HBoxContainer/VBoxContainer/CurrentUserButton" to="." method="_on_current_user_button_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/AccountList/VBoxContainer/HBoxContainer/AddAccount" to="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn" method="_on_add_account_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/CreateLocalAccount/VBoxContainer/CreateLocalAccountButton" to="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn" method="_on_create_local_account_button_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn/Panel/CreateLocalAccount/VBoxContainer/BackFromCreateLocalAccount" to="MarginContainer/VBoxContainer/PrimaryDashboard/SignIn" method="_on_back_from_create_local_account_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/PrimaryDashboard/Debug/HBoxContainer/VBoxContainer/Join" to="." method="_on_join_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Panel2/MarginContainer/HBoxContainer/NavHome" to="." method="_on_nav_home_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Panel2/MarginContainer/HBoxContainer/NavSessions" to="." method="_on_nav_sessions_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Panel2/MarginContainer/HBoxContainer/NavContacts" to="." method="_on_nav_contacts_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Panel2/MarginContainer/HBoxContainer/NavInventory" to="." method="_on_nav_inventory_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Panel2/MarginContainer/HBoxContainer/NavDebug" to="." method="_on_nav_debug_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Panel2/MarginContainer/HBoxContainer/NavExit" to="." method="_on_nav_exit_pressed"]
+horizontal_alignment = 1
+vertical_alignment = 1

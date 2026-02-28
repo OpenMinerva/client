@@ -5,7 +5,7 @@ signal using_account
 var root
 
 func init(caller_node: Node) -> void:
-	root = caller_node.get_tree().current_scene.get_node("Hud2/MarginContainer/VBoxContainer/Master/AccountDisplay")
+	root = caller_node.get_tree().current_scene.get_node("Hud/MarginContainer/VBoxContainer/Master/AccountDisplay")
 
 func render_account_list() -> void:
 	var _list = GlobalAccount.get_all()
