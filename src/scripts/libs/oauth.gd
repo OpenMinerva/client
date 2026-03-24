@@ -11,8 +11,8 @@ extends Node
 
 var http = preload("res://scripts/network/http.gd").new()
 var jwt_lib = preload("res://scripts/libs/jwt.gd").new()
+var random_lib = preload("res://scripts/utils/random.gd").new()
 
-# TODO: Create helper files for random_string and base64uri encoding?
 # TODO: Encrypt and store private token files. https://github.com/OpenMinerva/client/issues/59
 # TODO: Validate tokens?
 # TODO: Refresh tokens
@@ -20,7 +20,7 @@ var jwt_lib = preload("res://scripts/libs/jwt.gd").new()
 var port: int = 54000
 var bind_address: String = "127.0.0.1"
 var redirect_server = TCPServer.new()
-var secret_pkce: String = _generate_random_string()
+var secret_pkce: String = random_lib.random_string(50)
 
 var access_token: String
 var refresh_token: String
@@ -93,14 +93,6 @@ func _exchange_auth_code(temp_auth_code: String, authentication_server: String):
 
 	_get_tokens_from_response(token_data)
 
-func _generate_random_string() -> String:
-	var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-	var length = randi_range(43, 100)
-	var result = ""
-	for i in range(length):
-		result += chars[randi() % chars.length()]
-	return result
-
 func _get_code_challenge(verifier: String) -> String:
 	var ctx = HashingContext.new()
 	ctx.start(HashingContext.HASH_SHA256)
@@ -117,6 +109,7 @@ func _get_code_challenge(verifier: String) -> String:
 	return base64_str
 
 func _get_tokens_from_response(response: Dictionary) -> void:
+	# TODO: Error checks to prevent overwriting with bad data.
 	access_token = response.get("access_token")
 	refresh_token = response.get("refresh_token")
 	id_token = response.get("id_token")

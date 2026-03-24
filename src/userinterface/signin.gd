@@ -70,7 +70,7 @@ func _create_account() -> void:
 	var remember_me: bool = get_node("Panel/CreateLocalAccount/VBoxContainer/CLARememberMe").button_pressed
 	var local_account: bool = get_node("Panel/CreateLocalAccount/VBoxContainer/CLALocalAccount").button_pressed
 	# TODO: Check to see if ID exists already
-	var local_id = random.random_string()
+	var local_id = random.random_string(6, true)
 	var device_keys = rsa.generate_keypair(0)
 
 	GlobalLogger.logs("Creating an account configuration file: '%s'" % username, 1)

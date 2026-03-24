@@ -35,7 +35,7 @@ func clear_form() -> void:
 
 func create_account() -> void:
 	# TODO: Check to see if ID exists already
-	var _local_id = random.random_string()
+	var _local_id = random.random_string(6, true)
 	var _device_keys = rsa.generate_keypair(0)
 
 	if !username_form_node.text:
