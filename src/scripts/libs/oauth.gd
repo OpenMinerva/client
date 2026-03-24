@@ -2,10 +2,22 @@ extends Node
 
 var http = preload("res://scripts/network/http.gd").new()
 
+# TODO: JWT handling
+# TODO: Deconstruct response body into variables
+# TODO: Remove hardcoded localhost values.
+# TODO: Create helper files for random_string and base64uri encoding?
+# TODO: Encrypt and store private token files. https://github.com/OpenMinerva/client/issues/59
+# TODO: Validate tokens?
+# TODO: Refresh tokens
+
 var port: int = 54000
 var bind_address: String = "127.0.0.1"
 var redirect_server = TCPServer.new()
 var secret_pkce: String = _generate_random_string()
+
+var access_token: String
+var refresh_token: String
+var access_token_expiry: int
 
 func start_server():
 	GlobalLogger.logs("Starting OAuth redirect server.", 0)
@@ -89,7 +101,3 @@ func _get_code_challenge(verifier: String) -> String:
 		base64_str = base64_str.substr(0, base64_str.length() - 1)
 
 	return base64_str
-
-# End listening redirect server
-# Refresh tokens
-# Validate tokens
