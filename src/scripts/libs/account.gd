@@ -2,6 +2,7 @@ extends Node
 
 var http = preload("res://scripts/network/http.gd").new()
 var time_lib = preload("res://scripts/libs/time.gd").new()
+var oauth_lib = preload("res://scripts/libs/oauth.gd").new()
 	
 const ACCOUNT_DATABASE_DIRECTORY: String = "user://database/accounts.bin"
 
@@ -9,9 +10,13 @@ const ACCOUNT_DATABASE_DIRECTORY: String = "user://database/accounts.bin"
 # https://github.com/OpenMinerva/client/issues/59
 # This is just here for funsies for now.
 const ENCRYPTION_KEY: String = "cb`$BaeGT12^)Zv{"
+var stop_connection_timer = false
 
 var active_account = {}
 var _database = []
+
+func _ready():
+	oauth_lib.start_server()
 
 ## Get a list of all accounts and return their information.
 func get_all() -> Array:
@@ -57,39 +62,79 @@ func clear() -> void:
 	return
 
 ## Makes an attempt to authenticate an account with the accounts account server.
-func authenticate(id: String, password: String, remember_me: bool = false) -> void:
-	GlobalLogger.logs("Attempting to connect account '%s' to their account server." % id)
+# func authenticate(id: String, password: String, remember_me: bool = false) -> void:
+# 	GlobalLogger.logs("Attempting to connect account '%s' to their account server." % id)
 
+# 	var account = _get_account_by_id(id)
+
+# 	if password == "":
+# 		GlobalLogger.logs("Can not authenticate with the account server without a password.", 3)
+# 		return
+
+# 	var request_data = {"username": account.username, "password": password, "pubKey": account.public_device_key, "rememberMe": remember_me}
+# 	var response = await http.req(HTTPClient.Method.METHOD_POST, account.account_server, "/api/v1/login", 40400, ["Accept: application/json", "Content-Type: application/json"], JSON.stringify(request_data))
+	
+# 	var _raw_response = _handle_response(response)
+# 	if _raw_response.get("ok", false) == false:
+# 		return
+
+# 	var res_body = _raw_response.get("body")
+# 	if "error" in res_body.keys():
+# 		GlobalLogger.logs("Login request returned an error. '%s'" % res_body["error"], 1)
+# 		return
+
+# 	var _private_account_server_jwt = response["response_headers"]["Set-Cookie"].split("; ")
+	
+# 	var _private_token_dictionary = {
+# 		"token": _private_account_server_jwt[0].replace("token=", ""),
+# 		"expires": time_lib.convert_jwt_timestamp_to_unix(_private_account_server_jwt[3].replace("Expires=", ""))
+# 	}
+
+# 	_update_account_by_key(id, "private_account_server_jwt", _private_token_dictionary)
+
+# 	GlobalLogger.logs("Successfully authorized login with the account server.", 1)
+
+# 	return
+func authenticate(id: String, password: String, remember_me: bool = false):
+	GlobalLogger.logs("Attempting to connect account '%s' to their account server." % id)
 	var account = _get_account_by_id(id)
 
 	if password == "":
 		GlobalLogger.logs("Can not authenticate with the account server without a password.", 3)
 		return
 
-	var request_data = {"username": account.username, "password": password, "pubKey": account.public_device_key, "rememberMe": remember_me}
-	var response = await http.req(HTTPClient.Method.METHOD_POST, account.account_server, "/api/v1/login", 40400, ["Accept: application/json", "Content-Type: application/json"], JSON.stringify(request_data))
-	
-	var _raw_response = _handle_response(response)
-	if _raw_response.get("ok", false) == false:
+	var request_data = {"username": account.username, "password": password, "rememberMe": remember_me}
+
+	# TODO: Currently the account server redirects. Make the HTTP library follow redirects.
+	# TODO: Also have the library properly separate ports.
+	# FIXME: Nightmare!
+
+	oauth_lib.start_oauth_process("http://localhost:40400/oauth/authorize")
+	_try_check_connection()
+
+	# var response = await http.req(HTTPClient.Method.METHOD_GET, account.account_server, "/login", 40400, ["Accept: application/json", "Content-Type: application/json"], JSON.stringify(request_data))
+	# var response_but_cooler
+	# if response.get("status_code") == 302:
+	# 	GlobalLogger.logs("Redirect")
+	# 	# Separate the HTTP origin and the path
+	# 	var full_url = response.get("response_headers").get("Location")
+	# 	var path = full_url.split("/").slice(3, full_url.split("/").size())
+	# 	var full_path = "/".join(path)
+	# 	full_path = "/" + full_path
+	# 	OS.shell_open("http://localhost:40400" + full_path)
+
+	# print(response_but_cooler)
+	# OS.shell_open("https://adragon.dev")
+	# print(JSON.parse_string(response.get("body")))
+
+func _try_check_connection():
+	if stop_connection_timer == true:
 		return
-
-	var res_body = _raw_response.get("body")
-	if "error" in res_body.keys():
-		GlobalLogger.logs("Login request returned an error. '%s'" % res_body["error"], 1)
-		return
-
-	var _private_account_server_jwt = response["response_headers"]["Set-Cookie"].split("; ")
-	
-	var _private_token_dictionary = {
-		"token": _private_account_server_jwt[0].replace("token=", ""),
-		"expires": time_lib.convert_jwt_timestamp_to_unix(_private_account_server_jwt[3].replace("Expires=", ""))
-	}
-
-	_update_account_by_key(id, "private_account_server_jwt", _private_token_dictionary)
-
-	GlobalLogger.logs("Successfully authorized login with the account server.", 1)
-
-	return
+		
+	var timer = get_tree().create_timer(2.0)
+	timer.connect("timeout", oauth_lib.check_connection)
+	await timer.timeout
+	_try_check_connection()
 
 func get_passport(id: String) -> void:
 	GlobalLogger.logs("Attempting to authorize this device with the provided account.")

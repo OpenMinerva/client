@@ -433,7 +433,6 @@ size_flags_horizontal = 3
 text = "Remove"
 
 [node name="AccountCreate" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=476222424]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -475,6 +474,7 @@ text = "Username"
 
 [node name="CAUsername" type="LineEdit" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/VBoxContainer" unique_id=925907901]
 layout_mode = 2
+text = "u"
 placeholder_text = "Username"
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create" unique_id=1696617473]
@@ -486,6 +486,7 @@ text = "Password"
 
 [node name="CAPassword" type="LineEdit" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/VBoxContainer2" unique_id=8617011]
 layout_mode = 2
+text = "i"
 placeholder_text = "Password"
 secret = true
 
@@ -498,10 +499,12 @@ text = "Account Server"
 
 [node name="CAAccountServer" type="LineEdit" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/VBoxContainer3" unique_id=783276815]
 layout_mode = 2
+text = "http://localhost"
 placeholder_text = "https://accounts.openminerva.org"
 
 [node name="CARememberMe" type="CheckButton" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create" unique_id=1627203869]
 layout_mode = 2
+button_pressed = true
 text = "Remember Me"
 flat = true
 
@@ -1339,6 +1342,7 @@ text_overrun_behavior = 3
 max_lines_visible = 2
 
 [node name="Contacts" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=1935681612]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -2788,3 +2792,5 @@ theme_override_font_sizes/font_size = 12
 text = "Exit"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Timer" type="Timer" parent="MarginContainer/VBoxContainer" unique_id=1523395444]
