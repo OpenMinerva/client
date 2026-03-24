@@ -1,3 +1,12 @@
+# --- License
+# File: /client/src/scripts/libs/oauth.gd
+# Project: OpenMinerva
+# Created Date: 23 March 2026
+# Copyright (c) 2026 OpenMinerva
+# License: MIT License
+# Authors: Armored Dragon
+# --- License
+
 extends Node
 
 var http = preload("res://scripts/network/http.gd").new()
