@@ -10,6 +10,7 @@
 extends Node
 
 var http = preload("res://scripts/network/http.gd").new()
+var jwt_lib = preload("res://scripts/libs/jwt.gd").new()
 
 # TODO: JWT handling
 # TODO: Deconstruct response body into variables
@@ -85,7 +86,6 @@ func _exchange_auth_code(temp_auth_code: String):
 		return
 
 	var token_data = JSON.parse_string(exchange_response.get("body"))
-
 	print(token_data)
 
 func _generate_random_string() -> String:

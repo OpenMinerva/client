@@ -2792,5 +2792,3 @@ theme_override_font_sizes/font_size = 12
 text = "Exit"
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="Timer" type="Timer" parent="MarginContainer/VBoxContainer" unique_id=1523395444]
