@@ -59,8 +59,14 @@ func base64url_to_base64(input_value: String):
 
 	return fixed
 
-func base64_to_base64url():
-	return
+func base64_to_base64url(input_value: String):
+	var base64_str = input_value.replace("+", "-")
+	base64_str = base64_str.replace("/", "_")
+
+	while base64_str.ends_with("="):
+		base64_str = base64_str.substr(0, base64_str.length() - 1)
+
+	return base64_str
 
 func _get_parts(input_value: String):
 	# TODO: Error checks

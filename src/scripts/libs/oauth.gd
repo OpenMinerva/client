@@ -100,16 +100,16 @@ func _get_code_challenge(verifier: String) -> String:
 	var hash_bytes = ctx.finish()
 	var base64_str = Marshalls.raw_to_base64(hash_bytes)
 
-	base64_str = base64_str.replace("+", "-")
-	base64_str = base64_str.replace("/", "_")
-
-	while base64_str.ends_with("="):
-		base64_str = base64_str.substr(0, base64_str.length() - 1)
+	base64_str = jwt_lib.base64_to_base64url(base64_str)
 
 	return base64_str
 
 func _get_tokens_from_response(response: Dictionary) -> void:
 	# TODO: Error checks to prevent overwriting with bad data.
+	# ! Placeholder for development. Prevents overwriting data.
+	if access_token:
+		return
+
 	access_token = response.get("access_token")
 	refresh_token = response.get("refresh_token")
 	id_token = response.get("id_token")
