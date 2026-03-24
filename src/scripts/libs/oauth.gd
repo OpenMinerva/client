@@ -5,7 +5,7 @@ var http = preload("res://scripts/network/http.gd").new()
 var port: int = 54000
 var bind_address: String = "127.0.0.1"
 var redirect_server = TCPServer.new()
-var secret_pkce: String = "AwesomeSecretKeyAwesomeSecretKeyAwesomeSecr"
+var secret_pkce: String = _generate_random_string()
 
 var temp_auth_code: String
 
@@ -66,6 +66,14 @@ func _exchange_auth_code():
 	var token_data = JSON.parse_string(exchange_response.get("body"))
 
 	print(token_data)
+
+func _generate_random_string() -> String:
+	var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+	var length = randi_range(43, 100)
+	var result = ""
+	for i in range(length):
+		result += chars[randi() % chars.length()]
+	return result
 
 func _get_code_challenge(verifier: String) -> String:
 	var ctx = HashingContext.new()
