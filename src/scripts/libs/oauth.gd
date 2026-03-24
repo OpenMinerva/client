@@ -34,10 +34,11 @@ func start_oauth_process(account_server: String):
 		"client_id=%s" % "OpenMinerva-Game-Client",
 		"redirect_uri=http://%s:%s" % [bind_address, port],
 		"response_type=code",
-		"scope=openid",
+		"scope=openid offline_access",
 		"response_mode=query",
 		"code_challenge_method=S256",
 		"code_challenge=%s" % _get_code_challenge(secret_pkce),
+		"prompt=consent"
 	]
 	var uri = account_server + "?" + "&".join(uri_parts)
 	OS.shell_open(uri)
