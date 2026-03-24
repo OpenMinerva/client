@@ -12,8 +12,6 @@ extends Node
 var http = preload("res://scripts/network/http.gd").new()
 var jwt_lib = preload("res://scripts/libs/jwt.gd").new()
 
-# TODO: JWT handling
-# TODO: Deconstruct response body into variables
 # TODO: Remove hardcoded localhost values.
 # TODO: Create helper files for random_string and base64uri encoding?
 # TODO: Encrypt and store private token files. https://github.com/OpenMinerva/client/issues/59
@@ -27,6 +25,7 @@ var secret_pkce: String = _generate_random_string()
 
 var access_token: String
 var refresh_token: String
+var id_token: String
 var access_token_expiry: int
 
 func start_server():
@@ -86,7 +85,8 @@ func _exchange_auth_code(temp_auth_code: String):
 		return
 
 	var token_data = JSON.parse_string(exchange_response.get("body"))
-	print(token_data)
+
+	_get_tokens_from_response(token_data)
 
 func _generate_random_string() -> String:
 	var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
@@ -110,3 +110,10 @@ func _get_code_challenge(verifier: String) -> String:
 		base64_str = base64_str.substr(0, base64_str.length() - 1)
 
 	return base64_str
+
+func _get_tokens_from_response(response: Dictionary) -> void:
+	access_token = response.get("access_token")
+	refresh_token = response.get("refresh_token")
+	id_token = response.get("id_token")
+	access_token_expiry = response.get("expires_in")
+	return
