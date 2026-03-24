@@ -12,7 +12,6 @@ extends Node
 var http = preload("res://scripts/network/http.gd").new()
 var jwt_lib = preload("res://scripts/libs/jwt.gd").new()
 
-# TODO: Remove hardcoded localhost values.
 # TODO: Create helper files for random_string and base64uri encoding?
 # TODO: Encrypt and store private token files. https://github.com/OpenMinerva/client/issues/59
 # TODO: Validate tokens?
@@ -46,9 +45,11 @@ func check_connection():
 		var request = connection.get_string(connection.get_available_bytes())
 		if request:
 			# TODO: Make this more robust. How can I make sure that the code returned is valid?
-			var temp_auth_code: String = request.split("code=")[1].split("&iss=")[0]
+			var temp_auth_code: String = request.split("code=")[1].split("&iss=")[0].strip_edges()
+			var authentication_server = request.split("Referer: ")[1].split("\n")[0].strip_edges()
+
 			GlobalLogger.logs("Got authentication code: '%s'." % temp_auth_code, 0)
-			_exchange_auth_code(temp_auth_code)
+			_exchange_auth_code(temp_auth_code, authentication_server)
 
 func start_oauth_process(account_server: String):
 	var uri_parts := [
@@ -65,7 +66,7 @@ func start_oauth_process(account_server: String):
 	OS.shell_open(uri)
 	return
 
-func _exchange_auth_code(temp_auth_code: String):
+func _exchange_auth_code(temp_auth_code: String, authentication_server: String):
 	GlobalLogger.logs("Exchanging retrieved auth code for a proper token.", 0)
 	var form_parts := [
 		"client_id=%s" % "OpenMinerva-Game-Client",
@@ -78,7 +79,11 @@ func _exchange_auth_code(temp_auth_code: String):
 
 	var form_string: String = "&".join(form_parts)
 
-	var exchange_response = await http.req(HTTPClient.Method.METHOD_POST, "http://localhost", "/oauth/token", 40400, ["Accept: application/json", "Content-Type: application/x-www-form-urlencoded"], form_string)
+	# TODO: Make a better way to split the url into parts
+	var auth_server_host = authentication_server.split(":")[0] + ":" + authentication_server.split(":")[1]
+	var auth_server_port: int = int(authentication_server.split(":")[2])
+
+	var exchange_response = await http.req(HTTPClient.Method.METHOD_POST, auth_server_host, "/oauth/token", auth_server_port, ["Accept: application/json", "Content-Type: application/x-www-form-urlencoded"], form_string)
 
 	if exchange_response.ok == false:
 		GlobalLogger.logs("Unhandled error with exchanging auth code for access_token.", 2)
