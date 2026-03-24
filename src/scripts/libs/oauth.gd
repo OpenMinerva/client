@@ -7,8 +7,6 @@ var bind_address: String = "127.0.0.1"
 var redirect_server = TCPServer.new()
 var secret_pkce: String = _generate_random_string()
 
-var temp_auth_code: String
-
 func start_server():
 	GlobalLogger.logs("Starting OAuth redirect server.", 0)
 	redirect_server.listen(port, bind_address)
@@ -26,9 +24,10 @@ func check_connection():
 		var connection = redirect_server.take_connection()
 		var request = connection.get_string(connection.get_available_bytes())
 		if request:
-			temp_auth_code = request.split("code=")[1].split("&iss=")[0]
+			# TODO: Make this more robust. How can I make sure that the code returned is valid?
+			var temp_auth_code: String = request.split("code=")[1].split("&iss=")[0]
 			GlobalLogger.logs("Got authentication code: '%s'." % temp_auth_code, 0)
-			_exchange_auth_code()
+			_exchange_auth_code(temp_auth_code)
 
 func start_oauth_process(account_server: String):
 	var uri_parts := [
@@ -44,7 +43,7 @@ func start_oauth_process(account_server: String):
 	OS.shell_open(uri)
 	return
 
-func _exchange_auth_code():
+func _exchange_auth_code(temp_auth_code: String):
 	GlobalLogger.logs("Exchanging retrieved auth code for a proper token.", 0)
 	var form_parts := [
 		"client_id=%s" % "OpenMinerva-Game-Client",
