@@ -84,57 +84,6 @@ func _try_check_connection():
 	await timer.timeout
 	_try_check_connection()
 
-func get_passport(id: String) -> void:
-	GlobalLogger.logs("Attempting to authorize this device with the provided account.")
-	var _account = _get_account_by_id(id)
-
-	var _public_passport = {
-		"token": "",
-		"expires": 0
-	}
-
-	var _auth_status = get_account_authentication_status(id)
-
-	if _auth_status.valid_passport == true:
-		GlobalLogger.logs("Device passport is still valid. Not requesting a new one.", 1)
-		return
-
-	# If local account, generate a new passport on our machine
-	if _account.get("local_account", false) == true:
-		# TODO: JWT library
-		_update_account_by_key(id, "public_account_server_passport", _public_passport)
-		_save_account_database()
-		return
-
-	if _auth_status.valid_private_jwt == false:
-		GlobalLogger.logs("Tried to get a new device passport, but the account is not connected to the account server.", 1)
-		return
-
-	# If authenticated, send request to authorize the device
-	var _request_data = {"pubKey": _account.public_device_key}
-	var _device_response = await http.req(HTTPClient.Method.METHOD_POST, _account.account_server, "/api/v1/device/auth", 40400, ["Accept: application/json", "Content-Type: application/json", "Cookie: token=%s" % _account.private_account_server_jwt.token], JSON.stringify(_request_data))
-
-	var _raw_response = _handle_response(_device_response)
-	if _raw_response.get("ok", false) == false:
-		return
-
-	var _device_response_body = _raw_response.get("body")
-
-	if "error" in _device_response_body.keys():
-		GlobalLogger.logs("Device authorization request returned an error. '%s'" % _device_response_body["error"], 1)
-		return
-
-	var _public_passport_token = _device_response["response_headers"]["Set-Cookie"].split("; ")
-	_public_passport.token = _public_passport_token[0].replace("token=", "")
-	_public_passport.expires = time_lib.convert_jwt_timestamp_to_unix(_public_passport_token[3].replace("Expires=", ""))
-
-	# Record passport if successful
-	_update_account_by_key(id, "public_account_server_passport", _public_passport)
-	_save_account_database()
-	
-	GlobalLogger.logs("Successfully received a passport from the account server.", 1)
-	return
-
 ## Save the current account database we have in memory to the disk.
 func _save_account_database() -> void:
 	DirAccess.open("user://").make_dir_recursive("user://database")

@@ -86,7 +86,6 @@ func create_account() -> void:
 
 	if local_account_form_node.button_pressed == false && account_server_form_node.text != "":
 		await GlobalAccount.authenticate(_local_id, password_form_node.text, remember_me_form_node.button_pressed)
-		await GlobalAccount.get_passport(_local_id)
 
 	return
 
