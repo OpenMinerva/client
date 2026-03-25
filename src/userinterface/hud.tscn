@@ -552,7 +552,7 @@ text = "Account Server"
 
 [node name="CAAccountServer" type="LineEdit" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/OAuth/Create/VBoxContainer3" unique_id=404007920]
 layout_mode = 2
-text = "http://localhost"
+text = "http://localhost:40400"
 placeholder_text = "https://accounts.openminerva.org"
 
 [node name="CARememberMe" type="CheckButton" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/OAuth/Create" unique_id=1759228467]
@@ -596,6 +596,7 @@ text = "OAuth2"
 [node name="UsernamePassword" type="Button" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/SelectMethod/Container" unique_id=1669994196]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
+disabled = true
 text = "Username + Password"
 
 [node name="Sessions" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=2135749463]
