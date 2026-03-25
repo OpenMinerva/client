@@ -14,7 +14,6 @@ var jwt_lib = preload("res://scripts/libs/jwt.gd").new()
 var random_lib = preload("res://scripts/utils/random.gd").new()
 
 # TODO: Encrypt and store private token files. https://github.com/OpenMinerva/client/issues/59
-# TODO: Close the browser tab after completion?
 
 var port: int = 54000
 var bind_address: String = "127.0.0.1"
@@ -45,12 +44,22 @@ func check_connection():
 		var connection = redirect_server.take_connection()
 		var request = connection.get_string(connection.get_available_bytes())
 		if request:
-			# TODO: Make this more robust. How can I make sure that the code returned is valid?
+			# TODO: Make this more robust.
+			# ? How can I make sure that the code returned is valid?
 			var temp_auth_code: String = request.split("code=")[1].split("&iss=")[0].strip_edges()
 			var authentication_server = request.split("Referer: ")[1].split("\n")[0].strip_edges()
 
 			GlobalLogger.logs("Got authentication code: '%s'." % temp_auth_code, 0)
 			_exchange_auth_code(temp_auth_code, authentication_server)
+
+			# Send success.
+			var html_response = "HTTP/1.1 200 OK\r\n"
+			html_response += "Content-Type: text/html\r\n"
+			html_response += "Connection: close\r\n\r\n"
+			html_response += "<html><body><h1>Success!</h1> <p>You can close this window now.</p></body></html>"
+
+			connection.put_data(html_response.to_utf8_buffer())
+			connection.disconnect_from_host()
 
 func start_oauth_process(account_server: String):
 	var uri_parts := [
