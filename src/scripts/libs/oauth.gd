@@ -14,14 +14,15 @@ var jwt_lib = preload("res://scripts/libs/jwt.gd").new()
 var random_lib = preload("res://scripts/utils/random.gd").new()
 
 # TODO: Encrypt and store private token files. https://github.com/OpenMinerva/client/issues/59
-# TODO: Validate tokens?
-# TODO: Refresh tokens
+# TODO: Close the browser tab after completion?
 
 var port: int = 54000
 var bind_address: String = "127.0.0.1"
 var redirect_server = TCPServer.new()
 var secret_pkce: String = random_lib.random_string(50)
 
+var auth_server_url: String
+var auth_server_port: int
 var access_token: String
 var refresh_token: String
 var id_token: String
@@ -80,10 +81,10 @@ func _exchange_auth_code(temp_auth_code: String, authentication_server: String):
 	var form_string: String = "&".join(form_parts)
 
 	# TODO: Make a better way to split the url into parts
-	var auth_server_host = authentication_server.split(":")[0] + ":" + authentication_server.split(":")[1]
-	var auth_server_port: int = int(authentication_server.split(":")[2])
+	auth_server_url = authentication_server.split(":")[0] + ":" + authentication_server.split(":")[1]
+	auth_server_port = int(authentication_server.split(":")[2])
 
-	var exchange_response = await http.req(HTTPClient.Method.METHOD_POST, auth_server_host, "/oauth/token", auth_server_port, ["Accept: application/json", "Content-Type: application/x-www-form-urlencoded"], form_string)
+	var exchange_response = await http.req(HTTPClient.Method.METHOD_POST, auth_server_url, "/oauth/token", auth_server_port, ["Accept: application/json", "Content-Type: application/x-www-form-urlencoded"], form_string)
 
 	if exchange_response.ok == false:
 		GlobalLogger.logs("Unhandled error with exchanging auth code for access_token.", 2)
@@ -92,6 +93,46 @@ func _exchange_auth_code(temp_auth_code: String, authentication_server: String):
 	var token_data = JSON.parse_string(exchange_response.get("body"))
 
 	_get_tokens_from_response(token_data)
+
+func _refresh_tokens() -> void:
+	GlobalLogger.logs("Refreshing OAuth tokens.", 1)
+	# TODO: Error checks
+	var form_parts := [
+		"client_id=%s" % "OpenMinerva-Game-Client",
+		"grant_type=refresh_token",
+		"refresh_token=%s" % refresh_token,
+	]
+
+	var form_string: String = "&".join(form_parts)
+	var refresh_response = await http.req(HTTPClient.Method.METHOD_POST, auth_server_url, "/oauth/token", auth_server_port, ["Accept: application/json", "Content-Type: application/x-www-form-urlencoded"], form_string)
+	var token_data = JSON.parse_string(refresh_response.get("body"))
+	_get_tokens_from_response(token_data)
+	return
+
+func _validate_token() -> Dictionary:
+	# TODO: Error checks
+	GlobalLogger.logs("Validating OAuth token.", 1)
+
+	var return_dict: Dictionary = {"ok": false, "error": "", "data": {}}
+
+	var form_parts := [
+		"client_id=%s" % "OpenMinerva-Game-Client",
+		"token=%s" % access_token,
+	]
+	var form_string: String = "&".join(form_parts)
+
+	var validate_response = await http.req(HTTPClient.Method.METHOD_POST, auth_server_url, "/oauth/token/introspection", auth_server_port, ["Accept: application/json", "Content-Type: application/x-www-form-urlencoded"], form_string)
+	
+	if validate_response.ok == false:
+		GlobalLogger.logs("Unhandled error validating an OAuth token.", 4)
+		return_dict.error = "Unhandled error."
+		return return_dict
+
+	var json_response = JSON.parse_string(validate_response.get("body"))
+
+	return_dict.data = {"active": json_response.active}
+	return_dict.ok = true
+	return return_dict
 
 func _get_code_challenge(verifier: String) -> String:
 	var ctx = HashingContext.new()
@@ -114,4 +155,6 @@ func _get_tokens_from_response(response: Dictionary) -> void:
 	refresh_token = response.get("refresh_token")
 	id_token = response.get("id_token")
 	access_token_expiry = response.get("expires_in")
+
+	GlobalLogger.logs("New OAuth values:\naccess: %s\nrefresh: %s\nid: %s\nexpiry: %s" % [access_token, refresh_token, id_token, access_token_expiry], 0)
 	return
