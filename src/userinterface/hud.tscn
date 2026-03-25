@@ -433,6 +433,7 @@ size_flags_horizontal = 3
 text = "Remove"
 
 [node name="AccountCreate" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=476222424]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -528,6 +529,7 @@ size_flags_horizontal = 3
 text = "Create"
 
 [node name="OAuth" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create" unique_id=1033385490]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
@@ -573,7 +575,6 @@ size_flags_horizontal = 3
 text = "Sign In"
 
 [node name="SelectMethod" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create" unique_id=1416964800]
-visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20

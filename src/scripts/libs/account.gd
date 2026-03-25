@@ -71,8 +71,7 @@ func authenticate(id: String, password: String, remember_me: bool = false):
 
 	var request_data = {"username": account.username, "password": password, "rememberMe": remember_me}
 
-	# TODO: Currently the account server redirects. Make the HTTP library follow redirects.
-	# TODO: Also have the library properly separate ports.
+	# TODO: Hardcoded localhost
 	oauth_lib.start_oauth_process("http://localhost:40400/oauth/authorize")
 	_try_check_connection()
 
