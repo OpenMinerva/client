@@ -31,10 +31,6 @@ func create(account: Dictionary) -> Dictionary:
 	_clean_account.account_server = account.get("account_server", null)
 	_clean_account.remember_me = account.get("remember_me", null)
 	_clean_account.local_account = account.get("local_account", null)
-	_clean_account.private_device_key = account.get("private_device_key", null)
-	_clean_account.public_device_key = account.get("public_device_key", null)
-	_clean_account.private_account_server_jwt = account.get("private_account_server_jwt", {})
-	_clean_account.public_account_server_passport = account.get("public_account_server_passport", {})
 
 	_database.append(_clean_account)
 	_save_account_database()
@@ -61,18 +57,13 @@ func clear() -> void:
 	active_account = {}
 	return
 
-func authenticate(id: String, password: String, remember_me: bool = false):
+func authenticate(id: String, remember_me: bool = false):
 	GlobalLogger.logs("Attempting to connect account '%s' to their account server." % id)
 	var account = _get_account_by_id(id)
 
-	if password == "":
-		GlobalLogger.logs("Can not authenticate with the account server without a password.", 3)
-		return
+	var request_data = {"username": account.username, "rememberMe": remember_me, "account_server": account.account_server}
 
-	var request_data = {"username": account.username, "password": password, "rememberMe": remember_me}
-
-	# TODO: Hardcoded localhost
-	oauth_lib.start_oauth_process("http://localhost:40400/oauth/authorize")
+	oauth_lib.start_oauth_process(request_data.account_server + "/oauth/authorize")
 	_try_check_connection()
 
 func _try_check_connection():

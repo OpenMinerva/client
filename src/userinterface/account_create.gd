@@ -21,6 +21,9 @@ var account_server_form_node
 var remember_me_form_node
 var local_account_form_node
 
+var oauth_account_server_form_node
+var oauth_remember_me_form_node
+
 var login_page_selectmethod
 var login_page_usernamepassword
 var login_page_oauth
@@ -30,11 +33,16 @@ const ACCOUNT_DATABASE_DIRECTORY = "user://config/accounts/accounts_db.cfg"
 func init(caller_node: Node) -> void:
 	root = caller_node.get_tree().current_scene.get_node("Hud/MarginContainer/VBoxContainer/Master/AccountCreate")
 	
+	# UsernamePassword
 	username_form_node = root.get_node("Create/UsernamePassword/Create/VBoxContainer/CAUsername")
 	password_form_node = root.get_node("Create/UsernamePassword/Create/VBoxContainer2/CAPassword")
 	account_server_form_node = root.get_node("Create/UsernamePassword/Create/VBoxContainer3/CAAccountServer")
 	remember_me_form_node = root.get_node("Create/UsernamePassword/Create/CARememberMe")
 	local_account_form_node = root.get_node("Create/UsernamePassword/Create/CALocalAccount")
+
+	# OAuth
+	oauth_account_server_form_node = root.get_node("Create/OAuth/Create/VBoxContainer3/CAAccountServer")
+	oauth_remember_me_form_node = root.get_node("Create/UsernamePassword/Create/CARememberMe")
 
 	login_page_selectmethod = root.get_node("Create/SelectMethod")
 	login_page_usernamepassword = root.get_node("Create/UsernamePassword")
@@ -55,6 +63,7 @@ func clear_form() -> void:
 	local_account_form_node.button_pressed = false
 	return
 
+# TODO: create_account is for OAuth2 only right now. Make it generic!
 func create_account() -> void:
 	# TODO: Check to see if ID exists already
 	var _local_id = random.random_string(6, true)
@@ -74,9 +83,9 @@ func create_account() -> void:
 	var _account_dictionary = {
 		"id": _local_id,
 		"username": username_form_node.text,
-		"account_server": account_server_form_node.text,
-		"remember_me": remember_me_form_node.button_pressed,
-		"local_account": local_account_form_node.button_pressed,
+		"account_server": oauth_account_server_form_node.text,
+		"remember_me": oauth_remember_me_form_node.button_pressed,
+		"local_account": false, # TODO
 		"private_device_key": _device_keys.private,
 		"public_device_key": _device_keys.public,
 		"private_account_server_jwt": {"token": "", "expires": 0},
@@ -85,7 +94,7 @@ func create_account() -> void:
 	GlobalAccount.create(_account_dictionary)
 
 	if local_account_form_node.button_pressed == false && account_server_form_node.text != "":
-		await GlobalAccount.authenticate(_local_id, password_form_node.text, remember_me_form_node.button_pressed)
+		await GlobalAccount.authenticate(_local_id, remember_me_form_node.button_pressed)
 
 	return
 
