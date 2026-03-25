@@ -7,8 +7,8 @@ var dashboard_home_account
 var dashboard_home_used_storage
 var account_list_node
 var create_account_button
+var create_page
 var create_account_back_button
-var create_account_confirm
 
 const COLOR_RED = "#ff0000"
 const COLOR_RED_SOFT = "#ffc8c8"
@@ -34,8 +34,7 @@ func init(caller_node: Node):
 	account_list_node = root.get_node("Hud/MarginContainer/VBoxContainer/Master/AccountDisplay")
 
 	create_account_button = root.get_node("Hud/MarginContainer/VBoxContainer/Master/AccountDisplay/List/HBoxContainer/NewAccount")
-	create_account_back_button = root.get_node("Hud/MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/HBoxContainer/CreateAccountBack")
-	create_account_confirm = root.get_node("Hud/MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/HBoxContainer/ConfirmCreateAccount")
+	create_page = root.get_node("Hud/MarginContainer/VBoxContainer/Master/AccountCreate")
 	
 	display_dashboard_section("Home")
 	_add_account_display_button()
@@ -141,7 +140,6 @@ func _add_account_display_button() -> void:
 
 func _add_event_listener_create_account_button() -> void:
 	create_account_button.pressed.connect(display_dashboard_section.bind("AccountCreate"))
-	create_account_back_button.pressed.connect(display_dashboard_section.bind("AccountDisplay"))
 	return
 
 # TODO: This function is here as a test, it should be moved to its own file when the file is created.

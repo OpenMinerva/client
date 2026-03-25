@@ -451,80 +451,151 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_styles/panel = ExtResource("4_6rlgq")
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create" unique_id=83231436]
+[node name="UsernamePassword" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create" unique_id=83231436]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="Create" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer" unique_id=1027080501]
+[node name="Create" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/UsernamePassword" unique_id=1027080501]
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_constants/separation = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create" unique_id=44400410]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/UsernamePassword/Create" unique_id=44400410]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/VBoxContainer" unique_id=1919638633]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/UsernamePassword/Create/VBoxContainer" unique_id=1919638633]
 layout_mode = 2
 text = "Username"
 
-[node name="CAUsername" type="LineEdit" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/VBoxContainer" unique_id=925907901]
+[node name="CAUsername" type="LineEdit" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/UsernamePassword/Create/VBoxContainer" unique_id=925907901]
 layout_mode = 2
 text = "u"
 placeholder_text = "Username"
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create" unique_id=1696617473]
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/UsernamePassword/Create" unique_id=1696617473]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/VBoxContainer2" unique_id=1480122353]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/UsernamePassword/Create/VBoxContainer2" unique_id=1480122353]
 layout_mode = 2
 text = "Password"
 
-[node name="CAPassword" type="LineEdit" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/VBoxContainer2" unique_id=8617011]
+[node name="CAPassword" type="LineEdit" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/UsernamePassword/Create/VBoxContainer2" unique_id=8617011]
 layout_mode = 2
 text = "i"
 placeholder_text = "Password"
 secret = true
 
-[node name="VBoxContainer3" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create" unique_id=2026306086]
+[node name="VBoxContainer3" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/UsernamePassword/Create" unique_id=2026306086]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/VBoxContainer3" unique_id=252202476]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/UsernamePassword/Create/VBoxContainer3" unique_id=252202476]
 layout_mode = 2
 text = "Account Server"
 
-[node name="CAAccountServer" type="LineEdit" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/VBoxContainer3" unique_id=783276815]
+[node name="CAAccountServer" type="LineEdit" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/UsernamePassword/Create/VBoxContainer3" unique_id=783276815]
 layout_mode = 2
 text = "http://localhost"
 placeholder_text = "https://accounts.openminerva.org"
 
-[node name="CARememberMe" type="CheckButton" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create" unique_id=1627203869]
+[node name="CARememberMe" type="CheckButton" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/UsernamePassword/Create" unique_id=1627203869]
 layout_mode = 2
 button_pressed = true
 text = "Remember Me"
 flat = true
 
-[node name="CALocalAccount" type="CheckButton" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create" unique_id=869022482]
+[node name="CALocalAccount" type="CheckButton" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/UsernamePassword/Create" unique_id=869022482]
 layout_mode = 2
 text = "Local Account"
 flat = true
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create" unique_id=700361537]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/UsernamePassword/Create" unique_id=700361537]
 layout_mode = 2
 
-[node name="CreateAccountBack" type="Button" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/HBoxContainer" unique_id=2040294501]
+[node name="CreateAccountBack" type="Button" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/UsernamePassword/Create/HBoxContainer" unique_id=2040294501]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Back"
 
-[node name="ConfirmCreateAccount" type="Button" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/MarginContainer/Create/HBoxContainer" unique_id=1706811869]
+[node name="ConfirmCreateAccount" type="Button" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/UsernamePassword/Create/HBoxContainer" unique_id=1706811869]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Create"
+
+[node name="OAuth" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create" unique_id=1033385490]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Create" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/OAuth" unique_id=1431764238]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 10
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/OAuth/Create" unique_id=1971820391]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/OAuth/Create/VBoxContainer3" unique_id=1010954308]
+layout_mode = 2
+text = "Account Server"
+
+[node name="CAAccountServer" type="LineEdit" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/OAuth/Create/VBoxContainer3" unique_id=404007920]
+layout_mode = 2
+text = "http://localhost"
+placeholder_text = "https://accounts.openminerva.org"
+
+[node name="CARememberMe" type="CheckButton" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/OAuth/Create" unique_id=1759228467]
+layout_mode = 2
+button_pressed = true
+text = "Remember Me"
+flat = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/OAuth/Create" unique_id=162707587]
+layout_mode = 2
+
+[node name="CreateAccountBack" type="Button" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/OAuth/Create/HBoxContainer" unique_id=729130015]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Back"
+
+[node name="ConfirmCreateAccount" type="Button" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/OAuth/Create/HBoxContainer" unique_id=840318543]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Sign In"
+
+[node name="SelectMethod" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create" unique_id=1416964800]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Container" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/SelectMethod" unique_id=1882060538]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 10
+
+[node name="OAuth" type="Button" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/SelectMethod/Container" unique_id=2044513720]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "OAuth2"
+
+[node name="UsernamePassword" type="Button" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/SelectMethod/Container" unique_id=1669994196]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "Username + Password"
 
 [node name="Sessions" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=2135749463]
 visible = false
