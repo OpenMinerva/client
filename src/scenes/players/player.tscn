@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://dvx1vs2ig7st4"]
+[gd_scene format=3 uid="uid://dvx1vs2ig7st4"]
 
 [ext_resource type="Script" uid="uid://dxa60xi5uelay" path="res://scenes/players/player.gd" id="1_plyga"]
 
@@ -7,38 +7,38 @@
 [sub_resource type="SeparationRayShape3D" id="SeparationRayShape3D_xrm3l"]
 length = 0.25
 
-[node name="Player" type="CharacterBody3D" groups=["Players"]]
+[node name="Player" type="CharacterBody3D" unique_id=823362684 groups=["Players"]]
 script = ExtResource("1_plyga")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1660137540]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("CapsuleMesh_p1mvi")
 
-[node name="Head" type="Node3D" parent="."]
+[node name="Head" type="Node3D" parent="." unique_id=401421687]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, -0.15)
 
-[node name="Camera3D" type="Camera3D" parent="Head"]
+[node name="Camera3D" type="Camera3D" parent="Head" unique_id=1141552766]
 fov = 40.0
 
-[node name="InteractionRay" type="RayCast3D" parent="Head/Camera3D"]
+[node name="InteractionRay" type="RayCast3D" parent="Head/Camera3D" unique_id=1005810842]
 target_position = Vector3(0, 0, -2)
 collision_mask = 2
 hit_back_faces = false
 
-[node name="AimSight" type="RayCast3D" parent="Head/Camera3D"]
+[node name="AimSight" type="RayCast3D" parent="Head/Camera3D" unique_id=1914541974]
 transform = Transform3D(1, 0, 0, 0, -1, -8.74228e-08, 0, 8.74228e-08, -1, 0, 0, 0)
 target_position = Vector3(0, 0, 3000)
 hit_back_faces = false
 
-[node name="Hands" type="Node3D" parent="Head/Camera3D"]
+[node name="Hands" type="Node3D" parent="Head/Camera3D" unique_id=553484413]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
 
-[node name="StairStep" type="CollisionShape3D" parent="."]
+[node name="StairStep" type="CollisionShape3D" parent="." unique_id=1633399245]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.3, -0.5194253)
 shape = SubResource("SeparationRayShape3D_xrm3l")
 
-[node name="PlayerMovement" type="Node" parent="."]
+[node name="PlayerMovement" type="Node" parent="." unique_id=1713886755]
 
-[node name="PlayerInput" type="Node" parent="."]
+[node name="PlayerInput" type="Node" parent="." unique_id=903642472]
 
-[node name="PlayerInventory" type="Node" parent="."]
+[node name="PlayerInventory" type="Node" parent="." unique_id=1423667068]
