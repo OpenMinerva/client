@@ -12,7 +12,6 @@ extends Node
 var http = preload("res://scripts/network/http.gd").new()
 var jwt_lib = preload("res://scripts/libs/jwt.gd").new()
 var random_lib = preload("res://scripts/utils/random.gd").new()
-var url_lib = preload("res://scripts/libs/url.gd").new()
 
 # TODO: Encrypt and store private token files. https://github.com/OpenMinerva/client/issues/59
 
@@ -90,7 +89,7 @@ func _exchange_auth_code(temp_auth_code: String, authentication_server: String):
 
 	var form_string: String = "&".join(form_parts)
 
-	var url_parts = url_lib.deconstruct(authentication_server)
+	var url_parts = UrlParser.deconstruct(authentication_server)
 	auth_server_url = url_parts.data.host
 	auth_server_port = int(url_parts.data.port)
 

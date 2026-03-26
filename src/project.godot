@@ -31,6 +31,7 @@ AccountServers="*uid://bpysjoq7n0ytu"
 CredentialStore="*uid://cs4c0ctis2flp"
 Random="*uid://1js68qt8w0mv"
 GlobalAccount="*uid://dtlb70kxvbtvn"
+UrlParser="*res://addons/openminerva.urlparser/urlparser.gd"
 
 [display]
 
@@ -38,6 +39,10 @@ window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/openminerva.urlparser/plugin.cfg")
 
 [input]
 
