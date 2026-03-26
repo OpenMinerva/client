@@ -60,6 +60,7 @@ func check_connection():
 
 			connection.put_data(html_response.to_utf8_buffer())
 			connection.disconnect_from_host()
+			stop_server()
 
 func start_oauth_process(account_server: String):
 	var uri_parts := [

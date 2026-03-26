@@ -67,9 +67,13 @@ func authenticate(id: String, remember_me: bool = false):
 	_try_check_connection()
 
 func _try_check_connection():
+	if oauth_lib.auth_server_url:
+		stop_connection_timer = true
+		return
+
 	if stop_connection_timer == true:
 		return
-		
+
 	var timer = get_tree().create_timer(2.0)
 	timer.connect("timeout", oauth_lib.check_connection)
 	await timer.timeout
