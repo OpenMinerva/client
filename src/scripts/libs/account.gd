@@ -3,13 +3,12 @@ extends Node
 var http = preload("res://scripts/network/http.gd").new()
 var time_lib = preload("res://scripts/libs/time.gd").new()
 var oauth_lib = preload("res://scripts/libs/oauth.gd").new()
-	
+
 const ACCOUNT_DATABASE_DIRECTORY: String = "user://database/accounts.bin"
 
 # TODO: Create proper encryption of the account database
 # https://github.com/OpenMinerva/client/issues/59
 # This is just here for funsies for now.
-const ENCRYPTION_KEY: String = "cb`$BaeGT12^)Zv{"
 var stop_connection_timer = false
 
 var active_account = {}
@@ -31,6 +30,8 @@ func create(account: Dictionary) -> Dictionary:
 	_clean_account.account_server = account.get("account_server", null)
 	_clean_account.remember_me = account.get("remember_me", null)
 	_clean_account.local_account = account.get("local_account", null)
+	_clean_account.private_device_key = account.get("private_device_key", null)
+	_clean_account.public_device_key = account.get("public_device_key", null)
 
 	_database.append(_clean_account)
 	_save_account_database()
@@ -50,6 +51,7 @@ func use(id: String) -> void:
 	GlobalLogger.logs("Setting active account to '%s'." % id, 1)
 	var _account = _get_account_by_id(id)
 	active_account = _account
+	test_upload_public_key_to_server()
 	return
 
 ## Signs out of the active account.
@@ -83,7 +85,6 @@ func _try_check_connection():
 func _save_account_database() -> void:
 	DirAccess.open("user://").make_dir_recursive("user://database")
 
-	# var file = FileAccess.open_encrypted(ACCOUNT_DATABASE_DIRECTORY, FileAccess.WRITE, ENCRYPTION_KEY.sha256_buffer())
 	var file = FileAccess.open(ACCOUNT_DATABASE_DIRECTORY, FileAccess.WRITE)
 
 	if file:
@@ -100,7 +101,6 @@ func _load_account_database() -> Array:
 		GlobalLogger.logs("Account database does not exist, creating one now.", 1)
 		await _save_account_database()
 
-	# var file = FileAccess.open_encrypted(ACCOUNT_DATABASE_DIRECTORY, FileAccess.READ, ENCRYPTION_KEY.sha256_buffer())
 	var file = FileAccess.open(ACCOUNT_DATABASE_DIRECTORY, FileAccess.READ)
 
 	var account_data
@@ -157,3 +157,21 @@ func _handle_response(response: Dictionary) -> Dictionary:
 	response_data.body = JSON.parse_string(response.get("body"))
 
 	return response_data
+
+# DEV: Upload public key to the server.
+func test_upload_public_key_to_server():
+	GlobalLogger.logs("Registering the device public key to the account server.")
+	var body = {
+		"public_key": active_account.public_device_key
+	}
+	var url_parts = UrlParser.deconstruct(active_account.account_server)
+	if url_parts.ok == false:
+		GlobalLogger.logs("Unhandled error registering the public device key to the account server. '%s'" % url_parts.error, 3)
+		return
+	url_parts = url_parts.data
+
+	print(url_parts)
+
+	var public_key_response = await http.req(HTTPClient.Method.METHOD_POST, url_parts.host, "/api/v1/device_key", url_parts.port, ["Accept: application/json", "Content-Type: application/json", "authorization: Bearer %s" % oauth_lib.access_token], JSON.stringify(body))
+	print(public_key_response)
+	return
