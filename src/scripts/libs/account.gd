@@ -8,7 +8,6 @@ const ACCOUNT_DATABASE_DIRECTORY: String = "user://database/accounts.bin"
 
 # TODO: Create proper encryption of the account database
 # https://github.com/OpenMinerva/client/issues/59
-# This is just here for funsies for now.
 var stop_connection_timer = false
 
 var active_account = {}
