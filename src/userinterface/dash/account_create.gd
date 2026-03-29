@@ -55,4 +55,6 @@ func _create_oauth() -> void:
 
 	var res = GlobalAccount.create(account, "oauth")
 
+	Events.emit_signal("dash_switch_tab", "AccountDisplay")
+
 	return
