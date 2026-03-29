@@ -82,9 +82,11 @@ func remove(id: String) -> Dictionary:
 func use(id: String) -> void:
 	GlobalLogger.logs("Setting active account to '%s'." % id, 1)
 
-	# TODO: Check if account is still valid without trying to sign in.
-	# await authenticate_oauth(id)
 	var _account = _get_account_by_id(id)
+	if _account.type == "oauth":
+		if await OAuth.validate_token(_account) == false:
+			await authenticate_oauth(id)
+
 	active_account = _account
 	Events.emit_signal("dash_active_account_changed", active_account)
 	return

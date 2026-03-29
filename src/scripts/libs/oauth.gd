@@ -122,3 +122,27 @@ func _get_tokens_from_response(response: Dictionary) -> Dictionary:
 	}
 
 	return oauth_data
+
+func validate_token(account: Dictionary) -> bool:
+	if account.access_token == "":
+		return false
+
+	var form_parts := [
+		"client_id=%s" % "OpenMinerva-Game-Client",
+		"token=%s" % account.access_token,
+	]
+	var form_string: String = "&".join(form_parts)
+
+	var account_server_url = UrlParser.deconstruct(account.account_server)
+	if account_server_url.ok == false:
+		GlobalLogger.logs("Failed to parse account server url.", 3)
+		return false
+	account_server_url = account_server_url.data
+
+	var introspect_response = await http.req(HTTPClient.Method.METHOD_POST, account_server_url.host, "/oauth/token/introspection", account_server_url.port, ["Accept: application/json", "Content-Type: application/x-www-form-urlencoded"], form_string)
+	if introspect_response.ok == false:
+		GlobalLogger.logs("Unknown error parsing the introspection response.", 3)
+		return false
+	introspect_response = JSON.parse_string(introspect_response.body)
+
+	return introspect_response.active
