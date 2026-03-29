@@ -23,7 +23,7 @@ func _ready():
 	return
 
 func _handle_active_account_changed(account: Dictionary) -> void:
-	account_card_container.get_node("MarginContainer/HBoxContainer/VBoxContainer/Username").text = account.username
+	account_card_container.get_node("MarginContainer/HBoxContainer/VBoxContainer/Username").text = account.get("username") if account.get("username") else account.get("display_name")
 	account_card_container.get_node("MarginContainer/HBoxContainer/VBoxContainer/AccountServer").text = account.account_server
 	return
 

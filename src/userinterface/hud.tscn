@@ -437,7 +437,6 @@ size_flags_horizontal = 3
 text = "Remove"
 
 [node name="AccountCreate" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=476222424]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -549,6 +548,15 @@ theme_override_constants/separation = 10
 
 [node name="VBoxContainer3" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/OAuth/Create" unique_id=1971820391]
 layout_mode = 2
+
+[node name="DisplayName" type="Label" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/OAuth/Create/VBoxContainer3" unique_id=1545576882]
+layout_mode = 2
+text = "Display Name"
+
+[node name="CADisplayName" type="LineEdit" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/OAuth/Create/VBoxContainer3" unique_id=1868732970]
+layout_mode = 2
+text = "Anonymous"
+placeholder_text = "Display Name"
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/AccountCreate/Create/OAuth/Create/VBoxContainer3" unique_id=1010954308]
 layout_mode = 2

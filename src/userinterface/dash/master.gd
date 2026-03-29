@@ -17,7 +17,6 @@ var dashboard_tab_names = []
 
 func _ready():
 	_build_page_list()
-	
 
 	Events.connect("dash_set_state", _handle_set_dash_state)
 	Events.connect("dash_switch_tab", _handle_switch_tab)
