@@ -26,27 +26,6 @@
 [ext_resource type="Texture2D" uid="uid://ddchrocw45muh" path="res://resources/icons/flowchart.svg" id="12_hq11n"]
 [ext_resource type="Script" uid="uid://crlujtfv2bh1w" path="res://userinterface/dash/contacts.gd" id="15_gll50"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q6jcb"]
-bg_color = Color(1, 0, 0, 1)
-corner_radius_top_left = 100
-corner_radius_top_right = 100
-corner_radius_bottom_right = 100
-corner_radius_bottom_left = 100
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pg41k"]
-bg_color = Color(0, 0.73333335, 1, 1)
-corner_radius_top_left = 100
-corner_radius_top_right = 100
-corner_radius_bottom_right = 100
-corner_radius_bottom_left = 100
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_02ixq"]
-bg_color = Color(0.8166667, 1, 0, 1)
-corner_radius_top_left = 100
-corner_radius_top_right = 100
-corner_radius_bottom_right = 100
-corner_radius_bottom_left = 100
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kgckq"]
 draw_center = false
 
@@ -119,7 +98,6 @@ size_flags_vertical = 3
 theme = ExtResource("1_cx7w0")
 
 [node name="Home" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=675278383]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -172,71 +150,19 @@ stretch_mode = 5
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Username" type="Label" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer" unique_id=2128745035]
+[node name="Username" type="RichTextLabel" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer" unique_id=321531249]
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "My username"
+size_flags_vertical = 3
+theme_override_font_sizes/normal_font_size = 20
+bbcode_enabled = true
+text = "[color=gray]No Account[/color]"
+fit_content = true
 
 [node name="AccountServer" type="Label" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer" unique_id=881790720]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7977378, 0.7977378, 0.7977378, 1)
 theme_override_font_sizes/font_size = 14
 text = "https://accounts.openminerva.org"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer" unique_id=959799361]
-layout_mode = 2
-theme_override_constants/separation = 25
-
-[node name="AccountServerStatus" type="CenterContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=625401222]
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/AccountServerStatus" unique_id=1031297018]
-layout_mode = 2
-
-[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/AccountServerStatus/HBoxContainer" unique_id=797877828]
-custom_minimum_size = Vector2(20, 20)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_q6jcb")
-
-[node name="AccountServer2" type="Label" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/AccountServerStatus/HBoxContainer" unique_id=735797380]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.78431374, 0.78431374, 1)
-theme_override_font_sizes/font_size = 12
-text = "Account Server"
-
-[node name="PassportStatus" type="CenterContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1041229647]
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/PassportStatus" unique_id=290049645]
-layout_mode = 2
-
-[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/PassportStatus/HBoxContainer" unique_id=863774185]
-custom_minimum_size = Vector2(20, 20)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_pg41k")
-
-[node name="AccountServer2" type="Label" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/PassportStatus/HBoxContainer" unique_id=1104150622]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.67460716, 0.88117504, 0.99999994, 1)
-theme_override_font_sizes/font_size = 12
-text = "Passport"
-
-[node name="AccountType" type="CenterContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=19784871]
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/AccountType" unique_id=637179577]
-layout_mode = 2
-
-[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/AccountType/HBoxContainer" unique_id=1785723394]
-custom_minimum_size = Vector2(20, 20)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_02ixq")
-
-[node name="AccountServer2" type="Label" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/AccountType/HBoxContainer" unique_id=485889637]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.9595, 1, 0.73, 1)
-theme_override_font_sizes/font_size = 12
-text = "Cloud"
 
 [node name="Button" type="Button" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay" unique_id=58113697]
 layout_mode = 2
@@ -437,6 +363,7 @@ size_flags_horizontal = 3
 text = "Remove"
 
 [node name="AccountCreate" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=476222424]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
