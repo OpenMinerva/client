@@ -18,6 +18,7 @@ func _ready():
 	_create_account_button.pressed.connect(Events.emit_signal.bind("dash_switch_tab", "AccountCreate"))
 
 	Events.dash_set_state.connect(_handle_dash_set_state)
+	Events.dash_account_list_loaded.connect(_handle_account_list_loaded)
 	return
 
 func _clear_account_listings() -> void:
@@ -29,6 +30,11 @@ func _handle_dash_set_state(state: bool) -> void:
 	if state == false:
 		return
 
+	_clear_account_listings()
+	_display_account_lists()
+	return
+
+func _handle_account_list_loaded() -> void:
 	_clear_account_listings()
 	_display_account_lists()
 	return

@@ -46,6 +46,7 @@ func create(account: Dictionary, type: String) -> Dictionary:
 
 	_save_account_database()
 	
+	Events.emit_signal("dash_account_list_loaded")
 	return {"ok": true, "id": account_formatted.id}
 
 func _create_oauth(account) -> Dictionary:
@@ -72,6 +73,9 @@ func remove(id: String) -> Dictionary:
 	var target_entry = _database.find_custom(func(entry): return entry.get("id") == id)
 	_database.remove_at(target_entry)
 	_save_account_database()
+
+	Events.emit_signal("dash_account_list_loaded")
+
 	return {"ok": true}
 
 ## Sets an account as the active account.
