@@ -13,11 +13,14 @@ var _page_names = []
 @onready var create = get_node("Create")
 @onready var select_oauth_btn = get_node("Create/SelectMethod/Container/OAuth")
 @onready var create_oauth_btn = get_node("Create/OAuth/Create/HBoxContainer/ConfirmCreateAccount")
+@onready var create_oauth_back_btn = get_node("Create/OAuth/Create/HBoxContainer/CreateAccountBack")
 
 func _ready():
 	_get_pages()
 	select_oauth_btn.pressed.connect(_display_login_route.bind("OAuth"))
+	
 	create_oauth_btn.pressed.connect(_create_oauth)
+	create_oauth_back_btn.pressed.connect(_display_login_route.bind("SelectMethod"))
 	return
 
 func _display_oauth():
