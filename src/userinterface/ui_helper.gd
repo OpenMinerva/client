@@ -110,7 +110,6 @@ func display_dashboard_section(page_name: String = "") -> void:
 		"Contacts":
 			await tree.process_frame
 			move_chat_scroll_to_bottom()
-
 	return
 
 func add_event_listeners_to_nav_buttons() -> void:

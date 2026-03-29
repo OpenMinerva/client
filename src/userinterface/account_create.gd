@@ -88,8 +88,6 @@ func create_account() -> void:
 		"local_account": false, # TODO
 		"private_device_key": _device_keys.private,
 		"public_device_key": _device_keys.public,
-		"private_account_server_jwt": {"token": "", "expires": 0},
-		"public_account_server_passport": {"token": "", "expires": 0}
 	}
 	GlobalAccount.create(_account_dictionary)
 

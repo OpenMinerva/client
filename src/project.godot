@@ -30,7 +30,9 @@ FileManager="*uid://d2s50p717g3n"
 AccountServers="*uid://bpysjoq7n0ytu"
 Random="*uid://1js68qt8w0mv"
 GlobalAccount="*uid://dtlb70kxvbtvn"
+Events="*uid://c656spc3ppdlw"
 UrlParser="*uid://budprjmmpally"
+OAuth="*uid://jd7qlsley1no"
 
 [display]
 
