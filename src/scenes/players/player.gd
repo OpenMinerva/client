@@ -45,19 +45,24 @@ func _input(event):
 	if is_multiplayer_authority() == false:
 		return
 
-	if Input.is_action_just_pressed("escape"):
+	if event is InputEventMouseMotion && mouse_captured:
+		body.rotate_y(-event.relative.x * mouse_sensitivity * 0.001)
+		camera.rotate_x(-event.relative.y * mouse_sensitivity * 0.001)
+		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-85), deg_to_rad(89))
+
+func _unhandled_input(event):
+	if is_multiplayer_authority() == false:
+		return
+
+	if event.is_action_pressed("escape"):
 		if mouse_captured:
 			capture_mouse(false)
 			Events.emit_signal("dash_set_state", true)
 		else:
 			capture_mouse(true)
 			Events.emit_signal("dash_set_state", false)
-		return
 
-	if event is InputEventMouseMotion && mouse_captured:
-		body.rotate_y(-event.relative.x * mouse_sensitivity * 0.001)
-		camera.rotate_x(-event.relative.y * mouse_sensitivity * 0.001)
-		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-85), deg_to_rad(89))
+		get_viewport().set_input_as_handled()
 
 func _physics_process(delta):
 	if is_multiplayer_authority() == false:
