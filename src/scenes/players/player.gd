@@ -85,7 +85,7 @@ func _physics_process(delta):
 
 	# Get the input direction and handle the movement/deceleration.
 	var input_dir: Vector2 = Vector2(0, 0)
-	
+
 	if mouse_captured == true:
 		input_dir = Input.get_vector("left", "right", "forward", "backward")
 
@@ -97,10 +97,6 @@ func _physics_process(delta):
 		velocity.x = lerp(velocity.x, direction.x * speed, delta * 20.0)
 		velocity.z = lerp(velocity.z, direction.z * speed, delta * 20.0)
 	
-	var velocity_clamped = clamp(velocity.length(), 0.5, SPRINT_SPEED * 2)
-	var target_fov = base_fov + fov_change * velocity_clamped
-	camera.fov = lerp(camera.fov, target_fov, delta * 8.0)
-		
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
 
