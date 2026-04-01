@@ -45,19 +45,24 @@ func _input(event):
 	if is_multiplayer_authority() == false:
 		return
 
-	if Input.is_action_just_pressed("escape"):
+	if event is InputEventMouseMotion && mouse_captured:
+		body.rotate_y(-event.relative.x * mouse_sensitivity * 0.001)
+		camera.rotate_x(-event.relative.y * mouse_sensitivity * 0.001)
+		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-85), deg_to_rad(89))
+
+func _unhandled_input(event):
+	if is_multiplayer_authority() == false:
+		return
+
+	if event.is_action_pressed("escape"):
 		if mouse_captured:
 			capture_mouse(false)
 			Events.emit_signal("dash_set_state", true)
 		else:
 			capture_mouse(true)
 			Events.emit_signal("dash_set_state", false)
-		return
 
-	if event is InputEventMouseMotion && mouse_captured:
-		body.rotate_y(-event.relative.x * mouse_sensitivity * 0.001)
-		camera.rotate_x(-event.relative.y * mouse_sensitivity * 0.001)
-		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-85), deg_to_rad(89))
+		get_viewport().set_input_as_handled()
 
 func _physics_process(delta):
 	if is_multiplayer_authority() == false:
@@ -84,22 +89,21 @@ func _physics_process(delta):
 		speed = speed / 1.1
 
 	# Get the input direction and handle the movement/deceleration.
+	var input_dir: Vector2 = Vector2(0, 0)
+
 	if mouse_captured == true:
-		var input_dir = Input.get_vector("left", "right", "forward", "backward")
-		var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-		if direction:
-			velocity.x = direction.x * speed
-			velocity.z = direction.z * speed
-		else:
-			velocity.x = lerp(velocity.x, direction.x * speed, delta * 20.0)
-			velocity.z = lerp(velocity.z, direction.z * speed, delta * 20.0)
-		
-		var velocity_clamped = clamp(velocity.length(), 0.5, SPRINT_SPEED * 2)
-		var target_fov = base_fov + fov_change * velocity_clamped
-		camera.fov = lerp(camera.fov, target_fov, delta * 8.0)
-			
-		if Input.is_action_just_pressed("jump") and is_on_floor():
-			velocity.y = JUMP_VELOCITY
+		input_dir = Input.get_vector("left", "right", "forward", "backward")
+
+	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	if direction:
+		velocity.x = direction.x * speed
+		velocity.z = direction.z * speed
+	else:
+		velocity.x = lerp(velocity.x, direction.x * speed, delta * 20.0)
+		velocity.z = lerp(velocity.z, direction.z * speed, delta * 20.0)
+	
+	if Input.is_action_just_pressed("jump") and is_on_floor():
+		velocity.y = JUMP_VELOCITY
 
 	move_and_slide()
 	_send_player_synchronization_info()
