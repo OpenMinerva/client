@@ -13,7 +13,7 @@ var server_init: bool = false
 
 func _ready():
 	await network_manager.start_server()
-	var session_name = Random.random_string(6)
+	var session_name = Random.random_string(6, true)
 	var new_home = player_home_scene.instantiate()
 	new_home.name = session_name
 	network_manager.active_session = session_name
