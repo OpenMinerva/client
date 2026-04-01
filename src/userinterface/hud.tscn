@@ -25,6 +25,7 @@
 [ext_resource type="Texture2D" uid="uid://ckoajckje5mq2" path="res://resources/icons/edit.svg" id="9_xdslj"]
 [ext_resource type="Texture2D" uid="uid://ddchrocw45muh" path="res://resources/icons/flowchart.svg" id="12_hq11n"]
 [ext_resource type="Script" uid="uid://crlujtfv2bh1w" path="res://userinterface/dash/contacts.gd" id="15_gll50"]
+[ext_resource type="Script" uid="uid://e1djdo6st2a7" path="res://userinterface/dash/exit.gd" id="17_3rk53"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kgckq"]
 draw_center = false
@@ -98,6 +99,7 @@ size_flags_vertical = 3
 theme = ExtResource("1_cx7w0")
 
 [node name="Home" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=675278383]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -2390,6 +2392,47 @@ theme_override_constants/margin_bottom = 10
 layout_mode = 2
 text = "Block Avatar"
 horizontal_alignment = 1
+
+[node name="Exit" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=719734468]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+script = ExtResource("17_3rk53")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Exit" unique_id=143476327]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/Master/Exit/VBoxContainer" unique_id=1484282659]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "[font_size=40]Thank you for using OpenMinerva![/font_size]
+
+[font_size=30]Come again soon![/font_size]"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Exit/VBoxContainer" unique_id=611012192]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+
+[node name="Cancel" type="Button" parent="MarginContainer/VBoxContainer/Master/Exit/VBoxContainer/HBoxContainer" unique_id=1332748794]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 26
+text = "Cancel"
+
+[node name="Exit" type="Button" parent="MarginContainer/VBoxContainer/Master/Exit/VBoxContainer/HBoxContainer" unique_id=1558278195]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 26
+text = "Exit"
 
 [node name="NavBar" type="Panel" parent="MarginContainer/VBoxContainer" unique_id=1428960291]
 custom_minimum_size = Vector2(0, 75)
