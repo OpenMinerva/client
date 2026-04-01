@@ -99,7 +99,6 @@ size_flags_vertical = 3
 theme = ExtResource("1_cx7w0")
 
 [node name="Home" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=675278383]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -164,7 +163,6 @@ fit_content = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7977378, 0.7977378, 0.7977378, 1)
 theme_override_font_sizes/font_size = 14
-text = "https://accounts.openminerva.org"
 
 [node name="Button" type="Button" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/AccountDisplay" unique_id=58113697]
 layout_mode = 2
@@ -2394,6 +2392,7 @@ text = "Block Avatar"
 horizontal_alignment = 1
 
 [node name="Exit" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=719734468]
+visible = false
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
