@@ -29,6 +29,9 @@ func _build_page_list():
 		dashboard_tab_names.append(child.name)
 
 	for button in get_node("MarginContainer/VBoxContainer/NavBar/HBoxContainer").get_children():
+		if button.name not in dashboard_tab_names:
+			button.disabled = true
+			continue
 		button.pressed.connect(_handle_switch_tab.bind(button.name))
 
 func _handle_set_dash_state(is_open: bool) -> void:
