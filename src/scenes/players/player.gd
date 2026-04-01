@@ -84,22 +84,25 @@ func _physics_process(delta):
 		speed = speed / 1.1
 
 	# Get the input direction and handle the movement/deceleration.
+	var input_dir: Vector2 = Vector2(0, 0)
+	
 	if mouse_captured == true:
-		var input_dir = Input.get_vector("left", "right", "forward", "backward")
-		var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-		if direction:
-			velocity.x = direction.x * speed
-			velocity.z = direction.z * speed
-		else:
-			velocity.x = lerp(velocity.x, direction.x * speed, delta * 20.0)
-			velocity.z = lerp(velocity.z, direction.z * speed, delta * 20.0)
+		input_dir = Input.get_vector("left", "right", "forward", "backward")
+
+	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	if direction:
+		velocity.x = direction.x * speed
+		velocity.z = direction.z * speed
+	else:
+		velocity.x = lerp(velocity.x, direction.x * speed, delta * 20.0)
+		velocity.z = lerp(velocity.z, direction.z * speed, delta * 20.0)
+	
+	var velocity_clamped = clamp(velocity.length(), 0.5, SPRINT_SPEED * 2)
+	var target_fov = base_fov + fov_change * velocity_clamped
+	camera.fov = lerp(camera.fov, target_fov, delta * 8.0)
 		
-		var velocity_clamped = clamp(velocity.length(), 0.5, SPRINT_SPEED * 2)
-		var target_fov = base_fov + fov_change * velocity_clamped
-		camera.fov = lerp(camera.fov, target_fov, delta * 8.0)
-			
-		if Input.is_action_just_pressed("jump") and is_on_floor():
-			velocity.y = JUMP_VELOCITY
+	if Input.is_action_just_pressed("jump") and is_on_floor():
+		velocity.y = JUMP_VELOCITY
 
 	move_and_slide()
 	_send_player_synchronization_info()
