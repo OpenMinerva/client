@@ -1,6 +1,13 @@
-extends Node
+# --- License
+# File: /client/src/scripts/crypto/rsa.gd
+# Project: OpenMinerva
+# Created Date: 05 February 2026
+# Copyright (c) 2026 OpenMinerva
+# License: MIT License
+# Authors: Armored Dragon
+# --- License
 
-var jwt = preload("res://scripts/crypto/jwt.gd").new()
+extends Node
 
 ## Generates a RSA keypair at a specific bit length
 ## @returns Dictionary
@@ -21,21 +28,6 @@ func generate_keypair(level: int = 0) -> Dictionary:
 	return_dictionary.private = generated_keys.save_to_string(false)
 	return_dictionary.public = generated_keys.save_to_string(true)
 	return return_dictionary
-
-## Verify a signature with a provided public key
-## @returns bool
-func verify_jwt_signature(jwt_string: String = "", signature_pem: String = "") -> bool:
-	var crypto: Crypto = Crypto.new()
-	var sig: CryptoKey = pem_to_cryptokey(signature_pem)
-	var jwt_parts: Dictionary = jwt._get_jwt_parts(jwt_string)
-	var formatted_payload = jwt._format_jwt_payload(jwt_parts.head, jwt_parts.payload)
-
-	return crypto.verify(
-		HashingContext.HASH_SHA256,
-		formatted_payload.payload_bytes,
-		Marshalls.base64_to_raw(jwt_parts.signature),
-		sig
-	)
 
 ## Turns a pem into a CryptoKey
 ## @returns CryptoKey
