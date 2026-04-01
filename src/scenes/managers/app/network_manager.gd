@@ -1,7 +1,15 @@
+# --- License
+# File: /client/src/scenes/managers/app/network_manager.gd
+# Project: OpenMinerva
+# Created Date: 05 February 2026
+# Copyright (c) 2026 OpenMinerva
+# License: MIT License
+# Authors: Armored Dragon
+# --- License
+
 extends Node
 
 var n_c = preload("res://scripts/network/network_compression.gd").new()
-var jwt = preload("res://scripts/crypto/jwt.gd").new()
 var rsa = preload("res://scripts/crypto/rsa.gd").new()
 var url_regex = RegEx.create_from_string("^(https?)://([^/:]+)(?::(\\d+))?(.*)$")
 
