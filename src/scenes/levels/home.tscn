@@ -1,4 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://b3t1dk4vpjk6p"]
+[gd_scene format=3 uid="uid://b3t1dk4vpjk6p"]
+
+[ext_resource type="Shader" uid="uid://bh250q6rfv615" path="res://resources/shaders/grid_shader.gdshader" id="1_ikf4c"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_dbach"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -13,63 +15,24 @@ sky = SubResource("Sky_ikf4c")
 tonemap_mode = 2
 glow_enabled = true
 
-[node name="Home" type="Node3D"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_q28r8"]
+render_priority = 0
+shader = ExtResource("1_ikf4c")
+shader_parameter/line_width = 0.010000000475
+shader_parameter/fade_start = 5.0
+shader_parameter/fade_end = 50.0
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="Home" type="Node3D" unique_id=53262658]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1916430820]
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
 shadow_enabled = true
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1457348223]
 environment = SubResource("Environment_q28r8")
 
-[node name="Node3D" type="Node3D" parent="."]
-
-[node name="CSGBox3D" type="CSGBox3D" parent="Node3D"]
+[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=533069808]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, -0.5, 0)
 use_collision = true
-size = Vector3(25, 1, 10)
-
-[node name="CSGBox3D9" type="CSGBox3D" parent="Node3D"]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 3, 0)
-use_collision = true
-size = Vector3(25, 0.1, 10)
-
-[node name="CSGBox3D2" type="CSGBox3D" parent="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -12.45)
-use_collision = true
-size = Vector3(10, 1, 0.1)
-
-[node name="CSGBox3D5" type="CSGBox3D" parent="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1.5, -9.35)
-use_collision = true
-size = Vector3(4, 3, 0.1)
-
-[node name="CSGBox3D8" type="CSGBox3D" parent="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 12.45)
-use_collision = true
-size = Vector3(10, 3, 0.1)
-
-[node name="CSGBox3D6" type="CSGBox3D" parent="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1.5, -9.35)
-use_collision = true
-size = Vector3(4, 3, 0.1)
-
-[node name="CSGBox3D3" type="CSGBox3D" parent="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.95, 1.5, 1.6)
-use_collision = true
-size = Vector3(0.1, 3, 21.8)
-
-[node name="CSGBox3D7" type="CSGBox3D" parent="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.95, 1.5, 1.6)
-use_collision = true
-size = Vector3(0.1, 3, 21.8)
-
-[node name="CSGBox3D4" type="CSGBox3D" parent="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.95, 0.5, -10.9)
-use_collision = true
-size = Vector3(0.1, 1, 3)
-
-[node name="CSGBox3D10" type="CSGBox3D" parent="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.95, 0.5, -10.9)
-use_collision = true
-size = Vector3(0.1, 1, 3)
+size = Vector3(1000, 0.01, 1000)
+material = SubResource("ShaderMaterial_q28r8")

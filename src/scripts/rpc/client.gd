@@ -19,7 +19,7 @@ func on_receive_server_info(info):
 	GlobalLogger.logs("Got server info!")
 	if info.level:
 		await scene_manager.load_multiplayer_scene(info.level, info.level_node_name)
-	get_parent().s.rpc_id(1, "on_receive_player_info", CredentialStore.info.token)
+	get_parent().s.rpc_id(1, "on_receive_player_info", GlobalAccount.active_account.get("public_account_server_passport", {}).get("token", null))
 	return
 
 @rpc("authority", "reliable")

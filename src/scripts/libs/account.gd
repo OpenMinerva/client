@@ -1,0 +1,220 @@
+# --- License
+# File: /client/src/scripts/libs/account.gd
+# Project: OpenMinerva
+# Created Date: 26 February 2026
+# Copyright (c) 2026 OpenMinerva
+# License: MIT License
+# Authors: Armored Dragon
+# --- License
+
+extends Node
+
+var http = preload("res://scripts/network/http.gd").new()
+var time_lib = preload("res://scripts/libs/time.gd").new()
+var random_lib = preload("res://scripts/utils/random.gd").new()
+var rsa_lib = preload("res://scripts/crypto/rsa.gd").new()
+
+const ACCOUNT_DATABASE_DIRECTORY: String = "user://database/accounts.bin"
+
+# TODO: Create proper encryption of the account database
+# https://github.com/OpenMinerva/client/issues/59
+var stop_connection_timer = false
+
+var active_account = {}
+var _database = []
+
+func _ready():
+	_load_account_database()
+
+## Get a list of all accounts and return their information.
+func get_all() -> Array:
+	return _database
+
+## Adds an account to the account database.
+func create(account: Dictionary, type: String) -> Dictionary:
+	# Make sure we are only recording data we are intending on.
+	var account_formatted: Dictionary = {}
+
+	if type == "oauth":
+		account_formatted = _create_oauth(account)
+
+	if len(account_formatted.keys()) == 0:
+		GlobalLogger.logs("Tried to create an account, but there was nothing to save.", 3)
+		return {"ok": false, "error": "No account formatted.", "id": null}
+
+	_database.append(account_formatted)
+
+	_save_account_database()
+	
+	Events.emit_signal("dash_account_list_loaded")
+	return {"ok": true, "id": account_formatted.id}
+
+func _create_oauth(account) -> Dictionary:
+	var _account_keys = rsa_lib.generate_keypair()
+	
+	var _clean_account = {}
+	_clean_account.id = random_lib.random_string(6, true)
+	_clean_account.display_name = account.get("display_name", null)
+	_clean_account.account_server = account.get("account_server", null)
+	_clean_account.private_device_key = _account_keys.private
+	_clean_account.public_device_key = _account_keys.public
+
+	_clean_account.access_token = ""
+	_clean_account.refresh_token = ""
+	_clean_account.id_token = ""
+	_clean_account.access_token_expiry = 0
+	
+	_clean_account.type = "oauth"
+	return _clean_account
+
+## Removes an account from the account database.
+func remove(id: String) -> Dictionary:
+	GlobalLogger.logs("Attempting to remove account '%s'" % id)
+	var target_entry = _database.find_custom(func(entry): return entry.get("id") == id)
+	_database.remove_at(target_entry)
+	_save_account_database()
+
+	Events.emit_signal("dash_account_list_loaded")
+
+	return {"ok": true}
+
+## Sets an account as the active account.
+func use(id: String) -> void:
+	GlobalLogger.logs("Setting active account to '%s'." % id, 1)
+
+	var _account = _get_account_by_id(id)
+	if _account.type == "oauth":
+		if await OAuth.validate_token(_account) == false:
+			await authenticate_oauth(id)
+
+	active_account = _account
+	Events.emit_signal("dash_active_account_changed", active_account)
+	return
+
+## Signs out of the active account.
+func clear() -> void:
+	active_account = {}
+	return
+
+func update(id: String, data: Dictionary) -> void:
+	var target_entry = _database.find_custom(func(entry): return entry.get("id") == id)
+	var account = _get_account_by_id(id)
+
+	var _database_keys = account.keys()
+	var _data_keys = data.keys()
+
+	for key in _data_keys:
+		if key not in _database_keys:
+			GlobalLogger.logs("Tried to update an invalid key in an account, '%s'." % key)
+			continue
+
+		account[key] = data[key]
+
+	_database[target_entry] = account
+	_save_account_database()
+	return
+
+func authenticate_oauth(id: String, remember_me: bool = false) -> void:
+	# TODO: Error checks
+	GlobalLogger.logs("Attempting to connect account '%s' using oauth." % id)
+	var account = _get_account_by_id(id)
+
+	# TODO: Check if account is still valid without trying to sign in.
+	var oauth_tokens = await OAuth.authenticate(account.account_server + "/oauth/authorize")
+
+	update(id, oauth_tokens)
+
+## Save the current account database we have in memory to the disk.
+func _save_account_database() -> void:
+	GlobalLogger.logs("Saving account database to disk.")
+	DirAccess.open("user://").make_dir_recursive("user://database")
+
+	var file = FileAccess.open(ACCOUNT_DATABASE_DIRECTORY, FileAccess.WRITE)
+	if file:
+		file.store_var(_database) # Serializes variable to binary
+		file.close()
+	return
+
+## Read the account database from the config file on our disk.
+func _load_account_database() -> Array:
+	GlobalLogger.logs("Loading the local account database.", 1)
+
+	var account_file_exists = FileAccess.file_exists(ACCOUNT_DATABASE_DIRECTORY)
+	if account_file_exists == false:
+		GlobalLogger.logs("Account database does not exist, creating one now.", 1)
+		_save_account_database()
+
+	var file = FileAccess.open(ACCOUNT_DATABASE_DIRECTORY, FileAccess.READ)
+
+	var account_data
+
+	if file:
+		account_data = file.get_var() # Deserializes variable back
+		file.close()
+	
+	_database = account_data
+	return account_data
+
+func _get_account_by_id(id: String) -> Dictionary:
+	var index = _database.find_custom(func(entry): return entry.get("id") == id)
+
+	if index > -1:
+		return _database[index]
+
+	return {}
+
+func _update_account_by_key(id: String, key: String, value: Variant) -> void:
+	var index = _database.find_custom(func(entry): return entry.get("id") == id)
+	# TODO: Check if key is a valid key. 
+	_database[index][key] = value
+	_save_account_database()
+	return
+
+func get_account_authentication_status(id) -> Dictionary:
+	var status = {
+		"valid_passport": false,
+		"valid_private_jwt": false
+	}
+
+	var _account = _get_account_by_id(id)
+
+	status.valid_passport = _account.get("public_account_server_passport", {"expires": 0}).get("expires", 0) > int(Time.get_unix_time_from_system())
+	status.valid_private_jwt = _account.get("private_account_server_jwt", {"expires": 0}).get("expires", 0) > int(Time.get_unix_time_from_system())
+
+	return status
+
+func _handle_response(response: Dictionary) -> Dictionary:
+	var response_data = {"ok": false, "error": "", "body": {}}
+
+	if response.get("ok", false) == false:
+		response_data.error = "Request failed for unknown reason."
+		GlobalLogger.logs(response_data.error, 3)
+		return response_data
+
+	if response.get("body", null) == null:
+		response_data.error = "No body provided from the request."
+		GlobalLogger.logs(response_data.error, 3)
+		return response_data
+
+	response_data.ok = true
+	response_data.body = JSON.parse_string(response.get("body"))
+
+	return response_data
+
+# DEV: Upload public key to the server.
+# func test_upload_public_key_to_server():
+# 	GlobalLogger.logs("Registering the device public key to the account server.")
+# 	var body = {
+# 		"public_key": active_account.public_device_key
+# 	}
+# 	var url_parts = UrlParser.deconstruct(active_account.account_server)
+# 	if url_parts.ok == false:
+# 		GlobalLogger.logs("Unhandled error registering the public device key to the account server. '%s'" % url_parts.error, 3)
+# 		return
+# 	url_parts = url_parts.data
+
+# 	print(url_parts)
+
+# 	var public_key_response = await http.req(HTTPClient.Method.METHOD_POST, url_parts.host, "/api/v1/device_key", url_parts.port, ["Accept: application/json", "Content-Type: application/json", "authorization: Bearer %s" % oauth_lib.access_token], JSON.stringify(body))
+# 	print(public_key_response)
+# 	return

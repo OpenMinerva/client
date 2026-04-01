@@ -44,13 +44,14 @@ func _ready():
 func _input(event):
 	if is_multiplayer_authority() == false:
 		return
+
 	if Input.is_action_just_pressed("escape"):
 		if mouse_captured:
 			capture_mouse(false)
-			hud.set_active_state(true)
+			Events.emit_signal("dash_set_state", true)
 		else:
 			capture_mouse(true)
-			hud.set_active_state(false)
+			Events.emit_signal("dash_set_state", false)
 		return
 
 	if event is InputEventMouseMotion && mouse_captured:
