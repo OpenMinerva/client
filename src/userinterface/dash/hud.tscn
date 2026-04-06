@@ -23,6 +23,7 @@
 [ext_resource type="Texture2D" uid="uid://8fwxg1ipf0fp" path="res://resources/icons/exit.svg" id="9_amc1p"]
 [ext_resource type="Texture2D" uid="uid://ckoajckje5mq2" path="res://resources/icons/edit.svg" id="9_xdslj"]
 [ext_resource type="Texture2D" uid="uid://ddchrocw45muh" path="res://resources/icons/flowchart.svg" id="12_hq11n"]
+[ext_resource type="Script" uid="uid://dpo2x4ddv3ftt" path="res://userinterface/dash/instance.gd" id="14_3ff87"]
 [ext_resource type="Script" uid="uid://crlujtfv2bh1w" path="res://userinterface/dash/contacts.gd" id="15_gll50"]
 [ext_resource type="Script" uid="uid://e1djdo6st2a7" path="res://userinterface/dash/exit.gd" id="17_3rk53"]
 
@@ -52,6 +53,10 @@ corner_radius_top_left = 100
 corner_radius_top_right = 100
 corner_radius_bottom_right = 100
 corner_radius_bottom_left = 100
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_shwvw"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3ff87"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xdslj"]
 bg_color = Color(2.466701e-07, 0.13600668, 0.20061767, 1)
@@ -539,6 +544,7 @@ disabled = true
 text = "Username + Password"
 
 [node name="Sessions" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=2135749463]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -773,6 +779,198 @@ max_lines_visible = 2
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_kgckq")
+
+[node name="Instance" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=919985343]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+script = ExtResource("14_3ff87")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Instance" unique_id=413032466]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer" unique_id=1137764538]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer" unique_id=90422462]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer2" unique_id=1857065201]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer2/PanelContainer" unique_id=193436950]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Instance Name" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer" unique_id=1986372326]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/Instance Name" unique_id=1002302148]
+layout_mode = 2
+text = "Instance Name"
+
+[node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/Instance Name" unique_id=2029691082]
+layout_mode = 2
+placeholder_text = "Instance Name"
+
+[node name="PanelContainer2" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer2" unique_id=1338599011]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer2/PanelContainer2" unique_id=372944118]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Instance Name2" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer2/PanelContainer2/MarginContainer" unique_id=2036761912]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer2/PanelContainer2/MarginContainer/Instance Name2" unique_id=1778162350]
+layout_mode = 2
+text = "Instance Description"
+
+[node name="TextEdit" type="TextEdit" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer2/PanelContainer2/MarginContainer/Instance Name2" unique_id=1883764719]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+placeholder_text = "Instance Description"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer" unique_id=725794580]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="InstancePrivacy2" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1058028038]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy2" unique_id=1068744384]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy2/MarginContainer" unique_id=91242726]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy2/MarginContainer/HBoxContainer" unique_id=1980940677]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Max connected users"
+
+[node name="SpinBox" type="SpinBox" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy2/MarginContainer/HBoxContainer" unique_id=218460777]
+layout_mode = 2
+min_value = 1.0
+max_value = 1000.0
+value = 1.0
+suffix = "Users"
+
+[node name="InstancePrivacy" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=418692061]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy" unique_id=520825558]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Instance Name" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy/MarginContainer" unique_id=44619055]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy/MarginContainer/Instance Name" unique_id=1242833055]
+layout_mode = 2
+text = "Instance Privacy"
+
+[node name="Public" type="Button" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy/MarginContainer/Instance Name" unique_id=700002280]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Public"
+
+[node name="Contacts+" type="Button" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy/MarginContainer/Instance Name" unique_id=1719321337]
+visible = false
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Contacts+"
+
+[node name="Contacts" type="Button" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy/MarginContainer/Instance Name" unique_id=1878668850]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "Contacts"
+
+[node name="Friends+" type="Button" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy/MarginContainer/Instance Name" unique_id=1834008150]
+visible = false
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Friends+"
+
+[node name="Friends" type="Button" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy/MarginContainer/Instance Name" unique_id=4967885]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "Friends"
+
+[node name="InviteOnly" type="Button" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy/MarginContainer/Instance Name" unique_id=1625370876]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "Invite"
+
+[node name="InstanceAdvertisement" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1453042159]
+visible = false
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstanceAdvertisement" unique_id=710014992]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Instance Name" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstanceAdvertisement/MarginContainer" unique_id=339732048]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstanceAdvertisement/MarginContainer/Instance Name" unique_id=924196938]
+layout_mode = 2
+text = "Instance Advertisement"
+
+[node name="CheckButton" type="CheckButton" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstanceAdvertisement/MarginContainer/Instance Name" unique_id=476328324]
+layout_mode = 2
+theme = ExtResource("1_cx7w0")
+text = "Enable instance advertisement"
+
+[node name="ItemList" type="ItemList" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstanceAdvertisement/MarginContainer/Instance Name" unique_id=645896803]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/cursor_unfocused = SubResource("StyleBoxEmpty_shwvw")
+theme_override_styles/cursor = SubResource("StyleBoxEmpty_3ff87")
+select_mode = 2
+item_count = 3
+item_0/text = "sessions.openminerva.org"
+item_1/text = "sessions.otherservice1.com"
+item_2/text = "sessions.otherservice2.com"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer" unique_id=1107704271]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer2" unique_id=175903443]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Save Changes"
 
 [node name="Contacts" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=1935681612]
 visible = false

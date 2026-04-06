@@ -65,6 +65,7 @@ func _unhandled_input(event):
 		get_viewport().set_input_as_handled()
 
 func _physics_process(delta):
+	# TODO: Simplify focus detection code from "mouse_captured".
 	if is_multiplayer_authority() == false:
 		return
 	# Add the gravity.
@@ -73,7 +74,7 @@ func _physics_process(delta):
 	if not is_on_floor():
 		velocity.y -= gravity * delta + 0.05
 
-	if Input.is_action_pressed("sprint"):
+	if Input.is_action_pressed("sprint") && mouse_captured == true:
 		speed = lerp(speed, SPRINT_SPEED, delta * 7.0)
 		var pos = Vector3.ZERO
 		pos.y = 1.7
@@ -102,7 +103,7 @@ func _physics_process(delta):
 		velocity.x = lerp(velocity.x, direction.x * speed, delta * 20.0)
 		velocity.z = lerp(velocity.z, direction.z * speed, delta * 20.0)
 	
-	if Input.is_action_just_pressed("jump") and is_on_floor():
+	if Input.is_action_just_pressed("jump") && is_on_floor() && mouse_captured == true:
 		velocity.y = JUMP_VELOCITY
 
 	move_and_slide()
