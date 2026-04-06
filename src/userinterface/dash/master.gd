@@ -32,7 +32,7 @@ func _build_page_list():
 		if button.name not in dashboard_tab_names:
 			button.disabled = true
 			continue
-		button.pressed.connect(_handle_switch_tab.bind(button.name))
+		button.pressed.connect(Events.emit_signal.bind("dash_switch_tab", button.name))
 
 func _handle_set_dash_state(is_open: bool) -> void:
 	GlobalLogger.logs("Changing dashboard state: '%s'" % is_open)
