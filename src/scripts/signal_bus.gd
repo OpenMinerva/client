@@ -16,5 +16,6 @@ signal dash_storage_changed(storage_data: Dictionary)
 signal dash_session_changed(session_data: Dictionary)
 signal dash_message_received(message: Dictionary)
 signal dash_notification(notification: Dictionary)
-
 signal dash_account_list_loaded(account_list: PackedStringArray)
+
+signal instance_updated(instance: Dictionary)
