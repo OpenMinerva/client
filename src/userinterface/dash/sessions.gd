@@ -20,6 +20,10 @@ func _handle_page_opened(page_name: String) -> void:
 	if page_name != "Sessions":
 		return
 
+	# TODO: Make a more robust active_account detection mechanism.
+	if GlobalAccount.active_account == {}:
+		return
+
 	# TODO: Check if we need to authenticate, if so
 	await SessionQuery.authenticate()
 
