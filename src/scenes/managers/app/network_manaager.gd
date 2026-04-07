@@ -11,6 +11,7 @@ extends Node
 
 @onready var scene_manager = get_tree().current_scene.get_node("SceneManager")
 @onready var rpc_lib = get_tree().current_scene.get_node("RpcManager")
+@onready var http = preload("res://scripts/network/http.gd").new()
 
 enum PrivacyLevel {
 	INVITE = 0,
@@ -71,6 +72,9 @@ func start_server(port: int, base_level: BaseLevel) -> void:
 
 	# Force spawn the host.
 	rpc_lib.com.on_spawn_player(1)
+
+	# Focus this world
+	_status.focused_world = _entry_id
 	return
 
 func _get_session_entry() -> Dictionary:
@@ -119,3 +123,19 @@ func get_active_sessions() -> Array:
 		result.append(_status.sessions[session_id].merged({"id": session_id}))
 
 	return result
+
+func change_session_settings(session_settings: Dictionary) -> void:
+	_status.sessions[_status.focused_world].instance_privacy = session_settings.instance_privacy
+
+	if _status.sessions[_status.focused_world].instance_privacy > 0:
+		GlobalLogger.logs("Advertising session.")
+		var url = UrlParser.deconstruct("http://localhost:40500/api/v1/postSession")
+		# TODO: Error checking
+		url = url.data
+		var _body = {
+			"session_name": _status.focused_world,
+		}
+		var advertise_response = await http.req(HTTPClient.Method.METHOD_POST, url.host, url.path, url.port, ["Accept: application/json", "Content-Type: application/json", "x-api-key: %s" % GlobalAccount.dev_session_server_api_key], JSON.stringify(_body))
+		print(advertise_response)
+
+	return

@@ -12,6 +12,9 @@ extends Control
 @onready var _template_world_listing = get_node("Templates/WorldListing")
 @onready var _world_listing_grid = get_node("HBoxContainer/VBoxContainer2/ScrollContainer/GridContainer")
 
+# TODO: Keep track of what is different from the current live settings
+# When something changes, show icon or indicator of a change.
+
 func _ready():
 	Events.dash_switch_tab.connect(_handle_page_opened)
 	return

@@ -22,6 +22,7 @@ var stop_connection_timer = false
 
 var active_account = {}
 var _database = []
+var dev_session_server_api_key = ""
 
 func _ready():
 	_load_account_database()

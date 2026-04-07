@@ -34,7 +34,7 @@ func _ready():
 	instance_privacy_friends_btn.pressed.connect(_update_instance_privacy.bind(PrivacyLevel.FRIENDS))
 	instance_privacy_invite_btn.pressed.connect(_update_instance_privacy.bind(PrivacyLevel.INVITE))
 
-	# save_changes_btn.pressed.connect()
+	save_changes_btn.pressed.connect(_handle_save_session_info)
 
 	Events.connect("instance_updated", update_instance)
 
@@ -80,4 +80,9 @@ func update_instance(instance: Dictionary) -> void:
 	GlobalLogger.logs("Updating session.")
 	# Publish changes to the session server.
 	# Update running server 
+	return
+
+func _handle_save_session_info() -> void:
+	# TODO: Have this page know what instance it currently occupies.
+	network_manager.change_session_settings({"instance_privacy": 1})
 	return

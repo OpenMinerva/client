@@ -12,7 +12,6 @@ extends Node
 var http = preload("res://scripts/network/http.gd").new()
 
 const SESSION_SERVERS = ["http://localhost:40500/"]
-var api_key = ""
 
 func authenticate() -> Dictionary:
 	var _return_arr = {"ok": false, "error": ""}
@@ -62,7 +61,7 @@ func get_sessions() -> Array:
 		]
 		var form_string: String = "&".join(form_parts)
 
-		var sessions_response = await http.req(HTTPClient.Method.METHOD_GET, url_deconstructed.host, "/api/v1/getSessions?%s" % form_string, url_deconstructed.port, ["Accept: application/json", "Content-Type: application/x-www-form-urlencoded", "x-api-key: %s" % api_key])
+		var sessions_response = await http.req(HTTPClient.Method.METHOD_GET, url_deconstructed.host, "/api/v1/getSessions?%s" % form_string, url_deconstructed.port, ["Accept: application/json", "Content-Type: application/x-www-form-urlencoded", "x-api-key: %s" % GlobalAccount.dev_session_server_api_key])
 
 		var sessions_in_server = _session_request_received(url_deconstructed.host, sessions_response)
 		# TODO: Validate request health
@@ -77,9 +76,8 @@ func _session_request_received(host: String, response: Dictionary) -> Dictionary
 	# TODO: Validate is valid JSON
 	# TODO: Validate key exists
 	var response_parsed = JSON.parse_string(response.body)
-	print(response_parsed)
 
-	_return_arr.data = response_parsed.sessions
+	_return_arr.data = response_parsed.data
 	_return_arr.ok = true
 
 	return _return_arr
@@ -91,7 +89,7 @@ func _authentication_request_received(host: String, response: Dictionary) -> Dic
 	# TODO: Validate is valid JSON
 	# TODO: Validate key exists
 
-	api_key = JSON.parse_string(response.body).key
+	GlobalAccount.dev_session_server_api_key = JSON.parse_string(response.body).key
 
 	# If authentication succeeded, record data
 	# Else report error.
