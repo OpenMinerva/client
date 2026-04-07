@@ -21,7 +21,14 @@ var active_session = ""
 
 # This file contains all of the session management and client communication.
 # Anything that goes through the network should first route through here at some point.
-enum server_privacy {PRIVATE, INVITE, FRIENDS, PUBLIC}
+enum PrivacyLevel {
+	INVITE = 0,
+	PUBLIC = 1,
+	CONTACTS_PLUS = 2,
+	CONTACTS = 3,
+	FRIENDS_PLUS = 4,
+	FRIENDS = 5
+}
 
 var status = {
 	"hosting": false,
@@ -29,13 +36,15 @@ var status = {
 }
 
 var config = {
+	"instance_name": "",
+	"instance_description": "",
 	"port": 20205,
-	"max_clients": 4,
-	"privacy": 0,
+	"max_connected_users": 1,
+	"instance_privacy": PrivacyLevel.INVITE,
 
 	"networking": {
 		"use_steam": false,
-		"use_lan": false
+		"use_lan": true
 	}
 }
 
@@ -94,7 +103,6 @@ func close_server():
 	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
 	status.hosting = false
 	status.client = false
-
 	return
 
 func update_server():

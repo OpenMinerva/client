@@ -103,7 +103,6 @@ size_flags_vertical = 3
 theme = ExtResource("1_cx7w0")
 
 [node name="Home" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=675278383]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -204,6 +203,26 @@ layout_mode = 2
 text = "2.5 GiB / 5 GiB"
 horizontal_alignment = 1
 
+[node name="ActiveSessions" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer" unique_id=1874646451]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/ActiveSessions" unique_id=591364507]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/ActiveSessions/MarginContainer" unique_id=1770756004]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer/VBoxContainer/ActiveSessions/MarginContainer/VBoxContainer" unique_id=66943091]
+layout_mode = 2
+text = "Active Sessions"
+horizontal_alignment = 1
+
 [node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Home/HBoxContainer" unique_id=1873874176]
 custom_minimum_size = Vector2(1000, 0)
 layout_mode = 2
@@ -266,6 +285,15 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_dr1q3")
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "157 ms"
+
+[node name="Templates" type="Control" parent="MarginContainer/VBoxContainer/Master/Home" unique_id=725523853]
+visible = false
+layout_mode = 2
+
+[node name="ActiveSessionButton" type="Button" parent="MarginContainer/VBoxContainer/Master/Home/Templates" unique_id=272140934]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
 
 [node name="AccountDisplay" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=1554068867]
 visible = false
@@ -781,6 +809,7 @@ mouse_default_cursor_shape = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_kgckq")
 
 [node name="Instance" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=919985343]
+visible = false
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0

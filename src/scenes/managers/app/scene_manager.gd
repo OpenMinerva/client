@@ -5,21 +5,13 @@ extends Node
 
 # Game managers
 @onready var network_manager = get_tree().current_scene.get_node("NetworkManager")
-
 @onready var scene_work_root = get_tree().current_scene.get_node("Scenes")
 @onready var player_home_scene: PackedScene = load("res://scenes/levels/home.tscn")
 
 var server_init: bool = false
 
 func _ready():
-	await network_manager.start_server()
-	var session_name = Random.random_string(6, true)
-	var new_home = player_home_scene.instantiate()
-	new_home.name = session_name
-	network_manager.active_session = session_name
-	scene_work_root.add_child(new_home)
-
-	_spawn_host_player()
+	await network_manager.start_server(20205, 2)
 
 func load_multiplayer_scene(scene_dir: String, scene_name: String):
 	await _clean_scene_work_root()
@@ -28,12 +20,10 @@ func load_multiplayer_scene(scene_dir: String, scene_name: String):
 	var scene = scene_packed.instantiate()
 	scene.name = scene_name
 	scene_work_root.add_child(scene)
-	network_manager.active_session = scene_name
 	await get_tree().process_frame
 	return
 
 func _clean_scene_work_root():
-	network_manager.active_session = ""
 	var nodes_to_destroy = scene_work_root.get_children()
 	for node in nodes_to_destroy:
 		node.queue_free()

@@ -18,12 +18,7 @@ enum PrivacyLevel {
 	FRIENDS = 5
 }
 
-var session = {
-	"instance_name": "",
-	"instance_description": "",
-	"max_connected_users": 1,
-	"instance_privacy": PrivacyLevel.INVITE
-}
+@onready var network_manager = get_tree().current_scene.get_node("NetworkManager")
 
 @onready var instance_privacy_container = get_node("VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy/MarginContainer/Instance Name")
 @onready var instance_privacy_public_btn = instance_privacy_container.get_node("Public")
@@ -39,7 +34,7 @@ func _ready():
 	instance_privacy_friends_btn.pressed.connect(_update_instance_privacy.bind(PrivacyLevel.FRIENDS))
 	instance_privacy_invite_btn.pressed.connect(_update_instance_privacy.bind(PrivacyLevel.INVITE))
 
-	save_changes_btn.pressed.connect()
+	# save_changes_btn.pressed.connect()
 
 	Events.connect("instance_updated", update_instance)
 
@@ -47,7 +42,11 @@ func _ready():
 	return
 
 func _update_instance_privacy(level):
+	if !is_multiplayer_authority():
+		return
+
 	GlobalLogger.logs("Updating instance privacy.")
+
 	for node in instance_privacy_container.get_children():
 		if node is Button:
 			_privacy_button_disable(node)
@@ -61,7 +60,6 @@ func _update_instance_privacy(level):
 		PrivacyLevel.FRIENDS:
 			_privacy_button_enable(instance_privacy_friends_btn)
 
-	session["instance_privacy"] = level
 	return
 
 func _privacy_button_disable(node) -> void:
@@ -75,6 +73,10 @@ func _privacy_button_enable(node) -> void:
 	return
 
 func update_instance(instance: Dictionary) -> void:
+	# TODO Session Permissions: Admins can change instance settings. 
+	if !is_multiplayer_authority():
+		return
+
 	GlobalLogger.logs("Updating session.")
 	# Publish changes to the session server.
 	# Update running server 
