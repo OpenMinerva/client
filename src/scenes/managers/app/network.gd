@@ -23,6 +23,7 @@ var _database = {
 }
 
 const _instance_database_template = {
+	"id": "",
 	"name": "",
 	"description": "",
 	"port": 0,
@@ -53,6 +54,7 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 	# Create server master scene.
 	var _scene: String = scene_m.create_master_scene()
 	var _instance = _instance_database_template.duplicate()
+	_instance.id = _scene
 	_instance.name = _scene
 	_instance.start_time = int(Time.get_unix_time_from_system())
 	_instance.privacy = Enum.PrivacyLevel.INVITE
@@ -78,7 +80,7 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 	else:
 		scene_m.set_master_root_from_program(_scene, Enum.BaseLevel.GRID)
 
-	# Start session managers. (Handles players, spawning, permissions (as host))
+	# TODO: Start session managers. (Handles players, spawning, permissions (as host))
 
 	return response_dict
 
@@ -125,6 +127,14 @@ func on_kicked():
 func on_banned():
 	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["name"])
 	return
+
+func get_connected_sessions():
+	var result = []
+
+	for session_id in _database.sessions.keys():
+		result.append(_database.sessions[session_id].merged({"id": session_id}))
+
+	return result
 
 func _find_available_port(target_port: int = 20205) -> int:
 	GlobalLogger.logs("Trying to find an available port starting at '%s'." % target_port)
