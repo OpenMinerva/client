@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://bysrhijnau31g"]
+
+[node name="Base" type="Node3D" unique_id=2084163635]
+
+[node name="PlayerManager" type="Node" parent="." unique_id=412138074]
+
+[node name="ServerSignalManager" type="Node" parent="." unique_id=165926833]
+
+[node name="root" type="Node3D" parent="." unique_id=345927695]
