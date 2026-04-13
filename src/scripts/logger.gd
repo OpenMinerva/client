@@ -46,11 +46,10 @@ func logs(message: String = "", level: int = 0):
 	_log_to_file(message, level)
 
 	if console_logging_enabled:
-		print_rich("[[color=%s]%s[/color]] %s" % [log_level_colors[level], log_level_names[level], message])
+		var stack := get_stack()
+		print_rich("[[color=%s]%s[/color]] %s [[color=lightyellow]%s[/color]]" % [log_level_colors[level], log_level_names[level], message, stack[1]["function"]])
 		if level == 3:
 			# We are skipping the first frame, otherwise this function will be logged.
-			var stack := get_stack()
-
 			for i in range(1, stack.size()):
 				var frame = stack[i]
 				print(
