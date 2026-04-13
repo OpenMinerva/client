@@ -29,10 +29,8 @@ func create_master_scene():
 	return _scene_id
 
 func get_master_scene(id: String) -> Node3D:
-	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
-	# Find scene by id from scene list.
-	# return Node3D or null.
-	return
+	var _scene = scene_container.get_node(id)
+	return _scene
 
 func destroy_master_scene(id: String):
 	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
@@ -42,20 +40,30 @@ func destroy_master_scene(id: String):
 	# Queue free.
 	return
 
-func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel) -> bool:
-	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
-	# get_master_scene.
-	# Find scene by scene_type. (Make function)
-	# Validate scene integrity.
-	# Find node "root".
-	# Destroy node.
+func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel) -> void:
+	# TODO: Disable spawning players while changing master root.
+	var _scene = get_master_scene(id)
+
+	var _root_scene: PackedScene = _get_scene_by_type(scene_type)
+
+	# TODO: Validate scene integrity.
+
+	var _root_node = get_master_root(id)
+	_scene.remove_child(_root_node)
+	_root_node.queue_free()
+
 	# Replace with new scene.
-	return false
+	var _root_scene_node = _root_scene.instantiate()
+	_root_scene_node.name = "root"
+	_scene.add_child(_root_scene_node)
+
+	# TODO: Emit signal of root changed.
+	return
 
 func get_master_root(id: String) -> Node3D:
-	# get_master_scene
-	# Find node "root".
-	return
+	var _scene: Node3D = get_master_scene(id)
+	var _root = _scene.get_node_or_null("root")
+	return _root
 
 func set_master_root_from_inventory(id: String, scene_type: Enum.BaseLevel) -> bool:
 	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
@@ -73,3 +81,18 @@ func start_master_scene(id: String):
 	# Start Player manager.
 	# Start ServerSignalManager.
 	return
+
+func _get_scene_by_type(scene_type: Enum.BaseLevel) -> PackedScene:
+	var _scene_dir: String = ""
+
+	match scene_type:
+		Enum.BaseLevel.DEBUG:
+			_scene_dir = "res://scenes/levels/debug.tscn"
+		Enum.BaseLevel.EMPTY:
+			_scene_dir = "res://scenes/levels/empty.tscn"
+		Enum.BaseLevel.GRID:
+			_scene_dir = "res://scenes/levels/grid.tscn"
+		_:
+			_scene_dir = "res://scenes/levels/debug.tscn"
+
+	return load(_scene_dir)
