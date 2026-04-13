@@ -81,6 +81,9 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 		scene_m.set_master_root_from_program(_scene, Enum.BaseLevel.GRID)
 
 	# TODO: Start session managers. (Handles players, spawning, permissions (as host))
+	
+	# DEV: Force spawn the host.
+	scene_m.get_master_scene(_scene).get_node("PlayerManager").spawn_player(1)
 
 	return response_dict
 
