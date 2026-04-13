@@ -29,11 +29,13 @@ func create_master_scene():
 	return _scene_id
 
 func get_master_scene(id: String) -> Node3D:
+	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
 	# Find scene by id from scene list.
 	# return Node3D or null.
 	return
 
 func destroy_master_scene(id: String):
+	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
 	# get_master_scene
 	# Check if currently being used by a server.
 	# Check if being used as client to server.
@@ -41,6 +43,7 @@ func destroy_master_scene(id: String):
 	return
 
 func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel) -> bool:
+	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
 	# get_master_scene.
 	# Find scene by scene_type. (Make function)
 	# Validate scene integrity.
@@ -55,7 +58,7 @@ func get_master_root(id: String) -> Node3D:
 	return
 
 func set_master_root_from_inventory(id: String, scene_type: Enum.BaseLevel) -> bool:
-	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["name"])
+	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
 	# get_master_scene
 	# Find scene from inventory.
 	# Validate scene integrity.
@@ -63,3 +66,10 @@ func set_master_root_from_inventory(id: String, scene_type: Enum.BaseLevel) -> b
 	# Destroy node.
 	# Replace with new scene.
 	return false
+
+func start_master_scene(id: String):
+	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
+	# get_master_scene
+	# Start Player manager.
+	# Start ServerSignalManager.
+	return
