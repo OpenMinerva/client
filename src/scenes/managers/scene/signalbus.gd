@@ -8,3 +8,5 @@
 # --- License
 
 extends Node
+
+var active = false

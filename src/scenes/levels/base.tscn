@@ -8,7 +8,7 @@
 [node name="PlayerManager" type="Node" parent="." unique_id=412138074]
 script = ExtResource("1_c3hqj")
 
-[node name="ServerSignalManager" type="Node" parent="." unique_id=165926833]
+[node name="SignalBus" type="Node" parent="." unique_id=165926833]
 script = ExtResource("2_fundk")
 
 [node name="root" type="Node3D" parent="." unique_id=345927695]

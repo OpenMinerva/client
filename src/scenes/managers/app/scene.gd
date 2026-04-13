@@ -76,10 +76,18 @@ func set_master_root_from_inventory(id: String, scene_type: Enum.BaseLevel) -> b
 	return false
 
 func start_master_scene(id: String):
-	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
-	# get_master_scene
-	# Start Player manager.
-	# Start ServerSignalManager.
+	const MANAGERS = ["PlayerManager", "SignalBus"]
+
+	var _scene = get_master_scene(id)
+
+	for node_name in MANAGERS:
+		var _scene_manager = _scene.get_node_or_null(node_name)
+		if _scene_manager:
+			_scene_manager.active = true
+			GlobalLogger.logs("'%s' started in server '%s'" % [node_name, id])
+			continue
+		
+		GlobalLogger.logs("Could not start invalid manager '%s' in server '%s'" % [node_name, id], 3)
 	return
 
 func _get_scene_by_type(scene_type: Enum.BaseLevel) -> PackedScene:
