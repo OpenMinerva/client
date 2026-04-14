@@ -20,6 +20,7 @@ var url_regex = RegEx.create_from_string("^(https?)://([^/:]+)(?::(\\d+))?(.*)$"
 
 var _database = {
 	"heartbeats": {},
+	"sessions_id": {},
 	"sessions": {},
 	"sessions_api": {}
 }
@@ -107,12 +108,21 @@ func update_server(id: String, server_info: Dictionary):
 	# TODO: Get session_servers from client config
 	# TODO: Get enabled session_servers from server config
 	# TODO: For each enabled session_server:
+	# TODO: Check if we are already advertising this server, then submit a generic update to all session servers.
+	if _database.heartbeats.has(id):
+		GlobalLogger.logs("Session '%s' is already advertised. Updating instead." % id)
+		await _update_session(server_info, "http://localhost:40500")
+		return
+
 	var advertise_response = await _advertise_session(server_info, "http://localhost:40500")
 
 	# TODO: Get list of successful session advertisements, and start heartbeats.
 	if advertise_response.ok == true:
-		_create_heartbeat_timer(advertise_response.data.id)
+		# TODO: Create a helper to manage the session IDs, or database by itself?
+		_database.sessions_id.set(server_info.id, advertise_response.data.id)
+		_create_heartbeat_timer(server_info.id)
 	return
+	# If the server is now private, kill the heartbeat and submit a request to review the session from the session server
 
 func join_server(ip: String, port: int):
 	# Create multiplayer peer.
@@ -150,6 +160,32 @@ func get_connected_sessions():
 		result.append(_database.sessions[session_id].merged({"id": session_id}))
 
 	return result
+
+func _update_session(session_info: Dictionary, session_server: String) -> Dictionary:
+	var response_dict = {"ok": false, "error": null, "data": null}
+
+	GlobalLogger.logs("Updating session '%s' to the server '%s'" % [session_info.id, session_server])
+	var url = UrlParser.deconstruct("%s/api/v1/updateSession" % session_server)
+	# TODO: Error checking
+	url = url.data
+
+	var _body = {
+		"id": _database.sessions_id.get(session_info.id),
+		"session_name": session_info.name,
+		"session_description": session_info.description,
+		"session_privacy": session_info.privacy,
+	}
+
+	var _update_response = await http.req(
+		HTTPClient.Method.METHOD_POST,
+		url.host,
+		url.path,
+		url.port,
+		["Accept: application/json", "Content-Type: application/json", "x-api-key: %s" % GlobalAccount.dev_session_server_api_key],
+		JSON.stringify(_body)
+	)
+
+	return response_dict
 
 func _find_available_port(target_port: int = 20205) -> int:
 	GlobalLogger.logs("Trying to find an available port starting at '%s'." % target_port)
@@ -226,7 +262,9 @@ func _advertise_session(session_info: Dictionary, session_server: String) -> Dic
 	url = url.data
 
 	var _body = {
-		"session_name": session_info.id,
+		"session_name": session_info.name,
+		"session_description": session_info.description,
+		"session_privacy": session_info.privacy,
 	}
 
 	var advertise_response = await http.req(
