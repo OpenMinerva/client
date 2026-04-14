@@ -43,7 +43,7 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 	var response_dict = {"ok": false, "error": null, "data": null}
 
 	# Get an available port. If port was defined, force that port or fail.
-	if port:
+	if port == 0:
 		var port_available = !_is_port_in_use(port)
 		if !port_available:
 			response_dict.error = "Port is not available."
@@ -163,6 +163,8 @@ func _is_port_in_use(port: int) -> bool:
 
 	if err == OK:
 		tcp_server.stop()
-		return true
+		return false
+
+	return true
 
 	return false
