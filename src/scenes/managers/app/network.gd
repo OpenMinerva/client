@@ -105,24 +105,32 @@ func update_server(id: String, server_info: Dictionary):
 	# Update the database entry.
 	# Emit server updated event to the server.
 	# If server is now public, and advertising is enabled, advertise to the session-server(s).
-	# TODO: Get session_servers from client config
-	# TODO: Get enabled session_servers from server config
-	# TODO: For each enabled session_server:
-	# TODO: Check if we are already advertising this server, then submit a generic update to all session servers.
-	if _database.heartbeats.has(id):
-		GlobalLogger.logs("Session '%s' is already advertised. Updating instead." % id)
-		await _update_session(server_info, "http://localhost:40500")
-		return
+	if server_info.privacy > Enum.PrivacyLevel.INVITE:
+		# TODO: Get session_servers from client config
+		# TODO: Get enabled session_servers from server config
+		# TODO: For each enabled session_server:
+		# TODO: Check if we are already advertising this server, then submit a generic update to all session servers.
+		if _database.heartbeats.has(id):
+			GlobalLogger.logs("Session '%s' is already advertised. Updating instead." % id)
+			await _update_session(server_info, "http://localhost:40500")
+		else:
+			var advertise_response = await _advertise_session(server_info, "http://localhost:40500")
 
-	var advertise_response = await _advertise_session(server_info, "http://localhost:40500")
+			# TODO: Get list of successful session advertisements, and start heartbeats.
+			if advertise_response.ok == true:
+				# TODO: Create a helper to manage the session IDs, or database by itself?
+				_database.sessions_id.set(server_info.id, advertise_response.data.id)
+				_create_heartbeat_timer(server_info.id)
 
-	# TODO: Get list of successful session advertisements, and start heartbeats.
-	if advertise_response.ok == true:
-		# TODO: Create a helper to manage the session IDs, or database by itself?
-		_database.sessions_id.set(server_info.id, advertise_response.data.id)
-		_create_heartbeat_timer(server_info.id)
+	if server_info.privacy == Enum.PrivacyLevel.INVITE:
+		if _database.heartbeats.has(id):
+			GlobalLogger.logs("Destroying session heartbeat for '%s'" % id)
+			_database.heartbeats.erase(id)
+		
+		_remove_session_from_server(id, "http://localhost:40500")
+		# Kill any heartbeats
+		# Send removal request to session server(s)
 	return
-	# If the server is now private, kill the heartbeat and submit a request to review the session from the session server
 
 func join_server(ip: String, port: int):
 	# Create multiplayer peer.
@@ -185,6 +193,35 @@ func _update_session(session_info: Dictionary, session_server: String) -> Dictio
 		JSON.stringify(_body)
 	)
 
+	return response_dict
+
+func _remove_session_from_server(server_id: String, session_server: String) -> Dictionary:
+	var response_dict = {"ok": false, "error": null, "data": {}}
+
+	GlobalLogger.logs("Removing session '%s' to the server '%s'" % [server_id, session_server])
+	var url = UrlParser.deconstruct("%s/api/v1/deleteSession" % session_server)
+	# TODO: Error checking
+	url = url.data
+
+	var _body = {
+		"id": _database.sessions_id.get(server_id),
+	}
+
+	var _removal_response = await http.req(
+		HTTPClient.Method.METHOD_DELETE,
+		url.host,
+		url.path,
+		url.port,
+		["Accept: application/json", "Content-Type: application/json", "x-api-key: %s" % GlobalAccount.dev_session_server_api_key],
+		JSON.stringify(_body)
+	)
+
+	if _removal_response.ok:
+		response_dict.ok = true
+		response_dict.data = JSON.parse_string(_removal_response.body)
+		return response_dict
+
+	response_dict.error = _removal_response.error
 	return response_dict
 
 func _find_available_port(target_port: int = 20205) -> int:
