@@ -96,11 +96,18 @@ func stop_server(id: String):
 	# Destroy server master scene.
 	return
 
-func update_server(id: String, update_dict: Dictionary):
+func update_server(id: String, server_info: Dictionary):
 	# Get server from database.
 	# Validate server updated data.
 	# Update the database entry.
 	# Emit server updated event to the server.
+	# If server is now public, and advertising is enabled, advertise to the session-server(s).
+	# TODO: Get session_servers from client config
+	# TODO: Get enabled session_servers from server config
+	# TODO: For each enabled session_server:
+	_advertise_session(server_info, "http://localhost:40500")
+	# TODO: Get list of successful session advertisements, and start heartbeats.
+
 	return
 
 func join_server(ip: String, port: int):
@@ -167,4 +174,26 @@ func _is_port_in_use(port: int) -> bool:
 
 	return true
 
-	return false
+func _advertise_session(session_info: Dictionary, session_server: String) -> Dictionary:
+	var response_dict = {"ok": false, "error": null, "data": null}
+	GlobalLogger.logs("Advertising session '%s' to the server '%s'" % [session_info, session_server])
+	var url = UrlParser.deconstruct("%s/api/v1/postSession" % session_server)
+	# TODO: Error checking
+	url = url.data
+
+	var _body = {
+		"session_name": session_info.id,
+	}
+
+	var advertise_response = await http.req(
+		HTTPClient.Method.METHOD_POST,
+		url.host,
+		url.path,
+		url.port,
+		["Accept: application/json", "Content-Type: application/json", "x-api-key: %s" % GlobalAccount.dev_session_server_api_key],
+		JSON.stringify(_body)
+	)
+
+	print(advertise_response)
+
+	return response_dict

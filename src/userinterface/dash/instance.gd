@@ -18,7 +18,7 @@ enum PrivacyLevel {
 	FRIENDS = 5
 }
 
-@onready var network_manager = get_tree().current_scene.get_node("NetworkManager")
+@onready var network_m = get_tree().current_scene.get_node("NetworkManager")
 
 @onready var instance_privacy_container = get_node("VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy/MarginContainer/Instance Name")
 @onready var instance_privacy_public_btn = instance_privacy_container.get_node("Public")
@@ -84,5 +84,7 @@ func update_instance(instance: Dictionary) -> void:
 
 func _handle_save_session_info() -> void:
 	# TODO: Have this page know what instance it currently occupies.
-	network_manager.change_session_settings({"instance_privacy": 1})
+	var _sessions = network_m.get_connected_sessions()
+
+	network_m.update_server(_sessions[0].id, _sessions[0])
 	return
