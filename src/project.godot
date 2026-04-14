@@ -33,8 +33,8 @@ GlobalAccount="*uid://dtlb70kxvbtvn"
 Events="*uid://c656spc3ppdlw"
 OAuth="*uid://jd7qlsley1no"
 SessionQuery="*uid://bl3e1utjvw3ul"
-UrlParser="*uid://budprjmmpally"
 Enum="*uid://b5amtwc5yahe3"
+UrlParser="*uid://budprjmmpally"
 
 [display]
 

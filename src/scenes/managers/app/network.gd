@@ -14,10 +14,12 @@ const MAX_CLIENTS = 1000
 var n_c = preload("res://scripts/network/network_compression.gd").new()
 var url_regex = RegEx.create_from_string("^(https?)://([^/:]+)(?::(\\d+))?(.*)$")
 
+@onready var http = preload("res://scripts/network/http.gd").new()
 @onready var scene_m = get_tree().current_scene.get_node("SceneManager")
 @onready var rpc_lib = get_tree().current_scene.get_node("RpcManager")
 
 var _database = {
+	"heartbeats": {},
 	"sessions": {},
 	"sessions_api": {}
 }
@@ -105,9 +107,11 @@ func update_server(id: String, server_info: Dictionary):
 	# TODO: Get session_servers from client config
 	# TODO: Get enabled session_servers from server config
 	# TODO: For each enabled session_server:
-	_advertise_session(server_info, "http://localhost:40500")
-	# TODO: Get list of successful session advertisements, and start heartbeats.
+	var advertise_response = await _advertise_session(server_info, "http://localhost:40500")
 
+	# TODO: Get list of successful session advertisements, and start heartbeats.
+	if advertise_response.ok == true:
+		_create_heartbeat_timer(advertise_response.data.id)
 	return
 
 func join_server(ip: String, port: int):
@@ -174,9 +178,49 @@ func _is_port_in_use(port: int) -> bool:
 
 	return true
 
+func _create_heartbeat_timer(session_id: String):
+	GlobalLogger.logs("Creating a heartbeat timer for server '%s'" % session_id)
+	# FIXME: Hardcoded time for timer.
+	var timer = get_tree().create_timer(20)
+
+	_database.heartbeats[session_id] = timer
+
+	timer.timeout.connect(_heartbeat_timer_timeout.bind(session_id))
+	return
+
+func _heartbeat_timer_timeout(session_id):
+	GlobalLogger.logs("Sending a heartbeat for server '%s'" % session_id)
+	if _database.heartbeats.has(session_id) == false:
+		GlobalLogger.logs("Server '%s' does not exist anymore, not sending a heartbeat." % session_id)
+		return
+
+	_heartbeat_session(session_id)
+
+	_create_heartbeat_timer(session_id)
+	return
+
+func _heartbeat_session(session_id: String):
+	# FIXME: Hardcoded localhost link.
+	var url_parts = UrlParser.deconstruct("http://localhost:40500/api/v1/heartbeatSession")
+	url_parts = url_parts.data
+	var body = {"session_id": session_id}
+	
+	var response = await http.req(
+		HTTPClient.Method.METHOD_POST,
+		url_parts.host,
+		url_parts.path,
+		url_parts.port,
+		["Accept: application/json", "Content-Type: application/json", "x-api-key: %s" % GlobalAccount.dev_session_server_api_key],
+		JSON.stringify(body)
+	)
+
+	if response and response.get("ok"):
+		GlobalLogger.logs("Heartbeat sent for session '%s'" % session_id, 0)
+	return
+
 func _advertise_session(session_info: Dictionary, session_server: String) -> Dictionary:
 	var response_dict = {"ok": false, "error": null, "data": null}
-	GlobalLogger.logs("Advertising session '%s' to the server '%s'" % [session_info, session_server])
+	GlobalLogger.logs("Advertising session '%s' to the server '%s'" % [session_info.id, session_server])
 	var url = UrlParser.deconstruct("%s/api/v1/postSession" % session_server)
 	# TODO: Error checking
 	url = url.data
@@ -194,6 +238,19 @@ func _advertise_session(session_info: Dictionary, session_server: String) -> Dic
 		JSON.stringify(_body)
 	)
 
-	print(advertise_response)
 
+	# FIXME: What is this flow? This is bad?
+	if advertise_response.ok == false:
+		response_dict.error = advertise_response.error
+		return response_dict
+
+	advertise_response = JSON.parse_string(advertise_response.body)
+	if advertise_response.ok == false:
+		response_dict.error = advertise_response.error
+		return response_dict
+
+	advertise_response = advertise_response.data
+
+	response_dict.ok = true
+	response_dict.data = advertise_response
 	return response_dict
