@@ -26,6 +26,7 @@
 [ext_resource type="Script" uid="uid://dpo2x4ddv3ftt" path="res://userinterface/dash/instance.gd" id="14_3ff87"]
 [ext_resource type="Script" uid="uid://crlujtfv2bh1w" path="res://userinterface/dash/contacts.gd" id="15_gll50"]
 [ext_resource type="Script" uid="uid://e1djdo6st2a7" path="res://userinterface/dash/exit.gd" id="17_3rk53"]
+[ext_resource type="Script" uid="uid://cq26hbvdqb4sf" path="res://userinterface/dash/settings.gd" id="17_shwvw"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kgckq"]
 draw_center = false
@@ -810,6 +811,7 @@ mouse_default_cursor_shape = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_kgckq")
 
 [node name="Instance" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=919985343]
+visible = false
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -842,15 +844,15 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="Instance Name" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer" unique_id=1986372326]
+[node name="InstanceName" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer" unique_id=1986372326]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/Instance Name" unique_id=1002302148]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/InstanceName" unique_id=1002302148]
 layout_mode = 2
 text = "Instance Name"
 
-[node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/Instance Name" unique_id=2029691082]
+[node name="InstanceNameField" type="LineEdit" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/InstanceName" unique_id=2029691082]
 layout_mode = 2
 text = "My Instance"
 placeholder_text = "Instance Name"
@@ -865,15 +867,15 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="Instance Name2" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer2/PanelContainer2/MarginContainer" unique_id=2036761912]
+[node name="InstanceDescriptionContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer2/PanelContainer2/MarginContainer" unique_id=2036761912]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer2/PanelContainer2/MarginContainer/Instance Name2" unique_id=1778162350]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer2/PanelContainer2/MarginContainer/InstanceDescriptionContainer" unique_id=1778162350]
 layout_mode = 2
 text = "Instance Description"
 
-[node name="TextEdit" type="TextEdit" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer2/PanelContainer2/MarginContainer/Instance Name2" unique_id=1883764719]
+[node name="InstanceDescription" type="TextEdit" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer2/PanelContainer2/MarginContainer/InstanceDescriptionContainer" unique_id=1883764719]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 text = "A basic instance description"
@@ -901,7 +903,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Max connected users"
 
-[node name="SpinBox" type="SpinBox" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstanceSettings/MarginContainer/HBoxContainer" unique_id=218460777]
+[node name="MaxConnectedUsers" type="SpinBox" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstanceSettings/MarginContainer/HBoxContainer" unique_id=218460777]
 layout_mode = 2
 min_value = 1.0
 max_value = 1000.0
@@ -918,47 +920,47 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="Instance Name" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy/MarginContainer" unique_id=44619055]
+[node name="InstancePrivacyContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy/MarginContainer" unique_id=44619055]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy/MarginContainer/Instance Name" unique_id=1242833055]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy/MarginContainer/InstancePrivacyContainer" unique_id=1242833055]
 layout_mode = 2
 text = "Instance Privacy"
 
-[node name="Public" type="Button" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy/MarginContainer/Instance Name" unique_id=700002280]
+[node name="Public" type="Button" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy/MarginContainer/InstancePrivacyContainer" unique_id=700002280]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 toggle_mode = true
 text = "Public"
 
-[node name="Contacts+" type="Button" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy/MarginContainer/Instance Name" unique_id=1719321337]
+[node name="Contacts+" type="Button" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy/MarginContainer/InstancePrivacyContainer" unique_id=1719321337]
 visible = false
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 toggle_mode = true
 text = "Contacts+"
 
-[node name="Contacts" type="Button" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy/MarginContainer/Instance Name" unique_id=1878668850]
+[node name="Contacts" type="Button" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy/MarginContainer/InstancePrivacyContainer" unique_id=1878668850]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 toggle_mode = true
 text = "Contacts"
 
-[node name="Friends+" type="Button" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy/MarginContainer/Instance Name" unique_id=1834008150]
+[node name="Friends+" type="Button" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy/MarginContainer/InstancePrivacyContainer" unique_id=1834008150]
 visible = false
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 toggle_mode = true
 text = "Friends+"
 
-[node name="Friends" type="Button" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy/MarginContainer/Instance Name" unique_id=4967885]
+[node name="Friends" type="Button" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy/MarginContainer/InstancePrivacyContainer" unique_id=4967885]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 toggle_mode = true
 text = "Friends"
 
-[node name="InviteOnly" type="Button" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy/MarginContainer/Instance Name" unique_id=1625370876]
+[node name="InviteOnly" type="Button" parent="MarginContainer/VBoxContainer/Master/Instance/VBoxContainer/HBoxContainer/VBoxContainer/InstancePrivacy/MarginContainer/InstancePrivacyContainer" unique_id=1625370876]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 toggle_mode = true
@@ -2045,6 +2047,214 @@ theme_override_constants/margin_bottom = 10
 layout_mode = 2
 text = "Block Avatar"
 horizontal_alignment = 1
+
+[node name="Settings" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=362656680]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+script = ExtResource("17_shwvw")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Settings" unique_id=1829621060]
+layout_mode = 2
+
+[node name="Nav" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer" unique_id=954760906]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="General" type="Button" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Nav" unique_id=985920354]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "General"
+
+[node name="Display" type="Button" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Nav" unique_id=1395666760]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Display"
+
+[node name="Audio" type="Button" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Nav" unique_id=38839733]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Audio"
+
+[node name="Controls" type="Button" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Nav" unique_id=875250441]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Controls"
+
+[node name="Interface" type="Button" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Nav" unique_id=540067912]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Interface"
+
+[node name="Network" type="Button" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Nav" unique_id=1675516200]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Network"
+
+[node name="Config" type="Button" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Nav" unique_id=1660210073]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Config"
+
+[node name="Security" type="Button" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Nav" unique_id=1489360741]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Security"
+
+[node name="Misc" type="Button" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Nav" unique_id=1234025146]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Misc"
+
+[node name="Advanced" type="Button" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Nav" unique_id=378374610]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Advanced"
+
+[node name="Container" type="Control" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer" unique_id=444043284]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="General" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container" unique_id=351943332]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+
+[node name="Config" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container" unique_id=661151710]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+
+[node name="SessionServers" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config" unique_id=749605939]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers" unique_id=1413203981]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer" unique_id=1294718765]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer/MarginContainer" unique_id=510822724]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer/MarginContainer/HBoxContainer" unique_id=1248908459]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
+text = "Session Servers"
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer/MarginContainer/HBoxContainer" unique_id=2141833094]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Show List"
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer" unique_id=1524295507]
+visible = false
+layout_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer" unique_id=1107486151]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2" unique_id=90574433]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2/VBoxContainer" unique_id=1903245076]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2/VBoxContainer/HBoxContainer" unique_id=1621920772]
+layout_mode = 2
+text = "Add Session Server"
+
+[node name="Name" type="LineEdit" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2/VBoxContainer/HBoxContainer" unique_id=351217801]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Friendly Name"
+
+[node name="URL" type="LineEdit" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2/VBoxContainer/HBoxContainer" unique_id=512184669]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "URL"
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2/VBoxContainer/HBoxContainer" unique_id=475127911]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Add"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2/VBoxContainer" unique_id=1281162897]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2/VBoxContainer/ScrollContainer" unique_id=1146094050]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2/VBoxContainer/ScrollContainer/MarginContainer" unique_id=1455078587]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Description" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer" unique_id=1192735413]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Description" unique_id=1672934352]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 20
+text = "This is some top text, next we may be able to afford some bottom text. For now we will just be able to afford some medium text."
+autowrap_mode = 3
+
+[node name="Templates" type="Control" parent="MarginContainer/VBoxContainer/Master/Settings" unique_id=717770235]
+visible = false
+layout_mode = 2
+
+[node name="SessionServerListing" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Settings/Templates" unique_id=877735623]
+layout_mode = 0
+offset_left = 319.0
+offset_top = 57.0
+offset_right = 1553.0
+offset_bottom = 80.0
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Settings/Templates/SessionServerListing" unique_id=22006714]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.73333335, 0.73333335, 0.73333335, 1)
+text = "https://servers.openmierva.org"
+
+[node name="Remove" type="Button" parent="MarginContainer/VBoxContainer/Master/Settings/Templates/SessionServerListing" unique_id=725542881]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "X"
 
 [node name="Exit" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=719734468]
 visible = false

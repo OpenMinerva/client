@@ -1,0 +1,129 @@
+# --- License
+# File: /client/src/scenes/managers/app/scene_manager.gd
+# Project: OpenMinerva
+# Created Date: 13 April 2026
+# Copyright (c) 2026 OpenMinerva
+# License: MIT License
+# Authors: Armored Dragon
+# --- License
+
+extends Node
+
+# Game managers
+@onready var network_m: Node = get_tree().current_scene.get_node("NetworkManager")
+@onready var scene_container: Node3D = get_tree().current_scene.get_node("Scenes")
+
+func _ready():
+	network_m.start_server()
+	return
+
+func create_master_scene():
+	var _scene_id = Random.random_string()
+	var _base_scene = preload("res://scenes/levels/base.tscn")
+
+	_base_scene = _base_scene.instantiate()
+	_base_scene.name = _scene_id
+
+	scene_container.add_child(_base_scene)
+
+	return _scene_id
+
+func get_master_scene(id: String) -> Node3D:
+	var _scene = scene_container.get_node(id)
+	return _scene
+
+func destroy_master_scene(id: String):
+	var _scene = scene_container.get_node_or_null(id)
+
+	if _scene == null:
+		GlobalLogger.logs("'%s' does not exist, could not delete." % id, 2)
+		return
+
+	_scene.queue_free()
+	return
+
+func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel) -> void:
+	var _scene = get_master_scene(id)
+
+	var _root_scene: PackedScene = _get_scene_by_type(scene_type)
+	var _root_node = get_master_root(id)
+
+	# Stop everything
+	stop_master_scene(id)
+
+	# Remove everything
+	_scene.remove_child(_root_node)
+	_root_node.queue_free()
+
+	# Get new scene
+	var _root_scene_node = _root_scene.instantiate()
+	_root_scene_node.name = "root"
+
+	# Add new scene
+	_scene.add_child(_root_scene_node)
+
+	# Start everything
+	start_master_scene(id)
+
+	Events.emit_signal("instance_root_changed")
+	return
+
+func get_master_root(id: String) -> Node3D:
+	var _scene: Node3D = get_master_scene(id)
+	var _root = _scene.get_node_or_null("root")
+	return _root
+
+func set_master_root_from_inventory(_id: String, _scene_type: Enum.BaseLevel) -> bool:
+	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
+	# get_master_scene
+	# Find scene from inventory.
+	# Validate scene integrity.
+	# Find node "root".
+	# Destroy node.
+	# Replace with new scene.
+	return false
+
+func start_master_scene(id: String):
+	const MANAGERS = ["PlayerManager", "SignalBus"]
+
+	var _scene = get_master_scene(id)
+
+	for node_name in MANAGERS:
+		var _scene_manager = _scene.get_node_or_null(node_name)
+		if _scene_manager:
+			_scene_manager.active = true
+			GlobalLogger.logs("'%s' started in server '%s'" % [node_name, id])
+			continue
+		
+		GlobalLogger.logs("Could not start invalid manager '%s' in server '%s'" % [node_name, id], 3)
+	return
+
+func stop_master_scene(id: String):
+	const MANAGERS = ["PlayerManager", "SignalBus"]
+
+	var _scene = get_master_scene(id)
+
+	for node_name in MANAGERS:
+		var _scene_manager = _scene.get_node_or_null(node_name)
+		if _scene_manager:
+			_scene_manager.active = true
+			GlobalLogger.logs("'%s' started in server '%s'" % [node_name, id])
+			continue
+		
+		GlobalLogger.logs("Could not start invalid manager '%s' in server '%s'" % [node_name, id], 3)
+	return
+
+func _get_scene_by_type(scene_type: Enum.BaseLevel) -> PackedScene:
+	var _scene_dir: String = ""
+
+	match scene_type:
+		Enum.BaseLevel.DEBUG:
+			_scene_dir = "res://scenes/levels/debug.tscn"
+		Enum.BaseLevel.EMPTY:
+			_scene_dir = "res://scenes/levels/empty.tscn"
+		Enum.BaseLevel.GRID:
+			_scene_dir = "res://scenes/levels/grid.tscn"
+		_:
+			_scene_dir = "res://scenes/levels/debug.tscn"
+
+	return load(_scene_dir)

@@ -14,11 +14,12 @@ func create_log_file() -> String:
 	GlobalLogger.logs("Log file '%s' created." % log_file_path, 0)
 	return log_file_path
 
-func create_client_file(_dir: String) -> void:
-	# Create a file to store in-game user data. This is for in-game data storage!
-	# IMPORTANT: DO NOT STORE PRIVATE DATA IN THIS DIRECTORY AS IT IS INTENDED TO BE READ AND WRITTEN TO FREELY!
-	GlobalLogger.logs("Not implemented.", 3)
-	return
+func create_file(dir: String, file_name: String) -> void:
+	_maybe_make_directory(dir)
+	# TODO: Sanitize name
+	var file = FileAccess.open("%s/%s" % [dir, file_name], FileAccess.WRITE)
+	GlobalLogger.logs("File '%s' created at '%s'." % [file_name, dir], 0)
+	file.close()
 
 func _maybe_make_directory(dir: String):
 	var dir_access = DirAccess.open("user://")

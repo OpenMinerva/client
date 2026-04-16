@@ -9,7 +9,7 @@
 
 extends Control
 
-@onready var network_manager = get_tree().current_scene.get_node("NetworkManager")
+@onready var network_m = get_tree().current_scene.get_node("NetworkManager")
 
 @onready var account_card_container = get_node("HBoxContainer/VBoxContainer/AccountDisplay")
 @onready var storage_card_container = get_node("HBoxContainer/VBoxContainer/StorageDisplay")
@@ -48,7 +48,7 @@ func _display_active_sessions() -> void:
 		if node is Button:
 			node.queue_free()
 
-	var _sessions = network_manager.get_active_sessions()
+	var _sessions = network_m.get_connected_sessions()
 
 	for session in _sessions:
 		var _entry = active_session_template.duplicate()

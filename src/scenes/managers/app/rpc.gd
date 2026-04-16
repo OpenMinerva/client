@@ -1,3 +1,12 @@
+# --- License
+# File: /client/src/scenes/managers/app/rpc_manager.gd
+# Project: OpenMinerva
+# Created Date: 13 April 2026
+# Copyright (c) 2026 OpenMinerva
+# License: MIT License
+# Authors: Armored Dragon
+# --- License
+
 extends Node
 
 var c := preload("res://scripts/rpc/client.gd").new()
