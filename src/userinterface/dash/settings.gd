@@ -53,6 +53,12 @@ func _add_session_server() -> void:
 	var _name = _add_session_server_name.text
 	var _url = _add_session_server_url.text
 
+	if _name == "":
+		return
+
+	if _url == "":
+		return
+
 	SettingsManager.add_session_server({"name": _name, "url": _url})
 
 	_add_session_server_name.text = ""
