@@ -111,10 +111,6 @@ func update_server(id: String, server_info: Dictionary):
 	var _saved_session_servers = SettingsManager.get_session_servers()
 
 	if server_info.privacy > Enum.PrivacyLevel.INVITE:
-		# TODO: Only advertise to specific session servers per instance.
-		# Load the session server list into the instance settings dialog.
-		# When updating the server, pass the valid session_server array in the settings.
-		# For now, all servers installed are going to be advertised to.
 		for _server in _saved_session_servers:
 			if _database.heartbeats.has(id):
 				GlobalLogger.logs("Session '%s' is already advertised. Updating instead." % id)
