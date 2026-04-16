@@ -12,6 +12,9 @@ extends Node
 var active: bool = false
 
 func spawn_player(peer_id: int) -> void:
+	if active == false:
+		return
+		
 	var _player_scene: PackedScene = load("res://scenes/players/player.tscn")
 	var _new_player: Node3D = _player_scene.instantiate()
 	_new_player.name = str(peer_id)

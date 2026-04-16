@@ -27,5 +27,8 @@ signal dash_notification(notification: Dictionary)
 @warning_ignore("unused_signal")
 signal dash_account_list_loaded(account_list: PackedStringArray)
 
+# Instance
 @warning_ignore("unused_signal")
 signal instance_updated(instance: Dictionary)
+@warning_ignore("unused_signal")
+signal instance_root_changed()

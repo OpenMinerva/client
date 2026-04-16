@@ -43,23 +43,29 @@ func destroy_master_scene(id: String):
 	return
 
 func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel) -> void:
-	# TODO: Disable spawning players while changing master root.
 	var _scene = get_master_scene(id)
 
 	var _root_scene: PackedScene = _get_scene_by_type(scene_type)
-
-	# TODO: Validate scene integrity.
-
 	var _root_node = get_master_root(id)
+
+	# Stop everything
+	stop_master_scene(id)
+
+	# Remove everything
 	_scene.remove_child(_root_node)
 	_root_node.queue_free()
 
-	# Replace with new scene.
+	# Get new scene
 	var _root_scene_node = _root_scene.instantiate()
 	_root_scene_node.name = "root"
+
+	# Add new scene
 	_scene.add_child(_root_scene_node)
 
-	# TODO: Emit signal of root changed.
+	# Start everything
+	start_master_scene(id)
+
+	Events.emit_signal("instance_root_changed")
 	return
 
 func get_master_root(id: String) -> Node3D:
@@ -78,6 +84,21 @@ func set_master_root_from_inventory(_id: String, _scene_type: Enum.BaseLevel) ->
 	return false
 
 func start_master_scene(id: String):
+	const MANAGERS = ["PlayerManager", "SignalBus"]
+
+	var _scene = get_master_scene(id)
+
+	for node_name in MANAGERS:
+		var _scene_manager = _scene.get_node_or_null(node_name)
+		if _scene_manager:
+			_scene_manager.active = true
+			GlobalLogger.logs("'%s' started in server '%s'" % [node_name, id])
+			continue
+		
+		GlobalLogger.logs("Could not start invalid manager '%s' in server '%s'" % [node_name, id], 3)
+	return
+
+func stop_master_scene(id: String):
 	const MANAGERS = ["PlayerManager", "SignalBus"]
 
 	var _scene = get_master_scene(id)
