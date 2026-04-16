@@ -74,7 +74,11 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 	if _create_server_response != OK:
 		GlobalLogger.logs("Failed to start server. Error: '%s'" % _create_server_response, 1)
 		response_dict.error = str(_create_server_response)
-		# TODO: Destroy server scene
+
+		_database.sessions_api.erase(_scene)
+		_database.sessions.erase(_scene)
+
+		scene_m.destroy_master_scene(_scene)
 		return response_dict
 	
 	# Create server root scene.
@@ -86,7 +90,6 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 	scene_m.start_master_scene(_scene)
 	
 	# DEV: Force spawn the host.
-
 	scene_m.get_master_scene(_scene).get_node("PlayerManager").spawn_player(1)
 
 	return response_dict

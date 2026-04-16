@@ -32,12 +32,14 @@ func get_master_scene(id: String) -> Node3D:
 	var _scene = scene_container.get_node(id)
 	return _scene
 
-func destroy_master_scene(_id: String):
-	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
-	# get_master_scene
-	# Check if currently being used by a server.
-	# Check if being used as client to server.
-	# Queue free.
+func destroy_master_scene(id: String):
+	var _scene = scene_container.get_node_or_null(id)
+
+	if _scene == null:
+		GlobalLogger.logs("'%s' does not exist, could not delete." % id, 2)
+		return
+
+	_scene.queue_free()
 	return
 
 func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel) -> void:
