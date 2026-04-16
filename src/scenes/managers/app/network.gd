@@ -104,23 +104,29 @@ func update_server(id: String, server_info: Dictionary):
 	# Validate server updated data.
 	# Update the database entry.
 	# Emit server updated event to the server.
-	# If server is now public, and advertising is enabled, advertise to the session-server(s).
 	if server_info.privacy > Enum.PrivacyLevel.INVITE:
-		# TODO: Get session_servers from client config
-		# TODO: Get enabled session_servers from server config
-		# TODO: For each enabled session_server:
-		# TODO: Check if we are already advertising this server, then submit a generic update to all session servers.
-		if _database.heartbeats.has(id):
-			GlobalLogger.logs("Session '%s' is already advertised. Updating instead." % id)
-			await _update_session(server_info, "http://localhost:40500")
-		else:
-			var advertise_response = await _advertise_session(server_info, "http://localhost:40500")
+		# TODO: Load the session server list into the instance settings dialog.
+		# TODO: When updating the server, pass the valid session_server array in the settings.
+		# For now, all servers installed are going to be advertised to.
+		var _saved_session_servers = SettingsManager.get_session_servers()
 
-			# TODO: Get list of successful session advertisements, and start heartbeats.
-			if advertise_response.ok == true:
-				# TODO: Create a helper to manage the session IDs, or database by itself?
-				_database.sessions_id.set(server_info.id, advertise_response.data.id)
-				_create_heartbeat_timer(server_info.id)
+		# TODO: Get enabled session_servers from server config
+		# var _session_servers_to_advertise_to = null
+
+		# TODO: For each enabled session_server:
+		for _server in _saved_session_servers:
+		# TODO: Check if we are already advertising this server, then submit a generic update to all session servers.
+			if _database.heartbeats.has(id):
+				GlobalLogger.logs("Session '%s' is already advertised. Updating instead." % id)
+				await _update_session(server_info, _server.url)
+			else:
+				var advertise_response = await _advertise_session(server_info, _server.url)
+
+				# TODO: Get list of successful session advertisements, and start heartbeats.
+				if advertise_response.ok == true:
+					# TODO: Create a helper to manage the session IDs, or database by itself?
+					_database.sessions_id.set(server_info.id, advertise_response.data.id)
+					_create_heartbeat_timer(server_info.id)
 
 	if server_info.privacy == Enum.PrivacyLevel.INVITE:
 		if _database.heartbeats.has(id):
@@ -128,8 +134,6 @@ func update_server(id: String, server_info: Dictionary):
 			_database.heartbeats.erase(id)
 		
 		_remove_session_from_server(id, "http://localhost:40500")
-		# Kill any heartbeats
-		# Send removal request to session server(s)
 	return
 
 func join_server(ip: String, port: int):
