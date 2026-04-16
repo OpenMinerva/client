@@ -1,4 +1,4 @@
-extends Control
+extends Object
 
 enum BaseLevel {
 	DEBUG = 0,
@@ -13,4 +13,14 @@ enum PrivacyLevel {
 	CONTACTS = 3,
 	FRIENDS_PLUS = 4,
 	FRIENDS = 5
+}
+
+const Settings = {
+	Graphics = {
+		DisplayMode = {
+			FULLSCREEN = 0,
+			WINDOWED = 1,
+			BORDERLESS = 2
+		}
+	}
 }
