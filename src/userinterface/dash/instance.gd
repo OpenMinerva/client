@@ -73,12 +73,9 @@ func _privacy_button_enable(node) -> void:
 	node.custom_minimum_size = Vector2(0, 50)
 	return
 
-func update_instance(instance: Dictionary) -> void:
+func update_instance(_instance: Dictionary) -> void:
+	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
 	# TODO Session Permissions: Admins can change instance settings. 
-	if !is_multiplayer_authority():
-		return
-
-	GlobalLogger.logs("Updating session.")
 	# Publish changes to the session server.
 	# Update running server 
 	return

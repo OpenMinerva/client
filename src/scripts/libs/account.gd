@@ -115,7 +115,7 @@ func update(id: String, data: Dictionary) -> void:
 	_save_account_database()
 	return
 
-func authenticate_oauth(id: String, remember_me: bool = false) -> void:
+func authenticate_oauth(id: String, _remember_me: bool = false) -> void:
 	# TODO: Error checks
 	GlobalLogger.logs("Attempting to connect account '%s' using oauth." % id)
 	var account = _get_account_by_id(id)

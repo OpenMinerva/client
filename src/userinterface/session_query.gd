@@ -69,7 +69,7 @@ func get_sessions() -> Array:
 
 	return _return_arr
 
-func _session_request_received(host: String, response: Dictionary) -> Dictionary:
+func _session_request_received(_host: String, response: Dictionary) -> Dictionary:
 	var _return_arr = {"ok": false, "error": "", "data": null}
 
 	# TODO: If response.ok
@@ -82,7 +82,7 @@ func _session_request_received(host: String, response: Dictionary) -> Dictionary
 
 	return _return_arr
 
-func _authentication_request_received(host: String, response: Dictionary) -> Dictionary:
+func _authentication_request_received(_host: String, response: Dictionary) -> Dictionary:
 	var _return_arr = {"ok": false, "error": "", "data": null}
 
 	# TODO: If response.ok

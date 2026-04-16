@@ -3,21 +3,15 @@
 [ext_resource type="PackedScene" uid="uid://by0vghgshvbhd" path="res://scenes/managers/app/rpc.tscn" id="1_h2qy3"]
 [ext_resource type="PackedScene" uid="uid://5v8rbnp716b0" path="res://scenes/managers/app/network.tscn" id="1_jooxx"]
 [ext_resource type="PackedScene" uid="uid://cmknpdx5ba15o" path="res://scenes/managers/app/scene.tscn" id="2_h2qy3"]
-[ext_resource type="Script" uid="uid://bsyo854lkhbf2" path="res://scenes/managers/app/rpc.gd" id="2_kjytq"]
-[ext_resource type="Script" uid="uid://r51flk0bjypx" path="res://scenes/managers/app/network.gd" id="4_56xkn"]
-[ext_resource type="Script" uid="uid://3ylijxenr1bg" path="res://scenes/managers/app/scene.gd" id="4_q3f5g"]
 [ext_resource type="PackedScene" uid="uid://ckl5gw0xbduiv" path="res://userinterface/dash/hud.tscn" id="5_q3f5g"]
 
 [node name="Master" type="Node3D" unique_id=420526444]
 
 [node name="RpcManager" parent="." unique_id=1836544617 instance=ExtResource("1_h2qy3")]
-script = ExtResource("2_kjytq")
 
 [node name="NetworkManager" parent="." unique_id=1960146969 instance=ExtResource("1_jooxx")]
-script = ExtResource("4_56xkn")
 
 [node name="SceneManager" parent="." unique_id=5477810 instance=ExtResource("2_h2qy3")]
-script = ExtResource("4_q3f5g")
 
 [node name="Hud" parent="." unique_id=1053137144 instance=ExtResource("5_q3f5g")]
 visible = false

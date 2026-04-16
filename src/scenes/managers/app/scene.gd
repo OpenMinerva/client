@@ -32,7 +32,7 @@ func get_master_scene(id: String) -> Node3D:
 	var _scene = scene_container.get_node(id)
 	return _scene
 
-func destroy_master_scene(id: String):
+func destroy_master_scene(_id: String):
 	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
 	# get_master_scene
 	# Check if currently being used by a server.
@@ -65,7 +65,7 @@ func get_master_root(id: String) -> Node3D:
 	var _root = _scene.get_node_or_null("root")
 	return _root
 
-func set_master_root_from_inventory(id: String, scene_type: Enum.BaseLevel) -> bool:
+func set_master_root_from_inventory(_id: String, _scene_type: Enum.BaseLevel) -> bool:
 	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
 	# get_master_scene
 	# Find scene from inventory.

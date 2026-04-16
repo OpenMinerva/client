@@ -91,7 +91,7 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 
 	return response_dict
 
-func stop_server(id: String):
+func stop_server(_id: String):
 	# Kick all players (Server closing). 
 	# Turn off all join requests.
 	# Destroy multiplayer api.
@@ -136,7 +136,8 @@ func update_server(id: String, server_info: Dictionary):
 		_remove_session_from_server(id, "http://localhost:40500")
 	return
 
-func join_server(ip: String, port: int):
+func join_server(_ip: String, _port: int):
+	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
 	# Create multiplayer peer.
 	# Establish connection.
 	# Host handles everything after this with the managers?
@@ -150,19 +151,19 @@ func leave_server():
 	return
 
 func kick_player():
-	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["name"])
+	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
 	return
 
 func ban_player():
-	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["name"])
+	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
 	return
 
 func on_kicked():
-	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["name"])
+	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
 	return
 
 func on_banned():
-	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["name"])
+	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
 	return
 
 func get_connected_sessions():

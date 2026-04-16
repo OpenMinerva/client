@@ -14,11 +14,11 @@ func create_log_file() -> String:
 	GlobalLogger.logs("Log file '%s' created." % log_file_path, 0)
 	return log_file_path
 
-func create_file(dir: String, name: String) -> void:
+func create_file(dir: String, file_name: String) -> void:
 	_maybe_make_directory(dir)
 	# TODO: Sanitize name
-	var file = FileAccess.open("%s/%s" % [dir, name], FileAccess.WRITE)
-	GlobalLogger.logs("File '%s' created at '%s'." % [name, dir], 0)
+	var file = FileAccess.open("%s/%s" % [dir, file_name], FileAccess.WRITE)
+	GlobalLogger.logs("File '%s' created at '%s'." % [file_name, dir], 0)
 	file.close()
 
 func _maybe_make_directory(dir: String):

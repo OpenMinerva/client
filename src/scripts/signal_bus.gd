@@ -8,14 +8,24 @@
 # --- License
 extends Node
 
+
 # Dashboard
+@warning_ignore("unused_signal")
 signal dash_set_state(is_open: bool)
+@warning_ignore("unused_signal")
 signal dash_switch_tab(page_name: String)
+@warning_ignore("unused_signal")
 signal dash_active_account_changed(account: Dictionary)
+@warning_ignore("unused_signal")
 signal dash_storage_changed(storage_data: Dictionary)
+@warning_ignore("unused_signal")
 signal dash_session_changed(session_data: Dictionary)
+@warning_ignore("unused_signal")
 signal dash_message_received(message: Dictionary)
+@warning_ignore("unused_signal")
 signal dash_notification(notification: Dictionary)
+@warning_ignore("unused_signal")
 signal dash_account_list_loaded(account_list: PackedStringArray)
 
+@warning_ignore("unused_signal")
 signal instance_updated(instance: Dictionary)
