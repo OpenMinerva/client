@@ -293,7 +293,7 @@ func _heartbeat_session(session_id: String, session_server_url: String) -> void:
 		return
 
 	_url = _url.data
-	var body = {"session_id": session_id}
+	var body = {"session_id": _database.sessions_id.get(session_id)}
 	
 	var response = await http.req(
 		HTTPClient.Method.METHOD_POST,
