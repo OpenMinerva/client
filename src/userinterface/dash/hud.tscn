@@ -2178,10 +2178,36 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2" unique_id=1281162897]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2" unique_id=90574433]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2/ScrollContainer" unique_id=1146094050]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2/VBoxContainer" unique_id=1903245076]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2/VBoxContainer/HBoxContainer" unique_id=1621920772]
+layout_mode = 2
+text = "Add Session Server"
+
+[node name="Name" type="LineEdit" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2/VBoxContainer/HBoxContainer" unique_id=351217801]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Friendly Name"
+
+[node name="URL" type="LineEdit" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2/VBoxContainer/HBoxContainer" unique_id=512184669]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "URL"
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2/VBoxContainer/HBoxContainer" unique_id=475127911]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Add"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2/VBoxContainer" unique_id=1281162897]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2/VBoxContainer/ScrollContainer" unique_id=1146094050]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -2190,7 +2216,7 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2/ScrollContainer/MarginContainer" unique_id=1455078587]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2/VBoxContainer/ScrollContainer/MarginContainer" unique_id=1455078587]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
