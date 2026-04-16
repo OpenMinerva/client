@@ -10,6 +10,7 @@
 extends Node
 
 const MAX_CLIENTS = 1000
+const MINIMUM_INCREMENTAL_PORT = 20205
 
 var n_c = preload("res://scripts/network/network_compression.gd").new()
 var url_regex = RegEx.create_from_string("^(https?)://([^/:]+)(?::(\\d+))?(.*)$")
@@ -46,7 +47,7 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 	var response_dict = {"ok": false, "error": null, "data": null}
 
 	# Get an available port. If port was defined, force that port or fail.
-	if port == 0:
+	if port != 0:
 		var port_available = !_is_port_in_use(port)
 		if !port_available:
 			response_dict.error = "Port is not available."
@@ -61,6 +62,7 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 	_instance.name = _scene
 	_instance.start_time = int(Time.get_unix_time_from_system())
 	_instance.privacy = Enum.PrivacyLevel.INVITE
+	_instance.port = port
 
 	# Create a new peer.
 	var _mp_api = SceneMultiplayer.new()
@@ -236,7 +238,7 @@ func _remove_session_from_server(server_id: String, session_server: String) -> D
 	response_dict.error = _removal_response.error
 	return response_dict
 
-func _find_available_port(target_port: int = 20205) -> int:
+func _find_available_port(target_port: int = MINIMUM_INCREMENTAL_PORT) -> int:
 	GlobalLogger.logs("Trying to find an available port starting at '%s'." % target_port)
 	var _found_port = null
 	var _is_found = false
@@ -325,6 +327,7 @@ func _advertise_session(session_info: Dictionary, session_server: String) -> Dic
 		"session_name": session_info.name,
 		"session_description": session_info.description,
 		"session_privacy": session_info.privacy,
+		"session_port": session_info.port,
 	}
 
 	var advertise_response = await http.req(
