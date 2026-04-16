@@ -2224,7 +2224,7 @@ size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.73333335, 0.73333335, 0.73333335, 1)
 text = "https://servers.openmierva.org"
 
-[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/Master/Settings/Templates/SessionServerListing" unique_id=725542881]
+[node name="Remove" type="Button" parent="MarginContainer/VBoxContainer/Master/Settings/Templates/SessionServerListing" unique_id=725542881]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "X"

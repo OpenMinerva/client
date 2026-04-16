@@ -35,5 +35,10 @@ func _load_session_servers() -> void:
 	for server in _servers:
 		var _template = _templates_session_server_listing.duplicate()
 		_template.get_node("Label").text = server.url
+		_template.get_node("Remove").pressed.connect(_remove_session_server.bind(server.url))
 		_session_server_container.add_child(_template)
 	return
+
+func _remove_session_server(url: String) -> void:
+	SettingsManager.remove_session_server(url)
+	_load_session_servers()

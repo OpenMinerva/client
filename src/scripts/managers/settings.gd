@@ -34,6 +34,19 @@ func add_session_server(session_server: Dictionary) -> bool:
 	_save_settings()
 	return true
 
+func remove_session_server(url: String) -> bool:
+	var _index = -1
+	for i in range(_settings.config.session_servers.size()):
+		if _settings.config.session_servers[i]["url"] == url:
+			_index = i
+			break
+
+	if _index != -1:
+		_settings.config.session_servers.remove_at(_index)
+
+	_save_settings()
+	return false
+
 func _save_settings():
 	var _file = FileAccess.open("user://settings/current.json", FileAccess.WRITE)
 	var _settings_string: String = JSON.stringify(_settings)
