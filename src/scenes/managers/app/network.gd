@@ -95,6 +95,7 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 	return response_dict
 
 func stop_server(_id: String):
+	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
 	# Kick all players (Server closing). 
 	# Turn off all join requests.
 	# Destroy multiplayer api.
@@ -108,26 +109,20 @@ func update_server(id: String, server_info: Dictionary):
 	# Update the database entry.
 	# Emit server updated event to the server.
 	if server_info.privacy > Enum.PrivacyLevel.INVITE:
-		# TODO: Load the session server list into the instance settings dialog.
-		# TODO: When updating the server, pass the valid session_server array in the settings.
+		# TODO: Only advertise to specific session servers per instance.
+		# Load the session server list into the instance settings dialog.
+		# When updating the server, pass the valid session_server array in the settings.
 		# For now, all servers installed are going to be advertised to.
 		var _saved_session_servers = SettingsManager.get_session_servers()
 
-		# TODO: Get enabled session_servers from server config
-		# var _session_servers_to_advertise_to = null
-
-		# TODO: For each enabled session_server:
 		for _server in _saved_session_servers:
-		# TODO: Check if we are already advertising this server, then submit a generic update to all session servers.
 			if _database.heartbeats.has(id):
 				GlobalLogger.logs("Session '%s' is already advertised. Updating instead." % id)
-				await _update_session(server_info, _server.url)
+				await _update_session_server_listing(server_info, _server.url)
 			else:
 				var advertise_response = await _advertise_session(server_info, _server.url)
 
-				# TODO: Get list of successful session advertisements, and start heartbeats.
 				if advertise_response.ok == true:
-					# TODO: Create a helper to manage the session IDs, or database by itself?
 					_database.sessions_id.set(server_info.id, advertise_response.data.id)
 					_create_heartbeat_timer(server_info.id)
 
@@ -147,6 +142,7 @@ func join_server(_ip: String, _port: int):
 	return
 
 func leave_server():
+	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
 	# Get server from database.
 	# Send leave packet.
 	# Destroy multiplayer API.
@@ -177,12 +173,17 @@ func get_connected_sessions():
 
 	return result
 
-func _update_session(session_info: Dictionary, session_server: String) -> Dictionary:
+func _update_session_server_listing(session_info: Dictionary, session_server: String) -> Dictionary:
 	var response_dict = {"ok": false, "error": null, "data": null}
 
 	GlobalLogger.logs("Updating session '%s' to the server '%s'" % [session_info.id, session_server])
 	var url = UrlParser.deconstruct("%s/api/v1/updateSession" % session_server)
-	# TODO: Error checking
+
+	if url.ok != true:
+		GlobalLogger.logs("Failed to deconstruct the URL '%s'. Error: '%s'" % [session_server, url.error])
+		response_dict.error = url.error
+		return response_dict
+
 	url = url.data
 
 	var _body = {
@@ -205,10 +206,16 @@ func _update_session(session_info: Dictionary, session_server: String) -> Dictio
 
 func _remove_session_from_server(server_id: String, session_server: String) -> Dictionary:
 	var response_dict = {"ok": false, "error": null, "data": {}}
+	var _full_url = "%s/api/v1/deleteSession" % session_server
 
 	GlobalLogger.logs("Removing session '%s' to the server '%s'" % [server_id, session_server])
-	var url = UrlParser.deconstruct("%s/api/v1/deleteSession" % session_server)
-	# TODO: Error checking
+	var url = UrlParser.deconstruct(_full_url)
+
+	if url.ok != true:
+		GlobalLogger.logs("Failed to deconstruct the URL '%s'. Error: '%s'" % [_full_url, url.error])
+		response_dict.error = url.error
+		return response_dict
+
 	url = url.data
 
 	var _body = {
@@ -302,8 +309,14 @@ func _heartbeat_session(session_id: String):
 func _advertise_session(session_info: Dictionary, session_server: String) -> Dictionary:
 	var response_dict = {"ok": false, "error": null, "data": null}
 	GlobalLogger.logs("Advertising session '%s' to the server '%s'" % [session_info.id, session_server])
-	var url = UrlParser.deconstruct("%s/api/v1/postSession" % session_server)
-	# TODO: Error checking
+	var _full_url = "%s/api/v1/postSession" % session_server
+	var url = UrlParser.deconstruct(_full_url)
+
+	if url.ok != true:
+		GlobalLogger.logs("Failed to deconstruct the URL '%s'. Error: '%s'" % [_full_url, url.error])
+		response_dict.error = url.error
+		return response_dict
+
 	url = url.data
 
 	var _body = {
