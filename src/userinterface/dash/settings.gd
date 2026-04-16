@@ -12,6 +12,8 @@ extends Control
 @onready var _templates_session_server_listing = get_node("Templates/SessionServerListing")
 @onready var _session_server_container = get_node("HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2/VBoxContainer/ScrollContainer/MarginContainer/VBoxContainer")
 
+@onready var _show_session_server_info_btn = get_node("HBoxContainer/Container/Config/SessionServers/VBoxContainer/MarginContainer/HBoxContainer/Button")
+@onready var _session_server_info = get_node("HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer")
 @onready var _add_session_server_btn = get_node("HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2/VBoxContainer/HBoxContainer/Button")
 @onready var _add_session_server_name = get_node("HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2/VBoxContainer/HBoxContainer/Name")
 @onready var _add_session_server_url = get_node("HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2/VBoxContainer/HBoxContainer/URL")
@@ -19,6 +21,7 @@ extends Control
 func _ready():
 	_load_session_servers()
 
+	_show_session_server_info_btn.pressed.connect(_show_session_server_info_dialog)
 	_add_session_server_btn.pressed.connect(_add_session_server)
 
 	Events.dash_switch_tab.connect(_handle_page_opened)
@@ -64,4 +67,8 @@ func _add_session_server() -> void:
 	_add_session_server_name.text = ""
 	_add_session_server_url.text = ""
 	_load_session_servers()
+	return
+
+func _show_session_server_info_dialog() -> void:
+	_session_server_info.visible = !_session_server_info.visible
 	return

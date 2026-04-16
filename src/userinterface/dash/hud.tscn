@@ -2168,6 +2168,7 @@ layout_mode = 2
 text = "Show List"
 
 [node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer" unique_id=1524295507]
+visible = false
 layout_mode = 2
 
 [node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master/Settings/HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer" unique_id=1107486151]
