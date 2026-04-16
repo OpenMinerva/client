@@ -11,17 +11,15 @@ extends Node
 
 var http = preload("res://scripts/network/http.gd").new()
 
-const SESSION_SERVERS = ["http://localhost:40500/"]
+func authenticate(url: String) -> Dictionary:
+	var _return_dict: Dictionary = {"ok": false, "error": ""}
 
-func authenticate() -> Dictionary:
-	var _return_arr = {"ok": false, "error": ""}
-
-	var url_deconstructed = UrlParser.deconstruct("http://localhost:40500")
+	var url_deconstructed = UrlParser.deconstruct(url)
 	if url_deconstructed.ok == false:
-		const ERROR_MESSAGE = "Failed to parse the session server URL."
-		GlobalLogger.logs(ERROR_MESSAGE, 1)
-		_return_arr.error = ERROR_MESSAGE
-		return _return_arr
+		var ERROR_MESSAGE = "Failed to deconstruct the url '%s'" % url
+		GlobalLogger.logs(ERROR_MESSAGE, 2)
+		_return_dict.error = ERROR_MESSAGE
+		return _return_dict
 	url_deconstructed = url_deconstructed.data
 
 	var body: Dictionary = {
@@ -40,16 +38,17 @@ func authenticate() -> Dictionary:
 
 	# Response contains api key, or error
 
-	return _return_arr
+	return _return_dict
 
 func get_sessions() -> Array:
 	var _return_arr = []
+	var _session_servers = SettingsManager.get_session_servers()
 
-	for server in SESSION_SERVERS:
+	for server in _session_servers:
 		var search = ""
 		var tags = ""
 
-		var url_deconstructed = UrlParser.deconstruct(server)
+		var url_deconstructed = UrlParser.deconstruct(server.url)
 		if url_deconstructed.ok == false:
 			GlobalLogger.logs("Failed to parse the session server URL.", 1)
 			continue

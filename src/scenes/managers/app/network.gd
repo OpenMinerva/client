@@ -108,13 +108,13 @@ func update_server(id: String, server_info: Dictionary):
 	# Validate server updated data.
 	# Update the database entry.
 	# Emit server updated event to the server.
+	var _saved_session_servers = SettingsManager.get_session_servers()
+
 	if server_info.privacy > Enum.PrivacyLevel.INVITE:
 		# TODO: Only advertise to specific session servers per instance.
 		# Load the session server list into the instance settings dialog.
 		# When updating the server, pass the valid session_server array in the settings.
 		# For now, all servers installed are going to be advertised to.
-		var _saved_session_servers = SettingsManager.get_session_servers()
-
 		for _server in _saved_session_servers:
 			if _database.heartbeats.has(id):
 				GlobalLogger.logs("Session '%s' is already advertised. Updating instead." % id)
@@ -124,14 +124,15 @@ func update_server(id: String, server_info: Dictionary):
 
 				if advertise_response.ok == true:
 					_database.sessions_id.set(server_info.id, advertise_response.data.id)
-					_create_heartbeat_timer(server_info.id)
+					_create_heartbeat_timer(server_info.id, _server.url)
 
 	if server_info.privacy == Enum.PrivacyLevel.INVITE:
 		if _database.heartbeats.has(id):
 			GlobalLogger.logs("Destroying session heartbeat for '%s'" % id)
 			_database.heartbeats.erase(id)
 		
-		_remove_session_from_server(id, "http://localhost:40500")
+		for _server in _saved_session_servers:
+			_remove_session_from_server(id, _server.url)
 	return
 
 func join_server(_ip: String, _port: int):
@@ -266,38 +267,43 @@ func _is_port_in_use(port: int) -> bool:
 
 	return true
 
-func _create_heartbeat_timer(session_id: String):
+func _create_heartbeat_timer(session_id: String, session_server_url: String):
 	GlobalLogger.logs("Creating a heartbeat timer for server '%s'" % session_id)
 	# FIXME: Hardcoded time for timer.
 	var timer = get_tree().create_timer(20)
 
 	_database.heartbeats[session_id] = timer
 
-	timer.timeout.connect(_heartbeat_timer_timeout.bind(session_id))
+	timer.timeout.connect(_heartbeat_timer_timeout.bind(session_id, session_server_url))
 	return
 
-func _heartbeat_timer_timeout(session_id):
+func _heartbeat_timer_timeout(session_id: String, session_server_url: String):
 	GlobalLogger.logs("Sending a heartbeat for server '%s'" % session_id)
 	if _database.heartbeats.has(session_id) == false:
 		GlobalLogger.logs("Server '%s' does not exist anymore, not sending a heartbeat." % session_id)
 		return
 
-	_heartbeat_session(session_id)
+	_heartbeat_session(session_id, session_server_url)
 
-	_create_heartbeat_timer(session_id)
+	_create_heartbeat_timer(session_id, session_server_url)
 	return
 
-func _heartbeat_session(session_id: String):
-	# FIXME: Hardcoded localhost link.
-	var url_parts = UrlParser.deconstruct("http://localhost:40500/api/v1/heartbeatSession")
-	url_parts = url_parts.data
+func _heartbeat_session(session_id: String, session_server_url: String) -> void:
+	var _full_url = "%s/api/v1/heartbeatSession" % session_server_url
+	var _url = UrlParser.deconstruct(_full_url)
+
+	if _url.ok != true:
+		GlobalLogger.logs("Failed to deconstruct the URL '%s'. Error: '%s'" % [_full_url, _url.error])
+		return
+
+	_url = _url.data
 	var body = {"session_id": session_id}
 	
 	var response = await http.req(
 		HTTPClient.Method.METHOD_POST,
-		url_parts.host,
-		url_parts.path,
-		url_parts.port,
+		_url.host,
+		_url.path,
+		_url.port,
 		["Accept: application/json", "Content-Type: application/json", "x-api-key: %s" % GlobalAccount.dev_session_server_api_key],
 		JSON.stringify(body)
 	)

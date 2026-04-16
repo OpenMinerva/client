@@ -28,7 +28,8 @@ func _handle_page_opened(page_name: String) -> void:
 		return
 
 	# TODO: Check if we need to authenticate, if so
-	await SessionQuery.authenticate()
+	for _session_server in SettingsManager.get_session_servers():
+		await SessionQuery.authenticate(_session_server.url)
 
 	# Get a list of all sessions from our saved sessions_list
 	var session_list = await SessionQuery.get_sessions()
