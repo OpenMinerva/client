@@ -201,21 +201,3 @@ func _handle_response(response: Dictionary) -> Dictionary:
 	response_data.body = JSON.parse_string(response.get("body"))
 
 	return response_data
-
-# DEV: Upload public key to the server.
-# func test_upload_public_key_to_server():
-# 	GlobalLogger.logs("Registering the device public key to the account server.")
-# 	var body = {
-# 		"public_key": active_account.public_device_key
-# 	}
-# 	var url_parts = UrlParser.deconstruct(active_account.account_server)
-# 	if url_parts.ok == false:
-# 		GlobalLogger.logs("Unhandled error registering the public device key to the account server. '%s'" % url_parts.error, 3)
-# 		return
-# 	url_parts = url_parts.data
-
-# 	print(url_parts)
-
-# 	var public_key_response = await http.req(HTTPClient.Method.METHOD_POST, url_parts.host, "/api/v1/device_key", url_parts.port, ["Accept: application/json", "Content-Type: application/json", "authorization: Bearer %s" % oauth_lib.access_token], JSON.stringify(body))
-# 	print(public_key_response)
-# 	return
