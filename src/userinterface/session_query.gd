@@ -14,21 +14,23 @@ var http = preload("res://scripts/network/http.gd").new()
 func authenticate(url: String) -> Dictionary:
 	var _return_dict: Dictionary = {"ok": false, "error": ""}
 
-	var url_deconstructed = UrlParser.deconstruct(url)
-	if url_deconstructed.ok == false:
-		var ERROR_MESSAGE = "Failed to deconstruct the url '%s'" % url
-		GlobalLogger.logs(ERROR_MESSAGE, 2)
-		_return_dict.error = ERROR_MESSAGE
-		return _return_dict
-	url_deconstructed = url_deconstructed.data
+	# TODO: Do we need a new authentication key?
+	if GlobalAccount.dev_session_server_api_key == "":
+		var url_deconstructed = UrlParser.deconstruct(url)
+		if url_deconstructed.ok == false:
+			var ERROR_MESSAGE = "Failed to deconstruct the url '%s'" % url
+			GlobalLogger.logs(ERROR_MESSAGE, 2)
+			_return_dict.error = ERROR_MESSAGE
+			return _return_dict
+		url_deconstructed = url_deconstructed.data
 
-	var body: Dictionary = {
-		"id_token": GlobalAccount.active_account.id_token,
-		"challenge": "challenge value"
-	}
-	var authentication_response = await http.req(HTTPClient.Method.METHOD_POST, url_deconstructed.host, "/api/v1/getAuthenticationKey", url_deconstructed.port, ["Accept: application/json", "Content-Type: application/json"], JSON.stringify(body))
+		var body: Dictionary = {
+			"id_token": GlobalAccount.active_account.id_token,
+			"challenge": "challenge value"
+		}
+		var authentication_response = await http.req(HTTPClient.Method.METHOD_POST, url_deconstructed.host, "/api/v1/getAuthenticationKey", url_deconstructed.port, ["Accept: application/json", "Content-Type: application/json"], JSON.stringify(body))
 
-	_authentication_request_received(url_deconstructed.host, authentication_response)
+		_authentication_request_received(url_deconstructed.host, authentication_response)
 
 	# Get id_token of currently logged in user
 	# Sign challenge using private key
