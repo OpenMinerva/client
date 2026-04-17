@@ -339,9 +339,8 @@ func _advertise_session(session_info: Dictionary, session_server: String) -> Dic
 		JSON.stringify(_body)
 	)
 
-
 	# FIXME: What is this flow? This is bad?
-	if advertise_response.ok == false:
+	if advertise_response.ok != true:
 		response_dict.error = advertise_response.error
 		return response_dict
 
