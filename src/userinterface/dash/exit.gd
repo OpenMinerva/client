@@ -25,5 +25,5 @@ func _handle_exit_pressed():
 	# TODO: Sync?
 	# TODO: Validate database?
 	# TODO: Prune cache?
-	get_tree().quit()
+	get_tree().root.propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
 	return
