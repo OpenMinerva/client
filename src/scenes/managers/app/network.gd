@@ -48,6 +48,7 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 
 	# Get an available port. If port was defined, force that port or fail.
 	if port != 0:
+		GlobalLogger.logs("Forcing port '%s'" % port)
 		var port_available = !_is_port_in_use(port)
 		if !port_available:
 			response_dict.error = "Port is not available."
@@ -70,6 +71,12 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 	var _create_server_response = _session_peer.create_server(port, MAX_CLIENTS)
 	_mp_api.multiplayer_peer = _session_peer
 
+	var master_scene = scene_m.get_master_scene(_scene)
+	get_tree().set_multiplayer(_mp_api, master_scene.get_path())
+	_mp_api.set_root_path(master_scene.get_path())
+	var net_manager = master_scene.get_node("NetworkManager")
+	net_manager.setup_connection(_mp_api)
+
 	_database.sessions_api.set(_scene, _mp_api)
 	_database.sessions.set(_scene, _instance)
 
@@ -81,6 +88,11 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 		_database.sessions.erase(_scene)
 
 		scene_m.destroy_master_scene(_scene)
+		# HACK: Retry creating a server again.
+		if _create_server_response == 20:
+			# Port is in use
+			return start_server(0, root_scene)
+
 		return response_dict
 	
 	# Create server root scene.
@@ -133,11 +145,47 @@ func update_server(id: String, server_info: Dictionary):
 			_remove_session_from_server(id, _server.url)
 	return
 
-func join_server(_ip: String, _port: int):
-	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
-	# Create multiplayer peer.
-	# Establish connection.
-	# Host handles everything after this with the managers?
+func join_server(ip: String, port: int):
+	var response_dict = {"ok": false, "error": null, "data": null}
+
+	GlobalLogger.logs("Joining server at '%s:%s'" % [ip, port], 1)
+	var _port_is_valid = port > 0 && port < 65535
+
+	if ip.is_empty() || !_port_is_valid:
+		GlobalLogger.logs("Server information is invalid '%s:%s'." % [ip, port], 1)
+		response_dict.error = "Server information is invalid."
+		return response_dict
+
+	# Create server master scene.
+	var _scene: String = scene_m.create_master_scene()
+	var _instance = _instance_database_template.duplicate()
+	_instance.id = _scene
+	_instance.name = _scene
+	_instance.start_time = int(Time.get_unix_time_from_system())
+	_instance.privacy = Enum.PrivacyLevel.INVITE
+	_instance.port = port
+
+	var _mp_api = SceneMultiplayer.new()
+	var _session_peer = ENetMultiplayerPeer.new()
+	var connect_error = _session_peer.create_client(ip, port)
+
+
+	if connect_error != OK:
+		GlobalLogger.logs("Failed to join server. Error: '%s'" % connect_error, 1)
+		response_dict.error = "Failed to join server. Error: '%s'" % connect_error
+		return response_dict
+
+	_mp_api.multiplayer_peer = _session_peer
+
+	var master_scene = scene_m.get_master_scene(_scene)
+	get_tree().set_multiplayer(_mp_api, master_scene.get_path())
+	_mp_api.set_root_path(master_scene.get_path())
+	var net_manager = master_scene.get_node("NetworkManager")
+	net_manager.setup_connection(_mp_api)
+
+	_database.sessions_api.set(_scene, _mp_api)
+	_database.sessions.set(_scene, _instance)
+	
 	return
 
 func leave_server():
@@ -248,7 +296,7 @@ func _find_available_port(target_port: int = MINIMUM_INCREMENTAL_PORT) -> int:
 		if port_available:
 			_found_port = target_port
 			_is_found = true
-
+			break
 		target_port = target_port + 1
 
 	GlobalLogger.logs("Port found: '%s'" % target_port)
@@ -256,13 +304,18 @@ func _find_available_port(target_port: int = MINIMUM_INCREMENTAL_PORT) -> int:
 	return _found_port
 
 func _is_port_in_use(port: int) -> bool:
+	var udp_server = UDPServer.new()
+	var err_udp = udp_server.listen(port, "*")
 	var tcp_server = TCPServer.new()
-	var err = tcp_server.listen(port, "*")
+	var err_tcp = tcp_server.listen(port, "*")
 
-	if err == OK:
+	if err_udp == OK && err_tcp == OK:
+		udp_server.stop()
 		tcp_server.stop()
 		return false
 
+	udp_server.stop()
+	tcp_server.stop()
 	return true
 
 func _create_heartbeat_timer(session_id: String, session_server_url: String):
