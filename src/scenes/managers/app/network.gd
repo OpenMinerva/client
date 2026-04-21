@@ -64,6 +64,7 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 	_instance.start_time = int(Time.get_unix_time_from_system())
 	_instance.privacy = Enum.PrivacyLevel.INVITE
 	_instance.port = port
+	_instance.type = "host"
 
 	# Create a new peer.
 	var _mp_api = SceneMultiplayer.new()
@@ -164,6 +165,7 @@ func join_server(ip: String, port: int):
 	_instance.start_time = int(Time.get_unix_time_from_system())
 	_instance.privacy = Enum.PrivacyLevel.INVITE
 	_instance.port = port
+	_instance.type = "client"
 
 	var _mp_api = SceneMultiplayer.new()
 	var _session_peer = ENetMultiplayerPeer.new()
@@ -188,7 +190,7 @@ func join_server(ip: String, port: int):
 	
 	return
 
-func leave_server():
+func leave_server(_id: String):
 	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
 	# Get server from database.
 	# Send leave packet.
