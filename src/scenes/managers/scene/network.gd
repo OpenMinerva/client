@@ -3,6 +3,10 @@ extends Node
 var _specific_api: SceneMultiplayer = null
 var _my_id = 0
 
+func _process(_delta):
+	if multiplayer:
+		multiplayer.poll()
+
 func setup_connection(api: SceneMultiplayer):
 	_specific_api = api
 	_specific_api.connected_to_server.connect(_on_connected_to_server)
@@ -22,6 +26,20 @@ func _rpc_hello():
 func _on_hello_world_received():
 	GlobalLogger.logs("[%s] Server replied." % [_my_id])
 
-func _process(_delta):
-	if multiplayer:
-		multiplayer.poll()
+@rpc("authority", "unreliable")
+func kick_player():
+	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
+	return
+
+@rpc("authority", "unreliable")
+func ban_player():
+	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
+	return
+
+func on_kicked():
+	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
+	return
+
+func on_banned():
+	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
+	return

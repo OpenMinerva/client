@@ -198,22 +198,6 @@ func leave_server(_id: String):
 	# Destroy server master scene.
 	return
 
-func kick_player():
-	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
-	return
-
-func ban_player():
-	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
-	return
-
-func on_kicked():
-	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
-	return
-
-func on_banned():
-	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
-	return
-
 func get_connected_sessions():
 	var result = []
 
