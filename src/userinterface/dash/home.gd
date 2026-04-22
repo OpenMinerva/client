@@ -10,6 +10,7 @@
 extends Control
 
 @onready var network_m = get_tree().current_scene.get_node("NetworkManager")
+@onready var scene_m = get_tree().current_scene.get_node("SceneManager")
 
 @onready var account_card_container = get_node("HBoxContainer/VBoxContainer/AccountDisplay")
 @onready var storage_card_container = get_node("HBoxContainer/VBoxContainer/StorageDisplay")
@@ -24,6 +25,9 @@ func _ready():
 	Events.connect("dash_active_account_changed", _handle_active_account_changed)
 	Events.connect("dash_storage_changed", _handle_storage_changed)
 	Events.connect("dash_session_changed", _handle_session_changed)
+	Events.connect("dash_session_changed", _handle_session_changed)
+
+	Events.connect("session_joined", _display_active_sessions)
 
 	_display_active_sessions()
 	
@@ -53,6 +57,7 @@ func _display_active_sessions() -> void:
 	for session in _sessions:
 		var _entry = active_session_template.duplicate()
 		_entry.text = session.id
+		_entry.pressed.connect(scene_m.set_active_session.bind(session.id))
 		active_sessions_container.get_node("MarginContainer/VBoxContainer").add_child(_entry)
 
 	# TODO: When button is pressed, focus that session

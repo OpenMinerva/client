@@ -31,4 +31,10 @@ signal dash_account_list_loaded(account_list: PackedStringArray)
 @warning_ignore("unused_signal")
 signal instance_updated(instance: Dictionary)
 @warning_ignore("unused_signal")
-signal instance_root_changed()
+signal instance_root_changed(instance: Dictionary)
+
+# Multiplayer
+@warning_ignore("unused_signal")
+signal session_joined(instance: Dictionary)
+@warning_ignore("unused_signal")
+signal session_left(instance: Dictionary)

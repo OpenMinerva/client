@@ -106,6 +106,7 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 	
 	# DEV: Force spawn the host.
 	scene_m.get_master_scene(_scene).get_node("PlayerManager").spawn_player(1)
+	scene_m.set_active_session(_scene)
 
 	return response_dict
 
@@ -187,7 +188,8 @@ func join_server(ip: String, port: int):
 
 	_database.sessions_api.set(_scene, _mp_api)
 	_database.sessions.set(_scene, _instance)
-	
+
+	Events.emit_signal("session_joined")
 	return
 
 func leave_server(_id: String):

@@ -23,6 +23,8 @@ func create_master_scene():
 
 	_base_scene = _base_scene.instantiate()
 	_base_scene.name = _scene_id
+	_base_scene.top_level = true
+	_base_scene.visible = false
 
 	scene_container.add_child(_base_scene)
 
@@ -127,3 +129,13 @@ func _get_scene_by_type(scene_type: Enum.BaseLevel) -> PackedScene:
 			_scene_dir = "res://scenes/levels/debug.tscn"
 
 	return load(_scene_dir)
+
+func set_active_session(session_id: String):
+	print("Setting active session to '%s'" % session_id)
+
+	for _scene in network_m.get_connected_sessions():
+		scene_container.get_node(_scene.id).visible = false
+
+	
+	scene_container.get_node(session_id).visible = true
+	return
