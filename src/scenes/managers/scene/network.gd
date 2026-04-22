@@ -3,6 +3,8 @@ extends Node
 var _specific_api: SceneMultiplayer = null
 var _my_id = 0
 
+@onready var player_m = get_parent().get_node("PlayerManager")
+
 func _process(_delta):
 	if multiplayer:
 		multiplayer.poll()
@@ -14,17 +16,14 @@ func setup_connection(api: SceneMultiplayer):
 
 func _on_connected_to_server():
 	GlobalLogger.logs("[%s] I am connected to a server." % _my_id)
-	rpc_id(1, "_rpc_hello")
+	rpc_id(1, "player_spawn_request")
 
 @rpc("any_peer", "unreliable")
-func _rpc_hello():
+func player_spawn_request():
 	var caller_id = multiplayer.get_remote_sender_id()
-	GlobalLogger.logs("[%s] Hello from '%s'." % [_my_id, caller_id])
+	GlobalLogger.logs("[%s] Player spawn request from '%s'." % [_my_id, caller_id])
+	player_m.spawn_player(caller_id)
 	rpc_id(caller_id, "_on_hello_world_received")
-
-@rpc("authority", "unreliable")
-func _on_hello_world_received():
-	GlobalLogger.logs("[%s] Server replied." % [_my_id])
 
 @rpc("authority", "unreliable")
 func kick_player():
