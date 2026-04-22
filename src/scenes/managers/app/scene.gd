@@ -12,6 +12,7 @@ extends Node
 # Game managers
 @onready var network_m: Node = get_tree().current_scene.get_node("NetworkManager")
 @onready var scene_container: Node3D = get_tree().current_scene.get_node("Scenes")
+var active_session: String = ""
 
 func _ready():
 	network_m.start_server()
@@ -136,6 +137,6 @@ func set_active_session(session_id: String):
 	for _scene in network_m.get_connected_sessions():
 		scene_container.get_node(_scene.id).visible = false
 
-	
+	active_session = session_id
 	scene_container.get_node(session_id).visible = true
 	return

@@ -76,7 +76,7 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 	get_tree().set_multiplayer(_mp_api, master_scene.get_path())
 	_mp_api.set_root_path(master_scene.get_path())
 	var net_manager = master_scene.get_node("NetworkManager")
-	net_manager.setup_connection(_mp_api)
+	net_manager.setup_connection(_mp_api, _scene)
 
 	_database.sessions_api.set(_scene, _mp_api)
 	_database.sessions.set(_scene, _instance)
@@ -105,7 +105,8 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 	scene_m.start_master_scene(_scene)
 	
 	# DEV: Force spawn the host.
-	scene_m.get_master_scene(_scene).get_node("PlayerManager").spawn_player(1)
+	scene_m.get_master_scene(_scene).get_node("PlayerManager").add_player(1)
+	scene_m.get_master_scene(_scene).get_node("PlayerManager").spawn_player(str(1))
 	scene_m.set_active_session(_scene)
 
 	return response_dict
@@ -184,7 +185,7 @@ func join_server(ip: String, port: int):
 	get_tree().set_multiplayer(_mp_api, master_scene.get_path())
 	_mp_api.set_root_path(master_scene.get_path())
 	var net_manager = master_scene.get_node("NetworkManager")
-	net_manager.setup_connection(_mp_api)
+	net_manager.setup_connection(_mp_api, _scene)
 
 	_database.sessions_api.set(_scene, _mp_api)
 	_database.sessions.set(_scene, _instance)
