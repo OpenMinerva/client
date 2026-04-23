@@ -12,7 +12,6 @@ extends Node
 const MAX_CLIENTS = 1000
 const MINIMUM_INCREMENTAL_PORT = 20205
 
-var n_c = preload("res://scripts/network/network_compression.gd").new()
 var url_regex = RegEx.create_from_string("^(https?)://([^/:]+)(?::(\\d+))?(.*)$")
 
 @onready var http = preload("res://scripts/network/http.gd").new()

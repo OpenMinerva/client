@@ -5,8 +5,6 @@ var speed = 5.0
 @onready var hud = get_tree().current_scene.get_node("Hud")
 @onready var scene_m = get_tree().current_scene.get_node("SceneManager")
 
-var n_c = preload("res://scripts/network/network_compression.gd").new()
-
 # TODO: Mouse sensitivity from settings
 # TODO: Replace interaction ray
 # TODO: Add skeleton controller
@@ -134,8 +132,8 @@ func _send_player_synchronization_info():
 	if is_multiplayer_authority() == false:
 		return
 
-	var compressed_position = n_c.c_16_pos(position)
-	var compressed_rotation = n_c.c_16_vec3(rotation)
+	var compressed_position = NetworkCompression.c_16_pos(position)
+	var compressed_rotation = NetworkCompression.c_16_vec3(rotation)
 
 	# HACK: We are just appending the rotation bits at the end here. It should probably be more efficient somewhere else.
 	compressed_position.append_array(compressed_rotation)

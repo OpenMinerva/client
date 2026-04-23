@@ -1,6 +1,5 @@
 extends Node
 
-var n_c = preload("res://scripts/network/network_compression.gd").new()
 @onready var network_manager = get_tree().current_scene.get_node("NetworkManager")
 
 @rpc("any_peer", "unreliable")
@@ -12,6 +11,6 @@ func on_player_transform(info):
 		return
 
 	# HACK: The rotation data is hacked on here. This needs to be addressed at some point.
-	target_node.position = n_c.d_16_pos(info)
-	target_node.rotation = n_c.d_16_vec3(info.slice(12))
+	target_node.position = NetworkCompression.d_16_pos(info)
+	target_node.rotation = NetworkCompression.d_16_vec3(info.slice(12))
 	return

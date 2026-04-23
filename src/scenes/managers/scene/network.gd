@@ -7,7 +7,6 @@ var _server_id: String = ""
 @onready var player_m = get_parent().get_node("PlayerManager")
 @onready var scene_m = get_tree().current_scene.get_node("SceneManager")
 @onready var network_m = get_tree().current_scene.get_node("NetworkManager")
-var n_c = preload("res://scripts/network/network_compression.gd").new()
 
 func _process(_delta):
 	if multiplayer:
@@ -83,5 +82,5 @@ func entity_position(entity_id: int, position):
 	var target_node = get_parent().get_node("root").get_node_or_null(str(entity_id))
 	if target_node:
 		# print(target_node.name)
-		target_node.position = n_c.d_16_pos(position)
-		target_node.rotation = n_c.d_16_vec3(position.slice(12))
+		target_node.position = NetworkCompression.d_16_pos(position)
+		target_node.rotation = NetworkCompression.d_16_vec3(position.slice(12))

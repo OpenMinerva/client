@@ -9,7 +9,6 @@
 
 extends Node
 
-var n_c = preload("res://scripts/network/network_compression.gd").new()
 var jwt = preload("res://scripts/libs/jwt.gd").new()
 var rsa = preload("res://scripts/crypto/rsa.gd").new()
 var url_regex = RegEx.create_from_string("^(https?)://([^/:]+)(?::(\\d+))?(.*)$")
@@ -32,7 +31,7 @@ func on_peer_connected(peer_id):
 
 	GlobalLogger.logs("[%s] Peer connected: '%s'. Sending server info." % [multiplayer.get_unique_id(), peer_id])
 	get_parent().c.rpc_id(peer_id, "on_receive_server_info", network_manager.info)
-	
+
 func on_peer_disconnected():
 	return
 
