@@ -15,7 +15,6 @@ const MINIMUM_INCREMENTAL_PORT = 20205
 var url_regex: RegEx = RegEx.create_from_string("^(https?)://([^/:]+)(?::(\\d+))?(.*)$")
 
 @onready var scene_m = get_node("../SceneManager")
-@onready var rpc_lib = get_node("../RpcManager")
 
 var _database = {
 	"heartbeats": {},

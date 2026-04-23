@@ -25,7 +25,6 @@ func _ready():
 	Events.connect("dash_active_account_changed", _handle_active_account_changed)
 	Events.connect("dash_storage_changed", _handle_storage_changed)
 	Events.connect("dash_session_changed", _handle_session_changed)
-	Events.connect("dash_session_changed", _handle_session_changed)
 
 	Events.connect("session_joined", _display_active_sessions)
 	Events.connect("session_left", _display_active_sessions)
