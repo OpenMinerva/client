@@ -12,11 +12,11 @@ extends Node
 const MAX_CLIENTS = 1000
 const MINIMUM_INCREMENTAL_PORT = 20205
 
-var url_regex = RegEx.create_from_string("^(https?)://([^/:]+)(?::(\\d+))?(.*)$")
+var url_regex: RegEx = RegEx.create_from_string("^(https?)://([^/:]+)(?::(\\d+))?(.*)$")
 
 @onready var http = preload("res://scripts/network/http.gd").new()
-@onready var scene_m = get_tree().current_scene.get_node("SceneManager")
-@onready var rpc_lib = get_tree().current_scene.get_node("RpcManager")
+@onready var scene_m = get_node("../SceneManager")
+@onready var rpc_lib = get_node("../RpcManager")
 
 var _database = {
 	"heartbeats": {},
