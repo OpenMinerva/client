@@ -11,6 +11,7 @@ var n_c = preload("res://scripts/network/network_compression.gd").new()
 # TODO: Replace interaction ray
 # TODO: Add skeleton controller
 # TODO: Mouse captured from HUD, not player controller
+# TODO: Rotate climbing collider as you move WASD
 
 @onready var body = $"."
 @onready var head = $Head
@@ -32,7 +33,6 @@ const SENSITIVITY = 1.5
 # Player statuses
 var mouse_captured: bool = false
 
-# TODO: Rotate climbing collider as you move WASD
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")

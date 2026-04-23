@@ -37,12 +37,7 @@ func _initialize_log_file():
 ## Logs a message to both file and console (if enabled).
 ## @param message: The message string to log. If omitted, defaults to an empty string.
 ## @param level: The log level indicating the severity. Must be an integer:
-##   0 -> Debug
-##   1 -> Info
-##   2 -> Warning
-##   3 -> Error
-##   Defaults to 0 (Debug).
-func logs(message: String = "", level: int = 0):
+func logs(message: String = "", level: Enum.LogLevel = 0):
 	_log_to_file(message, level)
 
 	if console_logging_enabled:

@@ -24,7 +24,6 @@ func setup_connection(api: SceneMultiplayer, id: String):
 
 func _on_connected_to_server():
 	GlobalLogger.logs("[%s] I am connected to a server." % _my_id)
-	# rpc_id(1, "player_spawn_request")
 
 @rpc("authority", "unreliable")
 func kick_player():
@@ -47,7 +46,7 @@ func on_banned():
 func _on_peer_connected(peer_id: int):
 	if is_multiplayer_authority() == false:
 		return
-		
+
 	player_m.add_player(peer_id)
 	player_m.spawn_player(str(peer_id))
 

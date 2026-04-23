@@ -33,6 +33,7 @@ const _instance_database_template = {
 	"port": 0,
 	"max_connected_users": 1,
 	"privacy": null,
+	"active": false,
 
 	"connected_players": [],
 	"start_time": 0,
@@ -95,7 +96,7 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 			return start_server(0, root_scene)
 
 		return response_dict
-	
+
 	# Create server root scene.
 	if root_scene:
 		scene_m.set_master_root_from_program(_scene, root_scene)
@@ -103,7 +104,7 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 		scene_m.set_master_root_from_program(_scene, Enum.BaseLevel.GRID)
 
 	scene_m.start_master_scene(_scene)
-	
+
 	# DEV: Force spawn the host.
 	scene_m.get_master_scene(_scene).get_node("PlayerManager").add_player(1)
 	scene_m.get_master_scene(_scene).get_node("PlayerManager").spawn_player(str(1))
@@ -113,7 +114,7 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 
 func stop_server(_id: String):
 	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
-	# Kick all players (Server closing). 
+	# Kick all players (Server closing).
 	# Turn off all join requests.
 	# Destroy multiplayer api.
 	# Stop all managers.
@@ -143,7 +144,7 @@ func update_server(id: String, server_info: Dictionary):
 		if _database.heartbeats.has(id):
 			GlobalLogger.logs("Destroying session heartbeat for '%s'" % id)
 			_database.heartbeats.erase(id)
-		
+
 		for _server in _saved_session_servers:
 			_remove_session_from_server(id, _server.url)
 	return
@@ -208,6 +209,18 @@ func get_connected_sessions():
 		result.append(_database.sessions[session_id].merged({"id": session_id}))
 
 	return result
+
+func set_active_session(id: String):
+	if _database.sessions.has(id):
+		GlobalLogger.logs("Tried to mark an invalid session as active: '%s'" % id, 3)
+		return
+
+	for session_id in _database.sessions.keys():
+		_database.sessions[session_id].active = false
+
+	_database.sessions[id].active = true
+	scene_m.set_active_session(id)
+	return
 
 func _update_session_server_listing(session_info: Dictionary, session_server: String) -> Dictionary:
 	var response_dict = {"ok": false, "error": null, "data": null}
@@ -338,7 +351,7 @@ func _heartbeat_session(session_id: String, session_server_url: String) -> void:
 
 	_url = _url.data
 	var body = {"session_id": _database.sessions_id.get(session_id)}
-	
+
 	var response = await http.req(
 		HTTPClient.Method.METHOD_POST,
 		_url.host,
