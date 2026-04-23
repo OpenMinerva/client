@@ -21,16 +21,17 @@ extends Control
 
 func _ready():
 	account_card_container.get_node("Button").pressed.connect(Events.emit_signal.bind("dash_switch_tab", "AccountDisplay"))
-	
+
 	Events.connect("dash_active_account_changed", _handle_active_account_changed)
 	Events.connect("dash_storage_changed", _handle_storage_changed)
 	Events.connect("dash_session_changed", _handle_session_changed)
 	Events.connect("dash_session_changed", _handle_session_changed)
 
 	Events.connect("session_joined", _display_active_sessions)
+	Events.connect("session_left", _display_active_sessions)
 
 	_display_active_sessions()
-	
+
 	return
 
 func _handle_active_account_changed(account: Dictionary) -> void:

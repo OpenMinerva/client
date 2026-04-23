@@ -33,5 +33,5 @@ func spawn_player(peer_id: String) -> void:
 	return
 
 func kill_player() -> void:
-	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
+	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	return

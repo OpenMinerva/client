@@ -77,7 +77,7 @@ func get_master_root(id: String) -> Node3D:
 	return _root
 
 func set_master_root_from_inventory(_id: String, _scene_type: Enum.BaseLevel) -> bool:
-	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
+	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	# get_master_scene
 	# Find scene from inventory.
 	# Validate scene integrity.
@@ -97,7 +97,7 @@ func start_master_scene(id: String):
 			_scene_manager.active = true
 			GlobalLogger.logs("'%s' started in server '%s'" % [node_name, id])
 			continue
-		
+
 		GlobalLogger.logs("Could not start invalid manager '%s' in server '%s'" % [node_name, id], 3)
 	return
 
@@ -112,7 +112,7 @@ func stop_master_scene(id: String):
 			_scene_manager.active = true
 			GlobalLogger.logs("'%s' started in server '%s'" % [node_name, id])
 			continue
-		
+
 		GlobalLogger.logs("Could not start invalid manager '%s' in server '%s'" % [node_name, id], 3)
 	return
 
@@ -132,8 +132,6 @@ func _get_scene_by_type(scene_type: Enum.BaseLevel) -> PackedScene:
 	return load(_scene_dir)
 
 func set_active_session(session_id: String):
-	print("Setting active session to '%s'" % session_id)
-
 	for _scene in network_m.get_connected_sessions():
 		scene_container.get_node(_scene.id).visible = false
 

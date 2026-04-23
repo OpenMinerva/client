@@ -19,28 +19,28 @@ func setup_connection(api: SceneMultiplayer, id: String):
 
 	_specific_api.connected_to_server.connect(_on_connected_to_server)
 	_specific_api.peer_connected.connect(_on_peer_connected)
+	_specific_api.server_disconnected.connect(_on_server_disconnected)
 
 	_my_id = multiplayer.get_unique_id()
 
 func _on_connected_to_server():
 	GlobalLogger.logs("[%s] I am connected to a server." % _my_id)
 
-@rpc("authority", "unreliable")
-func kick_player():
-	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
+func _on_server_disconnected():
+	network_m.leave_server(_server_id)
 	return
 
 @rpc("authority", "unreliable")
 func ban_player():
-	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
+	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	return
 
 func on_kicked():
-	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
+	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	return
 
 func on_banned():
-	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
+	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	return
 
 func _on_peer_connected(peer_id: int):

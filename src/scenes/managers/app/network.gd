@@ -112,13 +112,35 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 
 	return response_dict
 
-func stop_server(_id: String):
-	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
-	# Kick all players (Server closing).
-	# Turn off all join requests.
-	# Destroy multiplayer api.
-	# Stop all managers.
-	# Destroy server master scene.
+func stop_server(id: String):
+	var database_has_sessions: bool = _database.sessions.has(id)
+	var database_has_sessions_api: bool = _database.sessions_api.has(id)
+
+	# TODO: Disable join requests to server
+
+	if !database_has_sessions && !database_has_sessions_api:
+		GlobalLogger.logs("Session '%s' does not exist, cannot stop the server." % id, Enum.LogLevel.WARNING)
+		return
+
+	if database_has_sessions_api:
+		var mp_api: SceneMultiplayer = _database.sessions_api.get(id)
+		var all_peers = mp_api.get_peers()
+
+		# Kick all players
+		for _peer in all_peers:
+			kick_player(id, _peer, "Server Closing")
+
+		# Close the server
+		mp_api.multiplayer_peer.close()
+		mp_api.multiplayer_peer = null
+
+	# Application cleanup
+	scene_m.stop_master_scene(id)
+	scene_m.destroy_master_scene(id)
+
+	# Database cleanup
+	_database.sessions_api.erase(id)
+	_database.sessions.erase(id)
 	return
 
 func update_server(id: String, server_info: Dictionary):
@@ -174,7 +196,6 @@ func join_server(ip: String, port: int):
 	var _session_peer = ENetMultiplayerPeer.new()
 	var connect_error = _session_peer.create_client(ip, port)
 
-
 	if connect_error != OK:
 		GlobalLogger.logs("Failed to join server. Error: '%s'" % connect_error, 1)
 		response_dict.error = "Failed to join server. Error: '%s'" % connect_error
@@ -194,12 +215,43 @@ func join_server(ip: String, port: int):
 	Events.emit_signal("session_joined")
 	return
 
-func leave_server(_id: String):
-	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
-	# Get server from database.
-	# Send leave packet.
-	# Destroy multiplayer API.
-	# Destroy server master scene.
+func leave_server(id: String):
+	var database_has_sessions: bool = _database.sessions.has(id)
+	var database_has_sessions_api: bool = _database.sessions_api.has(id)
+
+	if !database_has_sessions && !database_has_sessions_api:
+		GlobalLogger.logs("Session '%s' does not exist, cannot disconnect." % id, Enum.LogLevel.WARNING)
+		return
+
+	if database_has_sessions_api:
+		var mp_api: SceneMultiplayer = _database.sessions_api.get(id)
+		var my_peer_id = mp_api.multiplayer_peer.get_unique_id()
+
+		if mp_api.multiplayer_peer:
+			mp_api.multiplayer_peer.disconnect_peer(my_peer_id)
+			GlobalLogger.logs("Disconnected from session '%s'." % id, Enum.LogLevel.DEBUG)
+
+
+	scene_m.set_active_session(get_connected_sessions()[0].id)
+
+	scene_m.stop_master_scene(id)
+	scene_m.destroy_master_scene(id)
+
+	_database.sessions_api.erase(id)
+	_database.sessions.erase(id)
+
+	GlobalLogger.logs("Successfully disconnected from session '%s' and cleaned up." % id, Enum.LogLevel.DEBUG)
+	Events.emit_signal("session_left")
+	return
+
+func kick_player(server_id:String, peer_id: int, reason: String):
+	GlobalLogger.logs("Kicking peer '%s' from '%s' for reason '%s'" % [peer_id, server_id, reason], Enum.LogLevel.DEBUG)
+	var database_has_sessions_api: bool = _database.sessions_api.has(server_id)
+	# TODO: Check if peer exists
+	if database_has_sessions_api:
+		var mp_api: SceneMultiplayer = _database.sessions_api.get(server_id)
+		# TODO: Notify user of kick
+		mp_api.disconnect_peer(peer_id)
 	return
 
 func get_connected_sessions():
