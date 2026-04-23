@@ -9,7 +9,6 @@
 
 extends Node
 
-var http = preload("res://scripts/network/http.gd").new()
 var jwt_lib = preload("res://scripts/libs/jwt.gd").new()
 var random_lib = preload("res://scripts/utils/random.gd").new()
 
@@ -63,7 +62,7 @@ func authenticate(account_server: String) -> Dictionary:
 		"code_verifier=%s" % secret_pkce,
 	]
 	var form_string: String = "&".join(form_parts)
-	var exchange_response = await http.req(HTTPClient.Method.METHOD_POST, account_server_url.host, "/oauth/token", account_server_url.port, ["Accept: application/json", "Content-Type: application/x-www-form-urlencoded"], form_string)
+	var exchange_response = await HTTP.req(HTTPClient.Method.METHOD_POST, account_server_url.host, "/oauth/token", account_server_url.port, ["Accept: application/json", "Content-Type: application/x-www-form-urlencoded"], form_string)
 	var token_data = JSON.parse_string(exchange_response.get("body"))
 
 	return _get_tokens_from_response(token_data)
@@ -139,7 +138,7 @@ func validate_token(account: Dictionary) -> bool:
 		return false
 	account_server_url = account_server_url.data
 
-	var introspect_response = await http.req(HTTPClient.Method.METHOD_POST, account_server_url.host, "/oauth/token/introspection", account_server_url.port, ["Accept: application/json", "Content-Type: application/x-www-form-urlencoded"], form_string)
+	var introspect_response = await HTTP.req(HTTPClient.Method.METHOD_POST, account_server_url.host, "/oauth/token/introspection", account_server_url.port, ["Accept: application/json", "Content-Type: application/x-www-form-urlencoded"], form_string)
 	if introspect_response.ok == false:
 		GlobalLogger.logs("Unknown error parsing the introspection response.", Enum.LogLevel.WARNING)
 		return false

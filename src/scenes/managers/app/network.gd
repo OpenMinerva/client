@@ -14,7 +14,6 @@ const MINIMUM_INCREMENTAL_PORT = 20205
 
 var url_regex: RegEx = RegEx.create_from_string("^(https?)://([^/:]+)(?::(\\d+))?(.*)$")
 
-@onready var http = preload("res://scripts/network/http.gd").new()
 @onready var scene_m = get_node("../SceneManager")
 @onready var rpc_lib = get_node("../RpcManager")
 
@@ -293,7 +292,7 @@ func _update_session_server_listing(session_info: Dictionary, session_server: St
 		"session_privacy": session_info.privacy,
 	}
 
-	var _update_response = await http.req(
+	var _update_response = await HTTP.req(
 		HTTPClient.Method.METHOD_POST,
 		url.host,
 		url.path,
@@ -322,7 +321,7 @@ func _remove_session_from_server(server_id: String, session_server: String) -> D
 		"id": _database.sessions_id.get(server_id),
 	}
 
-	var _removal_response = await http.req(
+	var _removal_response = await HTTP.req(
 		HTTPClient.Method.METHOD_DELETE,
 		url.host,
 		url.path,
@@ -403,7 +402,7 @@ func _heartbeat_session(session_id: String, session_server_url: String) -> void:
 	_url = _url.data
 	var body = {"session_id": _database.sessions_id.get(session_id)}
 
-	var response = await http.req(
+	var response = await HTTP.req(
 		HTTPClient.Method.METHOD_POST,
 		_url.host,
 		_url.path,
@@ -436,7 +435,7 @@ func _advertise_session(session_info: Dictionary, session_server: String) -> Dic
 		"session_port": session_info.port,
 	}
 
-	var advertise_response = await http.req(
+	var advertise_response = await HTTP.req(
 		HTTPClient.Method.METHOD_POST,
 		url.host,
 		url.path,

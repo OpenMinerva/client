@@ -9,7 +9,6 @@
 
 extends Node
 
-var http = preload("res://scripts/network/http.gd").new()
 var time_lib = preload("res://scripts/libs/time.gd").new()
 var random_lib = preload("res://scripts/utils/random.gd").new()
 var rsa_lib = preload("res://scripts/crypto/rsa.gd").new()
