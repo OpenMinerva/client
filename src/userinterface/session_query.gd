@@ -19,7 +19,7 @@ func authenticate(url: String) -> Dictionary:
 		var url_deconstructed = UrlParser.deconstruct(url)
 		if url_deconstructed.ok == false:
 			var ERROR_MESSAGE = "Failed to deconstruct the url '%s'" % url
-			GlobalLogger.logs(ERROR_MESSAGE, 2)
+			GlobalLogger.logs(ERROR_MESSAGE, Enum.LogLevel.WARNING)
 			_return_dict.error = ERROR_MESSAGE
 			return _return_dict
 		url_deconstructed = url_deconstructed.data
@@ -52,7 +52,7 @@ func get_sessions() -> Array:
 
 		var url_deconstructed = UrlParser.deconstruct(server.url)
 		if url_deconstructed.ok == false:
-			GlobalLogger.logs("Failed to parse the session server URL.", 1)
+			GlobalLogger.logs("Failed to parse the session server URL.", Enum.LogLevel.INFO)
 			continue
 		url_deconstructed = url_deconstructed.data
 

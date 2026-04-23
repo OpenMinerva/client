@@ -13,7 +13,7 @@ extends Node
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
-		GlobalLogger.logs("Shutting down", 0)
+		GlobalLogger.logs("Shutting down")
 
 		# Shutdown / leave all servers.
 		for server in network_m.get_connected_sessions():

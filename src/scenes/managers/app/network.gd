@@ -83,7 +83,7 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 	_database.sessions.set(_scene, _instance)
 
 	if _create_server_response != OK:
-		GlobalLogger.logs("Failed to start server. Error: '%s'" % _create_server_response, 1)
+		GlobalLogger.logs("Failed to start server. Error: '%s'" % _create_server_response, Enum.LogLevel.INFO)
 		response_dict.error = str(_create_server_response)
 
 		_database.sessions_api.erase(_scene)
@@ -174,11 +174,11 @@ func update_server(id: String, server_info: Dictionary):
 func join_server(ip: String, port: int):
 	var response_dict = {"ok": false, "error": null, "data": null}
 
-	GlobalLogger.logs("Joining server at '%s:%s'" % [ip, port], 1)
+	GlobalLogger.logs("Joining server at '%s:%s'" % [ip, port], Enum.LogLevel.INFO)
 	var _port_is_valid = port > 0 && port < 65535
 
 	if ip.is_empty() || !_port_is_valid:
-		GlobalLogger.logs("Server information is invalid '%s:%s'." % [ip, port], 1)
+		GlobalLogger.logs("Server information is invalid '%s:%s'." % [ip, port], Enum.LogLevel.INFO)
 		response_dict.error = "Server information is invalid."
 		return response_dict
 
@@ -197,7 +197,7 @@ func join_server(ip: String, port: int):
 	var connect_error = _session_peer.create_client(ip, port)
 
 	if connect_error != OK:
-		GlobalLogger.logs("Failed to join server. Error: '%s'" % connect_error, 1)
+		GlobalLogger.logs("Failed to join server. Error: '%s'" % connect_error, Enum.LogLevel.INFO)
 		response_dict.error = "Failed to join server. Error: '%s'" % connect_error
 		return response_dict
 
@@ -264,7 +264,7 @@ func get_connected_sessions():
 
 func set_active_session(id: String):
 	if _database.sessions.has(id):
-		GlobalLogger.logs("Tried to mark an invalid session as active: '%s'" % id, 3)
+		GlobalLogger.logs("Tried to mark an invalid session as active: '%s'" % id, Enum.LogLevel.WARNING)
 		return
 
 	for session_id in _database.sessions.keys():
@@ -414,7 +414,7 @@ func _heartbeat_session(session_id: String, session_server_url: String) -> void:
 	)
 
 	if response and response.get("ok"):
-		GlobalLogger.logs("Heartbeat sent for session '%s'" % session_id, 0)
+		GlobalLogger.logs("Heartbeat sent for session '%s'" % session_id)
 	return
 
 func _advertise_session(session_info: Dictionary, session_server: String) -> Dictionary:

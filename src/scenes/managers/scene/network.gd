@@ -76,12 +76,12 @@ func spawn_entity():
 	player_m.spawn_player(str(caller_id))
 
 @rpc("any_peer", "unreliable")
-func entity_position(entity_id: int, entity_position):
+func entity_position(entity_id: int, position):
 	var caller_id = multiplayer.get_remote_sender_id()
 	if caller_id != entity_id:
 		return
 	var target_node = get_parent().get_node("root").get_node_or_null(str(entity_id))
 	if target_node:
 		# print(target_node.name)
-		target_node.position = n_c.d_16_pos(entity_position)
-		target_node.rotation = n_c.d_16_vec3(entity_position.slice(12))
+		target_node.position = n_c.d_16_pos(position)
+		target_node.rotation = n_c.d_16_vec3(position.slice(12))

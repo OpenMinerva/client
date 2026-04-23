@@ -39,7 +39,7 @@ func destroy_master_scene(id: String):
 	var _scene = scene_container.get_node_or_null(id)
 
 	if _scene == null:
-		GlobalLogger.logs("'%s' does not exist, could not delete." % id, 2)
+		GlobalLogger.logs("'%s' does not exist, could not delete." % id, Enum.LogLevel.WARNING)
 		return
 
 	_scene.queue_free()
@@ -98,7 +98,7 @@ func start_master_scene(id: String):
 			GlobalLogger.logs("'%s' started in server '%s'" % [node_name, id])
 			continue
 
-		GlobalLogger.logs("Could not start invalid manager '%s' in server '%s'" % [node_name, id], 3)
+		GlobalLogger.logs("Could not start invalid manager '%s' in server '%s'" % [node_name, id], Enum.LogLevel.ERROR)
 	return
 
 func stop_master_scene(id: String):
@@ -113,7 +113,7 @@ func stop_master_scene(id: String):
 			GlobalLogger.logs("'%s' started in server '%s'" % [node_name, id])
 			continue
 
-		GlobalLogger.logs("Could not start invalid manager '%s' in server '%s'" % [node_name, id], 3)
+		GlobalLogger.logs("Could not start invalid manager '%s' in server '%s'" % [node_name, id], Enum.LogLevel.ERROR)
 	return
 
 func _get_scene_by_type(scene_type: Enum.BaseLevel) -> PackedScene:

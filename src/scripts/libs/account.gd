@@ -40,19 +40,19 @@ func create(account: Dictionary, type: String) -> Dictionary:
 		account_formatted = _create_oauth(account)
 
 	if len(account_formatted.keys()) == 0:
-		GlobalLogger.logs("Tried to create an account, but there was nothing to save.", 3)
+		GlobalLogger.logs("Tried to create an account, but there was nothing to save.", Enum.LogLevel.ERROR)
 		return {"ok": false, "error": "No account formatted.", "id": null}
 
 	_database.append(account_formatted)
 
 	_save_account_database()
-	
+
 	Events.emit_signal("dash_account_list_loaded")
 	return {"ok": true, "id": account_formatted.id}
 
 func _create_oauth(account) -> Dictionary:
 	var _account_keys = rsa_lib.generate_keypair()
-	
+
 	var _clean_account = {}
 	_clean_account.id = random_lib.random_string(6, true)
 	_clean_account.display_name = account.get("display_name", null)
@@ -64,7 +64,7 @@ func _create_oauth(account) -> Dictionary:
 	_clean_account.refresh_token = ""
 	_clean_account.id_token = ""
 	_clean_account.access_token_expiry = 0
-	
+
 	_clean_account.type = "oauth"
 	return _clean_account
 
@@ -81,7 +81,7 @@ func remove(id: String) -> Dictionary:
 
 ## Sets an account as the active account.
 func use(id: String) -> void:
-	GlobalLogger.logs("Setting active account to '%s'." % id, 1)
+	GlobalLogger.logs("Setting active account to '%s'." % id, Enum.LogLevel.INFO)
 
 	var _account = _get_account_by_id(id)
 	if _account.type == "oauth":
@@ -138,11 +138,11 @@ func _save_account_database() -> void:
 
 ## Read the account database from the config file on our disk.
 func _load_account_database() -> Array:
-	GlobalLogger.logs("Loading the local account database.", 1)
+	GlobalLogger.logs("Loading the local account database.", Enum.LogLevel.INFO)
 
 	var account_file_exists = FileAccess.file_exists(ACCOUNT_DATABASE_DIRECTORY)
 	if account_file_exists == false:
-		GlobalLogger.logs("Account database does not exist, creating one now.", 1)
+		GlobalLogger.logs("Account database does not exist, creating one now.", Enum.LogLevel.INFO)
 		_save_account_database()
 
 	var file = FileAccess.open(ACCOUNT_DATABASE_DIRECTORY, FileAccess.READ)
@@ -152,7 +152,7 @@ func _load_account_database() -> Array:
 	if file:
 		account_data = file.get_var() # Deserializes variable back
 		file.close()
-	
+
 	_database = account_data
 	return account_data
 
@@ -166,7 +166,7 @@ func _get_account_by_id(id: String) -> Dictionary:
 
 func _update_account_by_key(id: String, key: String, value: Variant) -> void:
 	var index = _database.find_custom(func(entry): return entry.get("id") == id)
-	# TODO: Check if key is a valid key. 
+	# TODO: Check if key is a valid key.
 	_database[index][key] = value
 	_save_account_database()
 	return
@@ -189,12 +189,12 @@ func _handle_response(response: Dictionary) -> Dictionary:
 
 	if response.get("ok", false) == false:
 		response_data.error = "Request failed for unknown reason."
-		GlobalLogger.logs(response_data.error, 3)
+		GlobalLogger.logs(response_data.error, Enum.LogLevel.ERROR)
 		return response_data
 
 	if response.get("body", null) == null:
 		response_data.error = "No body provided from the request."
-		GlobalLogger.logs(response_data.error, 3)
+		GlobalLogger.logs(response_data.error, Enum.LogLevel.ERROR)
 		return response_data
 
 	response_data.ok = true

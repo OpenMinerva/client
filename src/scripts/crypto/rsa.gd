@@ -35,7 +35,7 @@ func pem_to_cryptokey(pem: String = "") -> CryptoKey:
 	# TODO: Error checks
 	var public_key := CryptoKey.new()
 	if public_key.load_from_string(pem, true) != OK:
-		GlobalLogger.logs("Failed to load public key", 3)
+		GlobalLogger.logs("Failed to load public key", Enum.LogLevel.ERROR)
 		return null
 
 	return public_key

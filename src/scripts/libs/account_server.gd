@@ -4,7 +4,7 @@ var _http = preload("res://scripts/network/http.gd").new()
 var _database = {}
 
 func get_public_key(url: String):
-    GlobalLogger.logs("Requesting public key from account server '%s'" % url, 1)
+    GlobalLogger.logs("Requesting public key from account server '%s'" % url, Enum.LogLevel.INFO)
 
     # Check if we already have the public key in our database
 
@@ -16,5 +16,5 @@ func get_public_key(url: String):
     return
 
 func reset_database():
-    GlobalLogger.logs("Clearing the account server database.", 1)
+    GlobalLogger.logs("Clearing the account server database.", Enum.LogLevel.INFO)
     _database = {}

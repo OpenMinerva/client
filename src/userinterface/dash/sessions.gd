@@ -63,8 +63,8 @@ func insert_world_into_session_listing(world_data: Dictionary) -> void:
 	return
 
 func _remove_all_listings() -> void:
-	GlobalLogger.logs("Removed all listings from the session list.", 1)
-	
+	GlobalLogger.logs("Removed all listings from the session list.", Enum.LogLevel.INFO)
+
 	for session_listing in _world_listing_grid.get_children():
 		session_listing.queue_free()
 	return
