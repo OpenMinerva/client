@@ -43,6 +43,7 @@ const _instance_database_template = {
 
 func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRID) -> Dictionary:
 	var response_dict = {"ok": false, "error": null, "data": null}
+	GlobalLogger.logs("Starting a new server.")
 
 	# Get an available port. If port was defined, force that port or fail.
 	if port != 0:
@@ -112,6 +113,7 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 func stop_server(id: String):
 	var database_has_sessions: bool = _database.sessions.has(id)
 	var database_has_sessions_api: bool = _database.sessions_api.has(id)
+	GlobalLogger.logs("Stopping server '%s'." % id)
 
 	# TODO: Disable join requests to server
 
@@ -141,10 +143,7 @@ func stop_server(id: String):
 	return
 
 func update_server(id: String, server_info: Dictionary):
-	# Get server from database.
-	# Validate server updated data.
-	# Update the database entry.
-	# Emit server updated event to the server.
+	GlobalLogger.logs("Updating server '%s'." % id)
 	var _saved_session_servers = SettingsManager.get_session_servers()
 
 	if server_info.privacy > Enum.PrivacyLevel.INVITE:
@@ -166,6 +165,8 @@ func update_server(id: String, server_info: Dictionary):
 
 		for _server in _saved_session_servers:
 			_remove_session_from_server(id, _server.url)
+
+	Events.emit_signal("instance_updated")
 	return
 
 func join_server(ip: String, port: int):
@@ -213,6 +214,7 @@ func join_server(ip: String, port: int):
 	return
 
 func leave_server(id: String):
+	GlobalLogger.logs("Trying to leave server '%s'." % id)
 	var database_has_sessions: bool = _database.sessions.has(id)
 	var database_has_sessions_api: bool = _database.sessions_api.has(id)
 
@@ -222,12 +224,10 @@ func leave_server(id: String):
 
 	if database_has_sessions_api:
 		var mp_api: SceneMultiplayer = _database.sessions_api.get(id)
-		var my_peer_id = mp_api.multiplayer_peer.get_unique_id()
 
 		if mp_api.multiplayer_peer:
-			mp_api.multiplayer_peer.disconnect_peer(my_peer_id)
+			mp_api.multiplayer_peer.close()
 			GlobalLogger.logs("Disconnected from session '%s'." % id, Enum.LogLevel.DEBUG)
-
 
 	scene_m.set_active_session(get_connected_sessions()[0].id)
 

@@ -11,6 +11,7 @@ var _server_id: String = ""
 func _process(_delta):
 	if multiplayer:
 		multiplayer.poll()
+		return
 
 func setup_connection(api: SceneMultiplayer, id: String):
 	_specific_api = api

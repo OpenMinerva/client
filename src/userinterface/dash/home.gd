@@ -49,15 +49,20 @@ func _handle_session_changed(session_data: Dictionary) -> void:
 
 func _display_active_sessions() -> void:
 	for node in active_sessions_container.get_node("MarginContainer/VBoxContainer").get_children():
-		if node is Button:
+		if node is not Label:
 			node.queue_free()
 
 	var _sessions = network_m.get_connected_sessions()
 
 	for session in _sessions:
 		var _entry = active_session_template.duplicate()
-		_entry.text = session.id
-		_entry.pressed.connect(scene_m.set_active_session.bind(session.id))
+		var _entry_label = _entry.get_node("HBoxContainer/Join")
+		var _entry_close = _entry.get_node("HBoxContainer/Close")
+
+		_entry_label.text = session.id
+		_entry_label.pressed.connect(scene_m.set_active_session.bind(session.id))
+		_entry_close.pressed.connect(network_m.leave_server.bind(session.id))
+
 		active_sessions_container.get_node("MarginContainer/VBoxContainer").add_child(_entry)
 
 	# TODO: When button is pressed, focus that session

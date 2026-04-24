@@ -104,7 +104,6 @@ size_flags_vertical = 3
 theme = ExtResource("1_cx7w0")
 
 [node name="Home" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=675278383]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -292,10 +291,24 @@ text = "157 ms"
 visible = false
 layout_mode = 2
 
-[node name="ActiveSessionButton" type="Button" parent="MarginContainer/VBoxContainer/Master/Home/Templates" unique_id=272140934]
+[node name="ActiveSessionButton" type="PanelContainer" parent="MarginContainer/VBoxContainer/Master/Home/Templates" unique_id=1090596649]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 20.0
+offset_top = 274.0
+offset_right = 436.0
+offset_bottom = 297.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Master/Home/Templates/ActiveSessionButton" unique_id=1736548450]
+layout_mode = 2
+
+[node name="Join" type="Button" parent="MarginContainer/VBoxContainer/Master/Home/Templates/ActiveSessionButton/HBoxContainer" unique_id=375184485]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Close" type="Button" parent="MarginContainer/VBoxContainer/Master/Home/Templates/ActiveSessionButton/HBoxContainer" unique_id=797785460]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+text = "X"
 
 [node name="AccountDisplay" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=1554068867]
 visible = false
@@ -2049,6 +2062,7 @@ text = "Block Avatar"
 horizontal_alignment = 1
 
 [node name="Settings" type="MarginContainer" parent="MarginContainer/VBoxContainer/Master" unique_id=362656680]
+visible = false
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
