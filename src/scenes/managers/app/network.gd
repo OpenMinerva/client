@@ -105,7 +105,6 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 
 	# DEV: Force spawn the host.
 	scene_m.get_master_scene(_scene).get_node("PlayerManager").add_player(1)
-	scene_m.get_master_scene(_scene).get_node("PlayerManager").spawn_player(str(1))
 	scene_m.set_active_session(_scene)
 
 	return response_dict

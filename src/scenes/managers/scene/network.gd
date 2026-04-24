@@ -48,10 +48,8 @@ func _on_peer_connected(peer_id: int):
 		return
 
 	player_m.add_player(peer_id)
-	player_m.spawn_player(str(peer_id))
 
 	player_m.add_player.rpc(peer_id)
-	player_m.spawn_player.rpc(str(peer_id))
 
 	GlobalLogger.logs("[%s] Peer '%s' connected to our server." % [_my_id, peer_id])
 	rpc_id(peer_id, "set_root", Enum.BaseLevel.GRID)
@@ -64,16 +62,14 @@ func set_root(scene_type: Enum.BaseLevel):
 	scene_m.set_master_root_from_program(_server_id, scene_type)
 
 @rpc("authority", "reliable")
-func add_players(players: Array):
+func add_players(players: Dictionary):
 	GlobalLogger.logs("[%s] Playerlist received." % [_my_id])
-	for _player in players:
-		player_m.spawn_player(str(_player))
+	for _player in players.keys():
+		player_m.add_player(int(_player))
 
 @rpc("authority", "reliable")
 func spawn_entity():
-	var caller_id = multiplayer.get_remote_sender_id()
-	GlobalLogger.logs("[%s] Entity received '%s'." % [_my_id, caller_id])
-	player_m.spawn_player(str(caller_id))
+	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 
 @rpc("any_peer", "unreliable")
 func entity_position(entity_id: int, position):

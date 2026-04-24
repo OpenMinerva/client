@@ -11,18 +11,32 @@ extends Node
 
 var active: bool = false
 
-var players = []
+var players = {}
+
+const PLAYER_TEMPLATE = {
+	"peer_id": 0,
+	"has_spawned": false
+}
 
 @rpc("authority", "unreliable")
 func add_player(peer_id: int) -> void:
 	var caller_id = multiplayer.get_remote_sender_id()
+	var database_template = PLAYER_TEMPLATE.duplicate()
 
 	GlobalLogger.logs("[%s] Adding peer '%s' to the player list" % [caller_id, peer_id])
-	players.append(peer_id)
+	database_template.set("peer_id", peer_id)
+	players.set(str(peer_id), database_template)
+
+	spawn_player(str(peer_id))
+
 
 @rpc("authority", "unreliable")
 func spawn_player(peer_id: String) -> void:
 	var caller_id = multiplayer.get_remote_sender_id()
+
+	if players[peer_id].get("has_spawned") == true:
+		GlobalLogger.logs("[%s] Did not spawn peer '%s', already exists!" % [caller_id, peer_id], Enum.LogLevel.WARNING)
+		return
 
 	GlobalLogger.logs("[%s] Spawning peer '%s'" % [caller_id, peer_id])
 
@@ -37,6 +51,7 @@ func spawn_player(peer_id: String) -> void:
 	_new_player.set_multiplayer_authority(int(peer_id))
 	get_parent().get_node("root").call_deferred("add_child", _new_player)
 	GlobalLogger.logs("[%s] Spawned peer '%s'." % [caller_id, peer_id])
+	players[peer_id].set("has_spawned", true)
 	return
 
 func kill_player() -> void:
