@@ -4,7 +4,7 @@ var _specific_api: SceneMultiplayer = null
 var _my_id = 0
 var _server_id: String = ""
 
-@onready var player_m = get_parent().get_node("PlayerManager")
+@onready var player_m = get_node("../PlayerManager")
 @onready var scene_m = get_tree().current_scene.get_node("SceneManager")
 @onready var network_m = get_tree().current_scene.get_node("NetworkManager")
 
@@ -19,6 +19,7 @@ func setup_connection(api: SceneMultiplayer, id: String):
 
 	_specific_api.connected_to_server.connect(_on_connected_to_server)
 	_specific_api.peer_connected.connect(_on_peer_connected)
+	_specific_api.peer_disconnected.connect(_on_peer_disconnected)
 	_specific_api.server_disconnected.connect(_on_server_disconnected)
 
 	_my_id = multiplayer.get_unique_id()
@@ -48,12 +49,21 @@ func _on_peer_connected(peer_id: int):
 		return
 
 	player_m.add_player(peer_id)
-
 	player_m.add_player.rpc(peer_id)
 
 	GlobalLogger.logs("[%s] Peer '%s' connected to our server." % [_my_id, peer_id])
 	rpc_id(peer_id, "set_root", Enum.BaseLevel.GRID)
 	rpc_id(peer_id, "add_players", player_m.players)
+	return
+
+func _on_peer_disconnected(peer_id: int) -> void:
+	if is_multiplayer_authority() == false:
+		return
+
+	player_m.remove_player(peer_id)
+	player_m.remove_player.rpc(peer_id)
+
+	GlobalLogger.logs("[%s] Peer '%s' disconnected to our server." % [_my_id, peer_id])
 	return
 
 @rpc("authority", "reliable")

@@ -19,7 +19,7 @@ const PLAYER_TEMPLATE = {
 	"node": null
 }
 
-@rpc("authority", "unreliable")
+@rpc("authority", "reliable")
 func add_player(peer_id: int) -> void:
 	var caller_id = multiplayer.get_remote_sender_id()
 	var database_template = PLAYER_TEMPLATE.duplicate()
@@ -29,6 +29,14 @@ func add_player(peer_id: int) -> void:
 	players.set(str(peer_id), database_template)
 
 	spawn_player(str(peer_id))
+
+@rpc("authority", "reliable")
+func remove_player(peer_id: int) -> void:
+	var caller_id = multiplayer.get_remote_sender_id()
+
+	GlobalLogger.logs("[%s] Removing peer '%s' from the player list" % [caller_id, peer_id])
+	players[str(peer_id)].get("node").queue_free()
+	players.erase(str(peer_id))
 
 @rpc("authority", "unreliable")
 func spawn_player(peer_id: String) -> void:
