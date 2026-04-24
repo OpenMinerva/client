@@ -48,7 +48,7 @@ func _handle_switch_tab(target_name: String) -> void:
 		dash_nav_button.button_pressed = false
 
 	if target_name not in dashboard_tab_names:
-		GlobalLogger.logs("Tried to switch to an invalid dashboard page: '%s'" % target_name, 2)
+		GlobalLogger.logs("Tried to switch to an invalid dashboard page: '%s'" % target_name, Enum.LogLevel.WARNING)
 		return
 
 	dash_tab_master_container.get_node(target_name).visible = true

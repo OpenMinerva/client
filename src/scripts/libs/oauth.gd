@@ -9,7 +9,6 @@
 
 extends Node
 
-var http = preload("res://scripts/network/http.gd").new()
 var jwt_lib = preload("res://scripts/libs/jwt.gd").new()
 var random_lib = preload("res://scripts/utils/random.gd").new()
 
@@ -28,7 +27,7 @@ func authenticate(account_server: String) -> Dictionary:
 
 	account_server_url = account_server_url.data
 
-	GlobalLogger.logs("Starting OAuth flow.", 0)
+	GlobalLogger.logs("Starting OAuth flow.")
 
 	var uri_parts := [
 		"client_id=%s" % "OpenMinerva-Game-Client",
@@ -44,16 +43,16 @@ func authenticate(account_server: String) -> Dictionary:
 	var uri = account_server + "?" + "&".join(uri_parts)
 	OS.shell_open(uri)
 
-	GlobalLogger.logs("Starting OAuth redirect server.", 0)
+	GlobalLogger.logs("Starting OAuth redirect server.")
 	redirect_server.listen(port, bind_address)
 
 	_listen_for_oauth_connections = true
 	var _auth_code = await _wait_for_auth_code()
-	
-	GlobalLogger.logs("Closing OAuth redirect server.", 0)
+
+	GlobalLogger.logs("Closing OAuth redirect server.")
 	redirect_server = TCPServer.new()
 
-	GlobalLogger.logs("Exchanging retrieved auth code for a proper token.", 0)
+	GlobalLogger.logs("Exchanging retrieved auth code for a proper token.")
 	var form_parts := [
 		"client_id=%s" % "OpenMinerva-Game-Client",
 		"grant_type=authorization_code",
@@ -63,7 +62,7 @@ func authenticate(account_server: String) -> Dictionary:
 		"code_verifier=%s" % secret_pkce,
 	]
 	var form_string: String = "&".join(form_parts)
-	var exchange_response = await http.req(HTTPClient.Method.METHOD_POST, account_server_url.host, "/oauth/token", account_server_url.port, ["Accept: application/json", "Content-Type: application/x-www-form-urlencoded"], form_string)
+	var exchange_response = await HTTP.req(HTTPClient.Method.METHOD_POST, account_server_url.host, "/oauth/token", account_server_url.port, ["Accept: application/json", "Content-Type: application/x-www-form-urlencoded"], form_string)
 	var token_data = JSON.parse_string(exchange_response.get("body"))
 
 	return _get_tokens_from_response(token_data)
@@ -96,7 +95,7 @@ func _handle_auth_callback(connection: StreamPeerTCP) -> String:
 
 	var temp_auth_code: String = request.split("code=")[1].split("&iss=")[0].strip_edges()
 
-	GlobalLogger.logs("Got authentication code: '%s'." % temp_auth_code, 0)
+	GlobalLogger.logs("Got authentication code: '%s'." % temp_auth_code)
 
 	# Send success.
 	var html_response = "HTTP/1.1 200 OK\r\n"
@@ -135,13 +134,13 @@ func validate_token(account: Dictionary) -> bool:
 
 	var account_server_url = UrlParser.deconstruct(account.account_server)
 	if account_server_url.ok == false:
-		GlobalLogger.logs("Failed to parse account server url.", 3)
+		GlobalLogger.logs("Failed to parse account server url.", Enum.LogLevel.WARNING)
 		return false
 	account_server_url = account_server_url.data
 
-	var introspect_response = await http.req(HTTPClient.Method.METHOD_POST, account_server_url.host, "/oauth/token/introspection", account_server_url.port, ["Accept: application/json", "Content-Type: application/x-www-form-urlencoded"], form_string)
+	var introspect_response = await HTTP.req(HTTPClient.Method.METHOD_POST, account_server_url.host, "/oauth/token/introspection", account_server_url.port, ["Accept: application/json", "Content-Type: application/x-www-form-urlencoded"], form_string)
 	if introspect_response.ok == false:
-		GlobalLogger.logs("Unknown error parsing the introspection response.", 3)
+		GlobalLogger.logs("Unknown error parsing the introspection response.", Enum.LogLevel.WARNING)
 		return false
 	introspect_response = JSON.parse_string(introspect_response.body)
 

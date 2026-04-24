@@ -13,12 +13,12 @@ func c_32_vec3(provided_data: Vector3) -> PackedByteArray:
 
 	return data
 
-## Decompress a PackedByteArray to a Vector3 using 32 bit precision 
+## Decompress a PackedByteArray to a Vector3 using 32 bit precision
 ## @returns Vector3
 func d_32_vec3(provided_data: PackedByteArray) -> Vector3:
 	# Validate array size
 	if provided_data.size() < 12:
-		GlobalLogger.logs("'%s' contained invalid PackedByteArray size. Can not decode value.", 2)
+		GlobalLogger.logs("'%s' contained invalid PackedByteArray size. Can not decode value.", Enum.LogLevel.WARNING)
 		return Vector3()
 
 	var x = _int_to_float(provided_data.decode_s32(0))
@@ -38,12 +38,12 @@ func c_16_vec3(provided_data: Vector3) -> PackedByteArray:
 
 	return data
 
-## Decompress a PackedByteArray to a Vector3 using 16 bit precision 
+## Decompress a PackedByteArray to a Vector3 using 16 bit precision
 ## @returns Vector3
 func d_16_vec3(provided_data: PackedByteArray) -> Vector3:
 	# Validate array size
 	if provided_data.size() < 6:
-		GlobalLogger.logs("'%s' contained invalid PackedByteArray size. Can not decode value.", 2)
+		GlobalLogger.logs("'%s' contained invalid PackedByteArray size. Can not decode value.", Enum.LogLevel.WARNING)
 		return Vector3()
 
 	var x = _int_to_float(provided_data.decode_s16(0))

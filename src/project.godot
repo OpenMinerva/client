@@ -35,8 +35,10 @@ Events="*uid://c656spc3ppdlw"
 OAuth="*uid://jd7qlsley1no"
 SessionQuery="*uid://bl3e1utjvw3ul"
 Enum="*uid://b5amtwc5yahe3"
-UrlParser="*uid://budprjmmpally"
 Bootstrap="*uid://big7h126wcmk8"
+NetworkCompression="*uid://b2iq75uom64x2"
+HTTP="*uid://d3cnfdwjxopsx"
+UrlParser="*uid://budprjmmpally"
 
 [display]
 

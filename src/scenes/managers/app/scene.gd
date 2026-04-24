@@ -12,6 +12,7 @@ extends Node
 # Game managers
 @onready var network_m: Node = get_tree().current_scene.get_node("NetworkManager")
 @onready var scene_container: Node3D = get_tree().current_scene.get_node("Scenes")
+var active_session: String = ""
 
 func _ready():
 	network_m.start_server()
@@ -23,6 +24,8 @@ func create_master_scene():
 
 	_base_scene = _base_scene.instantiate()
 	_base_scene.name = _scene_id
+	_base_scene.top_level = true
+	_base_scene.visible = false
 
 	scene_container.add_child(_base_scene)
 
@@ -36,7 +39,7 @@ func destroy_master_scene(id: String):
 	var _scene = scene_container.get_node_or_null(id)
 
 	if _scene == null:
-		GlobalLogger.logs("'%s' does not exist, could not delete." % id, 2)
+		GlobalLogger.logs("'%s' does not exist, could not delete." % id, Enum.LogLevel.WARNING)
 		return
 
 	_scene.queue_free()
@@ -74,7 +77,7 @@ func get_master_root(id: String) -> Node3D:
 	return _root
 
 func set_master_root_from_inventory(_id: String, _scene_type: Enum.BaseLevel) -> bool:
-	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
+	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	# get_master_scene
 	# Find scene from inventory.
 	# Validate scene integrity.
@@ -94,8 +97,8 @@ func start_master_scene(id: String):
 			_scene_manager.active = true
 			GlobalLogger.logs("'%s' started in server '%s'" % [node_name, id])
 			continue
-		
-		GlobalLogger.logs("Could not start invalid manager '%s' in server '%s'" % [node_name, id], 3)
+
+		GlobalLogger.logs("Could not start invalid manager '%s' in server '%s'" % [node_name, id], Enum.LogLevel.ERROR)
 	return
 
 func stop_master_scene(id: String):
@@ -109,8 +112,8 @@ func stop_master_scene(id: String):
 			_scene_manager.active = true
 			GlobalLogger.logs("'%s' started in server '%s'" % [node_name, id])
 			continue
-		
-		GlobalLogger.logs("Could not start invalid manager '%s' in server '%s'" % [node_name, id], 3)
+
+		GlobalLogger.logs("Could not start invalid manager '%s' in server '%s'" % [node_name, id], Enum.LogLevel.ERROR)
 	return
 
 func _get_scene_by_type(scene_type: Enum.BaseLevel) -> PackedScene:
@@ -127,3 +130,52 @@ func _get_scene_by_type(scene_type: Enum.BaseLevel) -> PackedScene:
 			_scene_dir = "res://scenes/levels/debug.tscn"
 
 	return load(_scene_dir)
+
+func set_active_session(session_id: String):
+	for _scene in network_m.get_connected_sessions():
+		# Each session gets disabled
+		scene_container.get_node(_scene.id).visible = false
+		_set_camera_active_state(_scene.id, false)
+		_set_player_authority_state(_scene.id, false)
+
+	# session_id gets enabled.
+	active_session = session_id
+	_set_camera_active_state(session_id, true)
+	scene_container.get_node(session_id).visible = true
+	_set_player_authority_state(session_id, true)
+	return
+
+func _set_camera_active_state(session_id, state: bool = false) -> void:
+	# TODO: check if session exists.
+	var my_id: String = str(network_m._database.sessions_api[session_id].get_unique_id())
+	var master_scene: Node3D = get_master_scene(session_id)
+	# HACK: If my_id = 0, we get the desired result. This is not safe though.
+	if my_id == "0":
+		GlobalLogger.logs("Could not set active state for session '%s', is session open?" % [session_id], Enum.LogLevel.WARNING)
+		return
+	var player_manager: Node = master_scene.get_node("PlayerManager")
+	var player_database = player_manager.players
+	var my_database_entry = player_database.get(my_id)
+	var camera = my_database_entry.get("node").get_node("Head/Camera3D")
+
+	camera.current = state
+	return
+
+func _set_player_authority_state(session_id, is_active: bool = false) -> void:
+	var my_id: String = str(network_m._database.sessions_api[session_id].get_unique_id())
+	var master_scene: Node3D = get_master_scene(session_id)
+	# HACK: If my_id = 0, we get the desired result. This is not safe though.
+	if my_id == "0":
+		GlobalLogger.logs("Could not set player authority for session '%s', is session open?" % [session_id], Enum.LogLevel.WARNING)
+		return
+	var player_manager: Node = master_scene.get_node("PlayerManager")
+	var player_database = player_manager.players
+	var my_database_entry = player_database.get(my_id)
+	var player = my_database_entry.get("node")
+
+	if is_active:
+		player.set_multiplayer_authority(int(my_id))
+		return
+
+	player.set_multiplayer_authority(0)
+	return
