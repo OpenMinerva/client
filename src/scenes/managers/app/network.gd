@@ -264,8 +264,12 @@ func set_active_session(id: String):
 		return
 
 	for session_id in _database.sessions.keys():
+		var my_id = _database.sessions_api[session_id].multiplayer.get_unique_id()
 		_database.sessions[session_id].active = false
+		scene_m.get_master_root(session_id).get_node("PlayerManager").players.get(my_id).get("node").camera.current = false
 
+	var my_id = _database.sessions_api[id].multiplayer.get_unique_id()
+	scene_m.get_master_root(id).get_node("PlayerManager").players.get(my_id).get("node").camera.current = true
 	_database.sessions[id].active = true
 	scene_m.set_active_session(id)
 	return

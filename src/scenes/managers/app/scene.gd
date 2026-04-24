@@ -133,8 +133,40 @@ func _get_scene_by_type(scene_type: Enum.BaseLevel) -> PackedScene:
 
 func set_active_session(session_id: String):
 	for _scene in network_m.get_connected_sessions():
+		# Each session gets disabled
 		scene_container.get_node(_scene.id).visible = false
+		_set_camera_active_state(_scene.id, false)
+		_set_player_authority_state(_scene.id, false)
 
+	# session_id gets enabled.
 	active_session = session_id
+	_set_camera_active_state(session_id, true)
 	scene_container.get_node(session_id).visible = true
+	_set_player_authority_state(session_id, true)
+	return
+
+func _set_camera_active_state(session_id, state: bool = false) -> void:
+	var my_id: String = str(network_m._database.sessions_api[session_id].get_unique_id())
+	var master_scene: Node3D = get_master_scene(session_id)
+	var player_manager: Node = master_scene.get_node("PlayerManager")
+	var player_database = player_manager.players
+	var my_database_entry = player_database.get(my_id)
+	var camera = my_database_entry.get("node").get_node("Head/Camera3D")
+
+	camera.current = state
+	return
+
+func _set_player_authority_state(session_id, is_active: bool = false) -> void:
+	var my_id: String = str(network_m._database.sessions_api[session_id].get_unique_id())
+	var master_scene: Node3D = get_master_scene(session_id)
+	var player_manager: Node = master_scene.get_node("PlayerManager")
+	var player_database = player_manager.players
+	var my_database_entry = player_database.get(my_id)
+	var player = my_database_entry.get("node")
+
+	if is_active:
+		player.set_multiplayer_authority(int(my_id))
+		return
+
+	player.set_multiplayer_authority(0)
 	return

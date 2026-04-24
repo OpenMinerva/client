@@ -78,6 +78,5 @@ func entity_position(entity_id: int, position):
 		return
 	var target_node = get_parent().get_node("root").get_node_or_null(str(entity_id))
 	if target_node:
-		# print(target_node.name)
 		target_node.position = NetworkCompression.d_16_pos(position)
 		target_node.rotation = NetworkCompression.d_16_vec3(position.slice(12))

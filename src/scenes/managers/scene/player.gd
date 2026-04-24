@@ -15,7 +15,8 @@ var players = {}
 
 const PLAYER_TEMPLATE = {
 	"peer_id": 0,
-	"has_spawned": false
+	"has_spawned": false,
+	"node": null
 }
 
 @rpc("authority", "unreliable")
@@ -28,7 +29,6 @@ func add_player(peer_id: int) -> void:
 	players.set(str(peer_id), database_template)
 
 	spawn_player(str(peer_id))
-
 
 @rpc("authority", "unreliable")
 func spawn_player(peer_id: String) -> void:
@@ -49,8 +49,10 @@ func spawn_player(peer_id: String) -> void:
 	_new_player.name = str(peer_id)
 	_new_player.position = Vector3(0, 0, 0)
 	_new_player.set_multiplayer_authority(int(peer_id))
-	get_parent().get_node("root").call_deferred("add_child", _new_player)
+	get_node("../root").add_child( _new_player)
+	var player_node = get_node("../root").get_node(str(peer_id))
 	GlobalLogger.logs("[%s] Spawned peer '%s'." % [caller_id, peer_id])
+	players[peer_id].set("node", player_node)
 	players[peer_id].set("has_spawned", true)
 	return
 
