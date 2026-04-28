@@ -9,8 +9,6 @@
 
 extends Node
 
-var http = preload("res://scripts/network/http.gd").new()
-
 func authenticate(url: String) -> Dictionary:
 	var _return_dict: Dictionary = {"ok": false, "error": ""}
 
@@ -19,7 +17,7 @@ func authenticate(url: String) -> Dictionary:
 		var url_deconstructed = UrlParser.deconstruct(url)
 		if url_deconstructed.ok == false:
 			var ERROR_MESSAGE = "Failed to deconstruct the url '%s'" % url
-			GlobalLogger.logs(ERROR_MESSAGE, 2)
+			GlobalLogger.logs(ERROR_MESSAGE, Enum.LogLevel.WARNING)
 			_return_dict.error = ERROR_MESSAGE
 			return _return_dict
 		url_deconstructed = url_deconstructed.data
@@ -28,7 +26,7 @@ func authenticate(url: String) -> Dictionary:
 			"id_token": GlobalAccount.active_account.id_token,
 			"challenge": "challenge value"
 		}
-		var authentication_response = await http.req(HTTPClient.Method.METHOD_POST, url_deconstructed.host, "/api/v1/getAuthenticationKey", url_deconstructed.port, ["Accept: application/json", "Content-Type: application/json"], JSON.stringify(body))
+		var authentication_response = await HTTP.req(HTTPClient.Method.METHOD_POST, url_deconstructed.host, "/api/v1/getAuthenticationKey", url_deconstructed.port, ["Accept: application/json", "Content-Type: application/json"], JSON.stringify(body))
 
 		_authentication_request_received(url_deconstructed.host, authentication_response)
 
@@ -52,7 +50,7 @@ func get_sessions() -> Array:
 
 		var url_deconstructed = UrlParser.deconstruct(server.url)
 		if url_deconstructed.ok == false:
-			GlobalLogger.logs("Failed to parse the session server URL.", 1)
+			GlobalLogger.logs("Failed to parse the session server URL.", Enum.LogLevel.INFO)
 			continue
 		url_deconstructed = url_deconstructed.data
 
@@ -62,7 +60,7 @@ func get_sessions() -> Array:
 		]
 		var form_string: String = "&".join(form_parts)
 
-		var sessions_response = await http.req(HTTPClient.Method.METHOD_GET, url_deconstructed.host, "/api/v1/getSessions?%s" % form_string, url_deconstructed.port, ["Accept: application/json", "Content-Type: application/x-www-form-urlencoded", "x-api-key: %s" % GlobalAccount.dev_session_server_api_key])
+		var sessions_response = await HTTP.req(HTTPClient.Method.METHOD_GET, url_deconstructed.host, "/api/v1/getSessions?%s" % form_string, url_deconstructed.port, ["Accept: application/json", "Content-Type: application/x-www-form-urlencoded", "x-api-key: %s" % GlobalAccount.dev_session_server_api_key])
 
 		var sessions_in_server = _session_request_received(url_deconstructed.host, sessions_response)
 		# TODO: Validate request health

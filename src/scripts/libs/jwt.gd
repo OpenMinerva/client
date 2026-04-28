@@ -31,14 +31,14 @@ func validate(jwt_string: String, public_spki: String):
 	var jwt_parts: Dictionary = _get_parts(jwt_string)
 	var public_key: CryptoKey = pem_to_cryptokey(public_spki)
 	if jwt_parts.ok != true:
-		GlobalLogger.logs("Failed to deconstruct jwt when verifying jwt.", 2)
-		GlobalLogger.logs(str(jwt_string), 0)
+		GlobalLogger.logs("Failed to deconstruct jwt when verifying jwt.", Enum.LogLevel.WARNING)
+		GlobalLogger.logs(str(jwt_string))
 		return false
 
 	var formatted_payload: Dictionary = _format_payload_for_verification(jwt_parts.head, jwt_parts.payload)
 	if formatted_payload.ok != true:
-		GlobalLogger.logs("Failed to format the jwt payload when verifying jwt.", 2)
-		GlobalLogger.logs(str(jwt_parts), 0)
+		GlobalLogger.logs("Failed to format the jwt payload when verifying jwt.", Enum.LogLevel.WARNING)
+		GlobalLogger.logs(str(jwt_parts))
 		return false
 
 	return crypto.verify(
@@ -71,14 +71,14 @@ func base64_to_base64url(input_value: String):
 func _get_parts(input_value: String):
 	# TODO: Error checks
 	var return_dict = {"ok": false, "error": "", "head": "", "payload": "", "signature": ""}
-	
+
 	var jwt_split = input_value.split(".")
 
 	if len(jwt_split) != 3:
-		GlobalLogger.logs("JWT is not formatted correctly.", 2)
+		GlobalLogger.logs("JWT is not formatted correctly.", Enum.LogLevel.WARNING)
 		return_dict.error = "JWT is not formatted correctly."
 		return return_dict
-	
+
 	return_dict.head = jwt_split[0]
 	return_dict.payload = jwt_split[1]
 	return_dict.signature = base64url_to_base64(jwt_split[2])
@@ -106,7 +106,7 @@ func pem_to_cryptokey(pem: String = "") -> CryptoKey:
 	# TODO: Error checks
 	var public_key := CryptoKey.new()
 	if public_key.load_from_string(pem, true) != OK:
-		GlobalLogger.logs("Failed to load public key", 3)
+		GlobalLogger.logs("Failed to load public key", Enum.LogLevel.ERROR)
 		return null
 
 	return public_key

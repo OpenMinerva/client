@@ -74,10 +74,10 @@ func _privacy_button_enable(node) -> void:
 	return
 
 func update_instance(_instance: Dictionary) -> void:
-	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], 3)
-	# TODO Session Permissions: Admins can change instance settings. 
+	GlobalLogger.logs("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
+	# TODO Session Permissions: Admins can change instance settings.
 	# Publish changes to the session server.
-	# Update running server 
+	# Update running server
 	return
 
 func _handle_save_session_info() -> void:
