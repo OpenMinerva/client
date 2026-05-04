@@ -9,17 +9,28 @@
 
 extends Control
 
+@onready var network_m = get_tree().current_scene.get_node("NetworkManager")
+@onready var scene_m = get_tree().current_scene.get_node("SceneManager")
+
 @onready var account_card_container = get_node("HBoxContainer/VBoxContainer/AccountDisplay")
 @onready var storage_card_container = get_node("HBoxContainer/VBoxContainer/StorageDisplay")
+@onready var active_sessions_container = get_node("HBoxContainer/VBoxContainer/ActiveSessions")
 @onready var session_card_container = get_node("HBoxContainer/VBoxContainer3/SessionDisplay")
+
+@onready var active_session_template = get_node("Templates/ActiveSessionButton")
 
 func _ready():
 	account_card_container.get_node("Button").pressed.connect(Events.emit_signal.bind("dash_switch_tab", "AccountDisplay"))
-	
+
 	Events.connect("dash_active_account_changed", _handle_active_account_changed)
 	Events.connect("dash_storage_changed", _handle_storage_changed)
 	Events.connect("dash_session_changed", _handle_session_changed)
-	
+
+	Events.connect("session_joined", _display_active_sessions)
+	Events.connect("session_left", _display_active_sessions)
+
+	_display_active_sessions()
+
 	return
 
 func _handle_active_account_changed(account: Dictionary) -> void:
@@ -34,4 +45,25 @@ func _handle_storage_changed(storage_data: Dictionary) -> void:
 
 func _handle_session_changed(session_data: Dictionary) -> void:
 	session_card_container.get_node("MarginContainer/HBoxContainer/VBoxContainer/SessionName").text = session_data.session_name
+	return
+
+func _display_active_sessions() -> void:
+	for node in active_sessions_container.get_node("MarginContainer/VBoxContainer").get_children():
+		if node is not Label:
+			node.queue_free()
+
+	var _sessions = network_m.get_connected_sessions()
+
+	for session in _sessions:
+		var _entry = active_session_template.duplicate()
+		var _entry_label = _entry.get_node("HBoxContainer/Join")
+		var _entry_close = _entry.get_node("HBoxContainer/Close")
+
+		_entry_label.text = session.id
+		_entry_label.pressed.connect(scene_m.set_active_session.bind(session.id))
+		_entry_close.pressed.connect(network_m.leave_server.bind(session.id))
+
+		active_sessions_container.get_node("MarginContainer/VBoxContainer").add_child(_entry)
+
+	# TODO: When button is pressed, focus that session
 	return

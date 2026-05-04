@@ -32,7 +32,7 @@ func _build_page_list():
 		if button.name not in dashboard_tab_names:
 			button.disabled = true
 			continue
-		button.pressed.connect(_handle_switch_tab.bind(button.name))
+		button.pressed.connect(Events.emit_signal.bind("dash_switch_tab", button.name))
 
 func _handle_set_dash_state(is_open: bool) -> void:
 	GlobalLogger.logs("Changing dashboard state: '%s'" % is_open)
@@ -48,7 +48,7 @@ func _handle_switch_tab(target_name: String) -> void:
 		dash_nav_button.button_pressed = false
 
 	if target_name not in dashboard_tab_names:
-		GlobalLogger.logs("Tried to switch to an invalid dashboard page: '%s'" % target_name, 2)
+		GlobalLogger.logs("Tried to switch to an invalid dashboard page: '%s'" % target_name, Enum.LogLevel.WARNING)
 		return
 
 	dash_tab_master_container.get_node(target_name).visible = true

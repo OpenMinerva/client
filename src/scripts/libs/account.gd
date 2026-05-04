@@ -9,7 +9,6 @@
 
 extends Node
 
-var http = preload("res://scripts/network/http.gd").new()
 var time_lib = preload("res://scripts/libs/time.gd").new()
 var random_lib = preload("res://scripts/utils/random.gd").new()
 var rsa_lib = preload("res://scripts/crypto/rsa.gd").new()
@@ -22,6 +21,7 @@ var stop_connection_timer = false
 
 var active_account = {}
 var _database = []
+var dev_session_server_api_key = ""
 
 func _ready():
 	_load_account_database()
@@ -39,19 +39,19 @@ func create(account: Dictionary, type: String) -> Dictionary:
 		account_formatted = _create_oauth(account)
 
 	if len(account_formatted.keys()) == 0:
-		GlobalLogger.logs("Tried to create an account, but there was nothing to save.", 3)
+		GlobalLogger.logs("Tried to create an account, but there was nothing to save.", Enum.LogLevel.ERROR)
 		return {"ok": false, "error": "No account formatted.", "id": null}
 
 	_database.append(account_formatted)
 
 	_save_account_database()
-	
+
 	Events.emit_signal("dash_account_list_loaded")
 	return {"ok": true, "id": account_formatted.id}
 
 func _create_oauth(account) -> Dictionary:
 	var _account_keys = rsa_lib.generate_keypair()
-	
+
 	var _clean_account = {}
 	_clean_account.id = random_lib.random_string(6, true)
 	_clean_account.display_name = account.get("display_name", null)
@@ -63,7 +63,7 @@ func _create_oauth(account) -> Dictionary:
 	_clean_account.refresh_token = ""
 	_clean_account.id_token = ""
 	_clean_account.access_token_expiry = 0
-	
+
 	_clean_account.type = "oauth"
 	return _clean_account
 
@@ -80,7 +80,7 @@ func remove(id: String) -> Dictionary:
 
 ## Sets an account as the active account.
 func use(id: String) -> void:
-	GlobalLogger.logs("Setting active account to '%s'." % id, 1)
+	GlobalLogger.logs("Setting active account to '%s'." % id, Enum.LogLevel.INFO)
 
 	var _account = _get_account_by_id(id)
 	if _account.type == "oauth":
@@ -114,7 +114,7 @@ func update(id: String, data: Dictionary) -> void:
 	_save_account_database()
 	return
 
-func authenticate_oauth(id: String, remember_me: bool = false) -> void:
+func authenticate_oauth(id: String, _remember_me: bool = false) -> void:
 	# TODO: Error checks
 	GlobalLogger.logs("Attempting to connect account '%s' using oauth." % id)
 	var account = _get_account_by_id(id)
@@ -137,11 +137,11 @@ func _save_account_database() -> void:
 
 ## Read the account database from the config file on our disk.
 func _load_account_database() -> Array:
-	GlobalLogger.logs("Loading the local account database.", 1)
+	GlobalLogger.logs("Loading the local account database.", Enum.LogLevel.INFO)
 
 	var account_file_exists = FileAccess.file_exists(ACCOUNT_DATABASE_DIRECTORY)
 	if account_file_exists == false:
-		GlobalLogger.logs("Account database does not exist, creating one now.", 1)
+		GlobalLogger.logs("Account database does not exist, creating one now.", Enum.LogLevel.INFO)
 		_save_account_database()
 
 	var file = FileAccess.open(ACCOUNT_DATABASE_DIRECTORY, FileAccess.READ)
@@ -151,7 +151,7 @@ func _load_account_database() -> Array:
 	if file:
 		account_data = file.get_var() # Deserializes variable back
 		file.close()
-	
+
 	_database = account_data
 	return account_data
 
@@ -165,7 +165,7 @@ func _get_account_by_id(id: String) -> Dictionary:
 
 func _update_account_by_key(id: String, key: String, value: Variant) -> void:
 	var index = _database.find_custom(func(entry): return entry.get("id") == id)
-	# TODO: Check if key is a valid key. 
+	# TODO: Check if key is a valid key.
 	_database[index][key] = value
 	_save_account_database()
 	return
@@ -188,33 +188,15 @@ func _handle_response(response: Dictionary) -> Dictionary:
 
 	if response.get("ok", false) == false:
 		response_data.error = "Request failed for unknown reason."
-		GlobalLogger.logs(response_data.error, 3)
+		GlobalLogger.logs(response_data.error, Enum.LogLevel.ERROR)
 		return response_data
 
 	if response.get("body", null) == null:
 		response_data.error = "No body provided from the request."
-		GlobalLogger.logs(response_data.error, 3)
+		GlobalLogger.logs(response_data.error, Enum.LogLevel.ERROR)
 		return response_data
 
 	response_data.ok = true
 	response_data.body = JSON.parse_string(response.get("body"))
 
 	return response_data
-
-# DEV: Upload public key to the server.
-# func test_upload_public_key_to_server():
-# 	GlobalLogger.logs("Registering the device public key to the account server.")
-# 	var body = {
-# 		"public_key": active_account.public_device_key
-# 	}
-# 	var url_parts = UrlParser.deconstruct(active_account.account_server)
-# 	if url_parts.ok == false:
-# 		GlobalLogger.logs("Unhandled error registering the public device key to the account server. '%s'" % url_parts.error, 3)
-# 		return
-# 	url_parts = url_parts.data
-
-# 	print(url_parts)
-
-# 	var public_key_response = await http.req(HTTPClient.Method.METHOD_POST, url_parts.host, "/api/v1/device_key", url_parts.port, ["Accept: application/json", "Content-Type: application/json", "authorization: Bearer %s" % oauth_lib.access_token], JSON.stringify(body))
-# 	print(public_key_response)
-# 	return

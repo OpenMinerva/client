@@ -18,7 +18,7 @@ var _page_names = []
 func _ready():
 	_get_pages()
 	select_oauth_btn.pressed.connect(_display_login_route.bind("OAuth"))
-	
+
 	create_oauth_btn.pressed.connect(_create_oauth)
 	create_oauth_back_btn.pressed.connect(_display_login_route.bind("SelectMethod"))
 	return
@@ -28,7 +28,7 @@ func _display_oauth():
 
 func _display_login_route(page_name: String):
 	if page_name not in _page_names:
-		GlobalLogger.logs("Tried to display an invalid login route.", 3)
+		GlobalLogger.logs("Tried to display an invalid login route.", Enum.LogLevel.WARNING)
 		return
 
 	for page in create.get_children():
@@ -53,7 +53,7 @@ func _create_oauth() -> void:
 		"account_server": account_server
 	}
 
-	var res = GlobalAccount.create(account, "oauth")
+	GlobalAccount.create(account, "oauth")
 
 	Events.emit_signal("dash_switch_tab", "AccountDisplay")
 

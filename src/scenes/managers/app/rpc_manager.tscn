@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://by0vghgshvbhd"]
-
-[ext_resource type="Script" uid="uid://x23lqbiivx1q" path="res://scenes/managers/app/rpc_manager.gd" id="1_6timl"]
-
-[node name="RpcManager" type="Node" unique_id=1836544617]
-script = ExtResource("1_6timl")

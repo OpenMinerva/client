@@ -1,17 +1,19 @@
 extends CharacterBody3D
 
-@onready var rpc_lib = get_tree().current_scene.get_node("RpcManager")
-
 var speed = 5.0
 
 @onready var hud = get_tree().current_scene.get_node("Hud")
+@onready var scene_m = get_tree().current_scene.get_node("SceneManager")
 
-var n_c = preload("res://scripts/network/network_compression.gd").new()
+# TODO: Mouse sensitivity from settings
+# TODO: Replace interaction ray
+# TODO: Add skeleton controller
+# TODO: Mouse captured from HUD, not player controller
+# TODO: Rotate climbing collider as you move WASD
 
 @onready var body = $"."
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
-@onready var interaction_ray = $Head/Camera3D/InteractionRay
 @export var mouse_sensitivity: float = 1.5
 
 const base_fov = 90.0
@@ -29,17 +31,15 @@ const SENSITIVITY = 1.5
 # Player statuses
 var mouse_captured: bool = false
 
-# TODO: Rotate climbing collider as you move WASD
-
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 func _enter_tree():
-	set_multiplayer_authority(name.to_int())
-	
+	set_multiplayer_authority(0)
+
 func _ready():
 	camera.fov = base_fov
-	camera.current = is_multiplayer_authority()
+	camera.current = false
 
 func _input(event):
 	if is_multiplayer_authority() == false:
@@ -65,15 +65,15 @@ func _unhandled_input(event):
 		get_viewport().set_input_as_handled()
 
 func _physics_process(delta):
+	# TODO: Simplify focus detection code from "mouse_captured".
 	if is_multiplayer_authority() == false:
 		return
 	# Add the gravity.
-	check_if_interaction_ray_is_colliding()
 
 	if not is_on_floor():
 		velocity.y -= gravity * delta + 0.05
 
-	if Input.is_action_pressed("sprint"):
+	if Input.is_action_pressed("sprint") && mouse_captured == true:
 		speed = lerp(speed, SPRINT_SPEED, delta * 7.0)
 		var pos = Vector3.ZERO
 		pos.y = 1.7
@@ -84,7 +84,7 @@ func _physics_process(delta):
 		pos.y = 1.7
 		pos.z = -0.15
 		head.transform.origin = lerp(head.transform.origin, pos, delta * 7.0)
-	
+
 	if !is_on_floor():
 		speed = speed / 1.1
 
@@ -101,29 +101,15 @@ func _physics_process(delta):
 	else:
 		velocity.x = lerp(velocity.x, direction.x * speed, delta * 20.0)
 		velocity.z = lerp(velocity.z, direction.z * speed, delta * 20.0)
-	
-	if Input.is_action_just_pressed("jump") and is_on_floor():
+
+	if Input.is_action_just_pressed("jump") && is_on_floor() && mouse_captured == true:
 		velocity.y = JUMP_VELOCITY
 
 	move_and_slide()
 	_send_player_synchronization_info()
-	
+
 func round_to_dec(num, digit):
 	return round(num * pow(10.0, digit)) / pow(10.0, digit)
-	
-# User interaction ray
-func check_if_interaction_ray_is_colliding():
-	if interaction_ray.is_colliding():
-		var subscene_root = get_subscene_root(interaction_ray.get_collider());
-		if subscene_root == null:
-			return
-		
-		if !subscene_root.is_in_group("interactable"):
-			return
-		
-		# Interact
-		if Input.is_action_just_pressed("interact"):
-			subscene_root.interact()
 
 func get_subscene_root(node: Node) -> Node:
 	var current_node = node
@@ -131,7 +117,7 @@ func get_subscene_root(node: Node) -> Node:
 		return current_node
 	else:
 		return null
-	
+
 func capture_mouse(to_capture: bool):
 	if to_capture == false:
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
@@ -144,11 +130,11 @@ func capture_mouse(to_capture: bool):
 func _send_player_synchronization_info():
 	if is_multiplayer_authority() == false:
 		return
-	
-	var compressed_position = n_c.c_16_pos(position)
-	var compressed_rotation = n_c.c_16_vec3(rotation)
+
+	var compressed_position = NetworkCompression.c_16_pos(position)
+	var compressed_rotation = NetworkCompression.c_16_vec3(rotation)
 
 	# HACK: We are just appending the rotation bits at the end here. It should probably be more efficient somewhere else.
 	compressed_position.append_array(compressed_rotation)
-	
-	rpc_lib.com.rpc("on_player_transform", compressed_position)
+
+	scene_m.get_master_scene(scene_m.active_session).get_node("NetworkManager").entity_position.rpc(int(name), compressed_position)

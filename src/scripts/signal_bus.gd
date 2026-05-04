@@ -8,13 +8,33 @@
 # --- License
 extends Node
 
-# Dashboard
-signal dash_set_state(is_open: bool)
-signal dash_switch_tab(page_name: String)
-signal dash_active_account_changed(account: Dictionary)
-signal dash_storage_changed(storage_data: Dictionary)
-signal dash_session_changed(session_data: Dictionary)
-signal dash_message_received(message: Dictionary)
-signal dash_notification(notification: Dictionary)
 
+# Dashboard
+@warning_ignore("unused_signal")
+signal dash_set_state(is_open: bool)
+@warning_ignore("unused_signal")
+signal dash_switch_tab(page_name: String)
+@warning_ignore("unused_signal")
+signal dash_active_account_changed(account: Dictionary)
+@warning_ignore("unused_signal")
+signal dash_storage_changed(storage_data: Dictionary)
+@warning_ignore("unused_signal")
+signal dash_session_changed(session_data: Dictionary)
+@warning_ignore("unused_signal")
+signal dash_message_received(message: Dictionary)
+@warning_ignore("unused_signal")
+signal dash_notification(notification: Dictionary)
+@warning_ignore("unused_signal")
 signal dash_account_list_loaded(account_list: PackedStringArray)
+
+# Instance
+@warning_ignore("unused_signal")
+signal instance_updated(instance: Dictionary)
+@warning_ignore("unused_signal")
+signal instance_root_changed(instance: Dictionary)
+
+# Multiplayer
+@warning_ignore("unused_signal")
+signal session_joined(instance: Dictionary)
+@warning_ignore("unused_signal")
+signal session_left(instance: Dictionary)

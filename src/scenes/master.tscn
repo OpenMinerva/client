@@ -1,13 +1,10 @@
 [gd_scene format=3 uid="uid://cxk6c0uipjjpo"]
 
-[ext_resource type="PackedScene" uid="uid://by0vghgshvbhd" path="res://scenes/managers/app/rpc_manager.tscn" id="1_h2qy3"]
-[ext_resource type="PackedScene" uid="uid://5v8rbnp716b0" path="res://scenes/managers/app/network_manager.tscn" id="1_jooxx"]
-[ext_resource type="PackedScene" uid="uid://cmknpdx5ba15o" path="res://scenes/managers/app/scene_manager.tscn" id="2_h2qy3"]
+[ext_resource type="PackedScene" uid="uid://5v8rbnp716b0" path="res://scenes/managers/app/network.tscn" id="1_jooxx"]
+[ext_resource type="PackedScene" uid="uid://cmknpdx5ba15o" path="res://scenes/managers/app/scene.tscn" id="2_h2qy3"]
 [ext_resource type="PackedScene" uid="uid://ckl5gw0xbduiv" path="res://userinterface/dash/hud.tscn" id="5_q3f5g"]
 
 [node name="Master" type="Node3D" unique_id=420526444]
-
-[node name="RpcManager" parent="." unique_id=1836544617 instance=ExtResource("1_h2qy3")]
 
 [node name="NetworkManager" parent="." unique_id=1960146969 instance=ExtResource("1_jooxx")]
 
