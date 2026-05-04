@@ -35,11 +35,11 @@ var mouse_captured: bool = false
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 func _enter_tree():
-	set_multiplayer_authority(name.to_int())
+	set_multiplayer_authority(0)
 
 func _ready():
 	camera.fov = base_fov
-	camera.current = is_multiplayer_authority()
+	camera.current = false
 
 func _input(event):
 	if is_multiplayer_authority() == false:
