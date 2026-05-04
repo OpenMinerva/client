@@ -9,4 +9,4 @@
 
 extends Node
 
-var active = false
+var module_active = false

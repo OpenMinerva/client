@@ -9,7 +9,7 @@
 
 extends Node
 
-var active: bool = false
+var module_active: bool = false
 
 var players = {}
 
@@ -48,7 +48,7 @@ func spawn_player(peer_id: String) -> void:
 
 	GlobalLogger.logs("[%s] Spawning peer '%s'" % [caller_id, peer_id])
 
-	if active == false:
+	if module_active == false:
 		GlobalLogger.logs("[%s] Could not spawn peer '%s', module inactive." %  [caller_id, peer_id])
 		return
 

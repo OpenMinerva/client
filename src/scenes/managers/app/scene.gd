@@ -94,7 +94,7 @@ func start_master_scene(id: String):
 	for node_name in MANAGERS:
 		var _scene_manager = _scene.get_node_or_null(node_name)
 		if _scene_manager:
-			_scene_manager.active = true
+			_scene_manager.module_active = true
 			GlobalLogger.logs("'%s' started in server '%s'" % [node_name, id])
 			continue
 
@@ -109,11 +109,11 @@ func stop_master_scene(id: String):
 	for node_name in MANAGERS:
 		var _scene_manager = _scene.get_node_or_null(node_name)
 		if _scene_manager:
-			_scene_manager.active = true
-			GlobalLogger.logs("'%s' started in server '%s'" % [node_name, id])
+			_scene_manager.module_active = true
+			GlobalLogger.logs("'%s' stopped in server '%s'" % [node_name, id])
 			continue
 
-		GlobalLogger.logs("Could not start invalid manager '%s' in server '%s'" % [node_name, id], Enum.LogLevel.ERROR)
+		GlobalLogger.logs("Could not stop invalid manager '%s' in server '%s'" % [node_name, id], Enum.LogLevel.ERROR)
 	return
 
 func _get_scene_by_type(scene_type: Enum.BaseLevel) -> PackedScene:
@@ -132,6 +132,8 @@ func _get_scene_by_type(scene_type: Enum.BaseLevel) -> PackedScene:
 	return load(_scene_dir)
 
 func set_active_session(session_id: String):
+	GlobalLogger.logs("Setting session '%s' active." % session_id)
+
 	for _scene in network_m.get_connected_sessions():
 		# Each session gets disabled
 		scene_container.get_node(_scene.id).visible = false
