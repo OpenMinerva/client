@@ -83,8 +83,25 @@ func use(id: String) -> void:
 	GlobalLogger.logs("Setting active account to '%s'." % id, Enum.LogLevel.INFO)
 
 	var _account = _get_account_by_id(id)
+
+	# TODO: Error checking
+	var url = UrlParser.deconstruct(_account.account_server)
+	url = url.data
+
+	var _oauth = OAuth2Client.new(
+		url.host,
+		url.port,
+		"OpenMinerva-Game-Client",
+		54000,
+		GlobalLogger,
+		HTTP,
+		true
+	)
+
 	if _account.type == "oauth":
-		if await OAuth.validate_token(_account) == false:
+		var _oauth_valid: Dictionary = await _oauth.validate(_account)
+
+		if _oauth_valid.ok == OAuth2Client.OAUTH2_CLIENT_RESULT.OK && _oauth_valid.data == false:
 			await authenticate_oauth(id)
 
 	active_account = _account
@@ -105,7 +122,7 @@ func update(id: String, data: Dictionary) -> void:
 
 	for key in _data_keys:
 		if key not in _database_keys:
-			GlobalLogger.logs("Tried to update an invalid key in an account, '%s'." % key)
+			GlobalLogger.logs("Tried to update an invalid key in an account, '%s'." % key, Enum.LogLevel.WARNING)
 			continue
 
 		account[key] = data[key]
@@ -120,9 +137,24 @@ func authenticate_oauth(id: String, _remember_me: bool = false) -> void:
 	var account = _get_account_by_id(id)
 
 	# TODO: Check if account is still valid without trying to sign in.
-	var oauth_tokens = await OAuth.authenticate(account.account_server + "/oauth/authorize")
+	var url = UrlParser.deconstruct(account.account_server)
+	url = url.data
 
-	update(id, oauth_tokens)
+	var _oauth = OAuth2Client.new(
+		url.host,
+		url.port,
+		"OpenMinerva-Game-Client",
+		54000,
+		GlobalLogger,
+		HTTP,
+		true
+	)
+
+	var oauth_tokens = await _oauth.authenticate()
+	if oauth_tokens.ok == OAuth2Client.OAUTH2_CLIENT_RESULT.OK:
+		update(id, oauth_tokens.data)
+
+	return
 
 ## Save the current account database we have in memory to the disk.
 func _save_account_database() -> void:
