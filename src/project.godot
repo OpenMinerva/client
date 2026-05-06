@@ -37,8 +37,8 @@ Enum="*uid://dgpvcem71xdbn"
 Bootstrap="*uid://cvj10vdw6hlqw"
 NetworkCompression="*uid://b2iq75uom64x2"
 HTTP="*uid://d3cnfdwjxopsx"
-OAuth2="*uid://uyn3chfwk7v3"
 UrlParser="*uid://budprjmmpally"
+OAuth2Client="*uid://c4b880pwgfrty"
 
 [display]
 
@@ -49,7 +49,7 @@ window/stretch/aspect="expand"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/openminerva.oauth2/plugin.cfg", "res://addons/openminerva.urlparser/plugin.cfg")
+enabled=PackedStringArray("res://addons/openminerva.oauth2client/plugin.cfg", "res://addons/openminerva.urlparser/plugin.cfg")
 
 [input]
 

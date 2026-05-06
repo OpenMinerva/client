@@ -99,7 +99,9 @@ func use(id: String) -> void:
 	)
 
 	if _account.type == "oauth":
-		if await _oauth.validate(_account) == false:
+		var _oauth_valid: Dictionary = await _oauth.validate(_account)
+
+		if _oauth_valid.ok == OAuth2Client.OAUTH2_CLIENT_RESULT.OK && _oauth_valid.data == false:
 			await authenticate_oauth(id)
 
 	active_account = _account
@@ -138,7 +140,7 @@ func authenticate_oauth(id: String, _remember_me: bool = false) -> void:
 	var url = UrlParser.deconstruct(account.account_server)
 	url = url.data
 
-	var oauth = OAuth2Client.new(
+	var _oauth = OAuth2Client.new(
 		url.host,
 		url.port,
 		"OpenMinerva-Game-Client",
@@ -148,9 +150,11 @@ func authenticate_oauth(id: String, _remember_me: bool = false) -> void:
 		true
 	)
 
-	var oauth_tokens = await oauth.authenticate()
+	var oauth_tokens = await _oauth.authenticate()
+	if oauth_tokens.ok == OAuth2Client.OAUTH2_CLIENT_RESULT.OK:
+		update(id, oauth_tokens.data)
 
-	update(id, oauth_tokens)
+	return
 
 ## Save the current account database we have in memory to the disk.
 func _save_account_database() -> void:
