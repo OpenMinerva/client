@@ -4,8 +4,11 @@
 <p align="center">
   <img height="150" src="https://github.com/openminerva/client/blob/alpha/docs/logos/om-logo-big.webp?raw=true" />
 </p>
-
-[![](https://dcbadge.limes.pink/api/server/https://discord.gg/Kx6avB52gK)](https://discord.gg/Kx6avB52gK)
+<p align="center">
+  <a href="https://discord.gg/Kx6avB52gK">
+    <img src="https://dcbadge.limes.pink/api/server/https://discord.gg/Kx6avB52gK" alt="Discord" />
+  </a>
+</p>
 
 # Client
 
