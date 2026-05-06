@@ -56,6 +56,10 @@ func logs(message: String = "", level: Enum.LogLevel = Enum.LogLevel.DEBUG):
 				)
 	pass
 
+# FIXME: Replace "logs" with "log"
+func log(message: String = "", level: Enum.LogLevel = Enum.LogLevel.DEBUG) -> void:
+	logs(message, level)
+
 func _log_to_file(message: String = "", level: int = 0):
 	if file_logging_enabled && log_file:
 		var formatted_log = "[%s] %s" % [log_level_names[level], message]

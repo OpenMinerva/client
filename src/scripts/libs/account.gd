@@ -83,8 +83,23 @@ func use(id: String) -> void:
 	GlobalLogger.logs("Setting active account to '%s'." % id, Enum.LogLevel.INFO)
 
 	var _account = _get_account_by_id(id)
+
+	# TODO: Error checking
+	var url = UrlParser.deconstruct(_account.account_server)
+	url = url.data
+
+	var _oauth = OAuth2Client.new(
+		url.host,
+		url.port,
+		"OpenMinerva-Game-Client",
+		54000,
+		GlobalLogger,
+		HTTP,
+		true
+	)
+
 	if _account.type == "oauth":
-		if await OAuth.validate_token(_account) == false:
+		if await _oauth.validate(_account) == false:
 			await authenticate_oauth(id)
 
 	active_account = _account
@@ -120,7 +135,20 @@ func authenticate_oauth(id: String, _remember_me: bool = false) -> void:
 	var account = _get_account_by_id(id)
 
 	# TODO: Check if account is still valid without trying to sign in.
-	var oauth_tokens = await OAuth.authenticate(account.account_server + "/oauth/authorize")
+	var url = UrlParser.deconstruct(account.account_server)
+	url = url.data
+
+	var oauth = OAuth2Client.new(
+		url.host,
+		url.port,
+		"OpenMinerva-Game-Client",
+		54000,
+		GlobalLogger,
+		HTTP,
+		true
+	)
+
+	var oauth_tokens = await oauth.authenticate()
 
 	update(id, oauth_tokens)
 
