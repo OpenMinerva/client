@@ -122,7 +122,7 @@ func update(id: String, data: Dictionary) -> void:
 
 	for key in _data_keys:
 		if key not in _database_keys:
-			GlobalLogger.logs("Tried to update an invalid key in an account, '%s'." % key)
+			GlobalLogger.logs("Tried to update an invalid key in an account, '%s'." % key, Enum.LogLevel.WARNING)
 			continue
 
 		account[key] = data[key]
