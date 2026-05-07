@@ -20,7 +20,9 @@ config/features=PackedStringArray("4.6", "Forward Plus")
 run/max_fps=144
 boot_splash/stretch_mode=0
 boot_splash/image="uid://dpdryj57noc4c"
-config/icon="uid://du0bhthwac604"
+config/icon="res://resources/icons/logos/logo.webp"
+config/macos_native_icon="res://resources/icons/logos/logo.icns"
+config/windows_native_icon="res://resources/icons/logos/logo.ico"
 boot_splash/minimum_display_time=1500
 
 [autoload]
