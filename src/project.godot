@@ -37,8 +37,8 @@ Enum="*uid://dgpvcem71xdbn"
 Bootstrap="*uid://cvj10vdw6hlqw"
 NetworkCompression="*uid://b2iq75uom64x2"
 HTTP="*uid://d3cnfdwjxopsx"
-UrlParser="*uid://budprjmmpally"
 OAuth2Client="*uid://c4b880pwgfrty"
+UrlParser="*uid://budprjmmpally"
 
 [display]
 
@@ -49,7 +49,7 @@ window/stretch/aspect="expand"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/openminerva.oauth2client/plugin.cfg", "res://addons/openminerva.urlparser/plugin.cfg")
+enabled=PackedStringArray("res://addons/godot-oauth2client/plugin.cfg", "res://addons/godot-urlparser/plugin.cfg")
 
 [input]
 

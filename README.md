@@ -17,10 +17,10 @@ Client is the interface used to connect and interact with the virtual world of O
 ## Development Quick Start
 
 ### 1: Download source code
-Installation and running on Linux.
+For cloning this project on Linux:
 ```bash
 # Clone this repository.
-git clone https://github.com/OpenMinerva/client
+git clone --recurse-submodules https://github.com/OpenMinerva/client 
 ```
 
 ### 2: Import project into Godot.
