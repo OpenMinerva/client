@@ -10,6 +10,13 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w1m0q"]
+bg_color = Color(4.7745703e-05, 0.4621603, 0.95651287, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dgxsq"]
 bg_color = Color(0.0627451, 0.0627451, 0.0627451, 1)
 corner_radius_top_left = 5
@@ -18,7 +25,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lmgqb"]
-bg_color = Color(6.757557e-05, 0.4500302, 0.93706656, 1)
+bg_color = Color(0, 0.391321, 0.8202678, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -49,10 +56,12 @@ corner_radius_bottom_left = 10
 Button/styles/disabled = SubResource("StyleBoxFlat_sn1o5")
 Button/styles/focus = SubResource("StyleBoxFlat_kyium")
 Button/styles/hover = SubResource("StyleBoxFlat_kyium")
+Button/styles/hover_pressed = SubResource("StyleBoxFlat_w1m0q")
 Button/styles/normal = SubResource("StyleBoxFlat_dgxsq")
 Button/styles/pressed = SubResource("StyleBoxFlat_lmgqb")
 Danger/base_type = &"Button"
 Danger/styles/focus = SubResource("StyleBoxFlat_nfgd4")
 Danger/styles/hover = SubResource("StyleBoxFlat_nfgd4")
+Danger/styles/hover_pressed = SubResource("StyleBoxFlat_nfgd4")
 Danger/styles/pressed = SubResource("StyleBoxFlat_hge1u")
 Panel/styles/panel = SubResource("StyleBoxFlat_ipp3m")

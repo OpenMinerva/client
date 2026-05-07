@@ -2,6 +2,7 @@
 
 [ext_resource type="Shader" uid="uid://bwr4b0mhgi4w6" path="res://userinterface/dashv2/shaders/blur.gdshader" id="1_co0dt"]
 [ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="2_0nfpo"]
+[ext_resource type="Script" uid="uid://bkqsi1aebefhj" path="res://userinterface/dashv2/scripts/navigation.gd" id="3_8u0v7"]
 [ext_resource type="PackedScene" uid="uid://ccoyv1v4otf1b" path="res://userinterface/dashv2/partials/nav_button.tscn" id="3_ocjmf"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0nfpo"]
@@ -82,6 +83,7 @@ theme = ExtResource("2_0nfpo")
 [node name="NavBar" type="Control" parent="MarginContainer/VBoxContainer" unique_id=401495078]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
+script = ExtResource("3_8u0v7")
 
 [node name="BlurPanel" type="Panel" parent="MarginContainer/VBoxContainer/NavBar" unique_id=1715463703]
 material = SubResource("ShaderMaterial_0nfpo")
