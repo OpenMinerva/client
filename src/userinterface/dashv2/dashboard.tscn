@@ -1,0 +1,166 @@
+[gd_scene format=3 uid="uid://c4y1sb6lmdr0q"]
+
+[ext_resource type="Shader" uid="uid://bwr4b0mhgi4w6" path="res://userinterface/dashv2/shaders/blur.gdshader" id="1_co0dt"]
+[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="2_0nfpo"]
+[ext_resource type="PackedScene" uid="uid://ccoyv1v4otf1b" path="res://userinterface/dashv2/partials/nav_button.tscn" id="3_ocjmf"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0nfpo"]
+shader = ExtResource("1_co0dt")
+shader_parameter/blur_size = Vector2(3, 3)
+
+[node name="Dashboard" type="Control" unique_id=505457833]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=235504345]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=124409058]
+layout_mode = 2
+
+[node name="TopBar" type="Control" parent="MarginContainer/VBoxContainer" unique_id=1724217308]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+
+[node name="BlurPanel" type="Panel" parent="MarginContainer/VBoxContainer/TopBar" unique_id=1417964669]
+material = SubResource("ShaderMaterial_0nfpo")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_0nfpo")
+
+[node name="BackgroundColor" type="Panel" parent="MarginContainer/VBoxContainer/TopBar" unique_id=2037087133]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_0nfpo")
+
+[node name="Content" type="Control" parent="MarginContainer/VBoxContainer" unique_id=1517512624]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BlurPanel" type="Panel" parent="MarginContainer/VBoxContainer/Content" unique_id=64111206]
+material = SubResource("ShaderMaterial_0nfpo")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_0nfpo")
+
+[node name="BackgroundColor" type="Panel" parent="MarginContainer/VBoxContainer/Content" unique_id=730467318]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_0nfpo")
+
+[node name="NavBar" type="Control" parent="MarginContainer/VBoxContainer" unique_id=401495078]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+
+[node name="BlurPanel" type="Panel" parent="MarginContainer/VBoxContainer/NavBar" unique_id=1715463703]
+material = SubResource("ShaderMaterial_0nfpo")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_0nfpo")
+
+[node name="BackgroundColor" type="Panel" parent="MarginContainer/VBoxContainer/NavBar" unique_id=1259999416]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_0nfpo")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/NavBar" unique_id=1303027290]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/NavBar/MarginContainer" unique_id=1576091722]
+layout_mode = 2
+alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="Home" parent="MarginContainer/VBoxContainer/NavBar/MarginContainer/HBoxContainer" unique_id=649942124 instance=ExtResource("3_ocjmf")]
+layout_mode = 2
+display_text = "Home"
+selected_icon = "Home"
+
+[node name="Sessions" parent="MarginContainer/VBoxContainer/NavBar/MarginContainer/HBoxContainer" unique_id=115442342 instance=ExtResource("3_ocjmf")]
+layout_mode = 2
+display_text = "Sessions"
+selected_icon = "Sessions"
+
+[node name="Instance" parent="MarginContainer/VBoxContainer/NavBar/MarginContainer/HBoxContainer" unique_id=2065864495 instance=ExtResource("3_ocjmf")]
+layout_mode = 2
+display_text = "Instance"
+selected_icon = "Instance"
+
+[node name="Contacts" parent="MarginContainer/VBoxContainer/NavBar/MarginContainer/HBoxContainer" unique_id=1218469163 instance=ExtResource("3_ocjmf")]
+layout_mode = 2
+display_text = "Contacts"
+selected_icon = "Contacts"
+
+[node name="Assets" parent="MarginContainer/VBoxContainer/NavBar/MarginContainer/HBoxContainer" unique_id=1841335532 instance=ExtResource("3_ocjmf")]
+layout_mode = 2
+display_text = "Assets"
+selected_icon = "Assets"
+
+[node name="Apps" parent="MarginContainer/VBoxContainer/NavBar/MarginContainer/HBoxContainer" unique_id=121060802 instance=ExtResource("3_ocjmf")]
+layout_mode = 2
+display_text = "Apps"
+selected_icon = "Apps"
+
+[node name="Settings" parent="MarginContainer/VBoxContainer/NavBar/MarginContainer/HBoxContainer" unique_id=849079664 instance=ExtResource("3_ocjmf")]
+layout_mode = 2
+display_text = "Settings"
+selected_icon = "Settings"
+
+[node name="Debug" parent="MarginContainer/VBoxContainer/NavBar/MarginContainer/HBoxContainer" unique_id=194442451 instance=ExtResource("3_ocjmf")]
+layout_mode = 2
+display_text = "Debug"
+selected_icon = "Debug"
+
+[node name="Exit" parent="MarginContainer/VBoxContainer/NavBar/MarginContainer/HBoxContainer" unique_id=1580421633 instance=ExtResource("3_ocjmf")]
+layout_mode = 2
+display_text = "Exit"
+selected_icon = "Exit"
+selected_theme_type = "Danger"

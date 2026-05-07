@@ -2,7 +2,8 @@
 
 [ext_resource type="PackedScene" uid="uid://5v8rbnp716b0" path="res://scenes/managers/app/network.tscn" id="1_jooxx"]
 [ext_resource type="PackedScene" uid="uid://cmknpdx5ba15o" path="res://scenes/managers/app/scene.tscn" id="2_h2qy3"]
-[ext_resource type="PackedScene" uid="uid://ckl5gw0xbduiv" path="res://userinterface/dash/hud.tscn" id="5_q3f5g"]
+[ext_resource type="PackedScene" uid="uid://c4y1sb6lmdr0q" path="res://userinterface/dashv2/dashboard.tscn" id="4_h2qy3"]
+[ext_resource type="PackedScene" uid="uid://ckl5gw0xbduiv" path="res://userinterface/dashv1/hud.tscn" id="5_q3f5g"]
 
 [node name="Master" type="Node3D" unique_id=420526444]
 
@@ -12,5 +13,7 @@
 
 [node name="Hud" parent="." unique_id=1053137144 instance=ExtResource("5_q3f5g")]
 visible = false
+
+[node name="Dashboard" parent="." unique_id=505457833 instance=ExtResource("4_h2qy3")]
 
 [node name="Scenes" type="Node3D" parent="." unique_id=308239834]
