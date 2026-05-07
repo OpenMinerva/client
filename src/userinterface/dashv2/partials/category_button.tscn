@@ -1,6 +1,6 @@
-[gd_scene format=3 uid="uid://ccoyv1v4otf1b"]
+[gd_scene format=3 uid="uid://71vuc3qrtgi7"]
 
-[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="1_s6xcj"]
+[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="1_dnctg"]
 
 [sub_resource type="GDScript" id="GDScript_q3lw4"]
 resource_name = "export"
@@ -11,19 +11,14 @@ script/source = "extends Control
 @onready var label_node = $Button/MarginContainer/VBoxContainer/Label
 @onready var icon_node = $Button/MarginContainer/VBoxContainer/TextureRect
 @onready var button_node = $Button
-@export_enum(\"Home\", \"Sessions\", \"Instance\", \"Contacts\", \"Assets\", \"Apps\", \"Settings\", \"Debug\", \"Exit\") var selected_icon: String
+@export_enum(\"Art\", \"Environment\", \"Science\", \"Games\") var selected_icon: String
 @export_enum(\"Danger\") var selected_theme_type: String
 
 var icon_paths = {
-	\"Home\": \"res://resources/icons/home.svg\",
-	\"Sessions\": \"res://resources/icons/flowchart.svg\",
-	\"Instance\": \"res://resources/icons/world.svg\",
-	\"Contacts\": \"res://resources/icons/contacts.svg\",
-	\"Assets\": \"res://resources/icons/inventory.svg\",
-	\"Apps\": \"res://resources/icons/apps.svg\",
-	\"Settings\": \"res://resources/icons/settings.svg\",
-	\"Debug\": \"res://resources/icons/debug.svg\",
-	\"Exit\": \"res://resources/icons/exit.svg\",
+	\"Art\": \"res://resources/icons/art.svg\",
+	\"Environment\": \"res://resources/icons/environment.svg\",
+	\"Science\": \"res://resources/icons/science.svg\",
+	\"Games\": \"res://resources/icons/circus.svg\",
 }
 
 func _ready():
@@ -33,20 +28,21 @@ func _ready():
 	button_node.theme_type_variation = selected_theme_type if selected_theme_type != null else null
 "
 
-[node name="NavButton" type="Control" unique_id=649942124]
+[node name="CategoryButton" type="Control" unique_id=649942124]
 custom_minimum_size = Vector2(200, 50)
 layout_mode = 3
-anchor_left = 0.44791666
-anchor_top = 0.4675926
-anchor_right = 0.5520833
+anchor_top = 0.47685185
+anchor_right = 1.0
 anchor_bottom = 0.5231481
-offset_bottom = 6.1035156e-05
+offset_top = 25.0
+offset_bottom = -24.999939
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
-theme = ExtResource("1_s6xcj")
+theme = ExtResource("1_dnctg")
 script = SubResource("GDScript_q3lw4")
+metadata/_edit_use_anchors_ = true
 
 [node name="Button" type="Button" parent="." unique_id=1422381468]
 custom_minimum_size = Vector2(140, 0)
@@ -57,7 +53,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_default_cursor_shape = 2
-theme = ExtResource("1_s6xcj")
+theme = ExtResource("1_dnctg")
 theme_type_variation = &"Danger"
 toggle_mode = true
 

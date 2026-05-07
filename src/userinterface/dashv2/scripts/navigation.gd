@@ -18,8 +18,8 @@ func _ready():
 	return
 
 func _setup_dashboard_navigation_bar():
-	for index in len(navigation_nodes):
-		var _target_node = navigation_nodes[index]
+	for _index in len(navigation_nodes):
+		var _target_node = navigation_nodes[_index]
 		var _target_node_button = _target_node.get_node("Button")
 
 		_target_node_button.pressed.connect(Events.emit_signal.bind("dash_switch_tab", _target_node.name))
@@ -27,8 +27,8 @@ func _setup_dashboard_navigation_bar():
 	return
 
 func _handle_switch_tab(tab_name):
-	for index in len(navigation_nodes):
-		var _target_node = navigation_nodes[index]
+	for _index in len(navigation_nodes):
+		var _target_node = navigation_nodes[_index]
 		var _target_node_button = _target_node.get_node("Button")
 
 		if _target_node.name != tab_name:

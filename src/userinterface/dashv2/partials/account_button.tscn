@@ -1,0 +1,81 @@
+[gd_scene format=3 uid="uid://clvk6h18vwcd3"]
+
+[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="1_dmbuk"]
+[ext_resource type="Texture2D" uid="uid://coqi7w7inqyv1" path="res://resources/icons/account.svg" id="2_clecd"]
+
+[sub_resource type="GDScript" id="GDScript_q3lw4"]
+resource_name = "export"
+script/source = "extends Control
+
+@export var display_text: String = \"Default Text\"
+
+@onready var label_node = $Button/MarginContainer/VBoxContainer/Label
+@onready var icon_node = $Button/MarginContainer/VBoxContainer/TextureRect
+@onready var button_node = $Button
+@export_enum(\"Danger\", \"LightButton\") var selected_theme_type: String
+
+func _ready():
+	button_node.theme_type_variation = selected_theme_type if selected_theme_type != null else null
+"
+
+[node name="AccountButton" type="Control" unique_id=649942124]
+custom_minimum_size = Vector2(200, 50)
+layout_mode = 3
+anchor_top = 0.47685185
+anchor_right = 1.0
+anchor_bottom = 0.5231481
+offset_top = 25.0
+offset_bottom = -24.999939
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_dmbuk")
+script = SubResource("GDScript_q3lw4")
+
+[node name="Button" type="Button" parent="." unique_id=1422381468]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("1_dmbuk")
+theme_type_variation = &"Danger"
+
+[node name="MarginContainer" type="MarginContainer" parent="Button" unique_id=665374152]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBox" type="HBoxContainer" parent="Button/MarginContainer" unique_id=86696220]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TextureRect" type="TextureRect" parent="Button/MarginContainer/HBox" unique_id=1429445374]
+layout_mode = 2
+texture = ExtResource("2_clecd")
+expand_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Button/MarginContainer/HBox" unique_id=1074901883]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Name" type="Label" parent="Button/MarginContainer/HBox/VBox" unique_id=1807295119]
+layout_mode = 2
+text = "ERROR"
+
+[node name="Location" type="Label" parent="Button/MarginContainer/HBox/VBox" unique_id=675948225]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.70380783, 0.70380783, 0.70380783, 1)
+theme_override_font_sizes/font_size = 10
+text = "ERROR"

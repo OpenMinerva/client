@@ -45,6 +45,13 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hvbjw"]
+bg_color = Color(0.06, 0.06, 0.06, 0.39215687)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ipp3m"]
 bg_color = Color(0.078431375, 0.078431375, 0.078431375, 0.78431374)
 corner_radius_top_left = 10
@@ -64,4 +71,6 @@ Danger/styles/focus = SubResource("StyleBoxFlat_nfgd4")
 Danger/styles/hover = SubResource("StyleBoxFlat_nfgd4")
 Danger/styles/hover_pressed = SubResource("StyleBoxFlat_nfgd4")
 Danger/styles/pressed = SubResource("StyleBoxFlat_hge1u")
+LightButton/base_type = &"Button"
+LightButton/styles/normal = SubResource("StyleBoxFlat_hvbjw")
 Panel/styles/panel = SubResource("StyleBoxFlat_ipp3m")
