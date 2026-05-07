@@ -14,13 +14,14 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 [application]
 
-config/name="PrismLens"
+config/name="OpenMinerva Client"
 run/main_scene="uid://cxk6c0uipjjpo"
 config/features=PackedStringArray("4.6", "Forward Plus")
 run/max_fps=144
-boot_splash/image="/home/adragon/Pictures/PrismLens_1_background.png"
+boot_splash/stretch_mode=0
+boot_splash/image="uid://dpdryj57noc4c"
 config/icon="uid://du0bhthwac604"
-boot_splash/minimum_display_time=1000
+boot_splash/minimum_display_time=1500
 
 [autoload]
 
