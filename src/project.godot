@@ -14,13 +14,16 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 [application]
 
-config/name="PrismLens"
+config/name="OpenMinerva Client"
 run/main_scene="uid://cxk6c0uipjjpo"
 config/features=PackedStringArray("4.6", "Forward Plus")
 run/max_fps=144
-boot_splash/image="/home/adragon/Pictures/PrismLens_1_background.png"
-config/icon="uid://du0bhthwac604"
-boot_splash/minimum_display_time=1000
+boot_splash/stretch_mode=0
+boot_splash/image="uid://dpdryj57noc4c"
+config/icon="res://resources/icons/logos/logo.webp"
+config/macos_native_icon="res://resources/icons/logos/logo.icns"
+config/windows_native_icon="res://resources/icons/logos/logo.ico"
+boot_splash/minimum_display_time=1500
 
 [autoload]
 
@@ -93,6 +96,11 @@ sprint={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194325,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
 ]
 }
+
+[physics]
+
+3d/run_on_separate_thread=true
+3d/physics_engine="Jolt Physics"
 
 [rendering]
 
