@@ -397,7 +397,7 @@ size_flags_vertical = 4
 
 [node name="Username" parent="MarginContainer/VBoxContainer/Content/Container/_AccountCreation/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1236567120 instance=ExtResource("11_qutrk")]
 layout_mode = 2
-display_text = "Username"
+display_text = "Display Name"
 
 [node name="AccountServer" parent="MarginContainer/VBoxContainer/Content/Container/_AccountCreation/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1844371600 instance=ExtResource("11_qutrk")]
 layout_mode = 2

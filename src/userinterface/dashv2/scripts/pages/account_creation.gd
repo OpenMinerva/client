@@ -25,12 +25,15 @@ func _create_account() -> void:
 	var _account_server: String = _account_server_lineedit_node.text
 	var _account_data: Dictionary = {}
 	var _create_account_response: Dictionary = {}
-	var _account_id: String = ""
 	
 	_account_data.set("display_name", _username)
 	_account_data.set("account_server", _account_server)
 
 	_create_account_response = GlobalAccount.create(_account_data, "oauth")
-	_account_id = _create_account_response.get("id")
-	GlobalAccount.use(_account_id)
+
+	# Reset page
+	_username_lineedit_node.text = ""
+	_account_server_lineedit_node.text = ""
+
+	Events.emit_signal("dash_switch_tab", "_AccountSelection")
 	return
