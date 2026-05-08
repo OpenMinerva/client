@@ -2,6 +2,8 @@
 
 [ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="1_h0f2g"]
 [ext_resource type="Texture2D" uid="uid://coqi7w7inqyv1" path="res://resources/icons/account.svg" id="2_rbo2h"]
+[ext_resource type="Texture2D" uid="uid://byxgefy5xsbuu" path="res://resources/icons/ui/settings.svg" id="3_els6r"]
+[ext_resource type="Texture2D" uid="uid://5admxcll28y4" path="res://resources/icons/ui/trash.svg" id="4_g1hvg"]
 
 [sub_resource type="GDScript" id="GDScript_q3lw4"]
 resource_name = "export"
@@ -9,7 +11,7 @@ script/source = "extends Control
 "
 
 [node name="AccountButtonListing" type="Control" unique_id=649942124]
-custom_minimum_size = Vector2(200, 50)
+custom_minimum_size = Vector2(200, 75)
 layout_mode = 3
 anchor_top = 0.47685185
 anchor_right = 1.0
@@ -65,16 +67,16 @@ size_flags_horizontal = 3
 
 [node name="Name" type="Label" parent="HBoxContainer/Button/MarginContainer/HBox/VBox" unique_id=1807295119]
 layout_mode = 2
+theme_override_font_sizes/font_size = 20
 text = "ERROR"
 
 [node name="Location" type="Label" parent="HBoxContainer/Button/MarginContainer/HBox/VBox" unique_id=675948225]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.70380783, 0.70380783, 0.70380783, 1)
-theme_override_font_sizes/font_size = 10
 text = "ERROR"
 
 [node name="Configure" type="AspectRatioContainer" parent="HBoxContainer" unique_id=559312234]
-custom_minimum_size = Vector2(50, 0)
+custom_minimum_size = Vector2(75, 0)
 layout_mode = 2
 
 [node name="Button" type="Button" parent="HBoxContainer/Configure" unique_id=1933552852]
@@ -99,11 +101,11 @@ layout_mode = 2
 
 [node name="TextureRect" type="TextureRect" parent="HBoxContainer/Configure/Button/MarginContainer/AspectRatioContainer" unique_id=522146680]
 layout_mode = 2
-texture = ExtResource("2_rbo2h")
+texture = ExtResource("3_els6r")
 expand_mode = 2
 
 [node name="Delete" type="AspectRatioContainer" parent="HBoxContainer" unique_id=931685674]
-custom_minimum_size = Vector2(50, 0)
+custom_minimum_size = Vector2(75, 0)
 layout_mode = 2
 
 [node name="Button" type="Button" parent="HBoxContainer/Delete" unique_id=1649839441]
@@ -129,5 +131,5 @@ layout_mode = 2
 
 [node name="TextureRect" type="TextureRect" parent="HBoxContainer/Delete/Button/MarginContainer/AspectRatioContainer" unique_id=1008457231]
 layout_mode = 2
-texture = ExtResource("2_rbo2h")
+texture = ExtResource("4_g1hvg")
 expand_mode = 2

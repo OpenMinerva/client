@@ -26,8 +26,8 @@ func _setup_header_bar():
 	header_account_button.get_node("Button").pressed.connect(Events.emit_signal.bind("dash_switch_tab", "_AccountSelection"))
 	return
 
-func _handle_active_account_changed(account: Dictionary) -> void:
-	GlobalLogger.logs("Active account changed: '%s'" % account.name)
+func _handle_active_account_changed(_account: Dictionary) -> void:
+	GlobalLogger.logs("Active account changed: '%s'" % _account.display_name)
 	# TODO: header_account_button_texture
-	header_account_button_name.text = account.name
-	header_account_button_location.text = account.name
+	header_account_button_name.text = _account.display_name
+	header_account_button_location.text = _account.account_server

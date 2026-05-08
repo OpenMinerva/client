@@ -20,14 +20,14 @@ const ACCOUNT_DATABASE_DIRECTORY: String = "user://database/accounts.bin"
 var stop_connection_timer = false
 
 var active_account = {}
-var _database = []
+var _database: Array[Dictionary] = []
 var dev_session_server_api_key = ""
 
 func _ready():
 	_load_account_database()
 
 ## Get a list of all accounts and return their information.
-func get_all() -> Array:
+func get_all() -> Array[Dictionary]:
 	return _database
 
 ## Adds an account to the account database.
@@ -168,7 +168,7 @@ func _save_account_database() -> void:
 	return
 
 ## Read the account database from the config file on our disk.
-func _load_account_database() -> Array:
+func _load_account_database() -> Array[Dictionary]:
 	GlobalLogger.logs("Loading the local account database.", Enum.LogLevel.INFO)
 
 	var account_file_exists = FileAccess.file_exists(ACCOUNT_DATABASE_DIRECTORY)
@@ -178,7 +178,7 @@ func _load_account_database() -> Array:
 
 	var file = FileAccess.open(ACCOUNT_DATABASE_DIRECTORY, FileAccess.READ)
 
-	var account_data
+	var account_data: Array[Dictionary]
 
 	if file:
 		account_data = file.get_var() # Deserializes variable back
