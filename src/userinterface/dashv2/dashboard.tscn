@@ -10,8 +10,9 @@
 [ext_resource type="Script" uid="uid://ba1v2y41s8drb" path="res://userinterface/dashv2/scripts/pages/settings.gd" id="4_ap0b5"]
 [ext_resource type="PackedScene" uid="uid://clvk6h18vwcd3" path="res://userinterface/dashv2/partials/account_button.tscn" id="4_aw6p6"]
 [ext_resource type="PackedScene" uid="uid://71vuc3qrtgi7" path="res://userinterface/dashv2/partials/category_button.tscn" id="4_ql400"]
-[ext_resource type="PackedScene" uid="uid://cbietn7vfj6ud" path="res://userinterface/dashv2/partials/account_button_listing.tscn" id="8_sgbg6"]
 [ext_resource type="Script" uid="uid://dhdqv7d4orjgy" path="res://userinterface/dashv2/scripts/pages/account_selection.gd" id="9_qutrk"]
+[ext_resource type="Script" uid="uid://b2snjauxtpn22" path="res://userinterface/dashv2/scripts/pages/account_creation.gd" id="11_jgxeq"]
+[ext_resource type="PackedScene" uid="uid://dg8ypxmuk8rv" path="res://userinterface/dashv2/partials/input_string.tscn" id="11_qutrk"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0nfpo"]
 shader = ExtResource("1_co0dt")
@@ -317,6 +318,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="_AccountSelection" type="Control" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=942492755]
+visible = false
 layout_mode = 2
 script = ExtResource("9_qutrk")
 
@@ -347,78 +349,6 @@ custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="AccountButtonListing" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=97207825 instance=ExtResource("8_sgbg6")]
-layout_mode = 2
-
-[node name="AccountButtonListing2" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=901532100 instance=ExtResource("8_sgbg6")]
-layout_mode = 2
-
-[node name="AccountButtonListing3" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1393020089 instance=ExtResource("8_sgbg6")]
-layout_mode = 2
-
-[node name="AccountButtonListing4" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=2120527853 instance=ExtResource("8_sgbg6")]
-layout_mode = 2
-
-[node name="AccountButtonListing5" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1925057520 instance=ExtResource("8_sgbg6")]
-layout_mode = 2
-
-[node name="AccountButtonListing6" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1633369379 instance=ExtResource("8_sgbg6")]
-layout_mode = 2
-
-[node name="AccountButtonListing7" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1864790243 instance=ExtResource("8_sgbg6")]
-layout_mode = 2
-
-[node name="AccountButtonListing8" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=2006358581 instance=ExtResource("8_sgbg6")]
-layout_mode = 2
-
-[node name="AccountButtonListing9" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=331043389 instance=ExtResource("8_sgbg6")]
-layout_mode = 2
-
-[node name="AccountButtonListing10" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=528922 instance=ExtResource("8_sgbg6")]
-layout_mode = 2
-
-[node name="AccountButtonListing11" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=74811639 instance=ExtResource("8_sgbg6")]
-layout_mode = 2
-
-[node name="AccountButtonListing12" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1228883112 instance=ExtResource("8_sgbg6")]
-layout_mode = 2
-
-[node name="AccountButtonListing13" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=2102166246 instance=ExtResource("8_sgbg6")]
-layout_mode = 2
-
-[node name="AccountButtonListing14" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1831965946 instance=ExtResource("8_sgbg6")]
-layout_mode = 2
-
-[node name="AccountButtonListing15" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=932415908 instance=ExtResource("8_sgbg6")]
-layout_mode = 2
-
-[node name="AccountButtonListing16" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=361088449 instance=ExtResource("8_sgbg6")]
-layout_mode = 2
-
-[node name="AccountButtonListing17" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=837687549 instance=ExtResource("8_sgbg6")]
-layout_mode = 2
-
-[node name="AccountButtonListing18" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=889099571 instance=ExtResource("8_sgbg6")]
-layout_mode = 2
-
-[node name="AccountButtonListing19" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1151814197 instance=ExtResource("8_sgbg6")]
-layout_mode = 2
-
-[node name="AccountButtonListing20" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1715956974 instance=ExtResource("8_sgbg6")]
-layout_mode = 2
-
-[node name="AccountButtonListing21" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=2091689789 instance=ExtResource("8_sgbg6")]
-layout_mode = 2
-
-[node name="AccountButtonListing22" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1390944205 instance=ExtResource("8_sgbg6")]
-layout_mode = 2
-
-[node name="AccountButtonListing23" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=969326388 instance=ExtResource("8_sgbg6")]
-layout_mode = 2
-
-[node name="AccountButtonListing24" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1261465463 instance=ExtResource("8_sgbg6")]
-layout_mode = 2
-
 [node name="NavButton" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer" unique_id=1677704621 instance=ExtResource("3_ocjmf")]
 layout_mode = 2
 display_text = "Create Account"
@@ -430,6 +360,60 @@ toggle_mode = false
 size_flags_horizontal = 3
 
 [node name="Spacer2" type="Control" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer" unique_id=962768924]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="_AccountCreation" type="Control" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=580645222]
+layout_mode = 2
+script = ExtResource("11_jgxeq")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/_AccountCreation" unique_id=165524708]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer/Content/Container/_AccountCreation/HBoxContainer" unique_id=309184611]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/_AccountCreation/HBoxContainer" unique_id=1428128737]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/Content/Container/_AccountCreation/HBoxContainer/VBoxContainer" unique_id=2089091704]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/scrollbar_h_separation = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/_AccountCreation/HBoxContainer/VBoxContainer/ScrollContainer" unique_id=1579107512]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="Username" parent="MarginContainer/VBoxContainer/Content/Container/_AccountCreation/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1236567120 instance=ExtResource("11_qutrk")]
+layout_mode = 2
+display_text = "Username"
+
+[node name="AccountServer" parent="MarginContainer/VBoxContainer/Content/Container/_AccountCreation/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1844371600 instance=ExtResource("11_qutrk")]
+layout_mode = 2
+display_text = "Account Server"
+
+[node name="Accept" parent="MarginContainer/VBoxContainer/Content/Container/_AccountCreation/HBoxContainer/VBoxContainer" unique_id=223705548 instance=ExtResource("3_ocjmf")]
+layout_mode = 2
+display_text = "Add"
+
+[node name="Button" parent="MarginContainer/VBoxContainer/Content/Container/_AccountCreation/HBoxContainer/VBoxContainer/Accept" index="0" unique_id=1422381468]
+toggle_mode = false
+
+[node name="Label" parent="MarginContainer/VBoxContainer/Content/Container/_AccountCreation/HBoxContainer/VBoxContainer/Accept/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(223705548, 86696220) index="1" unique_id=1807295119]
+size_flags_horizontal = 3
+
+[node name="Spacer2" type="Control" parent="MarginContainer/VBoxContainer/Content/Container/_AccountCreation/HBoxContainer" unique_id=275254948]
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -524,3 +508,4 @@ selected_theme_type = "Danger"
 [editable path="MarginContainer/VBoxContainer/Content/Container/Assets"]
 [editable path="MarginContainer/VBoxContainer/Content/Container/Debug"]
 [editable path="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/NavButton"]
+[editable path="MarginContainer/VBoxContainer/Content/Container/_AccountCreation/HBoxContainer/VBoxContainer/Accept"]

@@ -11,9 +11,11 @@ extends Control
 
 @onready var template_account_listing: PackedScene = preload("res://userinterface/dashv2/partials/account_button_listing.tscn")
 @onready var account_list_container: Control = $"HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer"
+@onready var create_account_button: Control = $"HBoxContainer/VBoxContainer/NavButton/Button"
 
 func _ready():
 	_populate_account_list()
+	create_account_button.pressed.connect(Events.emit_signal.bind("dash_switch_tab", "_AccountCreation"))
 	return
 
 func _populate_account_list() -> void:
@@ -46,7 +48,6 @@ func _populate_account_list() -> void:
 
 		# Append
 		account_list_container.add_child(_template)
-
 
 		GlobalLogger.logs("Added account '%s' to the list." % _account.id)
 		continue
