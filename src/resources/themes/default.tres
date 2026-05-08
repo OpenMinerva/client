@@ -52,12 +52,37 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2d1ky"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ipp3m"]
 bg_color = Color(0.078431375, 0.078431375, 0.078431375, 0.78431374)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gvfoe"]
+bg_color = Color(0.11062177, 0.15318072, 0.26589048, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.018563958, 0.2571708, 0.35101107, 1)
+border_blend = true
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [resource]
 Button/styles/disabled = SubResource("StyleBoxFlat_sn1o5")
@@ -73,4 +98,8 @@ Danger/styles/hover_pressed = SubResource("StyleBoxFlat_nfgd4")
 Danger/styles/pressed = SubResource("StyleBoxFlat_hge1u")
 LightButton/base_type = &"Button"
 LightButton/styles/normal = SubResource("StyleBoxFlat_hvbjw")
+LineEdit/styles/normal = SubResource("StyleBoxFlat_2d1ky")
 Panel/styles/panel = SubResource("StyleBoxFlat_ipp3m")
+ScrollContainer/constants/scrollbar_h_separation = 10
+SessionListing/base_type = &"Button"
+SessionListing/styles/hover = SubResource("StyleBoxFlat_gvfoe")

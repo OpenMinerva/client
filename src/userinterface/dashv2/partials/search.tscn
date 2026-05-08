@@ -1,6 +1,7 @@
-[gd_scene format=3 uid="uid://dg8ypxmuk8rv"]
+[gd_scene format=3 uid="uid://cyom30b1p54df"]
 
-[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="1_w26cx"]
+[ext_resource type="Texture2D" uid="uid://rdp5i1i18jus" path="res://resources/icons/search.svg" id="1_ndgnd"]
+[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="2_p0vin"]
 
 [sub_resource type="GDScript" id="GDScript_wtshq"]
 script/source = "extends Control
@@ -47,10 +48,20 @@ custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="Label" type="Label" parent="PanelContainer/MarginContainer/HBoxContainer" unique_id=144539274]
-custom_minimum_size = Vector2(200, 0)
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="PanelContainer/MarginContainer/HBoxContainer" unique_id=1923611684]
+custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
-text = "ERROR"
+size_flags_horizontal = 4
+
+[node name="TextureRect" type="TextureRect" parent="PanelContainer/MarginContainer/HBoxContainer/AspectRatioContainer" unique_id=200410735]
+layout_mode = 2
+texture = ExtResource("1_ndgnd")
+expand_mode = 4
+
+[node name="Label" type="Label" parent="PanelContainer/MarginContainer/HBoxContainer" unique_id=144539274]
+visible = false
+layout_mode = 2
+text = "Search"
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/HBoxContainer" unique_id=514760511]
 layout_mode = 2
@@ -63,6 +74,6 @@ theme_override_constants/margin_bottom = 5
 [node name="LineEdit" type="LineEdit" parent="PanelContainer/MarginContainer/HBoxContainer/MarginContainer" unique_id=828836954]
 layout_mode = 2
 size_flags_horizontal = 3
-theme = ExtResource("1_w26cx")
-placeholder_text = "ERROR"
+theme = ExtResource("2_p0vin")
+placeholder_text = "Search..."
 clear_button_enabled = true

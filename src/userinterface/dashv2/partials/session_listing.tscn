@@ -1,0 +1,64 @@
+[gd_scene format=3 uid="uid://2nh7b6daby5k"]
+
+[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="1_q20mg"]
+[ext_resource type="Texture2D" uid="uid://itsm1b042lj4" path="res://resources/icons/1280x720.webp" id="2_q20mg"]
+
+[node name="SessionListing" type="Control" unique_id=1752184822]
+custom_minimum_size = Vector2(300, 235)
+layout_mode = 3
+anchor_left = 0.421875
+anchor_top = 0.38425925
+anchor_right = 0.578125
+anchor_bottom = 0.6157407
+offset_left = 150.0
+offset_top = 125.0
+offset_right = -150.0
+offset_bottom = -125.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+
+[node name="Button" type="Button" parent="." unique_id=730960087]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("1_q20mg")
+theme_type_variation = &"SessionListing"
+
+[node name="MarginContainer" type="MarginContainer" parent="Button" unique_id=920713370]
+layout_mode = 0
+offset_right = 300.0
+offset_bottom = 235.0
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Button/MarginContainer" unique_id=811068562]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Button/MarginContainer/VBoxContainer" unique_id=1510549408]
+custom_minimum_size = Vector2(0, 164)
+layout_mode = 2
+size_flags_vertical = 3
+ratio = 1.7778
+
+[node name="TextureRect" type="TextureRect" parent="Button/MarginContainer/VBoxContainer/AspectRatioContainer" unique_id=188735628]
+layout_mode = 2
+texture = ExtResource("2_q20mg")
+expand_mode = 2
+
+[node name="Label" type="Label" parent="Button/MarginContainer/VBoxContainer" unique_id=1636360228]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+size_flags_vertical = 3
+text = "This is a test
+New line and more stuff to make"
+autowrap_mode = 2
+clip_text = true
+text_overrun_behavior = 3
+max_lines_visible = 2
