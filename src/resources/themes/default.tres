@@ -71,6 +71,16 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kpyni"]
+bg_color = Color(0, 0.19833338, 0.34, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x2xen"]
+bg_color = Color(0.038397167, 0.038397167, 0.03839716, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gvfoe"]
 bg_color = Color(0.11062177, 0.15318072, 0.26589048, 1)
 border_width_left = 5
@@ -83,6 +93,26 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m5j5c"]
+bg_color = Color(0.0627451, 0.0627451, 0.0627451, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iga00"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+border_color = Color(0, 0, 0, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
 
 [resource]
 Button/styles/disabled = SubResource("StyleBoxFlat_sn1o5")
@@ -100,6 +130,14 @@ LightButton/base_type = &"Button"
 LightButton/styles/normal = SubResource("StyleBoxFlat_hvbjw")
 LineEdit/styles/normal = SubResource("StyleBoxFlat_2d1ky")
 Panel/styles/panel = SubResource("StyleBoxFlat_ipp3m")
+PopupMenu/constants/item_end_padding = 5
+PopupMenu/constants/item_start_padding = 5
+PopupMenu/constants/v_separation = 10
+PopupMenu/styles/hover = SubResource("StyleBoxFlat_kpyni")
+PopupMenu/styles/panel = SubResource("StyleBoxFlat_x2xen")
 ScrollContainer/constants/scrollbar_h_separation = 10
 SessionListing/base_type = &"Button"
 SessionListing/styles/hover = SubResource("StyleBoxFlat_gvfoe")
+SolidBackground/base_type = &"PanelContainer"
+SolidBackground/styles/panel = SubResource("StyleBoxFlat_m5j5c")
+TextEdit/styles/normal = SubResource("StyleBoxFlat_iga00")

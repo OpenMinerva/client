@@ -51,7 +51,7 @@ func _remove_all_listings() -> void:
 	return
 
 func _insert_world_into_session_listing(session: Dictionary) -> void:
-	var _world = template_world_listing.duplicate()
+	var _world = template_world_listing.instantiate()
 	var _world_title = _world.get_node("Button/MarginContainer/VBoxContainer/Label")
 	var _world_thumbnail = _world.get_node("Button/MarginContainer/VBoxContainer/AspectRatioContainer/TextureRect")
 	var _button = _world.get_node("Button")
@@ -60,6 +60,8 @@ func _insert_world_into_session_listing(session: Dictionary) -> void:
 	_world_thumbnail.set_texture(load(session.get("sessionThumbnail", "res://resources/icons/1280x720.webp")))
 
 	_button.pressed.connect(network_m.join_server.bind(session.url, session.port))
+
+	world_listing_grid.add_child(_world)
 	return
 
 func _setup_navigation():

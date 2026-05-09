@@ -4,7 +4,8 @@
 
 [sub_resource type="GDScript" id="GDScript_q3lw4"]
 resource_name = "export"
-script/source = "extends Control
+script/source = "@tool
+extends Control
 
 @export var display_text: String = \"Default Text\"
 

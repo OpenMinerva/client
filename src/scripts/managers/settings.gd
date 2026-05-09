@@ -23,6 +23,9 @@ func get_session_servers() -> Array:
 
 	return_arr = _settings.get("config", {}).get("session_servers", [])
 
+	# DEV DEBUG:
+	return_arr = [ {"id": "1234", "url": "http://localhost:40500"}]
+
 	return return_arr
 
 func add_session_server(session_server: Dictionary) -> bool:

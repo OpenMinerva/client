@@ -17,11 +17,11 @@ enum BaseLevel {
 
 enum PrivacyLevel {
 	INVITE = 0,
-	PUBLIC = 1,
-	CONTACTS_PLUS = 2,
+	FRIENDS = 1,
+	FRIENDS_PLUS = 2,
 	CONTACTS = 3,
-	FRIENDS_PLUS = 4,
-	FRIENDS = 5
+	CONTACTS_PLUS = 4,
+	PUBLIC = 5,
 }
 
 const Settings = {

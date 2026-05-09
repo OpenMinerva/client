@@ -4,9 +4,8 @@
 
 [sub_resource type="GDScript" id="GDScript_q3lw4"]
 resource_name = "export"
-script/source = "extends Control
-
-@export var display_text: String = \"Default Text\"
+script/source = "@tool
+extends Control
 
 @onready var label_node = $Button/MarginContainer/VBoxContainer/Label
 @onready var icon_node = $Button/MarginContainer/VBoxContainer/TextureRect
@@ -22,6 +21,7 @@ var icon_paths = {
 }
 
 func _ready():
+	var display_text: String = name
 	label_node.text = display_text
 	if icon_paths.has(selected_icon):
 		icon_node.texture = load(icon_paths[selected_icon])

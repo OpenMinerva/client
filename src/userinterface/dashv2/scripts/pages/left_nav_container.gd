@@ -13,7 +13,10 @@ extends Control
 @onready var pages: Array[Node] = get_node("HBox/Right").get_children()
 
 func _ready():
+	var _first_navigation_node_name: String = navigation_nodes[0].name
+
 	_setup_navigation()
+	_handle_switch_tab(_first_navigation_node_name)
 	return
 
 func _setup_navigation():

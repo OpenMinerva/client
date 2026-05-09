@@ -143,7 +143,9 @@ func stop_server(id: String):
 
 func update_server(id: String, server_info: Dictionary):
 	GlobalLogger.logs("Updating server '%s'." % id)
-	var _saved_session_servers = SettingsManager.get_session_servers()
+
+	# var _saved_session_servers = SettingsManager.get_session_servers()
+	var _saved_session_servers = [ {"id": "123456", "url": "http://localhost:40500"}]
 
 	if server_info.privacy > Enum.PrivacyLevel.INVITE:
 		for _server in _saved_session_servers:
@@ -151,6 +153,7 @@ func update_server(id: String, server_info: Dictionary):
 				GlobalLogger.logs("Session '%s' is already advertised. Updating instead." % id)
 				await _update_session_server_listing(server_info, _server.url)
 			else:
+				GlobalLogger.logs("Advertising Session '%s'." % id)
 				var advertise_response = await _advertise_session(server_info, _server.url)
 
 				if advertise_response.ok == true:
@@ -240,7 +243,7 @@ func leave_server(id: String):
 	Events.emit_signal("session_left")
 	return
 
-func kick_player(server_id:String, peer_id: int, reason: String):
+func kick_player(server_id: String, peer_id: int, reason: String):
 	GlobalLogger.logs("Kicking peer '%s' from '%s' for reason '%s'" % [peer_id, server_id, reason], Enum.LogLevel.DEBUG)
 	var database_has_sessions_api: bool = _database.sessions_api.has(server_id)
 	# TODO: Check if peer exists
@@ -451,7 +454,9 @@ func _advertise_session(session_info: Dictionary, session_server: String) -> Dic
 		response_dict.error = advertise_response.error
 		return response_dict
 
+
 	advertise_response = JSON.parse_string(advertise_response.body)
+
 	if advertise_response.ok == false:
 		response_dict.error = advertise_response.error
 		return response_dict

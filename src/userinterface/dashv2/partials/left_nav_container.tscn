@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://dog17wkc4h48c"]
 
+[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="1_wevnc"]
+
 [node name="LeftNavContainer" type="Control" unique_id=17586745]
 layout_mode = 3
 anchors_preset = 15
@@ -24,3 +26,4 @@ layout_mode = 2
 [node name="Right" type="ScrollContainer" parent="HBox" unique_id=892180341]
 layout_mode = 2
 size_flags_horizontal = 3
+theme = ExtResource("1_wevnc")

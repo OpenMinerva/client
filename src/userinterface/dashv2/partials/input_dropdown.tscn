@@ -1,22 +1,27 @@
-[gd_scene format=3 uid="uid://dg8ypxmuk8rv"]
+[gd_scene format=3 uid="uid://bqf6iew4kyf0b"]
 
-[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="1_w26cx"]
+[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="1_67hgs"]
 
 [sub_resource type="GDScript" id="GDScript_wtshq"]
-script/source = "extends Control
+script/source = "@tool
+extends Control
 
 @export var display_text: String = \"Default Text\"
+@export var options: Array[String] = []
+@export var default_selection: int = 0
 
 @onready var label_node = $PanelContainer/MarginContainer/HBoxContainer/Label
-@onready var lineedit_node = $PanelContainer/MarginContainer/HBoxContainer/MarginContainer/LineEdit
+@onready var optionsbutton_node = $PanelContainer/MarginContainer/HBoxContainer/MarginContainer/OptionButton
 #@export_enum(\"Danger\") var selected_theme_type: String
 
 func _ready():
 	label_node.text = display_text
-	lineedit_node.placeholder_text = display_text
+	for _item in options:
+		optionsbutton_node.add_item(_item)
+	optionsbutton_node.select(default_selection)
 "
 
-[node name="InputString" type="Control" unique_id=1236567120]
+[node name="InputDropdown" type="Control" unique_id=1236567120]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 3
 anchor_top = 0.4814815
@@ -36,7 +41,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_w26cx")
+theme = ExtResource("1_67hgs")
 theme_type_variation = &"SolidBackground"
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=169083657]
@@ -52,6 +57,7 @@ metadata/_edit_use_anchors_ = true
 [node name="Label" type="Label" parent="PanelContainer/MarginContainer/HBoxContainer" unique_id=144539274]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
+size_flags_horizontal = 3
 text = "ERROR"
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/HBoxContainer" unique_id=514760511]
@@ -62,9 +68,9 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 5
 
-[node name="LineEdit" type="LineEdit" parent="PanelContainer/MarginContainer/HBoxContainer/MarginContainer" unique_id=828836954]
+[node name="OptionButton" type="OptionButton" parent="PanelContainer/MarginContainer/HBoxContainer/MarginContainer" unique_id=1020799305]
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
-size_flags_horizontal = 3
-theme = ExtResource("1_w26cx")
-placeholder_text = "ERROR"
-clear_button_enabled = true
+size_flags_horizontal = 10
+theme = ExtResource("1_67hgs")
+alignment = 1
