@@ -26,6 +26,8 @@
 [ext_resource type="PackedScene" uid="uid://c314yewjhuk8s" path="res://userinterface/dashv2/partials/input_stringconfirm.tscn" id="19_s6s1v"]
 [ext_resource type="PackedScene" uid="uid://gopciccm8xx5" path="res://userinterface/dashv2/partials/removable_string_listing.tscn" id="20_v67rh"]
 [ext_resource type="Script" uid="uid://2vk6cxto4xw" path="res://userinterface/dashv2/scripts/pages/assets.gd" id="21_d3sj0"]
+[ext_resource type="Texture2D" uid="uid://8fwxg1ipf0fp" path="res://resources/icons/exit.svg" id="24_nakrv"]
+[ext_resource type="Script" uid="uid://cah3jpmu1x72b" path="res://userinterface/dashv2/scripts/pages/exit.gd" id="24_wvg7d"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0nfpo"]
 shader = ExtResource("1_co0dt")
@@ -149,6 +151,7 @@ theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
 [node name="Home" type="Control" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=154112638]
+visible = false
 layout_mode = 2
 script = ExtResource("6_bh4hj")
 
@@ -493,6 +496,79 @@ layout_mode = 2
 [node name="General" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Debug/HBox/Right" parent_id_path=PackedInt32Array(506436187, 892180341) index="0" unique_id=588937059]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Exit" type="Control" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=2026000436]
+layout_mode = 2
+script = ExtResource("24_wvg7d")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Exit" unique_id=242586756]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Control2" type="Control" parent="MarginContainer/VBoxContainer/Content/Container/Exit/VBoxContainer" unique_id=1920615328]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Content/Container/Exit/VBoxContainer" unique_id=2046503768]
+layout_mode = 2
+size_flags_vertical = 6
+theme_override_font_sizes/font_size = 60
+text = "Thank you for using OpenMinerva!"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Exit/VBoxContainer" unique_id=1333815646]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="Control2" type="Control" parent="MarginContainer/VBoxContainer/Content/Container/Exit/VBoxContainer/HBoxContainer" unique_id=1575232925]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Cancel" type="Button" parent="MarginContainer/VBoxContainer/Content/Container/Exit/VBoxContainer/HBoxContainer" unique_id=1827195067]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+theme = ExtResource("2_0nfpo")
+theme_type_variation = &"Danger"
+text = "Cancel"
+
+[node name="Exit" type="Button" parent="MarginContainer/VBoxContainer/Content/Container/Exit/VBoxContainer/HBoxContainer" unique_id=498096560]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+theme = ExtResource("2_0nfpo")
+theme_type_variation = &"Danger"
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Content/Container/Exit/VBoxContainer/HBoxContainer/Exit" unique_id=782073328]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Content/Container/Exit/VBoxContainer/HBoxContainer/Exit/AspectRatioContainer" unique_id=1077428590]
+layout_mode = 2
+texture = ExtResource("24_nakrv")
+expand_mode = 2
+
+[node name="Control3" type="Control" parent="MarginContainer/VBoxContainer/Content/Container/Exit/VBoxContainer/HBoxContainer" unique_id=2059609441]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Control" type="Control" parent="MarginContainer/VBoxContainer/Content/Container/Exit/VBoxContainer" unique_id=772658709]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Control3" type="Control" parent="MarginContainer/VBoxContainer/Content/Container/Exit/VBoxContainer" unique_id=215825983]
+layout_mode = 2
 size_flags_vertical = 3
 
 [node name="_AccountSelection" type="Control" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=942492755]
