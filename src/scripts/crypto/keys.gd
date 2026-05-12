@@ -2,8 +2,9 @@ extends Node
 
 var keys = {
 	"public": "",
-	"private": ""
+	"private": "",
 }
+
 
 # TODO: Move this to Files.gd script.
 func read_keys_from_disk(username: String) -> PackedStringArray:
@@ -16,17 +17,18 @@ func read_keys_from_disk(username: String) -> PackedStringArray:
 	var keys_exist = FileAccess.file_exists(pubKeyPath) && FileAccess.file_exists(privKeyPath)
 
 	if keys_exist:
-		GlobalLogger.logs("Using saved account key.")
+		GlobalLogger.log("Using saved account key.")
 		pubKey = FileAccess.open(pubKeyPath, FileAccess.READ).get_as_text()
 		privKey = FileAccess.open(privKeyPath, FileAccess.READ).get_as_text()
 
 		return [pubKey, privKey]
 
-	GlobalLogger.logs("No key available. Generating a new one!")
+	GlobalLogger.log("No key available. Generating a new one!")
 	_generate_keys()
 	_write_keys_to_disk(username)
 
 	return [keys.public, keys.private]
+
 
 func _write_keys_to_disk(username):
 	# Make sure directory exists
@@ -43,6 +45,7 @@ func _write_keys_to_disk(username):
 	var privKeyFile = FileAccess.open(privKeyPath, FileAccess.WRITE)
 	privKeyFile.store_string(keys.private)
 	return
+
 
 func _generate_keys():
 	var crypto = Crypto.new()

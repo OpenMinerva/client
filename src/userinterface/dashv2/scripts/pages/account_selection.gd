@@ -6,12 +6,12 @@
 # License: MIT License
 # Authors: Armored Dragon
 # --- License
-
 extends Control
 
 @onready var template_account_listing: PackedScene = preload("res://userinterface/dashv2/partials/account_button_listing.tscn")
 @onready var account_list_container: Control = $"HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer"
 @onready var create_account_button: Control = $"HBoxContainer/VBoxContainer/NavButton/Button"
+
 
 func _ready():
 	Events.dash_account_list_loaded.connect(_populate_account_list)
@@ -19,6 +19,7 @@ func _ready():
 	_populate_account_list()
 	create_account_button.pressed.connect(Events.emit_signal.bind("dash_switch_tab", "_AccountCreation"))
 	return
+
 
 func _populate_account_list() -> void:
 	const TEMPLATE_ACCOUNT_NAME_PATH = "HBoxContainer/Button/MarginContainer/HBox/VBox/Name"
@@ -28,7 +29,7 @@ func _populate_account_list() -> void:
 	const TEMPLATE_ACCOUNT_CONFIGURE_BUTTON_PATH = "HBoxContainer/Configure/Button"
 	const TEMPLATE_ACCOUNT_DELETE_BUTTON_PATH = "HBoxContainer/Delete/Button"
 
-	GlobalLogger.logs("Populating account list in '%s'." % name)
+	GlobalLogger.log("Populating account list in '%s'." % name)
 	var _accounts: Array[Dictionary] = GlobalAccount.get_all()
 
 	# Remove existing listings
@@ -57,6 +58,6 @@ func _populate_account_list() -> void:
 		# Append
 		account_list_container.add_child(_template)
 
-		GlobalLogger.logs("Added account '%s' to the list." % _account.id)
+		GlobalLogger.log("Added account '%s' to the list." % _account.id)
 		continue
 	return

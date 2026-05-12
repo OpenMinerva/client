@@ -20,7 +20,10 @@
 [ext_resource type="PackedScene" uid="uid://dg8ypxmuk8rv" path="res://userinterface/dashv2/partials/input_string.tscn" id="11_qutrk"]
 [ext_resource type="PackedScene" uid="uid://bqf6iew4kyf0b" path="res://userinterface/dashv2/partials/input_dropdown.tscn" id="12_86ms5"]
 [ext_resource type="Texture2D" uid="uid://c7ofnclcof0ud" path="res://resources/icons/world.svg" id="14_njqt8"]
-[ext_resource type="PackedScene" uid="uid://2nh7b6daby5k" path="res://userinterface/dashv2/partials/session_listing.tscn" id="17_njqt8"]
+[ext_resource type="PackedScene" uid="uid://bgr4s3s31rfsi" path="res://userinterface/dashv2/partials/input_stringlist.tscn" id="18_njqt8"]
+[ext_resource type="PackedScene" uid="uid://c314yewjhuk8s" path="res://userinterface/dashv2/partials/input_stringconfirm.tscn" id="19_s6s1v"]
+[ext_resource type="PackedScene" uid="uid://gopciccm8xx5" path="res://userinterface/dashv2/partials/removable_string_listing.tscn" id="20_v67rh"]
+[ext_resource type="Script" uid="uid://2vk6cxto4xw" path="res://userinterface/dashv2/scripts/pages/assets.gd" id="21_d3sj0"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0nfpo"]
 shader = ExtResource("1_co0dt")
@@ -152,7 +155,6 @@ script = ExtResource("7_o4evp")
 layout_mode = 2
 
 [node name="Permissions" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Left" parent_id_path=PackedInt32Array(17586745, 1799305671) index="1" unique_id=915845213 instance=ExtResource("4_ql400")]
-visible = false
 layout_mode = 2
 
 [node name="World" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Left" parent_id_path=PackedInt32Array(17586745, 1799305671) index="2" unique_id=1224429742 instance=ExtResource("4_ql400")]
@@ -219,7 +221,6 @@ display_text = "Save"
 selected_icon = "Instance"
 
 [node name="Button" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/Hosting/ScrollContainer/VBoxContainer/Save" index="0" unique_id=1422381468]
-theme_type_variation = &""
 toggle_mode = false
 
 [node name="TextureRect" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/Hosting/ScrollContainer/VBoxContainer/Save/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(995560766, 86696220) index="0" unique_id=1429445374]
@@ -229,6 +230,7 @@ texture = ExtResource("14_njqt8")
 text = "Save"
 
 [node name="Sessions" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=1512510126 instance=ExtResource("3_av8ee")]
+visible = false
 layout_mode = 2
 script = ExtResource("7_kk4yy")
 
@@ -270,11 +272,7 @@ theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 10
 columns = 5
 
-[node name="SessionListing" parent="MarginContainer/VBoxContainer/Content/Container/Sessions/HBox/Right/VBoxContainer/ScrollContainer/GridContainer" unique_id=1752184822 instance=ExtResource("17_njqt8")]
-layout_mode = 2
-
 [node name="Settings" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=739538319 instance=ExtResource("3_av8ee")]
-visible = false
 layout_mode = 2
 script = ExtResource("4_ap0b5")
 
@@ -344,10 +342,29 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Config" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right" parent_id_path=PackedInt32Array(739538319, 892180341) index="6" unique_id=1318053714]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+
+[node name="InputDropdown" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right/Config" unique_id=1674546469 instance=ExtResource("18_njqt8")]
+layout_mode = 2
+display_text = "Session Servers"
+
+[node name="MarginContainer" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right/Config/InputDropdown/VBoxContainer" parent_id_path=PackedInt32Array(1674546469, 1064225030) index="0" unique_id=169083657]
+theme_override_constants/margin_top = 0
+
+[node name="Label" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right/Config/InputDropdown/VBoxContainer/MarginContainer/HBoxContainer" parent_id_path=PackedInt32Array(1674546469, 358122007) index="0" unique_id=144539274]
+text = "Session Servers"
+
+[node name="InputString" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right/Config/InputDropdown/VBoxContainer/MarginContainer2/PanelContainer/VBoxContainer" parent_id_path=PackedInt32Array(1674546469, 1765425757) index="0" unique_id=1750441705 instance=ExtResource("19_s6s1v")]
+layout_mode = 2
+display_text = "Add a Session Server"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right/Config/InputDropdown/VBoxContainer/MarginContainer2/PanelContainer/VBoxContainer" parent_id_path=PackedInt32Array(1674546469, 1765425757) index="1" unique_id=923149220]
+layout_mode = 2
+
+[node name="InputString" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right/Config/InputDropdown/VBoxContainer/MarginContainer2/PanelContainer/VBoxContainer/VBoxContainer" unique_id=2057714596 instance=ExtResource("20_v67rh")]
+layout_mode = 2
 
 [node name="Security" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right" parent_id_path=PackedInt32Array(739538319, 892180341) index="7" unique_id=1254009990]
 visible = false
@@ -370,7 +387,7 @@ size_flags_vertical = 3
 [node name="Assets" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=1982137112 instance=ExtResource("3_av8ee")]
 visible = false
 layout_mode = 2
-script = ExtResource("4_ap0b5")
+script = ExtResource("21_d3sj0")
 
 [node name="Filesystem" parent="MarginContainer/VBoxContainer/Content/Container/Assets/HBox/Left" parent_id_path=PackedInt32Array(1982137112, 1799305671) index="0" unique_id=1857841582 instance=ExtResource("4_ql400")]
 layout_mode = 2
@@ -395,7 +412,6 @@ size_flags_vertical = 3
 [node name="Debug" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=506436187 instance=ExtResource("3_av8ee")]
 visible = false
 layout_mode = 2
-script = ExtResource("4_ap0b5")
 
 [node name="General" parent="MarginContainer/VBoxContainer/Content/Container/Debug/HBox/Left" parent_id_path=PackedInt32Array(506436187, 1799305671) index="0" unique_id=725321320 instance=ExtResource("4_ql400")]
 layout_mode = 2
@@ -469,7 +485,6 @@ layout_mode = 2
 display_text = "Create Account"
 
 [node name="Button" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/NavButton" index="0" unique_id=1422381468]
-theme_type_variation = &""
 toggle_mode = false
 
 [node name="Label" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/NavButton/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(1677704621, 86696220) index="1" unique_id=1807295119]
@@ -526,7 +541,6 @@ layout_mode = 2
 display_text = "Add"
 
 [node name="Button" parent="MarginContainer/VBoxContainer/Content/Container/_AccountCreation/HBoxContainer/VBoxContainer/Accept" index="0" unique_id=1422381468]
-theme_type_variation = &""
 toggle_mode = false
 
 [node name="Label" parent="MarginContainer/VBoxContainer/Content/Container/_AccountCreation/HBoxContainer/VBoxContainer/Accept/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(223705548, 86696220) index="1" unique_id=1807295119]
@@ -627,8 +641,9 @@ selected_theme_type = "Danger"
 [editable path="MarginContainer/VBoxContainer/Content/Container/Instance"]
 [editable path="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/Hosting/ScrollContainer/VBoxContainer/Save"]
 [editable path="MarginContainer/VBoxContainer/Content/Container/Sessions"]
-[editable path="MarginContainer/VBoxContainer/Content/Container/Sessions/HBox/Right/VBoxContainer/ScrollContainer/GridContainer/SessionListing"]
 [editable path="MarginContainer/VBoxContainer/Content/Container/Settings"]
+[editable path="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right/Config/InputDropdown"]
+[editable path="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right/Config/InputDropdown/VBoxContainer/MarginContainer2/PanelContainer/VBoxContainer/InputString"]
 [editable path="MarginContainer/VBoxContainer/Content/Container/Assets"]
 [editable path="MarginContainer/VBoxContainer/Content/Container/Debug"]
 [editable path="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/NavButton"]

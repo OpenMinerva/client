@@ -6,7 +6,6 @@
 # License: MIT License
 # Authors: Armored Dragon
 # --- License
-
 extends Control
 
 @onready var template_world_listing: PackedScene = preload("res://userinterface/dashv2/partials/session_listing.tscn")
@@ -14,18 +13,21 @@ extends Control
 @onready var tag_nodes: Array[Node] = get_node("HBox/Left").get_children()
 @onready var network_m = get_tree().current_scene.get_node("NetworkManager")
 
+
 func _ready():
 	Events.connect("dash_switch_tab", _handle_switch_tab)
 
 	_setup_navigation()
 	return
 
+
 func _handle_switch_tab(tab_name) -> void:
 	if tab_name != "Sessions":
 		return
 
+	GlobalLogger.log("Triggered in Sessions!")
 	# TODO: Make a more robust active_account detection mechanism.
-	if GlobalAccount.active_account == {}:
+	if GlobalAccount.active_account == { }:
 		return
 
 	# TODO: Check if we need to authenticate, if so
@@ -43,12 +45,14 @@ func _handle_switch_tab(tab_name) -> void:
 		_insert_world_into_session_listing(session)
 	return
 
+
 func _remove_all_listings() -> void:
 	for _session_listing in world_listing_grid.get_children():
 		_session_listing.queue_free()
-	
-	GlobalLogger.logs("Removed all listings from the session list.")
+
+	GlobalLogger.log("Removed all listings from the session list.")
 	return
+
 
 func _insert_world_into_session_listing(session: Dictionary) -> void:
 	var _world = template_world_listing.instantiate()
@@ -64,15 +68,17 @@ func _insert_world_into_session_listing(session: Dictionary) -> void:
 	world_listing_grid.add_child(_world)
 	return
 
+
 func _setup_navigation():
-	GlobalLogger.logs("Setting up navigation for '%s'" % name)
+	GlobalLogger.log("Setting up navigation for '%s'" % name)
 	for index in len(tag_nodes):
 		var _target_node = tag_nodes[index]
 		var _target_node_button = _target_node.get_node("Button")
 
 		_target_node_button.pressed.connect(_handle_filter_selection.bind(_target_node.name))
-		
+
 	return
+
 
 func _handle_filter_selection(tab_name):
 	for _index in len(tag_nodes):
@@ -82,16 +88,16 @@ func _handle_filter_selection(tab_name):
 		if _target_node.name != tab_name:
 			_target_node_button.button_pressed = false
 			continue
-		
+
 		# NOTE: By the time we have the filter button clicked, it is registered as not pressed.
-		# At this point, if our target node is registered as disabled, it is actually enabled. 
+		# At this point, if our target node is registered as disabled, it is actually enabled.
 		# The desired result is to disable the selected filter button.
 		if _target_node_button.button_pressed == false:
-			GlobalLogger.logs("Disable filtering results '%s' in '%s'" % [tab_name, name])
+			GlobalLogger.log("Disable filtering results '%s' in '%s'" % [tab_name, name])
 			_target_node_button.button_pressed = false
 			continue
-		
-		GlobalLogger.logs("Filtering results to '%s' in '%s'" % [tab_name, name])
+
+		GlobalLogger.log("Filtering results to '%s' in '%s'" % [tab_name, name])
 		_target_node_button.button_pressed = true
 		continue
 

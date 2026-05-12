@@ -1,0 +1,89 @@
+[gd_scene format=3 uid="uid://bgr4s3s31rfsi"]
+
+[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="1_1egk5"]
+
+[sub_resource type="GDScript" id="GDScript_wtshq"]
+script/source = "@tool
+extends Control
+
+@export var display_text: String = \"Default Text\"
+
+@onready var open_button = $VBoxContainer/MarginContainer/HBoxContainer/MarginContainer/Open
+@onready var margin_container = $VBoxContainer/MarginContainer2
+@onready var listing_container = $VBoxContainer/MarginContainer2/PanelContainer/VBoxContainer
+@onready var label_container = $VBoxContainer/MarginContainer/HBoxContainer/Label
+
+func _ready():
+	open_button.pressed.connect(_change_state)
+	label_container.text = display_text
+	
+func _change_state() -> void:
+	var _state = open_button.button_pressed
+	
+	if _state == true:
+		listing_container.visible = true
+		return
+	
+	listing_container.visible = false
+	return
+"
+
+[node name="InputDropdown" type="PanelContainer" unique_id=822939208]
+custom_minimum_size = Vector2(0, 40)
+anchors_preset = -1
+anchor_top = 0.4814815
+anchor_right = 1.0
+anchor_bottom = 0.5185185
+grow_vertical = 0
+size_flags_horizontal = 3
+script = SubResource("GDScript_wtshq")
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1064225030]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer" unique_id=169083657]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_right = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer" unique_id=358122007]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer" unique_id=144539274]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Default Text"
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/MarginContainer/HBoxContainer" unique_id=514760511]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 5
+
+[node name="Open" type="Button" parent="VBoxContainer/MarginContainer/HBoxContainer/MarginContainer" unique_id=1808464487]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("1_1egk5")
+toggle_mode = true
+text = "Open"
+
+[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer" unique_id=2073445125]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 0
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/MarginContainer2" unique_id=734963898]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer2/PanelContainer" unique_id=1765425757]
+visible = false
+layout_mode = 2

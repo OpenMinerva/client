@@ -6,25 +6,25 @@
 # License: MIT License
 # Authors: Armored Dragon
 # --- License
-
 extends Node
 
+
 func authenticate(url: String) -> Dictionary:
-	var _return_dict: Dictionary = {"ok": false, "error": ""}
+	var _return_dict: Dictionary = { "ok": false, "error": "" }
 
 	# TODO: Do we need a new authentication key?
 	if GlobalAccount.dev_session_server_api_key == "":
 		var url_deconstructed = UrlParser.deconstruct(url)
 		if url_deconstructed.ok == false:
 			var ERROR_MESSAGE = "Failed to deconstruct the url '%s'" % url
-			GlobalLogger.logs(ERROR_MESSAGE, Enum.LogLevel.WARNING)
+			GlobalLogger.log(ERROR_MESSAGE, Enum.LogLevel.WARNING)
 			_return_dict.error = ERROR_MESSAGE
 			return _return_dict
 		url_deconstructed = url_deconstructed.data
 
 		var body: Dictionary = {
 			"id_token": GlobalAccount.active_account.id_token,
-			"challenge": "challenge value"
+			"challenge": "challenge value",
 		}
 		var authentication_response = await HTTP.req(HTTPClient.Method.METHOD_POST, url_deconstructed.host, "/api/v1/getAuthenticationKey", url_deconstructed.port, ["Accept: application/json", "Content-Type: application/json"], JSON.stringify(body))
 
@@ -40,6 +40,7 @@ func authenticate(url: String) -> Dictionary:
 
 	return _return_dict
 
+
 func get_sessions() -> Array:
 	var _return_arr = []
 	var _session_servers = SettingsManager.get_session_servers()
@@ -50,7 +51,7 @@ func get_sessions() -> Array:
 
 		var url_deconstructed = UrlParser.deconstruct(server.url)
 		if url_deconstructed.ok == false:
-			GlobalLogger.logs("Failed to parse the session server URL.", Enum.LogLevel.INFO)
+			GlobalLogger.log("Failed to parse the session server URL.", Enum.LogLevel.INFO)
 			continue
 		url_deconstructed = url_deconstructed.data
 
@@ -68,8 +69,9 @@ func get_sessions() -> Array:
 
 	return _return_arr
 
+
 func _session_request_received(_host: String, response: Dictionary) -> Dictionary:
-	var _return_arr = {"ok": false, "error": "", "data": null}
+	var _return_arr = { "ok": false, "error": "", "data": null }
 
 	# TODO: If response.ok
 	# TODO: Validate is valid JSON
@@ -81,8 +83,9 @@ func _session_request_received(_host: String, response: Dictionary) -> Dictionar
 
 	return _return_arr
 
+
 func _authentication_request_received(_host: String, response: Dictionary) -> Dictionary:
-	var _return_arr = {"ok": false, "error": "", "data": null}
+	var _return_arr = { "ok": false, "error": "", "data": null }
 
 	# TODO: If response.ok
 	# TODO: Validate is valid JSON

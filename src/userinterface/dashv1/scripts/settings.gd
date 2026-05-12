@@ -6,17 +6,16 @@
 # License: MIT License
 # Authors: Armored Dragon
 # --- License
-
 extends Control
 
 @onready var _templates_session_server_listing = get_node("Templates/SessionServerListing")
 @onready var _session_server_container = get_node("HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2/VBoxContainer/ScrollContainer/MarginContainer/VBoxContainer")
-
 @onready var _show_session_server_info_btn = get_node("HBoxContainer/Container/Config/SessionServers/VBoxContainer/MarginContainer/HBoxContainer/Button")
 @onready var _session_server_info = get_node("HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer")
 @onready var _add_session_server_btn = get_node("HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2/VBoxContainer/HBoxContainer/Button")
 @onready var _add_session_server_name = get_node("HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2/VBoxContainer/HBoxContainer/Name")
 @onready var _add_session_server_url = get_node("HBoxContainer/Container/Config/SessionServers/VBoxContainer/PanelContainer/MarginContainer2/VBoxContainer/HBoxContainer/URL")
+
 
 func _ready():
 	_load_session_servers()
@@ -27,6 +26,7 @@ func _ready():
 	Events.dash_switch_tab.connect(_handle_page_opened)
 	return
 
+
 func _handle_page_opened(page_name) -> void:
 	if page_name != "Settings":
 		return
@@ -34,8 +34,9 @@ func _handle_page_opened(page_name) -> void:
 	_load_session_servers()
 	return
 
+
 func _load_session_servers() -> void:
-	GlobalLogger.logs("Loading session servers.")
+	GlobalLogger.log("Loading session servers.")
 	var _servers = SettingsManager.get_session_servers()
 
 	for _existing_listing in _session_server_container.get_children():
@@ -48,9 +49,11 @@ func _load_session_servers() -> void:
 		_session_server_container.add_child(_template)
 	return
 
+
 func _remove_session_server(url: String) -> void:
 	SettingsManager.remove_session_server(url)
 	_load_session_servers()
+
 
 func _add_session_server() -> void:
 	var _name = _add_session_server_name.text
@@ -62,12 +65,13 @@ func _add_session_server() -> void:
 	if _url == "":
 		return
 
-	SettingsManager.add_session_server({"name": _name, "url": _url})
+	SettingsManager.add_session_server({ "name": _name, "url": _url })
 
 	_add_session_server_name.text = ""
 	_add_session_server_url.text = ""
 	_load_session_servers()
 	return
+
 
 func _show_session_server_info_dialog() -> void:
 	_session_server_info.visible = !_session_server_info.visible

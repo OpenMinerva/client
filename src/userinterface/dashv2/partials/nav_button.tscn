@@ -59,7 +59,6 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_default_cursor_shape = 2
 theme = ExtResource("1_s6xcj")
-theme_type_variation = &"Danger"
 toggle_mode = true
 
 [node name="MarginContainer" type="MarginContainer" parent="Button" unique_id=665374152]
@@ -84,5 +83,5 @@ expand_mode = 2
 
 [node name="Label" type="Label" parent="Button/MarginContainer/VBoxContainer" unique_id=1807295119]
 layout_mode = 2
-text = "ERROR"
+text = "Default Text"
 horizontal_alignment = 1

@@ -1,3 +1,12 @@
+# --- License
+# File: /http.gd
+# Project: openminerva.oauth2
+# Created Date: 04 May 2026
+# Copyright (c) 2026 OpenMinerva
+# License: MIT License
+# Authors: Armored Dragon
+# --- License
+
 extends Node
 
 signal _completed(result: Dictionary)
@@ -5,8 +14,6 @@ signal _completed(result: Dictionary)
 # TODO: When the http client fails to connect to server, no error appears.
 
 func req(method: HTTPClient.Method, host: String, path: String = "/", port: int = 443, headers: PackedStringArray = [], body: String = "") -> Dictionary:
-	GlobalLogger.logs("Starting HTTP request to '%s:%s%s'" % [host, port, path])
-
 	var thread: Thread = Thread.new()
 	var params: Dictionary = {
 		"method": method,

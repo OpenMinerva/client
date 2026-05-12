@@ -6,14 +6,15 @@
 # License: MIT License
 # Authors: Armored Dragon
 # --- License
-
 extends Control
 
 var _page_names = []
+
 @onready var create = get_node("Create")
 @onready var select_oauth_btn = get_node("Create/SelectMethod/Container/OAuth")
 @onready var create_oauth_btn = get_node("Create/OAuth/Create/HBoxContainer/ConfirmCreateAccount")
 @onready var create_oauth_back_btn = get_node("Create/OAuth/Create/HBoxContainer/CreateAccountBack")
+
 
 func _ready():
 	_get_pages()
@@ -23,12 +24,14 @@ func _ready():
 	create_oauth_back_btn.pressed.connect(_display_login_route.bind("SelectMethod"))
 	return
 
+
 func _display_oauth():
 	return
 
+
 func _display_login_route(page_name: String):
 	if page_name not in _page_names:
-		GlobalLogger.logs("Tried to display an invalid login route.", Enum.LogLevel.WARNING)
+		GlobalLogger.log("Tried to display an invalid login route.", Enum.LogLevel.WARNING)
 		return
 
 	for page in create.get_children():
@@ -39,10 +42,12 @@ func _display_login_route(page_name: String):
 		page.visible = false
 	return
 
+
 func _get_pages() -> void:
 	for page in create.get_children():
 		_page_names.append(page.name)
 	return
+
 
 func _create_oauth() -> void:
 	var display_name = get_node("Create/OAuth/Create/VBoxContainer3/CADisplayName").text
@@ -50,7 +55,7 @@ func _create_oauth() -> void:
 
 	var account = {
 		"display_name": display_name,
-		"account_server": account_server
+		"account_server": account_server,
 	}
 
 	GlobalAccount.create(account, "oauth")

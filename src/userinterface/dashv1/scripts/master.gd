@@ -6,7 +6,6 @@
 # License: MIT License
 # Authors: Armored Dragon
 # --- License
-
 extends Control
 
 var dashboard_tabs = []
@@ -15,6 +14,7 @@ var dashboard_tab_names = []
 @onready var dash_tab_master_container = get_node("MarginContainer/VBoxContainer/Master")
 @onready var dash_nav_master_container = get_node("MarginContainer/VBoxContainer/NavBar/HBoxContainer")
 
+
 func _ready():
 	_build_page_list()
 
@@ -22,6 +22,7 @@ func _ready():
 	Events.connect("dash_switch_tab", _handle_switch_tab)
 
 	Events.emit_signal("dash_switch_tab", "Home")
+
 
 func _build_page_list():
 	for child in get_node("MarginContainer/VBoxContainer/Master").get_children():
@@ -34,12 +35,14 @@ func _build_page_list():
 			continue
 		button.pressed.connect(Events.emit_signal.bind("dash_switch_tab", button.name))
 
+
 func _handle_set_dash_state(is_open: bool) -> void:
-	GlobalLogger.logs("Changing dashboard state: '%s'" % is_open)
+	GlobalLogger.log("Changing dashboard state: '%s'" % is_open)
 	visible = is_open
 
+
 func _handle_switch_tab(target_name: String) -> void:
-	GlobalLogger.logs("Switching dashboard to page '%s'" % target_name)
+	GlobalLogger.log("Switching dashboard to page '%s'" % target_name)
 
 	for dash_tab in dash_tab_master_container.get_children():
 		dash_tab.visible = false
@@ -48,7 +51,7 @@ func _handle_switch_tab(target_name: String) -> void:
 		dash_nav_button.button_pressed = false
 
 	if target_name not in dashboard_tab_names:
-		GlobalLogger.logs("Tried to switch to an invalid dashboard page: '%s'" % target_name, Enum.LogLevel.WARNING)
+		GlobalLogger.log("Tried to switch to an invalid dashboard page: '%s'" % target_name, Enum.LogLevel.WARNING)
 		return
 
 	dash_tab_master_container.get_node(target_name).visible = true

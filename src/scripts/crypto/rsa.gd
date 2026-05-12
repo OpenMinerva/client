@@ -6,14 +6,14 @@
 # License: MIT License
 # Authors: Armored Dragon
 # --- License
-
 extends Node
+
 
 ## Generates a RSA keypair at a specific bit length
 ## @returns Dictionary
 func generate_keypair(level: int = 0) -> Dictionary:
 	# TODO: Error checks
-	var return_dictionary = {"public": "", "private": ""}
+	var return_dictionary = { "public": "", "private": "" }
 	var _target_bits = 0
 
 	match level:
@@ -29,13 +29,14 @@ func generate_keypair(level: int = 0) -> Dictionary:
 	return_dictionary.public = generated_keys.save_to_string(true)
 	return return_dictionary
 
+
 ## Turns a pem into a CryptoKey
 ## @returns CryptoKey
 func pem_to_cryptokey(pem: String = "") -> CryptoKey:
 	# TODO: Error checks
 	var public_key := CryptoKey.new()
 	if public_key.load_from_string(pem, true) != OK:
-		GlobalLogger.logs("Failed to load public key", Enum.LogLevel.ERROR)
+		GlobalLogger.log("Failed to load public key", Enum.LogLevel.ERROR)
 		return null
 
 	return public_key
