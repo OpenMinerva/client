@@ -10,6 +10,8 @@
 [ext_resource type="Script" uid="uid://ba1v2y41s8drb" path="res://userinterface/dashv2/scripts/pages/settings.gd" id="4_ap0b5"]
 [ext_resource type="PackedScene" uid="uid://clvk6h18vwcd3" path="res://userinterface/dashv2/partials/account_button.tscn" id="4_aw6p6"]
 [ext_resource type="PackedScene" uid="uid://71vuc3qrtgi7" path="res://userinterface/dashv2/partials/category_button.tscn" id="4_ql400"]
+[ext_resource type="Script" uid="uid://behsvrk7cf3e3" path="res://userinterface/dashv2/scripts/pages/home.gd" id="6_bh4hj"]
+[ext_resource type="PackedScene" uid="uid://dh0u5xtwooa0v" path="res://userinterface/dashv2/partials/home_server_listing.tscn" id="7_kk1ia"]
 [ext_resource type="Script" uid="uid://g1gvftyku5mb" path="res://userinterface/dashv2/scripts/pages/sessions.gd" id="7_kk4yy"]
 [ext_resource type="Script" uid="uid://cs3l7uq2q5uvo" path="res://userinterface/dashv2/scripts/pages/instance.gd" id="7_o4evp"]
 [ext_resource type="PackedScene" uid="uid://cyom30b1p54df" path="res://userinterface/dashv2/partials/search.tscn" id="9_gtfiv"]
@@ -146,6 +148,50 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
+[node name="Home" type="Control" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=154112638]
+layout_mode = 2
+script = ExtResource("6_bh4hj")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Home" unique_id=1195053231]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/Content/Container/Home/HBoxContainer" unique_id=650457035]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_0nfpo")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Content/Container/Home/HBoxContainer/PanelContainer" unique_id=409134466]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Home/HBoxContainer/PanelContainer/MarginContainer" unique_id=758556458]
+layout_mode = 2
+
+[node name="Listing" parent="MarginContainer/VBoxContainer/Content/Container/Home/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=902887409 instance=ExtResource("7_kk1ia")]
+layout_mode = 2
+theme = ExtResource("2_0nfpo")
+theme_type_variation = &"SolidBackground"
+
+[node name="Spacing" type="Control" parent="MarginContainer/VBoxContainer/Content/Container/Home/HBoxContainer" unique_id=643242587]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Spacing2" type="Control" parent="MarginContainer/VBoxContainer/Content/Container/Home/HBoxContainer" unique_id=2026218850]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Spacing3" type="Control" parent="MarginContainer/VBoxContainer/Content/Container/Home/HBoxContainer" unique_id=2092666911]
+layout_mode = 2
+size_flags_horizontal = 3
+
 [node name="Instance" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=17586745 instance=ExtResource("3_av8ee")]
 visible = false
 layout_mode = 2
@@ -273,6 +319,7 @@ theme_override_constants/v_separation = 10
 columns = 5
 
 [node name="Settings" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=739538319 instance=ExtResource("3_av8ee")]
+visible = false
 layout_mode = 2
 script = ExtResource("4_ap0b5")
 
@@ -638,6 +685,7 @@ display_text = "Exit"
 selected_icon = "Exit"
 selected_theme_type = "Danger"
 
+[editable path="MarginContainer/VBoxContainer/Content/Container/Home/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/Listing"]
 [editable path="MarginContainer/VBoxContainer/Content/Container/Instance"]
 [editable path="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/Hosting/ScrollContainer/VBoxContainer/Save"]
 [editable path="MarginContainer/VBoxContainer/Content/Container/Sessions"]
