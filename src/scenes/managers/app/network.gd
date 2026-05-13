@@ -142,8 +142,7 @@ func stop_server(id: String):
 func update_server(id: String, server_info: Dictionary):
 	GlobalLogger.log("Updating server '%s'." % id)
 
-	# var _saved_session_servers = SettingsManager.get_session_servers()
-	var _saved_session_servers = [{ "id": "123456", "url": "http://localhost:40500" }]
+	var _saved_session_servers = SettingsManager.get_session_servers()
 
 	if server_info.privacy > Enum.PrivacyLevel.INVITE:
 		for _server in _saved_session_servers:

@@ -18,7 +18,7 @@ var rsa_lib = preload("res://scripts/crypto/rsa.gd").new()
 var stop_connection_timer = false
 var active_account = { }
 var dev_session_server_api_key = ""
-var _database: Array[Dictionary] = []
+var _database: Dictionary = { }
 
 
 func _ready():
@@ -27,7 +27,11 @@ func _ready():
 
 ## Get a list of all accounts and return their information.
 func get_all() -> Array[Dictionary]:
-	return _database
+	var _return_value: Array[Dictionary] = []
+	for _account_id in _database.keys():
+		var _account = _database.get(_account_id)
+		_return_value.append(_account)
+	return _return_value
 
 
 ## Adds an account to the account database.
@@ -42,7 +46,7 @@ func create(account: Dictionary, type: String) -> Dictionary:
 		GlobalLogger.log("Tried to create an account, but there was nothing to save.", Enum.LogLevel.ERROR)
 		return { "ok": false, "error": "No account formatted.", "id": null }
 
-	_database.append(account_formatted)
+	_database.set(account_formatted.id, account_formatted)
 
 	_save_account_database()
 
@@ -53,8 +57,7 @@ func create(account: Dictionary, type: String) -> Dictionary:
 ## Removes an account from the account database.
 func remove(id: String) -> Dictionary:
 	GlobalLogger.log("Attempting to remove account '%s'" % id)
-	var target_entry = _database.find_custom(func(entry): return entry.get("id") == id)
-	_database.remove_at(target_entry)
+	_database.erase(id)
 	_save_account_database()
 
 	Events.emit_signal("dash_account_list_loaded")
@@ -65,8 +68,7 @@ func remove(id: String) -> Dictionary:
 ## Sets an account as the active account.
 func use(id: String) -> void:
 	GlobalLogger.log("Setting active account to '%s'." % id, Enum.LogLevel.INFO)
-
-	var _account = _get_account_by_id(id)
+	var _account = _database.get(id)
 
 	# TODO: Error checking
 	var url = UrlParser.deconstruct(_account.account_server)
@@ -100,10 +102,9 @@ func clear() -> void:
 
 
 func update(id: String, data: Dictionary) -> void:
-	var target_entry = _database.find_custom(func(entry): return entry.get("id") == id)
-	var account = _get_account_by_id(id)
+	var _account = _database.get(id)
 
-	var _database_keys = account.keys()
+	var _database_keys = _account.keys()
 	var _data_keys = data.keys()
 
 	for key in _data_keys:
@@ -111,9 +112,9 @@ func update(id: String, data: Dictionary) -> void:
 			GlobalLogger.log("Tried to update an invalid key in an account, '%s'." % key, Enum.LogLevel.WARNING)
 			continue
 
-		account[key] = data[key]
+		_account[key] = data[key]
 
-	_database[target_entry] = account
+	_database.set(id, _account)
 	_save_account_database()
 	return
 
@@ -121,10 +122,11 @@ func update(id: String, data: Dictionary) -> void:
 func authenticate_oauth(id: String, _remember_me: bool = false) -> void:
 	# TODO: Error checks
 	GlobalLogger.log("Attempting to connect account '%s' using oauth." % id)
-	var account = _get_account_by_id(id)
+
+	var _account = _database.get(id)
 
 	# TODO: Check if account is still valid without trying to sign in.
-	var url = UrlParser.deconstruct(account.account_server)
+	var url = UrlParser.deconstruct(_account.account_server)
 	url = url.data
 
 	var _oauth = OAuth2Client.new(
@@ -150,7 +152,7 @@ func get_account_authentication_status(id) -> Dictionary:
 		"valid_private_jwt": false,
 	}
 
-	var _account = _get_account_by_id(id)
+	var _account = _database.get(id)
 
 	status.valid_passport = _account.get("public_account_server_passport", { "expires": 0 }).get("expires", 0) > int(Time.get_unix_time_from_system())
 	status.valid_private_jwt = _account.get("private_account_server_jwt", { "expires": 0 }).get("expires", 0) > int(Time.get_unix_time_from_system())
@@ -190,7 +192,7 @@ func _save_account_database() -> void:
 
 
 ## Read the account database from the config file on our disk.
-func _load_account_database() -> Array[Dictionary]:
+func _load_account_database() -> Dictionary:
 	GlobalLogger.log("Loading the local account database.", Enum.LogLevel.INFO)
 
 	var account_file_exists = FileAccess.file_exists(ACCOUNT_DATABASE_DIRECTORY)
@@ -200,29 +202,26 @@ func _load_account_database() -> Array[Dictionary]:
 
 	var file = FileAccess.open(ACCOUNT_DATABASE_DIRECTORY, FileAccess.READ)
 
-	var account_data: Array[Dictionary]
+	var account_data: Dictionary = { }
 
 	if file:
-		account_data = file.get_var() # Deserializes variable back
+		var _file_contents = file.get_var()
+
+		if _file_contents == null:
+			account_data = { }
+		else:
+			account_data = _file_contents # Deserializes variable back
+
 		file.close()
 
 	_database = account_data
 	return account_data
 
 
-func _get_account_by_id(id: String) -> Dictionary:
-	var index = _database.find_custom(func(entry): return entry.get("id") == id)
-
-	if index > -1:
-		return _database[index]
-
-	return { }
-
-
 func _update_account_by_key(id: String, key: String, value: Variant) -> void:
-	var index = _database.find_custom(func(entry): return entry.get("id") == id)
 	# TODO: Check if key is a valid key.
-	_database[index][key] = value
+	# TODO: This is unsafe.
+	_database.get(id).set(key, value)
 	_save_account_database()
 	return
 
