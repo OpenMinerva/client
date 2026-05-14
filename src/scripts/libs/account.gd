@@ -180,20 +180,6 @@ func authenticate_oauth(id: String, _remember_me: bool = false) -> void:
 	return
 
 
-func get_account_authentication_status(id) -> Dictionary:
-	var status = {
-		"valid_passport": false,
-		"valid_private_jwt": false,
-	}
-
-	var _account = _database.get(id)
-
-	status.valid_passport = _account.get("public_account_server_passport", { "expires": 0 }).get("expires", 0) > int(Time.get_unix_time_from_system())
-	status.valid_private_jwt = _account.get("private_account_server_jwt", { "expires": 0 }).get("expires", 0) > int(Time.get_unix_time_from_system())
-
-	return status
-
-
 func _create_oauth(account) -> Dictionary:
 	var _account_keys = rsa_lib.generate_keypair()
 	var _account_authentication: Dictionary = { }
