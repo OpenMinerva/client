@@ -18,6 +18,7 @@ const ACCOUNT_DATABASE_TEMPLATE: Dictionary = {
 	},
 	"auth_type": Enum.AccountLoginType.NULL,
 	"auth": { },
+	"session_servers": { },
 }
 const ACCOUNT_DATABASE_OAUTH_TEMPLATE: Dictionary = {
 	"id": "",
@@ -32,8 +33,7 @@ var rsa_lib = preload("res://scripts/crypto/rsa.gd").new()
 # TODO: Create proper encryption of the account database
 # https://github.com/OpenMinerva/client/issues/59
 var stop_connection_timer = false
-var active_account = { }
-var dev_session_server_api_key = ""
+var active_account: String = ""
 var _database: Dictionary = { }
 
 
@@ -48,6 +48,11 @@ func get_all() -> Array[Dictionary]:
 		var _account = _database.get(_account_id)
 		_return_value.append(_account)
 	return _return_value
+
+
+# Get a single account or null
+func get_account(id: String) -> Dictionary:
+	return _database.get(id, null)
 
 
 ## Adds an account to the account database.
@@ -106,14 +111,14 @@ func use(id: String) -> void:
 		if _oauth_valid.ok == OAuth2Client.OAUTH2_CLIENT_RESULT.OK && _oauth_valid.data == false:
 			await authenticate_oauth(id)
 
-	active_account = _account
+	active_account = _account.id
 	Events.emit_signal("dash_active_account_changed", active_account)
 	return
 
 
 ## Signs out of the active account.
 func clear() -> void:
-	active_account = { }
+	active_account = ""
 	return
 
 
@@ -133,6 +138,19 @@ func update(id: String, data: Dictionary) -> void:
 	_database.set(id, _account)
 	_save_account_database()
 	return
+
+
+func set_session_server_token(url: String, token: String) -> void:
+	var _account = _database.get(active_account)
+	_account.session_servers.set(url, token)
+	_save_account_database()
+	return
+
+
+func get_session_server_token(url: String) -> String:
+	var _account = _database.get(active_account)
+	var _token = _account.session_servers.get(url, "")
+	return _token
 
 
 func authenticate_oauth(id: String, _remember_me: bool = false) -> void:

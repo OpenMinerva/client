@@ -25,9 +25,8 @@ func _handle_switch_tab(tab_name) -> void:
 	if tab_name != "Sessions":
 		return
 
-	GlobalLogger.log("Triggered in Sessions!")
 	# TODO: Make a more robust active_account detection mechanism.
-	if GlobalAccount.active_account == { }:
+	if GlobalAccount.active_account == "":
 		return
 
 	# TODO: Check if we need to authenticate, if so

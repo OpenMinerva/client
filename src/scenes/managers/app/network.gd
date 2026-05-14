@@ -292,7 +292,7 @@ func _update_session_server_listing(session_info: Dictionary, session_server: St
 		return response_dict
 
 	url = url.data
-
+	var _api_key = GlobalAccount.get_session_server_token(url.host)
 	var _body = {
 		"id": _database.sessions_id.get(session_info.id),
 		"session_name": session_info.name,
@@ -305,7 +305,7 @@ func _update_session_server_listing(session_info: Dictionary, session_server: St
 		url.host,
 		url.path,
 		url.port,
-		["Accept: application/json", "Content-Type: application/json", "x-api-key: %s" % GlobalAccount.dev_session_server_api_key],
+		["Accept: application/json", "Content-Type: application/json", "x-api-key: %s" % _api_key],
 		JSON.stringify(_body),
 	)
 
@@ -325,7 +325,7 @@ func _remove_session_from_server(server_id: String, session_server: String) -> D
 		return response_dict
 
 	url = url.data
-
+	var _api_key = GlobalAccount.get_session_server_token(url.host)
 	var _body = {
 		"id": _database.sessions_id.get(server_id),
 	}
@@ -335,7 +335,7 @@ func _remove_session_from_server(server_id: String, session_server: String) -> D
 		url.host,
 		url.path,
 		url.port,
-		["Accept: application/json", "Content-Type: application/json", "x-api-key: %s" % GlobalAccount.dev_session_server_api_key],
+		["Accept: application/json", "Content-Type: application/json", "x-api-key: %s" % _api_key],
 		JSON.stringify(_body),
 	)
 
@@ -414,6 +414,7 @@ func _heartbeat_session(session_id: String, session_server_url: String) -> void:
 		return
 
 	_url = _url.data
+	var _api_key = GlobalAccount.get_session_server_token(_url.host)
 	var body = { "session_id": _database.sessions_id.get(session_id) }
 
 	var response = await HTTP.req(
@@ -421,7 +422,7 @@ func _heartbeat_session(session_id: String, session_server_url: String) -> void:
 		_url.host,
 		_url.path,
 		_url.port,
-		["Accept: application/json", "Content-Type: application/json", "x-api-key: %s" % GlobalAccount.dev_session_server_api_key],
+		["Accept: application/json", "Content-Type: application/json", "x-api-key: %s" % _api_key],
 		JSON.stringify(body),
 	)
 
@@ -443,6 +444,7 @@ func _advertise_session(session_info: Dictionary, session_server: String) -> Dic
 
 	url = url.data
 
+	var _api_key = GlobalAccount.get_session_server_token(url.host)
 	var _body = {
 		"session_name": session_info.name,
 		"session_description": session_info.description,
@@ -455,7 +457,7 @@ func _advertise_session(session_info: Dictionary, session_server: String) -> Dic
 		url.host,
 		url.path,
 		url.port,
-		["Accept: application/json", "Content-Type: application/json", "x-api-key: %s" % GlobalAccount.dev_session_server_api_key],
+		["Accept: application/json", "Content-Type: application/json", "x-api-key: %s" % _api_key],
 		JSON.stringify(_body),
 	)
 
