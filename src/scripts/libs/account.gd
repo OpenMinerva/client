@@ -52,7 +52,8 @@ func get_all() -> Array[Dictionary]:
 
 # Get a single account or null
 func get_account(id: String) -> Dictionary:
-	return _database.get(id, null)
+	var _account = _database.get(id, { })
+	return _account
 
 
 ## Adds an account to the account database.
