@@ -292,7 +292,7 @@ func _update_session_server_listing(session_info: Dictionary, session_server: St
 		return response_dict
 
 	url = url.data
-	var _api_key = GlobalAccount.get_session_server_token(url.host)
+	var _api_key = Accounts.get_session_server_token(url.host)
 	var _body = {
 		"id": _database.sessions_id.get(session_info.id),
 		"session_name": session_info.name,
@@ -325,7 +325,7 @@ func _remove_session_from_server(server_id: String, session_server: String) -> D
 		return response_dict
 
 	url = url.data
-	var _api_key = GlobalAccount.get_session_server_token(url.host)
+	var _api_key = Accounts.get_session_server_token(url.host)
 	var _body = {
 		"id": _database.sessions_id.get(server_id),
 	}
@@ -414,7 +414,7 @@ func _heartbeat_session(session_id: String, session_server_url: String) -> void:
 		return
 
 	_url = _url.data
-	var _api_key = GlobalAccount.get_session_server_token(_url.host)
+	var _api_key = Accounts.get_session_server_token(_url.host)
 	var body = { "session_id": _database.sessions_id.get(session_id) }
 
 	var response = await HTTP.req(
@@ -444,7 +444,7 @@ func _advertise_session(session_info: Dictionary, session_server: String) -> Dic
 
 	url = url.data
 
-	var _api_key = GlobalAccount.get_session_server_token(url.host)
+	var _api_key = Accounts.get_session_server_token(url.host)
 	var _body = {
 		"session_name": session_info.name,
 		"session_description": session_info.description,

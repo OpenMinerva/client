@@ -26,7 +26,7 @@ func _handle_switch_tab(tab_name) -> void:
 		return
 
 	# TODO: Make a more robust active_account detection mechanism.
-	if GlobalAccount.active_account == "":
+	if Accounts.active_account == "":
 		return
 
 	# TODO: Check if we need to authenticate, if so

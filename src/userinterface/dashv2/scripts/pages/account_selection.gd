@@ -30,7 +30,7 @@ func _populate_account_list() -> void:
 	const TEMPLATE_ACCOUNT_DELETE_BUTTON_PATH = "HBoxContainer/Delete/Button"
 
 	GlobalLogger.log("Populating account list in '%s'." % name)
-	var _accounts: Array[Dictionary] = GlobalAccount.get_all()
+	var _accounts: Array[Dictionary] = Accounts.get_all()
 
 	# Remove existing listings
 	for child: Control in account_list_container.get_children():
@@ -51,9 +51,9 @@ func _populate_account_list() -> void:
 		# TODO: _picture_node.texture = null
 
 		# Add event listeners
-		_button_node.pressed.connect(GlobalAccount.use.bind(_account.id))
+		_button_node.pressed.connect(Accounts.use.bind(_account.id))
 		# TODO: _configure_node
-		_delete_node.pressed.connect(GlobalAccount.remove.bind(_account.id))
+		_delete_node.pressed.connect(Accounts.remove.bind(_account.id))
 
 		# Append
 		account_list_container.add_child(_template)

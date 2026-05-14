@@ -13,7 +13,7 @@ func authenticate(url: String) -> Dictionary:
 	var _return_dict: Dictionary = { "ok": false, "error": "" }
 
 	# TODO: Do we need a new authentication key?
-	if GlobalAccount.get_session_server_token(url) == "":
+	if Accounts.get_session_server_token(url) == "":
 		var url_deconstructed = UrlParser.deconstruct(url)
 		if url_deconstructed.ok == false:
 			var ERROR_MESSAGE = "Failed to deconstruct the url '%s'" % url
@@ -22,7 +22,7 @@ func authenticate(url: String) -> Dictionary:
 			return _return_dict
 		url_deconstructed = url_deconstructed.data
 
-		var _account = GlobalAccount.get_account(GlobalAccount.active_account)
+		var _account = Accounts.get_account(Accounts.active_account)
 		var body: Dictionary = {
 			"id_token": _account.auth.id_token,
 			"challenge": "challenge value",
@@ -55,7 +55,7 @@ func get_sessions() -> Array:
 			GlobalLogger.log("Failed to parse the session server URL.", Enum.LogLevel.INFO)
 			continue
 		url_deconstructed = url_deconstructed.data
-		var _api_key = GlobalAccount.get_session_server_token(url_deconstructed.host)
+		var _api_key = Accounts.get_session_server_token(url_deconstructed.host)
 		var form_parts := [
 			"search=%s" % search,
 			"tags=%s" % tags,
@@ -93,7 +93,7 @@ func _authentication_request_received(_host: String, response: Dictionary) -> Di
 	# TODO: Validate key exists
 	var _api_key = JSON.parse_string(response.body).key
 
-	GlobalAccount.set_session_server_token(_host, _api_key)
+	Accounts.set_session_server_token(_host, _api_key)
 
 	# If authentication succeeded, record data
 	# Else report error.
