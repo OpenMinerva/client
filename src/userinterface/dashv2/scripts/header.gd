@@ -27,8 +27,9 @@ func _setup_header_bar():
 	return
 
 
-func _handle_active_account_changed(_account: Dictionary) -> void:
-	GlobalLogger.log("Active account changed: '%s'" % _account.display_name)
+func _handle_active_account_changed(_account_id: String) -> void:
+	GlobalLogger.log("Active account changed: '%s'" % _account_id)
+	var _account = GlobalAccount.get_account(_account_id)
 	# TODO: header_account_button_texture
 	header_account_button_name.text = _account.display_name
 	header_account_button_location.text = _account.account_server
