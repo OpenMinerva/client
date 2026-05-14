@@ -9,6 +9,22 @@
 extends Node
 
 const ACCOUNT_DATABASE_DIRECTORY: String = "user://database/accounts.bin"
+const ACCOUNT_DATABASE_TEMPLATE: Dictionary = {
+	"id": "",
+	"display_name": "",
+	"keys": {
+		"private": "",
+		"public": "",
+	},
+	"auth_type": Enum.AccountLoginType.NULL,
+	"auth": { },
+}
+const ACCOUNT_DATABASE_OAUTH_TEMPLATE: Dictionary = {
+	"id": "",
+	"expirey": 0,
+	"access_token": "",
+	"refresh_token": "",
+}
 
 var time_lib = preload("res://scripts/libs/time.gd").new()
 var random_lib = preload("res://scripts/utils/random.gd").new()
@@ -84,8 +100,8 @@ func use(id: String) -> void:
 		true,
 	)
 
-	if _account.type == "oauth":
-		var _oauth_valid: Dictionary = await _oauth.validate(_account)
+	if _account.type == Enum.AccountLoginType.OAUTH:
+		var _oauth_valid: Dictionary = await _oauth.validate(_account.auth)
 
 		if _oauth_valid.ok == OAuth2Client.OAUTH2_CLIENT_RESULT.OK && _oauth_valid.data == false:
 			await authenticate_oauth(id)
@@ -141,7 +157,7 @@ func authenticate_oauth(id: String, _remember_me: bool = false) -> void:
 
 	var oauth_tokens = await _oauth.authenticate()
 	if oauth_tokens.ok == OAuth2Client.OAUTH2_CLIENT_RESULT.OK:
-		update(id, oauth_tokens.data)
+		update(id, { "auth": oauth_tokens.data })
 
 	return
 
@@ -162,21 +178,19 @@ func get_account_authentication_status(id) -> Dictionary:
 
 func _create_oauth(account) -> Dictionary:
 	var _account_keys = rsa_lib.generate_keypair()
+	var _account_authentication: Dictionary = { }
+	var _account = ACCOUNT_DATABASE_TEMPLATE.duplicate()
+	_account.set("id", random_lib.random_string(6, true))
+	_account.set("display_name", account.get("display_name", null))
+	_account.set("account_server", account.get("account_server", null))
+	_account.keys.set("public", _account_keys.public)
+	_account.keys.set("private", _account_keys.private)
 
-	var _clean_account = { }
-	_clean_account.id = random_lib.random_string(6, true)
-	_clean_account.display_name = account.get("display_name", null)
-	_clean_account.account_server = account.get("account_server", null)
-	_clean_account.private_device_key = _account_keys.private
-	_clean_account.public_device_key = _account_keys.public
+	_account.set("type", Enum.AccountLoginType.OAUTH)
 
-	_clean_account.access_token = ""
-	_clean_account.refresh_token = ""
-	_clean_account.id_token = ""
-	_clean_account.access_token_expiry = 0
+	_account.set("auth", ACCOUNT_DATABASE_OAUTH_TEMPLATE)
 
-	_clean_account.type = "oauth"
-	return _clean_account
+	return _account
 
 
 ## Save the current account database we have in memory to the disk.
