@@ -1,5 +1,5 @@
 # --- License
-# File: /client/src/userinterface/dashv2/scripts/pages/home.gd
+# File: /client/src/userinterface/dash/scripts/pages/home.gd
 # Project: OpenMinerva
 # Created Date: 11 May 2026
 # Copyright (c) 2026 OpenMinerva
@@ -9,7 +9,7 @@
 extends Control
 
 @onready var active_sessions_container = get_node("HBoxContainer/PanelContainer/MarginContainer/VBoxContainer")
-@onready var template_account_session_listing = preload("res://userinterface/dashv2/partials/home_server_listing.tscn")
+@onready var template_account_session_listing = preload("res://userinterface/dash/partials/home_server_listing.tscn")
 @onready var network_m = get_tree().current_scene.get_node("NetworkManager")
 @onready var scene_m = get_tree().current_scene.get_node("SceneManager")
 

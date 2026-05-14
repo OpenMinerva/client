@@ -1,5 +1,5 @@
 # --- License
-# File: /client/src/userinterface/dashv2/scripts/pages/account_selection.gd
+# File: /client/src/userinterface/dash/scripts/pages/account_selection.gd
 # Project: OpenMinerva
 # Created Date: 07 May 2026
 # Copyright (c) 2026 OpenMinerva
@@ -8,7 +8,7 @@
 # --- License
 extends Control
 
-@onready var template_account_listing: PackedScene = preload("res://userinterface/dashv2/partials/account_button_listing.tscn")
+@onready var template_account_listing: PackedScene = preload("res://userinterface/dash/partials/account_button_listing.tscn")
 @onready var account_list_container: Control = $"HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer"
 @onready var create_account_button: Control = $"HBoxContainer/VBoxContainer/NavButton/Button"
 

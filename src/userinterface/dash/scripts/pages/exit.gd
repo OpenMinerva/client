@@ -1,5 +1,5 @@
 # --- License
-# File: /client/src/userinterface/dashv2/scripts/pages/exit.gd
+# File: /client/src/userinterface/dash/scripts/pages/exit.gd
 # Project: OpenMinerva
 # Created Date: 11 May 2026
 # Copyright (c) 2026 OpenMinerva

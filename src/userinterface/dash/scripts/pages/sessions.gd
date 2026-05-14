@@ -1,5 +1,5 @@
 # --- License
-# File: /client/src/userinterface/dashv2/scripts/pages/sessions.gd
+# File: /client/src/userinterface/dash/scripts/pages/sessions.gd
 # Project: OpenMinerva
 # Created Date: 08 May 2026
 # Copyright (c) 2026 OpenMinerva
@@ -8,7 +8,7 @@
 # --- License
 extends Control
 
-@onready var template_world_listing: PackedScene = preload("res://userinterface/dashv2/partials/session_listing.tscn")
+@onready var template_world_listing: PackedScene = preload("res://userinterface/dash/partials/session_listing.tscn")
 @onready var world_listing_grid: GridContainer = get_node("HBox/Right/VBoxContainer/ScrollContainer/GridContainer")
 @onready var tag_nodes: Array[Node] = get_node("HBox/Left").get_children()
 @onready var network_m = get_tree().current_scene.get_node("NetworkManager")
