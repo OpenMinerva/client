@@ -27,6 +27,7 @@
 [ext_resource type="PackedScene" uid="uid://gopciccm8xx5" path="res://userinterface/dash/partials/removable_string_listing.tscn" id="20_v67rh"]
 [ext_resource type="Script" uid="uid://2vk6cxto4xw" path="res://userinterface/dash/scripts/pages/assets.gd" id="21_d3sj0"]
 [ext_resource type="Texture2D" uid="uid://8fwxg1ipf0fp" path="res://resources/icons/exit.svg" id="24_nakrv"]
+[ext_resource type="Script" uid="uid://cnm74wceowx3y" path="res://userinterface/dash/scripts/pages/debug.gd" id="24_v7inj"]
 [ext_resource type="Script" uid="uid://cah3jpmu1x72b" path="res://userinterface/dash/scripts/pages/exit.gd" id="24_wvg7d"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0nfpo"]
@@ -462,6 +463,7 @@ size_flags_vertical = 3
 [node name="Debug" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=506436187 instance=ExtResource("3_av8ee")]
 visible = false
 layout_mode = 2
+script = ExtResource("24_v7inj")
 
 [node name="General" parent="MarginContainer/VBoxContainer/Content/Container/Debug/HBox/Left" parent_id_path=PackedInt32Array(506436187, 1799305671) index="0" unique_id=725321320 instance=ExtResource("4_ql400")]
 layout_mode = 2
