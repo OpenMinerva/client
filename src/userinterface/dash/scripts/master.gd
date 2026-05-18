@@ -1,5 +1,5 @@
 # --- License
-# File: /client/src/userinterface/dashv2/scripts/master.gd
+# File: /client/src/userinterface/dash/scripts/master.gd
 # Project: OpenMinerva
 # Created Date: 07 May 2026
 # Copyright (c) 2026 OpenMinerva

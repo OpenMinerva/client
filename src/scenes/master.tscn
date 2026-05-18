@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://5v8rbnp716b0" path="res://scenes/managers/app/network.tscn" id="1_jooxx"]
 [ext_resource type="PackedScene" uid="uid://cmknpdx5ba15o" path="res://scenes/managers/app/scene.tscn" id="2_h2qy3"]
-[ext_resource type="PackedScene" uid="uid://c4y1sb6lmdr0q" path="res://userinterface/dashv2/dashboard.tscn" id="4_h2qy3"]
+[ext_resource type="PackedScene" uid="uid://c4y1sb6lmdr0q" path="res://userinterface/dash/dashboard.tscn" id="4_h2qy3"]
 
 [node name="Master" type="Node3D" unique_id=420526444]
 

@@ -1,15 +1,15 @@
 # --- License
-# File: /client/src/userinterface/dashv2/scripts/pages/settings.gd
+# File: /client/src/userinterface/dash/scripts/pages/settings.gd
 # Project: OpenMinerva
 # Created Date: 07 May 2026
 # Copyright (c) 2026 OpenMinerva
 # License: MIT License
 # Authors: Armored Dragon
 # --- License
-extends "res://userinterface/dashv2/scripts/pages/left_nav_container.gd"
+extends "res://userinterface/dash/scripts/pages/left_nav_container.gd"
 
 @onready var _session_server_list_container = get_node("HBox/Right/Config/InputDropdown/VBoxContainer/MarginContainer2/PanelContainer/VBoxContainer/VBoxContainer")
-@onready var _templates_session_server_listing = preload("res://userinterface/dashv2/partials/removable_string_listing.tscn")
+@onready var _templates_session_server_listing = preload("res://userinterface/dash/partials/removable_string_listing.tscn")
 @onready var _add_session_server_button = get_node("HBox/Right/Config/InputDropdown/VBoxContainer/MarginContainer2/PanelContainer/VBoxContainer/InputString/PanelContainer/MarginContainer/HBoxContainer/AspectRatioContainer/MarginContainer/Button")
 
 

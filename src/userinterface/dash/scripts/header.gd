@@ -1,5 +1,5 @@
 # --- License
-# File: /client/src/userinterface/dashv2/scripts/header.gd
+# File: /client/src/userinterface/dash/scripts/header.gd
 # Project: OpenMinerva
 # Created Date: 07 May 2026
 # Copyright (c) 2026 OpenMinerva
@@ -24,11 +24,13 @@ func _ready():
 
 func _setup_header_bar():
 	header_account_button.get_node("Button").pressed.connect(Events.emit_signal.bind("dash_switch_tab", "_AccountSelection"))
+	_handle_active_account_changed(Accounts.active_account)
 	return
 
 
-func _handle_active_account_changed(_account: Dictionary) -> void:
-	GlobalLogger.log("Active account changed: '%s'" % _account.display_name)
+func _handle_active_account_changed(_account_id: String) -> void:
+	GlobalLogger.log("Active account changed: '%s'" % _account_id)
+	var _account = Accounts.get_account(_account_id)
 	# TODO: header_account_button_texture
-	header_account_button_name.text = _account.display_name
-	header_account_button_location.text = _account.account_server
+	header_account_button_name.text = _account.get("display_name", "Anonymous")
+	header_account_button_location.text = _account.get("account_server", "local")
