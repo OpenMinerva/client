@@ -6,14 +6,14 @@
 # License: MIT License
 # Authors: Armored Dragon
 # --- License
-
 extends Node
 
 @onready var network_m = get_tree().current_scene.get_node("NetworkManager")
 
+
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
-		GlobalLogger.logs("Shutting down")
+		GlobalLogger.log("Shutting down")
 
 		# Shutdown / leave all servers.
 		for server in network_m.get_connected_sessions():

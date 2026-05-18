@@ -1,3 +1,12 @@
+# --- License
+# File: /http.gd
+# Project: openminerva.oauth2
+# Created Date: 04 May 2026
+# Copyright (c) 2026 OpenMinerva
+# License: MIT License
+# Authors: Armored Dragon
+# --- License
+
 extends Node
 
 signal _completed(result: Dictionary)

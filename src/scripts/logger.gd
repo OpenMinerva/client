@@ -5,19 +5,19 @@ var file_logging_enabled: bool = true
 var log_file: FileAccess
 var log_file_initialized = false
 var log_file_path = ""
-
 var log_level_colors = {
 	0: "lightblue",
 	1: "green",
 	2: "yellow",
-	3: "red"
+	3: "red",
 }
 var log_level_names = {
 	0: "Debug",
 	1: "Info",
 	2: "Warning",
-	3: "Error"
+	3: "Error",
 }
+
 
 func _ready():
 	var launch_arguments: Dictionary = LaunchArguments.get_command_line_args()
@@ -26,18 +26,13 @@ func _ready():
 	_initialize_log_file()
 	set_console_logging(true)
 	set_file_logging(true)
-	logs("Logger initialized")
+	self.log("Logger initialized")
 
-func _initialize_log_file():
-	log_file_path = FileManager.create_log_file()
-	log_file = FileAccess.open(log_file_path, FileAccess.WRITE)
-	log_file_initialized = true
-	logs("Opened log file at %s" % log_file_path)
 
 ## Logs a message to both file and console (if enabled).
 ## @param message: The message string to log. If omitted, defaults to an empty string.
 ## @param level: The log level indicating the severity. Must be an integer:
-func logs(message: String = "", level: Enum.LogLevel = Enum.LogLevel.DEBUG):
+func log(message: String = "", level: Enum.LogLevel = Enum.LogLevel.DEBUG):
 	_log_to_file(message, level)
 
 	if console_logging_enabled:
@@ -51,33 +46,39 @@ func logs(message: String = "", level: Enum.LogLevel = Enum.LogLevel.DEBUG):
 					"%s:%d @ %s()" % [
 						frame.source,
 						frame.line,
-						frame.function
-					]
+						frame.function,
+					],
 				)
 	pass
 
-# FIXME: Replace "logs" with "log"
-func log(message: String = "", level: Enum.LogLevel = Enum.LogLevel.DEBUG) -> void:
-	logs(message, level)
+
+func set_console_logging(enabled: bool):
+	if enabled:
+		console_logging_enabled = true
+		self.log("Console logging enabled for this session.", Enum.LogLevel.INFO)
+	else:
+		console_logging_enabled = false
+		self.log("Console logging disabled for this session.", Enum.LogLevel.INFO)
+
+
+func set_file_logging(enabled: bool):
+	if enabled:
+		file_logging_enabled = true
+		self.log("File logging enabled for this session.", Enum.LogLevel.INFO)
+	else:
+		file_logging_enabled = false
+		self.log("File logging disabled for this session.", Enum.LogLevel.INFO)
+
+
+func _initialize_log_file():
+	log_file_path = FileManager.create_log_file()
+	log_file = FileAccess.open(log_file_path, FileAccess.WRITE)
+	log_file_initialized = true
+	self.log("Opened log file at %s" % log_file_path)
+
 
 func _log_to_file(message: String = "", level: int = 0):
 	if file_logging_enabled && log_file:
 		var formatted_log = "[%s] %s" % [log_level_names[level], message]
 		log_file.store_line(formatted_log)
 		log_file.flush()
-
-func set_console_logging(enabled: bool):
-	if enabled:
-		console_logging_enabled = true
-		logs("Console logging enabled for this session.", Enum.LogLevel.INFO)
-	else:
-		console_logging_enabled = false
-		logs("Console logging disabled for this session.", Enum.LogLevel.INFO)
-
-func set_file_logging(enabled: bool):
-	if enabled:
-		file_logging_enabled = true
-		logs("File logging enabled for this session.", Enum.LogLevel.INFO)
-	else:
-		file_logging_enabled = false
-		logs("File logging disabled for this session.", Enum.LogLevel.INFO)

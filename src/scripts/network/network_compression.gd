@@ -1,7 +1,7 @@
 extends Node
 
-# TODO: Positional data can further be reduced by using raw bytes instead of the given 16 bits. Maybe shoot for 10 bytes?
 
+# TODO: Positional data can further be reduced by using raw bytes instead of the given 16 bits. Maybe shoot for 10 bytes?
 ## Compresses a Vector3 to a PackedByteArray using 32 bit precision
 ## @returns PackedByteArray
 func c_32_vec3(provided_data: Vector3) -> PackedByteArray:
@@ -13,12 +13,13 @@ func c_32_vec3(provided_data: Vector3) -> PackedByteArray:
 
 	return data
 
+
 ## Decompress a PackedByteArray to a Vector3 using 32 bit precision
 ## @returns Vector3
 func d_32_vec3(provided_data: PackedByteArray) -> Vector3:
 	# Validate array size
 	if provided_data.size() < 12:
-		GlobalLogger.logs("'%s' contained invalid PackedByteArray size. Can not decode value.", Enum.LogLevel.WARNING)
+		GlobalLogger.log("'%s' contained invalid PackedByteArray size. Can not decode value.", Enum.LogLevel.WARNING)
 		return Vector3()
 
 	var x = _int_to_float(provided_data.decode_s32(0))
@@ -26,6 +27,7 @@ func d_32_vec3(provided_data: PackedByteArray) -> Vector3:
 	var z = _int_to_float(provided_data.decode_s32(8))
 
 	return Vector3(x, y, z)
+
 
 ## Compresses a Vector3 to a PackedByteArray using 16 bit precision
 ## @returns PackedByteArray
@@ -38,12 +40,13 @@ func c_16_vec3(provided_data: Vector3) -> PackedByteArray:
 
 	return data
 
+
 ## Decompress a PackedByteArray to a Vector3 using 16 bit precision
 ## @returns Vector3
 func d_16_vec3(provided_data: PackedByteArray) -> Vector3:
 	# Validate array size
 	if provided_data.size() < 6:
-		GlobalLogger.logs("'%s' contained invalid PackedByteArray size. Can not decode value.", Enum.LogLevel.WARNING)
+		GlobalLogger.log("'%s' contained invalid PackedByteArray size. Can not decode value.", Enum.LogLevel.WARNING)
 		return Vector3()
 
 	var x = _int_to_float(provided_data.decode_s16(0))
@@ -51,6 +54,7 @@ func d_16_vec3(provided_data: PackedByteArray) -> Vector3:
 	var z = _int_to_float(provided_data.decode_s16(4))
 
 	return Vector3(x, y, z)
+
 
 ## Compresses a user position with octree position to a PackedByteArray using 32 bit precision
 ## @returns PackedByteArray
@@ -88,6 +92,7 @@ func c_32_pos(provided_data: Vector3) -> PackedByteArray:
 
 	return p_c_pos
 
+
 ## Decompress a user position with octree position to a Vector3 using 32 bit precision
 ## @returns Vector3
 func d_32_pos(provided_data: PackedByteArray) -> Vector3:
@@ -109,6 +114,7 @@ func d_32_pos(provided_data: PackedByteArray) -> Vector3:
 	var global_position = Vector3(g_pos_x, g_pos_y, g_pos_z)
 
 	return global_position
+
 
 ## Compresses a user position with octree position to a PackedByteArray using 16 bit precision
 ## @returns PackedByteArray
@@ -134,6 +140,7 @@ func c_16_pos(provided_data: Vector3) -> PackedByteArray:
 
 	return p_c_pos
 
+
 ## Decompress a user position with octree position to a Vector3 using 16 bit precision
 ## @returns Vector3
 func d_16_pos(provided_data: PackedByteArray) -> Vector3:
@@ -156,9 +163,11 @@ func d_16_pos(provided_data: PackedByteArray) -> Vector3:
 
 	return global_position
 
+
 func _float_to_int(val: float) -> int:
 	const FLOAT_PRECISION: int = 1000
 	return int(val * FLOAT_PRECISION)
+
 
 func _int_to_float(val: int) -> float:
 	const FLOAT_PRECISION: int = 1000

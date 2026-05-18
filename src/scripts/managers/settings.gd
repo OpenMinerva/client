@@ -6,33 +6,53 @@
 # License: MIT License
 # Authors: Armored Dragon
 # --- License
-
 extends Node
 
-var _settings = {}
+const _templates = {
+	# The full settings file that is saved and stored.
+	"settings_file": {
+		"graphics": {
+			"display_mode": Enum.Settings.Graphics.DisplayMode.FULLSCREEN,
+		},
+		"config": {
+			"session_servers": [],
+		},
+	},
+
+	# Small templates that are duplicated and used to
+	"session_server": {
+		"name": "",
+		"url": "",
+		"date_added": int(0),
+	},
+}
+
+var _settings = { }
+
 
 func _ready():
 	_load_settings()
 
+
 # Settings versioning
 # Settings file upgrade
-
 # Get setting
 func get_session_servers() -> Array:
 	var return_arr = []
 
-	return_arr = _settings.get("config", {}).get("session_servers", [])
+	return_arr = _settings.get("config", { }).get("session_servers", [])
 
 	return return_arr
 
-func add_session_server(session_server: Dictionary) -> bool:
-	var _name = session_server.get("name", "")
-	var _url = session_server.get("url", "")
+
+func add_session_server(server_url: String) -> bool:
 	var _date_added = Time.get_unix_time_from_system()
 
-	_settings.config.session_servers.append({"name": _name, "url": _url, "date_added": _date_added})
+	_settings.config.session_servers.append({ "url": server_url, "date_added": _date_added })
 	_save_settings()
+	Events.emit_signal("dash_settings_updated")
 	return true
+
 
 func remove_session_server(url: String) -> bool:
 	var _index = -1
@@ -45,15 +65,18 @@ func remove_session_server(url: String) -> bool:
 		_settings.config.session_servers.remove_at(_index)
 
 	_save_settings()
+	Events.emit_signal("dash_settings_updated")
 	return false
+
 
 func _save_settings():
 	var _file = FileAccess.open("user://settings/current.json", FileAccess.WRITE)
 	var _settings_string: String = JSON.stringify(_settings)
 	_file.store_string(_settings_string)
 	_file.close()
-	GlobalLogger.logs("Saved settings file.", Enum.LogLevel.INFO)
+	GlobalLogger.log("Saved settings file.", Enum.LogLevel.INFO)
 	return
+
 
 func _load_settings() -> void:
 	var _settings_exist: bool = FileAccess.file_exists("user://settings/current.json")
@@ -62,32 +85,14 @@ func _load_settings() -> void:
 		var _content = _file.get_as_text()
 		var _parsed = JSON.parse_string(_content)
 		_settings = _parsed
-		GlobalLogger.logs("Settings have been loaded.", Enum.LogLevel.INFO)
+		print(_content)
+		GlobalLogger.log("Settings have been loaded.", Enum.LogLevel.INFO)
 		return
 
 	# TODO: Check if backup settings exist.
-	GlobalLogger.logs("Settings file does not exist, creating new settings file.", Enum.LogLevel.INFO)
+	GlobalLogger.log("Settings file does not exist, creating new settings file.", Enum.LogLevel.INFO)
 	FileManager.create_file("user://settings/", "current.json")
 	_settings = _templates.settings_file
 	_save_settings()
-	GlobalLogger.logs("Blank settings have been loaded.", Enum.LogLevel.INFO)
+	GlobalLogger.log("Blank settings have been loaded.", Enum.LogLevel.INFO)
 	return
-
-const _templates = {
-	# The full settings file that is saved and stored.
-	"settings_file": {
-		"graphics": {
-			"display_mode": Enum.Settings.Graphics.DisplayMode.FULLSCREEN
-		},
-		"config": {
-			"session_servers": []
-		}
-	},
-
-	# Small templates that are duplicated and used to
-	"session_server": {
-		"name": "",
-		"url": "",
-		"date_added": int(0)
-	}
-}

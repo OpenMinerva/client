@@ -6,25 +6,26 @@
 # License: MIT License
 # Authors: Armored Dragon
 # --- License
-
 extends Node
 
+
 func authenticate(url: String) -> Dictionary:
-	var _return_dict: Dictionary = {"ok": false, "error": ""}
+	var _return_dict: Dictionary = { "ok": false, "error": "" }
 
 	# TODO: Do we need a new authentication key?
-	if GlobalAccount.dev_session_server_api_key == "":
+	if Accounts.get_session_server_token(url) == "":
 		var url_deconstructed = UrlParser.deconstruct(url)
 		if url_deconstructed.ok == false:
 			var ERROR_MESSAGE = "Failed to deconstruct the url '%s'" % url
-			GlobalLogger.logs(ERROR_MESSAGE, Enum.LogLevel.WARNING)
+			GlobalLogger.log(ERROR_MESSAGE, Enum.LogLevel.WARNING)
 			_return_dict.error = ERROR_MESSAGE
 			return _return_dict
 		url_deconstructed = url_deconstructed.data
 
+		var _account = Accounts.get_account(Accounts.active_account)
 		var body: Dictionary = {
-			"id_token": GlobalAccount.active_account.id_token,
-			"challenge": "challenge value"
+			"id_token": _account.auth.id_token,
+			"challenge": "challenge value",
 		}
 		var authentication_response = await HTTP.req(HTTPClient.Method.METHOD_POST, url_deconstructed.host, "/api/v1/getAuthenticationKey", url_deconstructed.port, ["Accept: application/json", "Content-Type: application/json"], JSON.stringify(body))
 
@@ -40,6 +41,7 @@ func authenticate(url: String) -> Dictionary:
 
 	return _return_dict
 
+
 func get_sessions() -> Array:
 	var _return_arr = []
 	var _session_servers = SettingsManager.get_session_servers()
@@ -50,17 +52,17 @@ func get_sessions() -> Array:
 
 		var url_deconstructed = UrlParser.deconstruct(server.url)
 		if url_deconstructed.ok == false:
-			GlobalLogger.logs("Failed to parse the session server URL.", Enum.LogLevel.INFO)
+			GlobalLogger.log("Failed to parse the session server URL.", Enum.LogLevel.INFO)
 			continue
 		url_deconstructed = url_deconstructed.data
-
+		var _api_key = Accounts.get_session_server_token(url_deconstructed.host)
 		var form_parts := [
 			"search=%s" % search,
 			"tags=%s" % tags,
 		]
 		var form_string: String = "&".join(form_parts)
 
-		var sessions_response = await HTTP.req(HTTPClient.Method.METHOD_GET, url_deconstructed.host, "/api/v1/getSessions?%s" % form_string, url_deconstructed.port, ["Accept: application/json", "Content-Type: application/x-www-form-urlencoded", "x-api-key: %s" % GlobalAccount.dev_session_server_api_key])
+		var sessions_response = await HTTP.req(HTTPClient.Method.METHOD_GET, url_deconstructed.host, "/api/v1/getSessions?%s" % form_string, url_deconstructed.port, ["Accept: application/json", "Content-Type: application/x-www-form-urlencoded", "x-api-key: %s" % _api_key])
 
 		var sessions_in_server = _session_request_received(url_deconstructed.host, sessions_response)
 		# TODO: Validate request health
@@ -68,8 +70,9 @@ func get_sessions() -> Array:
 
 	return _return_arr
 
+
 func _session_request_received(_host: String, response: Dictionary) -> Dictionary:
-	var _return_arr = {"ok": false, "error": "", "data": null}
+	var _return_arr = { "ok": false, "error": "", "data": null }
 
 	# TODO: If response.ok
 	# TODO: Validate is valid JSON
@@ -81,14 +84,16 @@ func _session_request_received(_host: String, response: Dictionary) -> Dictionar
 
 	return _return_arr
 
+
 func _authentication_request_received(_host: String, response: Dictionary) -> Dictionary:
-	var _return_arr = {"ok": false, "error": "", "data": null}
+	var _return_arr = { "ok": false, "error": "", "data": null }
 
 	# TODO: If response.ok
 	# TODO: Validate is valid JSON
 	# TODO: Validate key exists
+	var _api_key = JSON.parse_string(response.body).key
 
-	GlobalAccount.dev_session_server_api_key = JSON.parse_string(response.body).key
+	Accounts.set_session_server_token(_host, _api_key)
 
 	# If authentication succeeded, record data
 	# Else report error.
