@@ -33,7 +33,7 @@ FileManager="*uid://d2s50p717g3n"
 SettingsManager="*uid://cgvvntx8o26ds"
 AccountServers="*uid://bpysjoq7n0ytu"
 Random="*uid://1js68qt8w0mv"
-Accounts="*uid://dtlb70kxvbtvn"
+Accounts="*uid://sdrs0dnojnes"
 Events="*uid://c656spc3ppdlw"
 SessionQuery="*uid://dbrabs53sf0x5"
 Enum="*uid://dgpvcem71xdbn"
@@ -101,6 +101,7 @@ sprint={
 
 3d/run_on_separate_thread=true
 3d/physics_engine="Jolt Physics"
+common/physics_interpolation=true
 
 [rendering]
 

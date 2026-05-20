@@ -1,13 +1,13 @@
 [gd_scene format=3 uid="uid://bysrhijnau31g"]
 
-[ext_resource type="Script" uid="uid://bx6abcqetw04c" path="res://scenes/managers/scene/entity.gd" id="1_5on25"]
+[ext_resource type="Script" uid="uid://de42u527lvhcx" path="res://scenes/managers/scene/spawnable_manager.gd" id="1_5on25"]
 [ext_resource type="Script" uid="uid://c13l6ywhxq6n5" path="res://scenes/managers/scene/player.gd" id="1_c3hqj"]
 [ext_resource type="Script" uid="uid://ckxuws4l4alod" path="res://scenes/managers/scene/network.gd" id="1_fundk"]
 [ext_resource type="Script" uid="uid://cxbdjoelope42" path="res://scenes/managers/scene/signalbus.gd" id="2_fundk"]
 
 [node name="Base" type="Node3D" unique_id=2084163635]
 
-[node name="EntityManager" type="Node" parent="." unique_id=1378414814]
+[node name="SpawnableManager" type="Node" parent="." unique_id=1378414814]
 script = ExtResource("1_5on25")
 
 [node name="NetworkManager" type="Node" parent="." unique_id=2144728320]
