@@ -5,6 +5,7 @@ var _my_id = 0
 var _server_id: String = ""
 
 @onready var player_m = get_node("../PlayerManager")
+@onready var spawnable_m = get_node("../SpawnableManager")
 @onready var scene_m = get_tree().current_scene.get_node("SceneManager")
 @onready var network_m = get_tree().current_scene.get_node("NetworkManager")
 
@@ -56,6 +57,7 @@ func add_players(players: Dictionary):
 		player_m.add_player(int(_player))
 
 
+# FIXME: Marked for termination
 @rpc("authority", "reliable")
 func spawn_entity():
 	GlobalLogger.log("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
@@ -72,8 +74,17 @@ func entity_position(entity_id: int, position):
 		target_node.rotation = NetworkCompression.d_16_vec3(position.slice(12))
 
 
+@rpc("any_peer", "reliable")
+func dev_request_spawnables_database() -> void:
+	var caller_id = multiplayer.get_remote_sender_id()
+	var the_data = spawnable_m._database
+	spawnable_m.receive_database.rpc_id(caller_id, the_data, spawnable_m._id)
+	return
+
+
 func _on_connected_to_server():
 	GlobalLogger.log("[%s] I am connected to a server." % _my_id)
+	rpc_id(1, "dev_request_spawnables_database")
 
 
 func _on_server_disconnected():

@@ -49,7 +49,8 @@ func _physics_process(_delta):
 # TODO: Status response for spawn?
 # TODO: How would large assets work?
 @rpc("authority", "reliable")
-func spawn_spawnable() -> void:
+func spawn_spawnable(p_name: String = "") -> void:
+	var _spawnable_id = p_name if p_name != "" else _id
 	# Create the physics body
 	var rigid_body = RigidBody3D.new()
 
@@ -76,18 +77,19 @@ func spawn_spawnable() -> void:
 	_entry.physics_owner = 1 # TODO: Always the host, is this correct?
 	_entry.spawner = 1 # TODO: The host is currently the only one that can spawn in anyways, but this will need to be changed.
 	_entry.node = rigid_body
-	_entry.id = _id
+	_entry.id = _spawnable_id
 	_database.append(_entry)
 
 	# Set scene data
-	rigid_body.name = str(_id)
+	rigid_body.name = str(_spawnable_id)
 	rigid_body.physics_interpolation_mode = true
-	rigid_body.position = Vector3(0, 5, 0)
+	rigid_body.position = Vector3(0, 5, 5)
 	# Add to scene
 	get_parent().get_node("root").add_child(rigid_body)
 
 	# Update debug id
-	_id = _id + 1
+	if p_name == "":
+		_id = _id + 1
 
 	return
 
@@ -98,6 +100,15 @@ func delete_spawnable() -> void:
 	GlobalLogger.log("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	# TODO: Delete from database
 	# TODO: Delete from scene
+	return
+
+
+@rpc("authority", "reliable")
+func receive_database(database: Array, id: int) -> void:
+	_id = id
+	for spawnable in database:
+		print("Client syncing '%s'" % spawnable.id)
+		spawn_spawnable(str(spawnable.id))
 	return
 
 

@@ -115,7 +115,7 @@ func _unhandled_input(event):
 
 	if event.keycode == 4194332 && event.pressed == true:
 		GlobalLogger.log("Spawning Cube!")
-
+		# TODO: Create spawning request handler.
 		scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager").spawn_spawnable()
 		scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager").spawn_spawnable.rpc()
 		get_viewport().set_input_as_handled()
