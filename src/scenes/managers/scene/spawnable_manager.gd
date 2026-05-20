@@ -45,6 +45,18 @@ func _physics_process(_delta):
 	return
 
 
+# FIXME: This is a test of syncing all positions of all spawnables. This probably is not going to be robust enough.
+func sync_all() -> void:
+	if !is_multiplayer_authority():
+		return
+	for spawnable in _database:
+		if spawnable.has_physics == false:
+			continue
+
+		position_spawnable.rpc(spawnable.id, spawnable.node.position, spawnable.node.rotation)
+	return
+
+
 # TODO: Require actioning user
 # TODO: Status response for spawn?
 # TODO: How would large assets work?
