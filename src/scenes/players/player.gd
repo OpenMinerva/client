@@ -113,6 +113,21 @@ func _unhandled_input(event):
 	if event is InputEventMouseButton:
 		return
 
+	if event.keycode == 4194333 && event.pressed == true:
+		capture_mouse(!mouse_captured)
+		get_viewport().set_input_as_handled()
+		return
+
+	if event.keycode == 4194340 && event.pressed == true:
+		if mouse_captured:
+			capture_mouse(false)
+			Events.emit_signal("debug_entity_set_state")
+		else:
+			capture_mouse(true)
+			Events.emit_signal("debug_entity_set_state")
+		get_viewport().set_input_as_handled()
+		return
+
 	if event.keycode == 4194332 && event.pressed == true:
 		GlobalLogger.log("Spawning Cube!")
 		# TODO: Create spawning request handler.

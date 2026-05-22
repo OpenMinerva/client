@@ -83,6 +83,14 @@ func dev_request_spawnables_database() -> void:
 	return
 
 
+@rpc("any_peer", "reliable")
+func dev_request_sync() -> void:
+	if is_multiplayer_authority() == false:
+		return
+	spawnable_m.sync_all()
+	return
+
+
 func _on_connected_to_server():
 	GlobalLogger.log("[%s] I am connected to a server." % _my_id)
 	rpc_id(1, "dev_request_spawnables_database")

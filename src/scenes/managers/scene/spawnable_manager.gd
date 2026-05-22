@@ -22,6 +22,8 @@ var _dev_num_network_batches: int = 4
 var _id = 10
 var _database := []
 
+@onready var network_m = get_node("../NetworkManager")
+
 
 # TODO: Handle physics for our items, and
 func _physics_process(_delta):
@@ -95,7 +97,7 @@ func spawn_spawnable(p_name: String = "") -> void:
 	# Set scene data
 	rigid_body.name = str(_spawnable_id)
 	rigid_body.physics_interpolation_mode = true
-	rigid_body.position = Vector3(0, 5, 5)
+	rigid_body.position = Vector3(0, 5, -10)
 	# Add to scene
 	get_parent().get_node("root").add_child(rigid_body)
 
@@ -121,6 +123,7 @@ func receive_database(database: Array, id: int) -> void:
 	for spawnable in database:
 		print("Client syncing '%s'" % spawnable.id)
 		spawn_spawnable(str(spawnable.id))
+	network_m.rpc_id(1, "dev_request_sync")
 	return
 
 
