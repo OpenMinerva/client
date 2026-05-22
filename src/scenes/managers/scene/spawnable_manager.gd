@@ -8,6 +8,14 @@
 # --- License
 extends Node
 
+enum SpawnableType {
+	EMPTY = 0,
+	CUBE = 1,
+	CONE = 2,
+	CAPSULE = 3,
+	MODEL = 10,
+}
+
 const SPAWNABLE_TEMPLATE: Dictionary = {
 	"type": 0,
 	"spawner": "1",
@@ -63,8 +71,60 @@ func sync_all() -> void:
 # TODO: Status response for spawn?
 # TODO: How would large assets work?
 @rpc("authority", "reliable")
-func spawn_spawnable(p_name: String = "") -> void:
-	var _spawnable_id = p_name if p_name != "" else _id
+func spawn_spawnable(p_type: int = 0, p_name: String = "") -> void:
+	var _spawnable_id = p_name if p_name != "" else str(_id)
+	var _spawned_entity
+
+	match p_type:
+		SpawnableType.CAPSULE:
+			_spawned_entity = _spawn_capsule(_spawnable_id)
+		SpawnableType.CUBE:
+			_spawned_entity = _spawn_cube(_spawnable_id)
+		_:
+			return
+
+	# Add to scene
+	get_parent().get_node("root").add_child(_spawned_entity)
+
+	# Update debug id
+	if p_name == "":
+		_id = _id + 1
+
+	return
+
+
+# TODO: require actioning user
+@rpc("authority", "reliable")
+func delete_spawnable() -> void:
+	GlobalLogger.log("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
+	# TODO: Delete from database
+	# TODO: Delete from scene
+	return
+
+
+@rpc("authority", "reliable")
+func receive_database(database: Array, id: int) -> void:
+	_id = id
+	for spawnable in database:
+		print("Client syncing '%s'" % spawnable.id)
+		spawn_spawnable(spawnable.type, str(spawnable.id))
+	network_m.rpc_id(1, "dev_request_sync")
+	return
+
+
+# TODO: Research "unreliable" connections. I think this is an applicable use case since a missed packet would probably be corrected in the next instant?
+@rpc("authority", "unreliable")
+func position_spawnable(id: int, p_position: Vector3, p_rotation: Vector3) -> void:
+	# FIXME: Flimsy!
+	var node = get_parent().get_node_or_null("root/%s" % id)
+
+	if node:
+		node.position = p_position
+		node.rotation = p_rotation
+	return
+
+
+func _spawn_cube(p_name: String = "") -> RigidBody3D:
 	# Create the physics body
 	var rigid_body = RigidBody3D.new()
 
@@ -91,49 +151,52 @@ func spawn_spawnable(p_name: String = "") -> void:
 	_entry.physics_owner = 1 # TODO: Always the host, is this correct?
 	_entry.spawner = 1 # TODO: The host is currently the only one that can spawn in anyways, but this will need to be changed.
 	_entry.node = rigid_body
-	_entry.id = _spawnable_id
+	_entry.id = int(p_name)
+	_entry.type = SpawnableType.CUBE
 	_database.append(_entry)
 
 	# Set scene data
-	rigid_body.name = str(_spawnable_id)
+	rigid_body.name = str(p_name)
 	rigid_body.physics_interpolation_mode = true
 	rigid_body.position = Vector3(0, 5, -10)
-	# Add to scene
-	get_parent().get_node("root").add_child(rigid_body)
-
-	# Update debug id
-	if p_name == "":
-		_id = _id + 1
-
-	return
+	return rigid_body
 
 
-# TODO: require actioning user
-@rpc("authority", "reliable")
-func delete_spawnable() -> void:
-	GlobalLogger.log("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
-	# TODO: Delete from database
-	# TODO: Delete from scene
-	return
+func _spawn_capsule(p_name: String = "") -> RigidBody3D:
+	# Create the physics body
+	var rigid_body = RigidBody3D.new()
 
+	# Create a MeshInstance
+	var mesh_instance = MeshInstance3D.new()
+	var mesh = CapsuleMesh.new()
+	mesh.radius = 0.5
+	mesh.height = 2
+	mesh_instance.mesh = mesh
+	rigid_body.add_child(mesh_instance)
 
-@rpc("authority", "reliable")
-func receive_database(database: Array, id: int) -> void:
-	_id = id
-	for spawnable in database:
-		print("Client syncing '%s'" % spawnable.id)
-		spawn_spawnable(str(spawnable.id))
-	network_m.rpc_id(1, "dev_request_sync")
-	return
+	# Create collision shape
+	var collision_shape = CollisionShape3D.new()
+	var box_shape = CapsuleShape3D.new()
+	mesh.radius = 0.5
+	mesh.height = 2
+	collision_shape.shape = box_shape
+	rigid_body.add_child(collision_shape)
 
+	# If we are a client, we are not simulating the physics
+	if !is_multiplayer_authority():
+		rigid_body.freeze = true
 
-# TODO: Research "unreliable" connections. I think this is an applicable use case since a missed packet would probably be corrected in the next instant?
-@rpc("authority", "unreliable")
-func position_spawnable(id: int, p_position: Vector3, p_rotation: Vector3) -> void:
-	# FIXME: Flimsy!
-	var node = get_parent().get_node_or_null("root/%s" % id)
+	# Add to database
+	var _entry = SPAWNABLE_TEMPLATE.duplicate()
+	_entry.physics_owner = 1 # TODO: Always the host, is this correct?
+	_entry.spawner = 1 # TODO: The host is currently the only one that can spawn in anyways, but this will need to be changed.
+	_entry.node = rigid_body
+	_entry.id = int(p_name)
+	_entry.type = SpawnableType.CAPSULE
+	_database.append(_entry)
 
-	if node:
-		node.position = p_position
-		node.rotation = p_rotation
-	return
+	# Set scene data
+	rigid_body.name = str(p_name)
+	rigid_body.physics_interpolation_mode = true
+	rigid_body.position = Vector3(0, 5, -10)
+	return rigid_body

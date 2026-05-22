@@ -128,13 +128,6 @@ func _unhandled_input(event):
 		get_viewport().set_input_as_handled()
 		return
 
-	if event.keycode == 4194332 && event.pressed == true:
-		GlobalLogger.log("Spawning Cube!")
-		# TODO: Create spawning request handler.
-		scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager").spawn_spawnable()
-		scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager").spawn_spawnable.rpc()
-		get_viewport().set_input_as_handled()
-
 
 func round_to_dec(num, digit):
 	return round(num * pow(10.0, digit)) / pow(10.0, digit)

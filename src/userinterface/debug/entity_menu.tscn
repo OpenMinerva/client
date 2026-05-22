@@ -69,25 +69,25 @@ theme_override_font_sizes/font_size = 20
 text = "Entity Spawner Debug Menu"
 horizontal_alignment = 1
 
-[node name="Button" type="Button" parent="HBoxContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=568477424]
+[node name="Cube" type="Button" parent="HBoxContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=568477424]
 layout_mode = 2
 focus_mode = 0
 theme = ExtResource("1_cxy8m")
 text = "Cube"
 
-[node name="Button2" type="Button" parent="HBoxContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=926432263]
+[node name="Capsule" type="Button" parent="HBoxContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=926432263]
 layout_mode = 2
 focus_mode = 0
 theme = ExtResource("1_cxy8m")
 text = "Capsule"
 
-[node name="Button3" type="Button" parent="HBoxContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1693527412]
+[node name="Cone" type="Button" parent="HBoxContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1693527412]
 layout_mode = 2
 focus_mode = 0
 theme = ExtResource("1_cxy8m")
 text = "Cone"
 
-[node name="Button4" type="Button" parent="HBoxContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1821128058]
+[node name="Model" type="Button" parent="HBoxContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1821128058]
 layout_mode = 2
 focus_mode = 0
 theme = ExtResource("1_cxy8m")
