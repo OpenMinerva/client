@@ -11,7 +11,6 @@ extends Node
 enum SpawnableType {
 	EMPTY = 0,
 	CUBE = 1,
-	CONE = 2,
 	CAPSULE = 3,
 	MODEL = 10,
 }
@@ -80,6 +79,8 @@ func spawn_spawnable(p_type: int = 0, p_name: String = "") -> void:
 			_spawned_entity = _spawn_capsule(_spawnable_id)
 		SpawnableType.CUBE:
 			_spawned_entity = _spawn_cube(_spawnable_id)
+		SpawnableType.MODEL:
+			_spawned_entity = _spawn_model(_spawnable_id)
 		_:
 			return
 
@@ -200,3 +201,67 @@ func _spawn_capsule(p_name: String = "") -> RigidBody3D:
 	rigid_body.physics_interpolation_mode = true
 	rigid_body.position = Vector3(0, 5, -10)
 	return rigid_body
+
+
+func _spawn_model(p_name: String = "") -> RigidBody3D:
+	# Create the physics body
+	var rigid_body = RigidBody3D.new()
+
+	# Create a MeshInstance
+	var doc = GLTFDocument.new()
+	var state = GLTFState.new()
+
+	# TODO: Dynamic file path on machine?
+	doc.append_from_file("", state)
+	var glb_scene: Node3D = doc.generate_scene(state)
+
+	rigid_body.add_child(glb_scene)
+	var colliders_to_add = _add_collisions_recursive(rigid_body)
+
+	for collider in colliders_to_add:
+		rigid_body.add_child(collider)
+	# If we are a client, we are not simulating the physics
+	if !is_multiplayer_authority():
+		rigid_body.freeze = true
+
+	# Add to database
+	var _entry = SPAWNABLE_TEMPLATE.duplicate()
+	_entry.physics_owner = 1 # TODO: Always the host, is this correct?
+	_entry.spawner = 1 # TODO: The host is currently the only one that can spawn in anyways, but this will need to be changed.
+	_entry.node = rigid_body
+	_entry.id = int(p_name)
+	_entry.type = SpawnableType.MODEL
+	_database.append(_entry)
+
+	# Set scene data
+	rigid_body.name = str(p_name)
+	rigid_body.physics_interpolation_mode = true
+	rigid_body.position = Vector3(0, 2, -10)
+	return rigid_body
+
+
+func _add_collisions_recursive(node: Node):
+	var meshes = _find_all_mesh_instances(node)
+	var colliders = []
+
+	for mesh in meshes:
+		var collision_shape = CollisionShape3D.new()
+		var convex_shape = ConvexPolygonShape3D.new()
+		convex_shape.set_points(mesh.mesh.get_faces())
+
+		collision_shape.shape = convex_shape
+		colliders.append(collision_shape)
+
+	return colliders
+
+
+func _find_all_mesh_instances(node: Node) -> Array:
+	var found = []
+
+	if node is MeshInstance3D:
+		found.append(node)
+
+	for child in node.get_children():
+		found.append_array(_find_all_mesh_instances(child))
+
+	return found

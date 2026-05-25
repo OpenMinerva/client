@@ -16,6 +16,7 @@ func _ready() -> void:
 	Events.debug_entity_set_state.connect(_toggle_state)
 	button_container.get_node("Cube").pressed.connect(_spawn_cube)
 	button_container.get_node("Capsule").pressed.connect(_spawn_capsule)
+	button_container.get_node("Model").pressed.connect(_spawn_model)
 	return
 
 
@@ -38,5 +39,14 @@ func _spawn_capsule() -> void:
 	# TODO: Create spawning request handler.
 	scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager").spawn_spawnable(3)
 	scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager").spawn_spawnable.rpc(3)
+	get_viewport().set_input_as_handled()
+	return
+
+
+func _spawn_model() -> void:
+	GlobalLogger.log("Spawning Model!")
+	# TODO: Create spawning request handler.
+	scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager").spawn_spawnable(10)
+	scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager").spawn_spawnable.rpc(10)
 	get_viewport().set_input_as_handled()
 	return

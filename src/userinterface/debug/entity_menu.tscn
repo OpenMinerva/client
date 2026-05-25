@@ -81,12 +81,6 @@ focus_mode = 0
 theme = ExtResource("1_cxy8m")
 text = "Capsule"
 
-[node name="Cone" type="Button" parent="HBoxContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1693527412]
-layout_mode = 2
-focus_mode = 0
-theme = ExtResource("1_cxy8m")
-text = "Cone"
-
 [node name="Model" type="Button" parent="HBoxContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1821128058]
 layout_mode = 2
 focus_mode = 0
