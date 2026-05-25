@@ -443,7 +443,7 @@ script = ExtResource("21_d3sj0")
 [node name="Filesystem" parent="MarginContainer/VBoxContainer/Content/Container/Assets/HBox/Left" parent_id_path=PackedInt32Array(1982137112, 1799305671) index="0" unique_id=1857841582 instance=ExtResource("4_ql400")]
 layout_mode = 2
 
-[node name="Local2" parent="MarginContainer/VBoxContainer/Content/Container/Assets/HBox/Left" parent_id_path=PackedInt32Array(1982137112, 1799305671) index="1" unique_id=1530762010 instance=ExtResource("4_ql400")]
+[node name="Local" parent="MarginContainer/VBoxContainer/Content/Container/Assets/HBox/Left" parent_id_path=PackedInt32Array(1982137112, 1799305671) index="1" unique_id=1530762010 instance=ExtResource("4_ql400")]
 layout_mode = 2
 
 [node name="Cloud" parent="MarginContainer/VBoxContainer/Content/Container/Assets/HBox/Left" parent_id_path=PackedInt32Array(1982137112, 1799305671) index="2" unique_id=1842483100 instance=ExtResource("4_ql400")]
