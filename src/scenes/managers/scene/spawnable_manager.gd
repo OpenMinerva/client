@@ -70,7 +70,7 @@ func sync_all() -> void:
 # TODO: Status response for spawn?
 # TODO: How would large assets work?
 @rpc("authority", "reliable")
-func spawn_spawnable(p_type: int = 0, p_name: String = "") -> void:
+func spawn_spawnable(p_type: int = 0, p_name: String = "", p_path = "") -> void:
 	var _spawnable_id = p_name if p_name != "" else str(_id)
 	var _spawned_entity
 
@@ -80,7 +80,7 @@ func spawn_spawnable(p_type: int = 0, p_name: String = "") -> void:
 		SpawnableType.CUBE:
 			_spawned_entity = _spawn_cube(_spawnable_id)
 		SpawnableType.MODEL:
-			_spawned_entity = _spawn_model(_spawnable_id)
+			_spawned_entity = _spawn_model(_spawnable_id, p_path)
 		_:
 			return
 
@@ -203,7 +203,7 @@ func _spawn_capsule(p_name: String = "") -> RigidBody3D:
 	return rigid_body
 
 
-func _spawn_model(p_name: String = "") -> RigidBody3D:
+func _spawn_model(p_name: String = "", p_path = "") -> RigidBody3D:
 	# Create the physics body
 	var rigid_body = RigidBody3D.new()
 
@@ -212,7 +212,7 @@ func _spawn_model(p_name: String = "") -> RigidBody3D:
 	var state = GLTFState.new()
 
 	# TODO: Dynamic file path on machine?
-	doc.append_from_file("", state)
+	doc.append_from_file(p_path[0], state)
 	var glb_scene: Node3D = doc.generate_scene(state)
 
 	rigid_body.add_child(glb_scene)
