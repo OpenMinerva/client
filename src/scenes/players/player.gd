@@ -37,7 +37,6 @@ func _enter_tree():
 func _ready():
 	camera.fov = base_fov
 	camera.current = false
-	get_viewport().files_dropped.connect(_on_files_dropped)
 
 
 func _physics_process(delta):
@@ -150,12 +149,6 @@ func capture_mouse(to_capture: bool):
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		mouse_captured = true
 	return
-
-
-# TODO: Organize file dropping
-func _on_files_dropped(files):
-	scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager").spawn_spawnable(10, "", files)
-	scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager").spawn_spawnable.rpc(10, "", files)
 
 
 func _send_player_synchronization_info():
