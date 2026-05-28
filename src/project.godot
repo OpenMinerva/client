@@ -40,6 +40,7 @@ Enum="*uid://dgpvcem71xdbn"
 Bootstrap="*uid://cvj10vdw6hlqw"
 NetworkCompression="*uid://b2iq75uom64x2"
 HTTP="*uid://d3cnfdwjxopsx"
+FileDrop="*uid://btgqgfpx0av4m"
 OAuth2Client="*uid://c4b880pwgfrty"
 UrlParser="*uid://budprjmmpally"
 

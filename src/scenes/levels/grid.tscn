@@ -34,5 +34,5 @@ environment = SubResource("Environment_q28r8")
 [node name="Grid" type="CSGBox3D" parent="." unique_id=533069808]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, 0)
 use_collision = true
-size = Vector3(1000, 0.01, 1000)
+size = Vector3(1000, 0.1, 1000)
 material = SubResource("ShaderMaterial_q28r8")

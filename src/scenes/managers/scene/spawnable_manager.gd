@@ -212,7 +212,7 @@ func _spawn_model(p_name: String = "", p_path = "") -> RigidBody3D:
 	var state = GLTFState.new()
 
 	# TODO: Dynamic file path on machine?
-	doc.append_from_file(p_path[0], state)
+	doc.append_from_file(p_path, state)
 	var glb_scene: Node3D = doc.generate_scene(state)
 
 	rigid_body.add_child(glb_scene)
