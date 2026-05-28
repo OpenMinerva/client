@@ -25,7 +25,7 @@ func _ready():
 	label_node.text = display_text
 	if icon_paths.has(selected_icon):
 		icon_node.texture = load(icon_paths[selected_icon])
-	button_node.theme_type_variation = selected_theme_type if selected_theme_type != null else null
+	button_node.theme_type_variation = selected_theme_type if selected_theme_type != null else \"\"
 "
 
 [node name="CategoryButton" type="Control" unique_id=649942124]
@@ -54,7 +54,6 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_default_cursor_shape = 2
 theme = ExtResource("1_dnctg")
-theme_type_variation = &"Danger"
 toggle_mode = true
 
 [node name="MarginContainer" type="MarginContainer" parent="Button" unique_id=665374152]
@@ -79,5 +78,5 @@ expand_mode = 2
 
 [node name="Label" type="Label" parent="Button/MarginContainer/VBoxContainer" unique_id=1807295119]
 layout_mode = 2
-text = "ERROR"
+text = "CategoryButton"
 horizontal_alignment = 1

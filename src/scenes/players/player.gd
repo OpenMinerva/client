@@ -18,7 +18,6 @@ var mouse_captured: bool = false
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
-@onready var hud = get_tree().current_scene.get_node("Hud")
 @onready var scene_m = get_tree().current_scene.get_node("SceneManager")
 # TODO: Mouse sensitivity from settings
 # TODO: Replace interaction ray

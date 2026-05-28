@@ -12,10 +12,12 @@ extends "res://userinterface/dash/scripts/pages/left_nav_container.gd"
 func _ready():
 	super._ready()
 
-	Events.dash_switch_tab.connect(_handle_switch_tab)
+	Events.dash_switch_tab.connect(_handle_page_opened)
 
 	return
 
 
-func _handle_switch_tab(tab_name) -> void:
+func _handle_page_opened(page_name) -> void:
+	if page_name != "Assets":
+		return
 	return
