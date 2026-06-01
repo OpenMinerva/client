@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://b3t1dk4vpjk6p"]
 
 [ext_resource type="Shader" uid="uid://bh250q6rfv615" path="res://resources/shaders/grid_shader.gdshader" id="1_ikf4c"]
-[ext_resource type="PackedScene" uid="uid://bd0i63pvw1n1x" path="res://userinterface/inspector/UserInteractionPanel.tscn" id="2_gbca3"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_dbach"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -40,6 +39,3 @@ use_collision = true
 size = Vector3(1000, 0.1, 1000)
 material = SubResource("ShaderMaterial_q28r8")
 metadata/scene_node = true
-
-[node name="UserInteractionPanel" parent="." unique_id=1668280409 instance=ExtResource("2_gbca3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.31623185, 0.8246053, -2.1260471)

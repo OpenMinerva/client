@@ -39,7 +39,7 @@ func add_node_to_tree(node: Node, parent_item: TreeItem):
 	if node.get_meta("scene_node", false):
 		var item = tree_view.create_item(parent_item)
 
-		item.set_text(0, node.name)
+		item.set_text(0, node.get_meta("pretty_name", node.name))
 		var class_n = node.get_class()
 		var icon_texture = get_class_icon(class_n)
 		item.set_icon(0, icon_texture)
@@ -78,8 +78,8 @@ func _on_popup_menu_id_pressed(id: int):
 		match id:
 			0:
 				print("Adding child")
-				spawnable_m.spawn_spawnable(1)
-				spawnable_m.spawn_spawnable.rpc(1)
+				spawnable_m.spawn_spawnable.rpc(1, "", "", _clicked_item.get_metadata(0))
+				spawnable_m.spawn_spawnable(1, "", "", _clicked_item.get_metadata(0))
 			1:
 				print("Removing node")
 				_clicked_item.get_metadata(0).queue_free()

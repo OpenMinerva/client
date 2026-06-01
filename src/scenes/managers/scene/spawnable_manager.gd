@@ -10,26 +10,35 @@ extends Node
 
 enum SpawnableType {
 	EMPTY = 0,
-	CUBE = 1,
+	BOX = 1,
+	RIGIDBODY = 2,
 	CAPSULE = 3,
 	MODEL = 10,
 }
 
 const SPAWNABLE_TEMPLATE: Dictionary = {
 	"type": 0,
-	"spawner": "1",
-	"has_physics": true,
-	"physics_owner": "1",
+	"spawner": 1,
+	"has_physics": false,
+	"physics_owner": 1,
 	"node": "",
-	"id": 1,
+	"id": -1,
 	"pretty_name": "ERROR",
 }
 
+var SpawnableMesh = {
+	SpawnableType.EMPTY: Node3D,
+	SpawnableType.BOX: BoxMesh,
+	SpawnableType.RIGIDBODY: RigidBody3D,
+	SpawnableType.CAPSULE: CapsuleMesh,
+	SpawnableType.MODEL: ArrayMesh,
+}
 var _dev_num_network_batches: int = 4
-var _id = 10
+var _database_id = 10
 var _database := []
 
 @onready var network_m = get_node("../NetworkManager")
+@onready var instance_root = get_parent().get_node("root")
 
 
 # TODO: Handle physics for our items, and
@@ -70,15 +79,15 @@ func sync_all() -> void:
 # TODO: Status response for spawn?
 # TODO: How would large assets work?
 @rpc("authority", "reliable")
-func spawn_spawnable(p_type: int = 0, p_name: String = "", p_path = "") -> void:
-	var _spawnable_id = p_name if p_name != "" else str(_id)
+func spawn_spawnable(p_type: int = 0, p_name: String = "", p_path = "", parent_node: Node = instance_root) -> void:
+	var _spawnable_id = p_name if p_name != "" else str(_database_id)
 	var _spawned_entity
 
 	match p_type:
 		SpawnableType.CAPSULE:
-			_spawned_entity = _spawn_capsule(_spawnable_id)
-		SpawnableType.CUBE:
-			_spawned_entity = _spawn_cube(_spawnable_id)
+			_spawned_entity = _spawn_node(SpawnableType.CAPSULE, 1, parent_node)
+		SpawnableType.BOX:
+			_spawned_entity = _spawn_node(SpawnableType.BOX, 1, parent_node)
 		SpawnableType.MODEL:
 			_spawned_entity = _spawn_model(_spawnable_id, p_path)
 		_:
@@ -86,10 +95,6 @@ func spawn_spawnable(p_type: int = 0, p_name: String = "", p_path = "") -> void:
 
 	# Add to scene
 	get_parent().get_node("root").add_child(_spawned_entity)
-
-	# Update debug id
-	if p_name == "":
-		_id = _id + 1
 
 	return
 
@@ -105,7 +110,7 @@ func delete_spawnable() -> void:
 
 @rpc("authority", "reliable")
 func receive_database(database: Array, id: int) -> void:
-	_id = id
+	_database_id = id
 	for spawnable in database:
 		print("Client syncing '%s'" % spawnable.id)
 		spawn_spawnable(spawnable.type, str(spawnable.id))
@@ -143,16 +148,10 @@ func get_all_node_children(node: Node) -> Array:
 	return nodes
 
 
+# FIXME: Unused function
 func _spawn_cube(p_name: String = "") -> RigidBody3D:
 	# Create the physics body
 	var rigid_body = RigidBody3D.new()
-
-	# Create a MeshInstance
-	var mesh_instance = MeshInstance3D.new()
-	var cube_mesh = BoxMesh.new()
-	cube_mesh.size = Vector3(0.5, 0.5, 0.5)
-	mesh_instance.mesh = cube_mesh
-	rigid_body.add_child(mesh_instance)
 
 	# Create collision shape
 	var collision_shape = CollisionShape3D.new()
@@ -161,65 +160,6 @@ func _spawn_cube(p_name: String = "") -> RigidBody3D:
 	collision_shape.shape = box_shape
 	rigid_body.add_child(collision_shape)
 
-	# If we are a client, we are not simulating the physics
-	if !is_multiplayer_authority():
-		rigid_body.freeze = true
-
-	# Add to database
-	var _entry = SPAWNABLE_TEMPLATE.duplicate()
-	_entry.physics_owner = 1 # TODO: Always the host, is this correct?
-	_entry.spawner = 1 # TODO: The host is currently the only one that can spawn in anyways, but this will need to be changed.
-	_entry.node = rigid_body
-	_entry.id = int(p_name)
-	_entry.type = SpawnableType.CUBE
-	_database.append(_entry)
-
-	set_node_visible_to_inspector(rigid_body)
-
-	# Set scene data
-	rigid_body.name = str(p_name)
-	rigid_body.physics_interpolation_mode = true
-	rigid_body.position = Vector3(0, 5, -10)
-	return rigid_body
-
-
-func _spawn_capsule(p_name: String = "") -> RigidBody3D:
-	# Create the physics body
-	var rigid_body = RigidBody3D.new()
-
-	# Create a MeshInstance
-	var mesh_instance = MeshInstance3D.new()
-	var mesh = CapsuleMesh.new()
-	mesh.radius = 0.5
-	mesh.height = 2
-	mesh_instance.mesh = mesh
-	rigid_body.add_child(mesh_instance)
-
-	# Create collision shape
-	var collision_shape = CollisionShape3D.new()
-	var box_shape = CapsuleShape3D.new()
-	mesh.radius = 0.5
-	mesh.height = 2
-	collision_shape.shape = box_shape
-	rigid_body.add_child(collision_shape)
-
-	# If we are a client, we are not simulating the physics
-	if !is_multiplayer_authority():
-		rigid_body.freeze = true
-
-	# Add to database
-	var _entry = SPAWNABLE_TEMPLATE.duplicate()
-	_entry.physics_owner = 1 # TODO: Always the host, is this correct?
-	_entry.spawner = 1 # TODO: The host is currently the only one that can spawn in anyways, but this will need to be changed.
-	_entry.node = rigid_body
-	_entry.id = int(p_name)
-	_entry.type = SpawnableType.CAPSULE
-	_database.append(_entry)
-
-	# Set scene data
-	rigid_body.name = str(p_name)
-	rigid_body.physics_interpolation_mode = true
-	rigid_body.position = Vector3(0, 5, -10)
 	return rigid_body
 
 
@@ -258,6 +198,47 @@ func _spawn_model(p_name: String = "", p_path = "") -> RigidBody3D:
 	rigid_body.physics_interpolation_mode = true
 	rigid_body.position = Vector3(0, 2, -10)
 	return rigid_body
+
+
+func _spawn_node(type: SpawnableType, node_owner: int, parent: Node = instance_root) -> Node:
+	# Build node
+	var _node = MeshInstance3D.new()
+	_node.mesh = SpawnableMesh[type].new()
+
+	# Add to database
+	var _db_id = _add_to_database(_node, type, node_owner)
+
+	# RigidBody specific adjustments
+	if type == SpawnableType.RIGIDBODY:
+		_node.freeze = true
+		# TODO: Tell database it has physics
+
+	# Freeze automatically
+	# Set frozen if not server host (Calculate and assign owner later)
+
+	# Editor changes
+	set_node_visible_to_inspector(_node)
+	_node.name = str(_db_id)
+	# FIXME: Make pretty name based upon the spawnable type
+	_node.set_meta("pretty_name", "BoxMesh")
+	_node.position = Vector3(0, 0, 0)
+
+	# Add to scene tree
+	parent.add_child(_node)
+	return _node
+
+
+func _add_to_database(node: Node, type: SpawnableType, node_owner: int) -> int:
+	var _db_entry = SPAWNABLE_TEMPLATE.duplicate()
+	_db_entry.id = int(_database_id)
+	_db_entry.node = node
+	_db_entry.type = type
+	_db_entry.spawner = node_owner
+	_database.append(_db_entry)
+
+	_database_id = _database_id + 1
+
+	return _db_entry.id
 
 
 func _add_collisions_recursive(node: Node):
