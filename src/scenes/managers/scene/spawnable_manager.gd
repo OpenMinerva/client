@@ -26,6 +26,13 @@ const SPAWNABLE_TEMPLATE: Dictionary = {
 	"pretty_name": "ERROR",
 }
 
+var SpawnablePrettyName = {
+	SpawnableType.EMPTY: "Node3D",
+	SpawnableType.BOX: "BoxMesh",
+	SpawnableType.RIGIDBODY: "RigidBody3D",
+	SpawnableType.CAPSULE: "Capsule",
+	SpawnableType.MODEL: "Model",
+}
 var SpawnableMesh = {
 	SpawnableType.EMPTY: Node3D,
 	SpawnableType.BOX: BoxMesh,
@@ -79,7 +86,7 @@ func sync_all() -> void:
 # TODO: Status response for spawn?
 # TODO: How would large assets work?
 @rpc("authority", "reliable")
-func spawn_spawnable(p_type: int = 0, p_name: String = "", p_path = "", parent_node: Node = instance_root) -> void:
+func spawn_spawnable(p_type: SpawnableType, p_name: String = "", p_path = "", parent_node: Node = instance_root) -> void:
 	var _spawnable_id = p_name if p_name != "" else str(_database_id)
 	var _spawned_entity
 
@@ -88,13 +95,12 @@ func spawn_spawnable(p_type: int = 0, p_name: String = "", p_path = "", parent_n
 			_spawned_entity = _spawn_node(SpawnableType.CAPSULE, 1, parent_node)
 		SpawnableType.BOX:
 			_spawned_entity = _spawn_node(SpawnableType.BOX, 1, parent_node)
+		SpawnableType.RIGIDBODY:
+			_spawned_entity = _spawn_node(SpawnableType.RIGIDBODY, 1, parent_node)
 		SpawnableType.MODEL:
 			_spawned_entity = _spawn_model(_spawnable_id, p_path)
 		_:
-			return
-
-	# Add to scene
-	get_parent().get_node("root").add_child(_spawned_entity)
+			_spawned_entity = _spawn_node(SpawnableType.EMPTY, 1, parent_node)
 
 	return
 
@@ -186,7 +192,7 @@ func _spawn_model(p_name: String = "", p_path = "") -> RigidBody3D:
 
 	# Add to database
 	var _entry = SPAWNABLE_TEMPLATE.duplicate()
-	_entry.physics_owner = 1 # TODO: Always the host, is this correct?
+	_entry.physics_owner = 1
 	_entry.spawner = 1 # TODO: The host is currently the only one that can spawn in anyways, but this will need to be changed.
 	_entry.node = rigid_body
 	_entry.id = int(p_name)
@@ -200,27 +206,33 @@ func _spawn_model(p_name: String = "", p_path = "") -> RigidBody3D:
 	return rigid_body
 
 
-func _spawn_node(type: SpawnableType, node_owner: int, parent: Node = instance_root) -> Node:
+func _spawn_node(node_type: SpawnableType, node_owner: int, parent: Node = instance_root) -> Node:
+	var _node: Node
+
 	# Build node
-	var _node = MeshInstance3D.new()
-	_node.mesh = SpawnableMesh[type].new()
+	match node_type:
+		SpawnableType.EMPTY:
+			_node = Node3D.new()
+		SpawnableType.RIGIDBODY:
+			_node = RigidBody3D.new()
+		_:
+			_node = MeshInstance3D.new()
+
+	if "mesh" in _node:
+		_node.mesh = SpawnableMesh[node_type].new()
 
 	# Add to database
-	var _db_id = _add_to_database(_node, type, node_owner)
+	var _db_id = _add_to_database(_node, node_type, node_owner)
 
 	# RigidBody specific adjustments
-	if type == SpawnableType.RIGIDBODY:
+	if node_type == Enum.SpawnableType.RIGIDBODY:
 		_node.freeze = true
 		# TODO: Tell database it has physics
-
-	# Freeze automatically
-	# Set frozen if not server host (Calculate and assign owner later)
 
 	# Editor changes
 	set_node_visible_to_inspector(_node)
 	_node.name = str(_db_id)
-	# FIXME: Make pretty name based upon the spawnable type
-	_node.set_meta("pretty_name", "BoxMesh")
+	_node.set_meta("pretty_name", str(SpawnablePrettyName[node_type]))
 	_node.position = Vector3(0, 0, 0)
 
 	# Add to scene tree

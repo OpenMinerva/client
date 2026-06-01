@@ -33,6 +33,13 @@ enum LogLevel {
 	WARNING = 2,
 	ERROR = 3,
 }
+enum SpawnableType {
+	EMPTY = 0,
+	BOX = 1,
+	RIGIDBODY = 2,
+	CAPSULE = 3,
+	MODEL = 10,
+}
 
 const Settings = {
 	Graphics = {

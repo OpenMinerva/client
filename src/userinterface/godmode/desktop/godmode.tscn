@@ -88,7 +88,7 @@ custom_minimum_size = Vector2(0, 0)
 toggle_mode = false
 
 [node name="Label" parent="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/HBoxContainer/Root/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(649942124, 86696220) index="1" unique_id=1807295119]
-text = "CategoryButton2"
+text = "Root"
 
 [node name="Focus" parent="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/HBoxContainer" unique_id=1495961442 instance=ExtResource("4_xqsbl")]
 custom_minimum_size = Vector2(0, 0)
@@ -98,6 +98,9 @@ size_flags_vertical = 1
 [node name="Button" parent="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/HBoxContainer/Focus" index="0" unique_id=1422381468]
 custom_minimum_size = Vector2(0, 0)
 toggle_mode = false
+
+[node name="Label" parent="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/HBoxContainer/Focus/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(1495961442, 86696220) index="1" unique_id=1807295119]
+text = "Focus"
 
 [node name="Focus Parent" parent="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/HBoxContainer" unique_id=1944860213 instance=ExtResource("4_xqsbl")]
 custom_minimum_size = Vector2(0, 0)
@@ -109,7 +112,7 @@ custom_minimum_size = Vector2(0, 0)
 toggle_mode = false
 
 [node name="Label" parent="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/HBoxContainer/Focus Parent/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(1944860213, 86696220) index="1" unique_id=1807295119]
-text = "Focus2"
+text = "Focus Parent"
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/Container/VBoxContainer" unique_id=1666616570]
 layout_mode = 2
@@ -143,6 +146,30 @@ size_flags_horizontal = 3
 
 [node name="PopupMenu" type="PopupMenu" parent="." unique_id=1180236363]
 oversampling_override = 1.0
+
+[node name="Popup" type="Popup" parent="." unique_id=79464639]
+transparent_bg = true
+oversampling_override = 1.0
+title = "Add Node"
+initial_position = 1
+size = Vector2i(500, 600)
+visible = true
+unresizable = false
+borderless = false
+transparent = true
+theme = ExtResource("2_plsgj")
+
+[node name="PanelContainer" type="PanelContainer" parent="Popup" unique_id=1988065676]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_plsgj")
+
+[node name="ItemList" type="ItemList" parent="Popup/PanelContainer" unique_id=315396140]
+layout_mode = 2
+item_count = 1
 
 [editable path="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/HBoxContainer/Root"]
 [editable path="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/HBoxContainer/Focus"]

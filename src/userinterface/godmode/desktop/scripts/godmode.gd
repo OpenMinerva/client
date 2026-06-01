@@ -9,6 +9,7 @@ var _clicked_item: TreeItem = null
 
 
 func _ready() -> void:
+	_build_add_node_popup()
 	var the_root = scene_m.get_master_root(scene_m.active_session)
 	populate_tree_from_node(the_root)
 	the_root.child_entered_tree.connect(populate_tree_from_node)
@@ -42,6 +43,7 @@ func add_node_to_tree(node: Node, parent_item: TreeItem):
 		item.set_text(0, node.get_meta("pretty_name", node.name))
 		var class_n = node.get_class()
 		var icon_texture = get_class_icon(class_n)
+
 		item.set_icon(0, icon_texture)
 		item.set_metadata(0, node)
 
@@ -73,13 +75,44 @@ func _on_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_index: i
 			popup_menu.popup()
 
 
+func _build_add_node_popup() -> void:
+	const VALID_NODES = ["Node3D", "BoxMesh", "CapsuleMesh", "RigidBody3D"]
+	var tree_node = get_node("Popup").get_node("PanelContainer/ItemList")
+	tree_node.item_activated.connect(_on_item_activated)
+
+	for node in VALID_NODES:
+		var icon_texture = get_class_icon(node)
+		var _item = tree_node.add_item(node, icon_texture)
+	return
+
+
+func _on_item_activated(index: int) -> void:
+	var popup = get_node("Popup")
+	var tree_node = get_node("Popup").get_node("PanelContainer/ItemList")
+	var item_text = tree_node.get_item_text(index)
+	var node_type = Enum.SpawnableType.EMPTY
+
+	match item_text:
+		"BoxMesh":
+			node_type = Enum.SpawnableType.BOX
+		"CapsuleMesh":
+			node_type = Enum.SpawnableType.CAPSULE
+		"RigidBody3D":
+			node_type = Enum.SpawnableType.RIGIDBODY
+		_:
+			node_type = Enum.SpawnableType.EMPTY
+
+	spawnable_m.spawn_spawnable.rpc(node_type, "", "", popup.get_meta("selected_node"))
+	spawnable_m.spawn_spawnable(node_type, "", "", popup.get_meta("selected_node"))
+	return
+
+
 func _on_popup_menu_id_pressed(id: int):
 	if _clicked_item:
 		match id:
 			0:
-				print("Adding child")
-				spawnable_m.spawn_spawnable.rpc(1, "", "", _clicked_item.get_metadata(0))
-				spawnable_m.spawn_spawnable(1, "", "", _clicked_item.get_metadata(0))
+				get_node("Popup").set_meta("selected_node", _clicked_item.get_metadata(0))
+				get_node("Popup").visible = true
 			1:
 				print("Removing node")
 				_clicked_item.get_metadata(0).queue_free()
