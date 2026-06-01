@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://cmknpdx5ba15o" path="res://scenes/managers/app/scene.tscn" id="2_h2qy3"]
 [ext_resource type="PackedScene" uid="uid://ddgslcpp435h2" path="res://userinterface/debug/entity_menu.tscn" id="3_h2qy3"]
 [ext_resource type="PackedScene" uid="uid://c4y1sb6lmdr0q" path="res://userinterface/dash/dashboard.tscn" id="4_h2qy3"]
+[ext_resource type="PackedScene" uid="uid://bqtqfooa7qncp" path="res://userinterface/godmode/desktop/godmode.tscn" id="5_q3f5g"]
 
 [node name="Master" type="Node3D" unique_id=420526444]
 
@@ -13,6 +14,8 @@
 
 [node name="DebugEntityMenu" parent="." unique_id=1715465872 instance=ExtResource("3_h2qy3")]
 visible = false
+
+[node name="Godmode" parent="." unique_id=879206536 instance=ExtResource("5_q3f5g")]
 
 [node name="Dashboard" parent="." unique_id=505457833 instance=ExtResource("4_h2qy3")]
 visible = false

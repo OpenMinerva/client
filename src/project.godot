@@ -55,6 +55,10 @@ window/stretch/aspect="expand"
 
 enabled=PackedStringArray("res://addons/godot-oauth2client/plugin.cfg", "res://addons/godot-urlparser/plugin.cfg")
 
+[gui]
+
+theme/default_font_multichannel_signed_distance_field=true
+
 [input]
 
 jump={

@@ -67,6 +67,9 @@ func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel) -> voi
 	var _root_scene_node = _root_scene.instantiate()
 	_root_scene_node.name = "root"
 
+	# Allow scene to be visible in the inspector
+	_root_scene_node.set_meta("scene_node", true)
+
 	# Add new scene
 	_scene.add_child(_root_scene_node)
 

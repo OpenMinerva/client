@@ -125,6 +125,24 @@ func position_spawnable(id: int, p_position: Vector3, p_rotation: Vector3) -> vo
 	return
 
 
+func set_node_visible_to_inspector(node: Node) -> void:
+	var nodes = get_all_node_children(node)
+	for target in nodes:
+		target.set_meta("scene_node", true)
+	return
+
+
+func get_all_node_children(node: Node) -> Array:
+	var nodes = []
+
+	if node:
+		nodes.append(node)
+	for child in node.get_children():
+		nodes.append_array(get_all_node_children(child))
+
+	return nodes
+
+
 func _spawn_cube(p_name: String = "") -> RigidBody3D:
 	# Create the physics body
 	var rigid_body = RigidBody3D.new()
@@ -155,6 +173,8 @@ func _spawn_cube(p_name: String = "") -> RigidBody3D:
 	_entry.id = int(p_name)
 	_entry.type = SpawnableType.CUBE
 	_database.append(_entry)
+
+	set_node_visible_to_inspector(rigid_body)
 
 	# Set scene data
 	rigid_body.name = str(p_name)
