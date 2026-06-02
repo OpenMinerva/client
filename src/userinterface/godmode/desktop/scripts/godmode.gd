@@ -1,5 +1,6 @@
 extends Node
 
+var tree = Engine.get_main_loop() as SceneTree
 var _clicked_item: TreeItem = null
 
 @onready var tree_view: Tree = get_node("MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer/Tree")
@@ -103,7 +104,10 @@ func _on_item_activated(index: int) -> void:
 			node_type = Enum.SpawnableType.EMPTY
 
 	spawnable_m.spawn_spawnable.rpc(node_type, "", "", popup.get_meta("selected_node"))
-	spawnable_m.spawn_spawnable(node_type, "", "", popup.get_meta("selected_node"))
+	var entity = spawnable_m.spawn_spawnable(node_type, "", "", popup.get_meta("selected_node"))
+
+	_select_node_with_gizmo(entity)
+
 	return
 
 
@@ -114,5 +118,21 @@ func _on_popup_menu_id_pressed(id: int):
 				get_node("Popup").set_meta("selected_node", _clicked_item.get_metadata(0))
 				get_node("Popup").visible = true
 			1:
+				# TODO: Validate node exists before deleting
+				# TODO: Use the proper Spawnable_manager for deleting nodes
 				print("Removing node")
 				_clicked_item.get_metadata(0).queue_free()
+
+
+func _select_node_with_gizmo(node: Node) -> void:
+	var the_root = scene_m.get_master_root(scene_m.active_session)
+	var gizmo = Gizmo3D.new()
+
+	gizmo.set_meta("scene_node", true)
+	gizmo.set_meta("pretty_name", "Gizmo")
+	the_root.add_child(gizmo)
+
+	gizmo.clear_selection()
+	gizmo.select(node)
+
+	return

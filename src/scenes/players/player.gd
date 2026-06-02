@@ -87,7 +87,7 @@ func _input(event):
 	if is_multiplayer_authority() == false:
 		return
 
-	if event is InputEventMouseMotion && mouse_captured:
+	if mouse_captured && event is InputEventMouseMotion:
 		body.rotate_y(-event.relative.x * mouse_sensitivity * 0.001)
 		camera.rotate_x(-event.relative.y * mouse_sensitivity * 0.001)
 		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-85), deg_to_rad(89))
@@ -106,18 +106,13 @@ func _unhandled_input(event):
 			Events.emit_signal("dash_set_state", false)
 
 		get_viewport().set_input_as_handled()
-	if event is InputEventMouseMotion:
-		return
 
-	if event is InputEventMouseButton:
-		return
-
-	if event.keycode == 4194333 && event.pressed == true:
+	if "keycode" in event && event.keycode == 4194333 && event.pressed == true:
 		capture_mouse(!mouse_captured)
 		get_viewport().set_input_as_handled()
 		return
 
-	if event.keycode == 4194340 && event.pressed == true:
+	if "keycode" in event && event.keycode == 4194340 && event.pressed == true:
 		if mouse_captured:
 			capture_mouse(false)
 			Events.emit_signal("debug_entity_set_state")

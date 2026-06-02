@@ -86,7 +86,7 @@ func sync_all() -> void:
 # TODO: Status response for spawn?
 # TODO: How would large assets work?
 @rpc("authority", "reliable")
-func spawn_spawnable(p_type: SpawnableType, p_name: String = "", p_path = "", parent_node: Node = instance_root) -> void:
+func spawn_spawnable(p_type: SpawnableType, p_name: String = "", p_path = "", parent_node: Node = instance_root) -> Node:
 	var _spawnable_id = p_name if p_name != "" else str(_database_id)
 	var _spawned_entity
 
@@ -102,7 +102,7 @@ func spawn_spawnable(p_type: SpawnableType, p_name: String = "", p_path = "", pa
 		_:
 			_spawned_entity = _spawn_node(SpawnableType.EMPTY, 1, parent_node)
 
-	return
+	return _spawned_entity
 
 
 # TODO: require actioning user
