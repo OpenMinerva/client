@@ -13,6 +13,8 @@ sky_material = SubResource("ProceduralSkyMaterial_dbach")
 background_mode = 2
 sky = SubResource("Sky_ikf4c")
 tonemap_mode = 2
+ssr_enabled = true
+ssao_enabled = true
 glow_enabled = true
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_q28r8"]
