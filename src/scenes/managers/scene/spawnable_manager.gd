@@ -86,12 +86,15 @@ func sync_all() -> void:
 # TODO: Status response for spawn?
 # TODO: How would large assets work?
 @rpc("authority", "reliable")
-func spawn_spawnable(p_type: String, p_name: String = "", p_path = "", parent_node: Node = instance_root) -> Node:
+func spawn_spawnable(p_type: int, p_name: String = "", p_path: String = "", parent_node = "") -> Node:
 	var _spawnable_id = p_name if p_name != "" else str(_database_id)
 	var _spawned_entity
-	# FIXME: Model imports are broken!
-	# _spawn_model(id, path)
-	_spawned_entity = _spawn_node(p_type, 1, parent_node)
+
+	# FIXME: This is silly! instance_root variable is in an invalid state here on clients?
+	if parent_node is String && parent_node == "":
+		parent_node = get_parent().get_node("root")
+
+	_spawned_entity = _spawn_node(p_type, 1, parent_node, p_path)
 
 	return _spawned_entity
 
@@ -128,7 +131,6 @@ func receive_database(database: Array, id: int) -> void:
 func position_spawnable(id: int, p_position: Vector3, p_rotation: Vector3) -> void:
 	# FIXME: Flimsy!
 	var node = get_parent().get_node_or_null("root/%s" % id)
-
 	if node:
 		node.position = p_position
 		node.rotation = p_rotation
@@ -153,65 +155,15 @@ func get_all_node_children(node: Node) -> Array:
 	return nodes
 
 
-# FIXME: Unused function
-func _spawn_cube(p_name: String = "") -> RigidBody3D:
-	# Create the physics body
-	var rigid_body = RigidBody3D.new()
-
-	# Create collision shape
-	var collision_shape = CollisionShape3D.new()
-	var box_shape = BoxShape3D.new()
-	box_shape.size = Vector3(0.5, 0.5, 0.5)
-	collision_shape.shape = box_shape
-	rigid_body.add_child(collision_shape)
-
-	return rigid_body
-
-
-func _spawn_model(p_name: String = "", p_path = "") -> RigidBody3D:
-	# Create the physics body
-	var rigid_body = RigidBody3D.new()
-
-	# Create a MeshInstance
-	var doc = GLTFDocument.new()
-	var state = GLTFState.new()
-
-	# TODO: Dynamic file path on machine?
-	doc.append_from_file(p_path, state)
-	var glb_scene: Node3D = doc.generate_scene(state)
-
-	rigid_body.add_child(glb_scene)
-	var colliders_to_add = _add_collisions_recursive(rigid_body)
-
-	for collider in colliders_to_add:
-		rigid_body.add_child(collider)
-	# If we are a client, we are not simulating the physics
-	if !is_multiplayer_authority():
-		rigid_body.freeze = true
-
-	# Add to database
-	var _entry = SPAWNABLE_TEMPLATE.duplicate()
-	_entry.physics_owner = 1
-	_entry.spawner = 1 # TODO: The host is currently the only one that can spawn in anyways, but this will need to be changed.
-	_entry.node = rigid_body
-	_entry.id = int(p_name)
-	_entry.type = SpawnableType.MODEL
-	_database.append(_entry)
-
-	# Set scene data
-	rigid_body.name = str(p_name)
-	rigid_body.physics_interpolation_mode = true
-	rigid_body.position = Vector3(0, 2, -10)
-	return rigid_body
-
-
-func _spawn_node(node_type: String, node_owner: int, parent: Node = instance_root) -> Node:
+func _spawn_node(node_type: int, node_owner: int, parent: Node = instance_root, model_path = "") -> Node:
 	var _node: Node
-	var _node_schema = NSB.get_formatted(node_type)
-	_node = NSB._build_node(node_type)
+	var _node_name = NSB.get_valid()[node_type]
+	var _schema_index = NSB.get_node_index(_node_name)
+	var _node_schema = NSB.get_formatted(_schema_index)
+	_node = NSB._build_node(_node_name, model_path)
 
 	# Add to database
-	var _db_id = _add_to_database(_node, NSB.get_node_index(node_type), node_owner)
+	var _db_id = _add_to_database(_node, node_type, node_owner)
 
 	# Editor changes
 	set_node_visible_to_inspector(_node)
