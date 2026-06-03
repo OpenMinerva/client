@@ -107,10 +107,18 @@ func spawn_spawnable(p_type: SpawnableType, p_name: String = "", p_path = "", pa
 
 # TODO: require actioning user
 @rpc("authority", "reliable")
-func delete_spawnable() -> void:
-	GlobalLogger.log("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
-	# TODO: Delete from database
-	# TODO: Delete from scene
+func delete_spawnable(node_name: String) -> void:
+	GlobalLogger.log("Deleting node '%s'." % node_name)
+	var _entry_index = _database.find_custom(func(item): return item.id == int(node_name))
+	if _entry_index == -1:
+		# This should never happen! The node can never be removed from the scene tree then.
+		GlobalLogger.log("'%s' could not be located in the scene tree.", Enum.LogLevel.ERROR)
+
+	var _entry = _database[_entry_index]
+	# TODO: Remove all Gizmos relating to the node first
+
+	_entry.node.queue_free()
+	_database.remove_at(_entry_index)
 	return
 
 

@@ -118,10 +118,8 @@ func _on_popup_menu_id_pressed(id: int):
 				get_node("Popup").set_meta("selected_node", _clicked_item.get_metadata(0))
 				get_node("Popup").visible = true
 			1:
-				# TODO: Validate node exists before deleting
-				# TODO: Use the proper Spawnable_manager for deleting nodes
-				print("Removing node")
-				_clicked_item.get_metadata(0).queue_free()
+				spawnable_m.delete_spawnable.rpc(_clicked_item.get_metadata(0).name)
+				spawnable_m.delete_spawnable(_clicked_item.get_metadata(0).name)
 			2:
 				# TODO: Some nodes crash the client, figure out how to detect?
 				_select_node_with_gizmo(_clicked_item.get_metadata(0))
