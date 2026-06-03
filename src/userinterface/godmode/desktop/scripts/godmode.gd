@@ -77,13 +77,13 @@ func _on_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_index: i
 
 
 func _build_add_node_popup() -> void:
-	const VALID_NODES = ["Node3D", "BoxMesh", "CapsuleMesh", "RigidBody3D"]
+	var valid_options = NSB.get_valid()
 	var tree_node = get_node("Popup").get_node("PanelContainer/ItemList")
 	tree_node.item_activated.connect(_on_item_activated)
 
-	for node in VALID_NODES:
-		var icon_texture = get_class_icon(node)
-		var _item = tree_node.add_item(node, icon_texture)
+	for node in valid_options:
+		var schema_listing = NSB.get_formatted(node)
+		var _item = tree_node.add_item(schema_listing.pretty_name, schema_listing.icon)
 	return
 
 
@@ -91,20 +91,9 @@ func _on_item_activated(index: int) -> void:
 	var popup = get_node("Popup")
 	var tree_node = get_node("Popup").get_node("PanelContainer/ItemList")
 	var item_text = tree_node.get_item_text(index)
-	var node_type = Enum.SpawnableType.EMPTY
 
-	match item_text:
-		"BoxMesh":
-			node_type = Enum.SpawnableType.BOX
-		"CapsuleMesh":
-			node_type = Enum.SpawnableType.CAPSULE
-		"RigidBody3D":
-			node_type = Enum.SpawnableType.RIGIDBODY
-		_:
-			node_type = Enum.SpawnableType.EMPTY
-
-	spawnable_m.spawn_spawnable.rpc(node_type, "", "", popup.get_meta("selected_node"))
-	var entity = spawnable_m.spawn_spawnable(node_type, "", "", popup.get_meta("selected_node"))
+	spawnable_m.spawn_spawnable.rpc(item_text, "", "", popup.get_meta("selected_node"))
+	var entity = spawnable_m.spawn_spawnable(item_text, "", "", popup.get_meta("selected_node"))
 
 	_select_node_with_gizmo(entity)
 
