@@ -1,6 +1,5 @@
 extends Node
 
-var tree = Engine.get_main_loop() as SceneTree
 var _clicked_item: TreeItem = null
 
 @onready var tree_view: Tree = get_node("MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer/Tree")

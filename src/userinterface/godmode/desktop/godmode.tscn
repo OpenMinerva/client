@@ -114,6 +114,9 @@ toggle_mode = false
 [node name="Label" parent="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/HBoxContainer/Focus Parent/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(1944860213, 86696220) index="1" unique_id=1807295119]
 text = "Focus Parent"
 
+[node name="MarginContainer3" type="MarginContainer" parent="MarginContainer/HBoxContainer/Container/VBoxContainer" unique_id=1361864166]
+layout_mode = 2
+
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/Container/VBoxContainer" unique_id=1666616570]
 layout_mode = 2
 size_flags_vertical = 3
@@ -169,7 +172,6 @@ theme = ExtResource("2_plsgj")
 
 [node name="ItemList" type="ItemList" parent="Popup/PanelContainer" unique_id=315396140]
 layout_mode = 2
-item_count = 1
 
 [editable path="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/HBoxContainer/Root"]
 [editable path="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/HBoxContainer/Focus"]

@@ -78,7 +78,7 @@ func entity_position(entity_id: int, position):
 func dev_request_spawnables_database() -> void:
 	var caller_id = multiplayer.get_remote_sender_id()
 	var the_data = spawnable_m._database
-	spawnable_m.receive_database.rpc_id(caller_id, the_data, spawnable_m._id)
+	spawnable_m.receive_database.rpc_id(caller_id, the_data, spawnable_m._database_id)
 	spawnable_m.sync_all()
 	return
 
