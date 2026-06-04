@@ -10,6 +10,12 @@ class_name NSB
 extends Node
 
 static var schema = {
+	"Gizmo": {
+		"requires_setup": true,
+		"pretty_name": "Gizmo",
+		"node": null,
+		"icon": load("res://resources/icons/Gizmo.svg"),
+	},
 	"Model": {
 		"requires_setup": true,
 		"pretty_name": "Imported Model",
@@ -19,7 +25,7 @@ static var schema = {
 	"Node3D": {
 		"requires_setup": false,
 		"pretty_name": "Node3D",
-		"node": Node3D,
+		"node": "Node3D",
 		"icon": load("res://resources/icons/godot/Node3D.svg"),
 	},
 	"Box": {
@@ -62,7 +68,7 @@ static func _build_node(node_name: String, model_path: String = "") -> Node:
 	var schema_entry = get_formatted(schema_index)
 
 	if schema_entry.requires_setup == false:
-		return ClassDB.instantiate(node_name)
+		return ClassDB.instantiate(schema_entry.node)
 
 	if node_name == "Box":
 		var _work_node = MeshInstance3D.new()
@@ -77,6 +83,11 @@ static func _build_node(node_name: String, model_path: String = "") -> Node:
 	if node_name == "RigidBody3D":
 		var _work_node = RigidBody3D.new()
 		_work_node.freeze = true
+		return _work_node
+
+	if node_name == "Gizmo":
+		var _work_node = Gizmo3D.new()
+		_work_node.top_level = true
 		return _work_node
 
 	if node_name == "Model":

@@ -8,38 +8,15 @@
 # --- License
 extends Node
 
-enum SpawnableType {
-	EMPTY = 0,
-	BOX = 1,
-	RIGIDBODY = 2,
-	CAPSULE = 3,
-	MODEL = 10,
-}
-
 const SPAWNABLE_TEMPLATE: Dictionary = {
-	"type": 0,
-	"spawner": 1,
-	"has_physics": false,
+	"type": -1,
+	"spawner": -1,
 	"physics_owner": 1,
 	"node": "",
 	"id": -1,
 	"pretty_name": "ERROR",
 }
 
-var SpawnablePrettyName = {
-	SpawnableType.EMPTY: "Node3D",
-	SpawnableType.BOX: "BoxMesh",
-	SpawnableType.RIGIDBODY: "RigidBody3D",
-	SpawnableType.CAPSULE: "Capsule",
-	SpawnableType.MODEL: "Model",
-}
-var SpawnableMesh = {
-	SpawnableType.EMPTY: Node3D,
-	SpawnableType.BOX: BoxMesh,
-	SpawnableType.RIGIDBODY: RigidBody3D,
-	SpawnableType.CAPSULE: CapsuleMesh,
-	SpawnableType.MODEL: ArrayMesh,
-}
 var _dev_num_network_batches: int = 4
 var _database_id = 10
 var _database := []
@@ -59,7 +36,7 @@ func _physics_process(_delta):
 	if !is_multiplayer_authority():
 		return
 	for spawnable in _database:
-		if spawnable.has_physics == false:
+		if spawnable.type != NSB.get_node_index("RigidBody3D"):
 			continue
 		if spawnable.node.sleeping == true:
 			continue

@@ -5,6 +5,7 @@ var _clicked_item: TreeItem = null
 @onready var tree_view: Tree = get_node("MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer/Tree")
 @onready var scene_m = get_tree().current_scene.get_node("SceneManager")
 @onready var spawnable_m = scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager")
+@onready var session_signalbus = scene_m.get_master_scene(scene_m.active_session).get_node("SignalBus")
 @onready var popup_menu = $PopupMenu
 
 
@@ -14,6 +15,10 @@ func _ready() -> void:
 	populate_tree_from_node(the_root)
 	the_root.child_entered_tree.connect(populate_tree_from_node)
 	the_root.child_exiting_tree.connect(populate_tree_from_node)
+
+	# Instance signals
+	session_signalbus.node_created.connect(populate_tree_from_node)
+	session_signalbus.node_destroyed.connect(populate_tree_from_node)
 
 	tree_view.item_mouse_selected.connect(_on_tree_item_mouse_selected)
 	popup_menu.id_pressed.connect(_on_popup_menu_id_pressed)
@@ -41,8 +46,7 @@ func add_node_to_tree(node: Node, parent_item: TreeItem):
 		var item = tree_view.create_item(parent_item)
 
 		item.set_text(0, node.get_meta("pretty_name", node.name))
-		var class_n = node.get_class()
-		var icon_texture = get_class_icon(class_n)
+		var icon_texture = get_class_icon(node.get_meta("pretty_name", node.name))
 
 		item.set_icon(0, icon_texture)
 		item.set_metadata(0, node)
@@ -51,9 +55,11 @@ func add_node_to_tree(node: Node, parent_item: TreeItem):
 			add_node_to_tree(child, item)
 
 
-# FIXME: No fail-safe or check to see if icon exists.
+# DEPRECATED! - This won't be needed thanks to the schema.
 func get_class_icon(class_n: String) -> Texture2D:
-	return load("res://resources/icons/godot/%s.svg" % class_n)
+	var schema_index = NSB.get_node_index(class_n)
+	var icon = NSB.get_formatted(schema_index).icon
+	return icon
 
 
 func popupmenu_populate_generic() -> void:
@@ -96,9 +102,9 @@ func _on_item_activated(index: int) -> void:
 
 	spawnable_m.spawn_spawnable.rpc(item_type)
 	var entity = spawnable_m.spawn_spawnable(item_type, "", "", popup.get_meta("selected_node"))
-
 	_select_node_with_gizmo(entity)
 
+	session_signalbus.node_created.emit(entity)
 	return
 
 
@@ -111,6 +117,7 @@ func _on_popup_menu_id_pressed(id: int):
 			1:
 				spawnable_m.delete_spawnable.rpc(_clicked_item.get_metadata(0).name)
 				spawnable_m.delete_spawnable(_clicked_item.get_metadata(0).name)
+				session_signalbus.node_destroyed.emit(_clicked_item.get_metadata(0))
 			2:
 				# TODO: Some nodes crash the client, figure out how to detect?
 				_select_node_with_gizmo(_clicked_item.get_metadata(0))
@@ -118,12 +125,14 @@ func _on_popup_menu_id_pressed(id: int):
 
 func _select_node_with_gizmo(node: Node) -> void:
 	var the_root = scene_m.get_master_root(scene_m.active_session)
-	var gizmo = Gizmo3D.new()
+	var schema_index = NSB.get_node_index("Gizmo")
+	var gizmo = spawnable_m.spawn_spawnable(schema_index, "", "", node)
 
 	gizmo.set_meta("scene_node", true)
 	gizmo.set_meta("pretty_name", "Gizmo")
 	the_root.add_child(gizmo)
 
+	session_signalbus.node_created.emit(gizmo)
 	gizmo.clear_selection()
 	gizmo.select(node)
 
