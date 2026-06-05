@@ -143,6 +143,7 @@ func set_active_session(session_id: String):
 	_set_camera_active_state(session_id, true)
 	scene_container.get_node(session_id).visible = true
 	_set_player_authority_state(session_id, true)
+	Events.dash_session_changed.emit()
 	return
 
 

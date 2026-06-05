@@ -102,6 +102,7 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 	# DEV: Force spawn the host.
 	scene_m.get_master_scene(_scene).get_node("PlayerManager").add_player(1)
 	scene_m.set_active_session(_scene)
+	Events.dash_session_changed.emit(_scene)
 
 	return response_dict
 
@@ -277,6 +278,7 @@ func set_active_session(id: String):
 	scene_m.get_master_root(id).get_node("PlayerManager").players.get(my_id).get("node").camera.current = true
 	_database.sessions[id].active = true
 	scene_m.set_active_session(id)
+	Events.dash_session_changed.emit({ "id": id })
 	return
 
 

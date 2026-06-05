@@ -20,6 +20,8 @@ func _ready() -> void:
 	session_signalbus.node_created.connect(populate_tree_from_node)
 	session_signalbus.node_destroyed.connect(populate_tree_from_node)
 
+	Events.dash_session_changed.connect(_session_changed)
+
 	tree_view.item_mouse_selected.connect(_on_tree_item_mouse_selected)
 	popup_menu.id_pressed.connect(_on_popup_menu_id_pressed)
 
@@ -71,6 +73,13 @@ func popupmenu_populate_generic() -> void:
 	return
 
 
+func _session_changed():
+	var the_root = scene_m.get_master_root(scene_m.active_session)
+	spawnable_m = scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager")
+	session_signalbus = scene_m.get_master_scene(scene_m.active_session).get_node("SignalBus")
+	populate_tree_from_node(the_root)
+
+
 func _on_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_index: int):
 	if mouse_button_index == MOUSE_BUTTON_RIGHT:
 		_clicked_item = tree_view.get_item_at_position(mouse_position)
@@ -100,8 +109,8 @@ func _on_item_activated(index: int) -> void:
 	var item_text = tree_node.get_item_text(index)
 	var item_type = NSB.get_node_index(item_text)
 
-	spawnable_m.spawn_spawnable.rpc(item_type)
-	var entity = spawnable_m.spawn_spawnable(item_type, "", "", popup.get_meta("selected_node"))
+	var parent_node = popup.get_meta("selected_node")
+	var entity = await spawnable_m.create(item_type, int(parent_node.name))
 	_select_node_with_gizmo(entity)
 
 	session_signalbus.node_created.emit(entity)
@@ -126,7 +135,7 @@ func _on_popup_menu_id_pressed(id: int):
 func _select_node_with_gizmo(node: Node) -> void:
 	var the_root = scene_m.get_master_root(scene_m.active_session)
 	var schema_index = NSB.get_node_index("Gizmo")
-	var gizmo = spawnable_m.spawn_spawnable(schema_index, "", "", node)
+	var gizmo = await spawnable_m.create(schema_index, int(node.name))
 
 	gizmo.set_meta("scene_node", true)
 	gizmo.set_meta("pretty_name", "Gizmo")

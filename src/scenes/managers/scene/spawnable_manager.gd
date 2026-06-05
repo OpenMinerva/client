@@ -21,8 +21,11 @@ var _dev_num_network_batches: int = 4
 var _database_id = 10
 var _database := []
 
+@onready var app_scene_m: Node = get_tree().current_scene.get_node("SceneManager")
+@onready var app_network_m: Node = get_tree().current_scene.get_node("NetworkManager")
 @onready var network_m = get_node("../NetworkManager")
 @onready var instance_root = get_parent().get_node("root")
+@onready var rpcawaiter = get_parent().get_node("RpcAwaiter")
 
 
 # TODO: Handle physics for our items, and
@@ -52,28 +55,53 @@ func sync_all() -> void:
 	if !is_multiplayer_authority():
 		return
 	for spawnable in _database:
-		if spawnable.has_physics == false:
-			continue
-
 		position_spawnable.rpc(spawnable.id, spawnable.node.position, spawnable.node.rotation)
 	return
+
+
+@rpc("any_peer", "reliable")
+func create(node_type: int, node_parent: int, model_path: String = "") -> Variant:
+	var my_id: int = app_network_m._database.sessions_api[app_scene_m.active_session].get_unique_id()
+	var caller_id: int = multiplayer.get_remote_sender_id()
+	var caller_is_host: bool = caller_id < 2
+
+	print("My ID: %s, Caller ID: %s, Host: %s" % [my_id, caller_id, caller_is_host])
+	if my_id == 1:
+		var entity = spawn_spawnable(node_type, "", model_path, node_parent)
+		spawn_spawnable.rpc(node_type, "", model_path, node_parent)
+
+		var database_index: int = _database.find_custom(func(entry): return entry.id == entity)
+		print("caller: '%s', my_id '%s'" % [caller_id, my_id])
+		if caller_id != 0 && caller_id != my_id:
+			# This is a client request to spawn
+			print("Client requested spawn, returning node ID")
+			return int(_database[database_index].node.name)
+
+		print("Host spawned something, returning Node itself")
+		return _database[database_index].node
+	else:
+		var entity = await rpcawaiter.send_rpc(1, create.bind(node_type, node_parent, model_path))
+		var database_index: int = _database.find_custom(func(entry): return entry.id == entity)
+		return _database[database_index].node
 
 
 # TODO: Require actioning user
 # TODO: Status response for spawn?
 # TODO: How would large assets work?
 @rpc("authority", "reliable")
-func spawn_spawnable(p_type: int, p_name: String = "", p_path: String = "", parent_node = "") -> Node:
+func spawn_spawnable(p_type: int, p_name: String = "", p_path: String = "", parent_id: int = 0) -> int:
 	var _spawnable_id = p_name if p_name != "" else str(_database_id)
 	var _spawned_entity
+	var parent_node = get_parent().get_node("root")
 
 	# FIXME: This is silly! instance_root variable is in an invalid state here on clients?
-	if parent_node is String && parent_node == "":
-		parent_node = get_parent().get_node("root")
+	if parent_id > 1:
+		var database_index = _database.find_custom(func(entry): return entry.id == parent_id)
+		parent_node = _database[database_index].node
 
 	_spawned_entity = _spawn_node(p_type, 1, parent_node, p_path)
 
-	return _spawned_entity
+	return int(_spawned_entity.name)
 
 
 # TODO: require actioning user
