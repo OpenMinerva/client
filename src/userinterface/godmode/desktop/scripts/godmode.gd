@@ -140,9 +140,15 @@ func _select_node_with_gizmo(node: Node) -> void:
 	gizmo.set_meta("scene_node", true)
 	gizmo.set_meta("pretty_name", "Gizmo")
 	the_root.add_child(gizmo)
+	gizmo.transform_changed.connect(func(mode, value): _dev_test_gizmo_trans(mode, value, gizmo._selections))
 
 	session_signalbus.node_created.emit(gizmo)
 	gizmo.clear_selection()
 	gizmo.select(node)
 
 	return
+
+
+func _dev_test_gizmo_trans(mode: int, value: Vector3, nodes: Dictionary) -> void:
+	for node_to_move in nodes:
+		spawnable_m.position_spawnable.rpc(int(node_to_move.name), node_to_move.position, node_to_move.rotation)

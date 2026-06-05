@@ -123,7 +123,6 @@ func delete_spawnable(node_name: String) -> void:
 
 @rpc("authority", "reliable")
 func receive_database(database: Array, id: int) -> void:
-	_database_id = id
 	for spawnable in database:
 		print("Client syncing '%s'" % spawnable.id)
 		spawn_spawnable(spawnable.type, str(spawnable.id))
@@ -131,8 +130,9 @@ func receive_database(database: Array, id: int) -> void:
 	return
 
 
-# TODO: Research "unreliable" connections. I think this is an applicable use case since a missed packet would probably be corrected in the next instant?
-@rpc("authority", "unreliable")
+# TODO: RESEARCH "unreliable" connections. I think this is an applicable use case since a missed packet would probably be corrected in the next instant?
+# TODO: SECURITY Make this so that the client can move the item on their end, but the host must move it for everyone else.
+@rpc("any_peer", "unreliable")
 func position_spawnable(id: int, p_position: Vector3, p_rotation: Vector3) -> void:
 	# FIXME: Flimsy!
 	var node = get_parent().get_node_or_null("root/%s" % id)
