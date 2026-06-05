@@ -135,10 +135,12 @@ func set_active_session(session_id: String):
 	for _scene in network_m.get_connected_sessions():
 		# Each session gets disabled
 		scene_container.get_node(_scene.id).visible = false
+		scene_container.get_node(_scene.id).process_mode = Node.PROCESS_MODE_DISABLED
 		_set_camera_active_state(_scene.id, false)
 		_set_player_authority_state(_scene.id, false)
 
 	# session_id gets enabled.
+	scene_container.get_node(session_id).process_mode = Node.PROCESS_MODE_INHERIT
 	active_session = session_id
 	_set_camera_active_state(session_id, true)
 	scene_container.get_node(session_id).visible = true
