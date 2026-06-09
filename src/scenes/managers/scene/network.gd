@@ -57,12 +57,6 @@ func add_players(players: Dictionary):
 		player_m.add_player(int(_player))
 
 
-# FIXME: Marked for termination
-@rpc("authority", "reliable")
-func spawn_entity():
-	GlobalLogger.log("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
-
-
 @rpc("any_peer", "unreliable")
 func entity_position(entity_id: int, position):
 	var caller_id = multiplayer.get_remote_sender_id()
