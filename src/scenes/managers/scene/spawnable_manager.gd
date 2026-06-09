@@ -17,7 +17,7 @@ const SPAWNABLE_TEMPLATE: Dictionary = {
 	"pretty_name": "ERROR",
 }
 
-var _dev_num_network_batches: int = 4
+var _spawnable_network_batches: int = 4
 var _database_id = 10
 var _database := []
 
@@ -34,7 +34,7 @@ func _physics_process(_delta):
 	# There was no reason in me doing this, but I think I was trying to make it so that you do not have to network so many things in a given instant.
 	# As far as I know there was not an existing problem I was trying to solve and I have no idea what I was thinking.
 	# However, it's not breaking anything in the current instant so I will leave it in until it proves to be a problem or if I think of a better way of doing this.
-	var current_batch = Engine.get_physics_frames() % _dev_num_network_batches
+	var current_batch = Engine.get_physics_frames() % _spawnable_network_batches
 
 	if !is_multiplayer_authority():
 		return
@@ -43,7 +43,7 @@ func _physics_process(_delta):
 			continue
 		if spawnable.node.sleeping == true:
 			continue
-		if spawnable.id % _dev_num_network_batches == current_batch:
+		if spawnable.id % _spawnable_network_batches == current_batch:
 			continue
 
 		position_spawnable.rpc(spawnable.id, spawnable.node.position, spawnable.node.rotation)
