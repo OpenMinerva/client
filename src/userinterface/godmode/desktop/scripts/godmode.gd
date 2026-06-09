@@ -48,8 +48,7 @@ func add_node_to_tree(node: Node, parent_item: TreeItem):
 		var item = tree_view.create_item(parent_item)
 
 		item.set_text(0, node.get_meta("pretty_name", node.name))
-		var icon_texture = get_class_icon(node.get_meta("pretty_name", node.name))
-
+		var icon_texture = get_class_icon(node.get_meta("pretty_name", node.get_class()))
 		item.set_icon(0, icon_texture)
 		item.set_metadata(0, node)
 
@@ -57,10 +56,12 @@ func add_node_to_tree(node: Node, parent_item: TreeItem):
 			add_node_to_tree(child, item)
 
 
-# DEPRECATED! - This won't be needed thanks to the schema.
+# FIXME: Add this function to the NSB class, and add safe fallbacks.
 func get_class_icon(class_n: String) -> Texture2D:
 	var schema_index = NSB.get_node_index(class_n)
 	var icon = NSB.get_formatted(schema_index).icon
+	if schema_index == -1:
+		return load("res://resources/icons/godot/%s.svg" % class_n)
 	return icon
 
 
