@@ -151,4 +151,4 @@ func _select_node_with_gizmo(node: Node) -> void:
 
 func _dev_test_gizmo_trans(mode: int, value: Vector3, nodes: Dictionary) -> void:
 	for node_to_move in nodes:
-		spawnable_m.position_spawnable.rpc(int(node_to_move.name), node_to_move.position, node_to_move.rotation)
+		spawnable_m.position_spawnable.rpc(int(node_to_move.name), node_to_move.position, node_to_move.rotation, node_to_move.scale)

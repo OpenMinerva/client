@@ -11,16 +11,7 @@
 
 [node name="SceneManager" parent="." unique_id=5477810 instance=ExtResource("2_h2qy3")]
 
-[node name="Godmode" parent="." unique_id=879206536 instance=ExtResource("5_q3f5g")]
-mouse_filter = 1
-
-[node name="Dashboard" parent="." unique_id=505457833 instance=ExtResource("4_h2qy3")]
-visible = false
-mouse_filter = 1
-
-[node name="Scenes" type="Node3D" parent="." unique_id=308239834]
-
-[node name="Control" type="Control" parent="." unique_id=472699475]
+[node name="Crosshair" type="Control" parent="." unique_id=472699475]
 layout_mode = 3
 anchor_left = 0.48958334
 anchor_top = 0.4814815
@@ -34,7 +25,7 @@ size_flags_vertical = 4
 mouse_filter = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="CenterContainer" type="CenterContainer" parent="Control" unique_id=2141251222]
+[node name="CenterContainer" type="CenterContainer" parent="Crosshair" unique_id=2141251222]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -44,12 +35,21 @@ anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Line2D" type="Line2D" parent="Control/CenterContainer" unique_id=880619905]
+[node name="Line2D" type="Line2D" parent="Crosshair/CenterContainer" unique_id=880619905]
 points = PackedVector2Array(5, 0, -5, 0)
 closed = true
 width = 2.0
 
-[node name="Line2D2" type="Line2D" parent="Control/CenterContainer" unique_id=696942631]
+[node name="Line2D2" type="Line2D" parent="Crosshair/CenterContainer" unique_id=696942631]
 points = PackedVector2Array(0, 5, 0, -5)
 closed = true
 width = 2.0
+
+[node name="Godmode" parent="." unique_id=879206536 instance=ExtResource("5_q3f5g")]
+mouse_filter = 1
+
+[node name="Dashboard" parent="." unique_id=505457833 instance=ExtResource("4_h2qy3")]
+visible = false
+mouse_filter = 1
+
+[node name="Scenes" type="Node3D" parent="." unique_id=308239834]
