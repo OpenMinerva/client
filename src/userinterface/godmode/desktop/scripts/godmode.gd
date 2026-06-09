@@ -7,12 +7,13 @@ var _clicked_item: TreeItem = null
 @onready var spawnable_m = scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager")
 @onready var session_signalbus = scene_m.get_master_scene(scene_m.active_session).get_node("SignalBus")
 @onready var popup_menu = $PopupMenu
+@onready var session_root = scene_m.get_master_root(scene_m.active_session)
 
 
 func _ready() -> void:
 	_build_add_node_popup()
 	var the_root = scene_m.get_master_root(scene_m.active_session)
-	populate_tree_from_node(the_root)
+	populate_tree_from_node()
 	the_root.child_entered_tree.connect(populate_tree_from_node)
 	the_root.child_exiting_tree.connect(populate_tree_from_node)
 
@@ -29,17 +30,16 @@ func _ready() -> void:
 	pass
 
 
-func populate_tree_from_node(_node):
+func populate_tree_from_node(_node: Variant = ""):
 	tree_view.clear()
 
-	var the_root = scene_m.get_master_root(scene_m.active_session)
-	var root_node = the_root
-	if not root_node:
+	if not session_root:
+		GlobalLogger.log("No session root defined.", Enum.LogLevel.ERROR)
 		return
 
 	var tree_root = tree_view.create_item()
 
-	add_node_to_tree(root_node, tree_root)
+	add_node_to_tree(session_root, tree_root)
 
 
 # FIXME: The open-ness of the current view is not maintained when refreshing the tree view.
@@ -74,10 +74,10 @@ func popupmenu_populate_generic() -> void:
 
 
 func _session_changed():
-	var the_root = scene_m.get_master_root(scene_m.active_session)
+	session_root = scene_m.get_master_root(scene_m.active_session)
 	spawnable_m = scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager")
 	session_signalbus = scene_m.get_master_scene(scene_m.active_session).get_node("SignalBus")
-	populate_tree_from_node(the_root)
+	populate_tree_from_node()
 
 
 func _on_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_index: int):
@@ -110,6 +110,12 @@ func _on_item_activated(index: int) -> void:
 	var item_type = NSB.get_node_index(item_text)
 
 	var parent_node = popup.get_meta("selected_node")
+	if parent_node == null:
+		GlobalLogger.log("Tried to add a child to an invalid node.", Enum.LogLevel.WARNING)
+		populate_tree_from_node()
+
+		return
+
 	var entity = await spawnable_m.create(item_type, int(parent_node.name))
 	_select_node_with_gizmo(entity)
 
@@ -119,17 +125,22 @@ func _on_item_activated(index: int) -> void:
 
 func _on_popup_menu_id_pressed(id: int):
 	if _clicked_item:
+		var node = _clicked_item.get_metadata(0)
+		if node == null && id != 0:
+			GlobalLogger.log("Tried to preform an action on an invalid node.", Enum.LogLevel.WARNING)
+			populate_tree_from_node()
+			return
 		match id:
 			0:
-				get_node("Popup").set_meta("selected_node", _clicked_item.get_metadata(0))
+				get_node("Popup").set_meta("selected_node", node)
 				get_node("Popup").visible = true
 			1:
-				spawnable_m.delete_spawnable.rpc(_clicked_item.get_metadata(0).name)
-				spawnable_m.delete_spawnable(_clicked_item.get_metadata(0).name)
-				session_signalbus.node_destroyed.emit(_clicked_item.get_metadata(0))
+				spawnable_m.delete_spawnable.rpc(node.name)
+				spawnable_m.delete_spawnable(node.name)
+				session_signalbus.node_destroyed.emit(node)
 			2:
 				# TODO: Some nodes crash the client, figure out how to detect?
-				_select_node_with_gizmo(_clicked_item.get_metadata(0))
+				_select_node_with_gizmo(node)
 
 
 func _select_node_with_gizmo(node: Node) -> void:
