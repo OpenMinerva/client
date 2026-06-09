@@ -63,21 +63,16 @@ func sync_all() -> void:
 func create(node_type: int, node_parent: int, model_path: String = "") -> Variant:
 	var my_id: int = app_network_m._database.sessions_api[app_scene_m.active_session].get_unique_id()
 	var caller_id: int = multiplayer.get_remote_sender_id()
-	var caller_is_host: bool = caller_id < 2
 
-	print("My ID: %s, Caller ID: %s, Host: %s" % [my_id, caller_id, caller_is_host])
 	if my_id == 1:
 		var entity = spawn_spawnable(node_type, "", model_path, node_parent)
 		spawn_spawnable.rpc(node_type, "", model_path, node_parent)
 
 		var database_index: int = _database.find_custom(func(entry): return entry.id == entity)
-		print("caller: '%s', my_id '%s'" % [caller_id, my_id])
 		if caller_id != 0 && caller_id != my_id:
 			# This is a client request to spawn
-			print("Client requested spawn, returning node ID")
 			return int(_database[database_index].node.name)
 
-		print("Host spawned something, returning Node itself")
 		return _database[database_index].node
 	else:
 		var entity = await rpcawaiter.send_rpc(1, create.bind(node_type, node_parent, model_path))
@@ -124,7 +119,6 @@ func delete_spawnable(node_name: String) -> void:
 @rpc("authority", "reliable")
 func receive_database(database: Array, id: int) -> void:
 	for spawnable in database:
-		print("Client syncing '%s'" % spawnable.id)
 		spawn_spawnable(spawnable.type, str(spawnable.id))
 	network_m.rpc_id(1, "dev_request_sync")
 	return
