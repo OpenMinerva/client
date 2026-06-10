@@ -124,7 +124,6 @@ func receive_database(database: Array, id: int) -> void:
 	return
 
 
-# TODO: RESEARCH "unreliable" connections. I think this is an applicable use case since a missed packet would probably be corrected in the next instant?
 # TODO: SECURITY Make this so that the client can move the item on their end, but the host must move it for everyone else.
 @rpc("any_peer", "unreliable")
 func position_spawnable(id: int, p_position: Vector3, p_rotation: Vector3, p_scale: Vector3) -> void:

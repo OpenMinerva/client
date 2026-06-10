@@ -118,6 +118,7 @@ func _on_item_activated(index: int) -> void:
 		return
 
 	var entity = await spawnable_m.create(item_type, int(parent_node.name))
+	# TODO: Handle failed entity creation request.
 	_select_node_with_gizmo(entity)
 
 	session_signalbus.node_created.emit(entity)

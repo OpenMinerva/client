@@ -12,7 +12,7 @@ var active_session: String = ""
 
 # Game managers
 @onready var network_m: Node = get_tree().current_scene.get_node("NetworkManager")
-@onready var scene_container: Node3D = get_tree().current_scene.get_node("Scenes")
+@onready var scene_container: Node3D = get_tree().current_scene.get_node("SubViewportContainer/SubViewport/Scenes")
 
 
 func _ready():

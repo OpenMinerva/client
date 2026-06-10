@@ -5,7 +5,29 @@
 [ext_resource type="PackedScene" uid="uid://c4y1sb6lmdr0q" path="res://userinterface/dash/dashboard.tscn" id="4_h2qy3"]
 [ext_resource type="PackedScene" uid="uid://bqtqfooa7qncp" path="res://userinterface/godmode/desktop/godmode.tscn" id="5_q3f5g"]
 
+[sub_resource type="GDScript" id="GDScript_q3f5g"]
+script/source = "extends SubViewportContainer
+
+func _input(event):
+	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+		$SubViewport.push_input(event)
+"
+
 [node name="Master" type="Node3D" unique_id=420526444]
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="." unique_id=1046710585]
+offset_right = 1920.0
+offset_bottom = 1080.0
+size_flags_vertical = 3
+stretch = true
+script = SubResource("GDScript_q3f5g")
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer" unique_id=417886479]
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="Scenes" type="Node3D" parent="SubViewportContainer/SubViewport" unique_id=308239834]
 
 [node name="NetworkManager" parent="." unique_id=1960146969 instance=ExtResource("1_jooxx")]
 
@@ -51,5 +73,3 @@ mouse_filter = 1
 [node name="Dashboard" parent="." unique_id=505457833 instance=ExtResource("4_h2qy3")]
 visible = false
 mouse_filter = 1
-
-[node name="Scenes" type="Node3D" parent="." unique_id=308239834]
