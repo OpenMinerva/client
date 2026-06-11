@@ -26,6 +26,7 @@ var _database := []
 @onready var network_m = get_node("../NetworkManager")
 @onready var instance_root = get_parent().get_node("root")
 @onready var rpcawaiter = get_parent().get_node("RpcAwaiter")
+@onready var session_signalbus: Node = get_node("../SignalBus")
 
 
 # TODO: Handle physics for our items, and
@@ -113,6 +114,7 @@ func spawn_spawnable(p_type: int, p_name: String = "", p_path: String = "", pare
 
 	_spawned_entity = _spawn_node(p_type, 1, parent_node, p_path)
 
+	session_signalbus.node_created.emit(_spawned_entity)
 	return int(_spawned_entity.name)
 
 
@@ -130,6 +132,7 @@ func delete_spawnable(node_name: String) -> void:
 
 	_entry.node.queue_free()
 	_database.remove_at(_entry_index)
+	session_signalbus.node_destroyed.emit(node_name)
 	return
 
 

@@ -24,8 +24,11 @@ func _ready() -> void:
 
 
 func populate_tree_from_node(_node: Variant = ""):
+	# Wait a frame to get the updated scene from when it was called.
+	# This should be changed in the future when I learn how to properly wait for the scene to update before trying to update the inspector.
+	await get_tree().process_frame
+	await get_tree().process_frame
 	tree_view.clear()
-
 	if not session_root:
 		GlobalLogger.log("No session root defined.", Enum.LogLevel.ERROR)
 		return
@@ -118,7 +121,6 @@ func _on_item_activated(index: int) -> void:
 	# TODO: Handle failed entity creation request.
 	_select_node_with_gizmo(entity)
 
-	session_signalbus.node_created.emit(entity)
 	return
 
 
@@ -134,10 +136,9 @@ func _on_popup_menu_id_pressed(id: int):
 				get_node("Popup").set_meta("selected_node", node)
 				get_node("Popup").visible = true
 			1:
-				await spawnable_m.destroy(int(node.name))
-				session_signalbus.node_destroyed.emit(node)
+				var _name = node.name
+				await spawnable_m.destroy(int(_name))
 			2:
-				# TODO: Some nodes crash the client, figure out how to detect?
 				_select_node_with_gizmo(node)
 
 
@@ -151,7 +152,6 @@ func _select_node_with_gizmo(node: Node) -> void:
 	the_root.add_child(gizmo)
 	gizmo.transform_changed.connect(func(mode, value): _transform_gizmo(mode, value, gizmo._selections))
 
-	session_signalbus.node_created.emit(gizmo)
 	gizmo.clear_selection()
 	gizmo.select(node)
 
