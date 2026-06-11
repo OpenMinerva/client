@@ -1,9 +1,11 @@
 [gd_scene format=3 uid="uid://cxk6c0uipjjpo"]
 
+[ext_resource type="Script" uid="uid://b4mien0qqtx01" path="res://userinterface/client_edit_mode/desktop/cem_container.gd" id="1_2o3k7"]
 [ext_resource type="PackedScene" uid="uid://5v8rbnp716b0" path="res://scenes/managers/app/network.tscn" id="1_jooxx"]
 [ext_resource type="PackedScene" uid="uid://cmknpdx5ba15o" path="res://scenes/managers/app/scene.tscn" id="2_h2qy3"]
+[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="2_q3f5g"]
 [ext_resource type="PackedScene" uid="uid://c4y1sb6lmdr0q" path="res://userinterface/dash/dashboard.tscn" id="4_h2qy3"]
-[ext_resource type="PackedScene" uid="uid://bqtqfooa7qncp" path="res://userinterface/godmode/desktop/godmode.tscn" id="5_q3f5g"]
+[ext_resource type="PackedScene" uid="uid://bqtqfooa7qncp" path="res://userinterface/client_edit_mode/desktop/inspector.tscn" id="5_q3f5g"]
 
 [sub_resource type="GDScript" id="GDScript_q3f5g"]
 script/source = "extends SubViewportContainer
@@ -13,41 +15,56 @@ func _input(event):
 		$SubViewport.push_input(event)
 "
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q3f5g"]
+bg_color = Color(0.078431375, 0.078431375, 0.078431375, 0.78431374)
+
 [node name="Master" type="Node3D" unique_id=420526444]
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="." unique_id=1046710585]
-offset_right = 1920.0
-offset_bottom = 1080.0
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=2132575488]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_2o3k7")
+
+[node name="Inspector" parent="HBoxContainer" unique_id=879206536 instance=ExtResource("5_q3f5g")]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer" unique_id=409425987]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="HBoxContainer/VBoxContainer" unique_id=1046710585]
+layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
 stretch = true
 script = SubResource("GDScript_q3f5g")
 
-[node name="SubViewport" type="SubViewport" parent="SubViewportContainer" unique_id=417886479]
+[node name="SubViewport" type="SubViewport" parent="HBoxContainer/VBoxContainer/SubViewportContainer" unique_id=417886479]
 handle_input_locally = false
-size = Vector2i(1920, 1080)
+size = Vector2i(1516, 876)
 render_target_update_mode = 4
 
-[node name="Scenes" type="Node3D" parent="SubViewportContainer/SubViewport" unique_id=308239834]
-
-[node name="NetworkManager" parent="." unique_id=1960146969 instance=ExtResource("1_jooxx")]
-
-[node name="SceneManager" parent="." unique_id=5477810 instance=ExtResource("2_h2qy3")]
-
-[node name="Crosshair" type="Control" parent="." unique_id=472699475]
+[node name="Crosshair" type="Control" parent="HBoxContainer/VBoxContainer/SubViewportContainer/SubViewport" unique_id=472699475]
+visible = false
 layout_mode = 3
-anchor_left = 0.48958334
-anchor_top = 0.4814815
-anchor_right = 0.5104167
-anchor_bottom = 0.5185185
-offset_right = -6.1035156e-05
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 mouse_filter = 1
-metadata/_edit_use_anchors_ = true
 
-[node name="CenterContainer" type="CenterContainer" parent="Crosshair" unique_id=2141251222]
+[node name="CenterContainer" type="CenterContainer" parent="HBoxContainer/VBoxContainer/SubViewportContainer/SubViewport/Crosshair" unique_id=2141251222]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -57,18 +74,28 @@ anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Line2D" type="Line2D" parent="Crosshair/CenterContainer" unique_id=880619905]
+[node name="Line2D" type="Line2D" parent="HBoxContainer/VBoxContainer/SubViewportContainer/SubViewport/Crosshair/CenterContainer" unique_id=880619905]
 points = PackedVector2Array(5, 0, -5, 0)
 closed = true
 width = 2.0
 
-[node name="Line2D2" type="Line2D" parent="Crosshair/CenterContainer" unique_id=696942631]
+[node name="Line2D2" type="Line2D" parent="HBoxContainer/VBoxContainer/SubViewportContainer/SubViewport/Crosshair/CenterContainer" unique_id=696942631]
 points = PackedVector2Array(0, 5, 0, -5)
 closed = true
 width = 2.0
 
-[node name="Godmode" parent="." unique_id=879206536 instance=ExtResource("5_q3f5g")]
-mouse_filter = 1
+[node name="Scenes" type="Node3D" parent="HBoxContainer/VBoxContainer/SubViewportContainer/SubViewport" unique_id=308239834]
+top_level = true
+
+[node name="Panel" type="Panel" parent="HBoxContainer/VBoxContainer" unique_id=91302866]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+theme = ExtResource("2_q3f5g")
+theme_override_styles/panel = SubResource("StyleBoxFlat_q3f5g")
+
+[node name="NetworkManager" parent="." unique_id=1960146969 instance=ExtResource("1_jooxx")]
+
+[node name="SceneManager" parent="." unique_id=5477810 instance=ExtResource("2_h2qy3")]
 
 [node name="Dashboard" parent="." unique_id=505457833 instance=ExtResource("4_h2qy3")]
 visible = false

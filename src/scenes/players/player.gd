@@ -17,6 +17,7 @@ var speed = 5.0
 var mouse_captured: bool = false
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
+var cem_state: bool = false
 
 @onready var scene_m = get_tree().current_scene.get_node("SceneManager")
 # TODO: Mouse sensitivity from settings
@@ -42,8 +43,8 @@ func _physics_process(delta):
 	# TODO: Simplify focus detection code from "mouse_captured".
 	if is_multiplayer_authority() == false:
 		return
-	# Add the gravity.
 
+	# Add the gravity.
 	if not is_on_floor():
 		velocity.y -= gravity * delta + 0.05
 
@@ -112,6 +113,11 @@ func _unhandled_input(event):
 		get_viewport().set_input_as_handled()
 		return
 
+	if "keycode" in event && event.keycode == 4194334 && event.pressed == true:
+		_toggle_client_edit_mode()
+		get_viewport().set_input_as_handled()
+		return
+
 	if "keycode" in event && event.keycode == 4194340 && event.pressed == true:
 		if mouse_captured:
 			capture_mouse(false)
@@ -142,6 +148,12 @@ func capture_mouse(to_capture: bool):
 	else:
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		mouse_captured = true
+	return
+
+
+func _toggle_client_edit_mode() -> void:
+	Events.emit_signal("cem_set_state", !cem_state)
+	cem_state = !cem_state
 	return
 
 

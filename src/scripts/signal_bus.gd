@@ -36,6 +36,9 @@ signal dash_settings_updated()
 signal instance_updated(instance: Dictionary)
 @warning_ignore("unused_signal")
 signal instance_root_changed(instance: Dictionary)
+# Client Edit Mode
+@warning_ignore("unused_signal")
+signal cem_set_state(is_open: bool)
 # Multiplayer
 @warning_ignore("unused_signal")
 signal session_joined(instance: Dictionary)

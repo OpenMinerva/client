@@ -469,7 +469,7 @@ func _advertise_session(session_info: Dictionary, session_server: String) -> Dic
 		return response_dict
 
 	advertise_response = JSON.parse_string(advertise_response.body)
-
+	# FIXME: When logging in, immediately trying to host a session results in a fatal error here.
 	if advertise_response.ok == false:
 		response_dict.error = advertise_response.error
 		return response_dict

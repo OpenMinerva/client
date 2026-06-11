@@ -95,10 +95,9 @@ func send_rpc_timeout(timeout: float, net_id: int, callable: Callable, default_r
 	var req_id = _next_id
 	_next_id += 1
 	_open_requests[req_id] = req_obj
-	print('"%s", "%s"' % [callable.get_method(), source_obj.get_path()])
 
 	var regex = RegEx.new()
-	regex.compile("/root/Master/Scenes/[A-Za-z0-9]+/")
+	regex.compile("/root/Master/HBoxContainer/VBoxContainer/SubViewportContainer/SubViewport/Scenes/[A-Za-z0-9]+/")
 	var result = regex.sub(source_obj.get_path(), "")
 
 	_handle_callable_request.rpc_id(

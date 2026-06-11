@@ -4,23 +4,16 @@ var _clicked_item: TreeItem = null
 
 @onready var tree_view: Tree = get_node("MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer/Tree")
 @onready var scene_m = get_tree().current_scene.get_node("SceneManager")
-@onready var spawnable_m = scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager")
-@onready var session_signalbus = scene_m.get_master_scene(scene_m.active_session).get_node("SignalBus")
+@onready var spawnable_m: Node
+@onready var session_signalbus: Node
 @onready var popup_menu = $PopupMenu
-@onready var session_root = scene_m.get_master_root(scene_m.active_session)
+@onready var session_root: Node
 
 
 func _ready() -> void:
 	_build_add_node_popup()
-	var the_root = scene_m.get_master_root(scene_m.active_session)
-	populate_tree_from_node()
-	the_root.child_entered_tree.connect(populate_tree_from_node)
-	the_root.child_exiting_tree.connect(populate_tree_from_node)
 
 	# Instance signals
-	session_signalbus.node_created.connect(populate_tree_from_node)
-	session_signalbus.node_destroyed.connect(populate_tree_from_node)
-
 	Events.dash_session_changed.connect(_session_changed)
 
 	tree_view.item_mouse_selected.connect(_on_tree_item_mouse_selected)
@@ -78,6 +71,10 @@ func _session_changed():
 	session_root = scene_m.get_master_root(scene_m.active_session)
 	spawnable_m = scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager")
 	session_signalbus = scene_m.get_master_scene(scene_m.active_session).get_node("SignalBus")
+
+	if session_signalbus.is_connected("node_created", populate_tree_from_node) == false:
+		session_signalbus.node_created.connect(populate_tree_from_node)
+		session_signalbus.node_destroyed.connect(populate_tree_from_node)
 	populate_tree_from_node()
 
 

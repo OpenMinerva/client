@@ -1,20 +1,15 @@
 [gd_scene format=3 uid="uid://bqtqfooa7qncp"]
 
-[ext_resource type="Shader" uid="uid://bwr4b0mhgi4w6" path="res://userinterface/dash/shaders/blur.gdshader" id="1_a47v1"]
-[ext_resource type="Script" uid="uid://dpb61yhg14f5h" path="res://userinterface/godmode/desktop/scripts/godmode.gd" id="1_plsgj"]
+[ext_resource type="Script" uid="uid://dpb61yhg14f5h" path="res://userinterface/client_edit_mode/desktop/scripts/inspector.gd" id="1_plsgj"]
 [ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="2_plsgj"]
 [ext_resource type="PackedScene" uid="uid://71vuc3qrtgi7" path="res://userinterface/dash/partials/category_button.tscn" id="4_xqsbl"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_xqsbl"]
-shader = ExtResource("1_a47v1")
-shader_parameter/blur_size = Vector2(3, 3)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_plsgj"]
 bg_color = Color(0.078431375, 0.078431375, 0.078431375, 0.78431374)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_plsgj"]
 
-[node name="Godmode" type="Control" unique_id=879206536]
+[node name="Inspector" type="Control" unique_id=879206536]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -38,16 +33,6 @@ layout_mode = 2
 [node name="Container" type="Control" parent="MarginContainer/HBoxContainer" unique_id=1148377667]
 layout_mode = 2
 size_flags_horizontal = 3
-
-[node name="BlurPanel" type="Panel" parent="MarginContainer/HBoxContainer/Container" unique_id=1641548975]
-material = SubResource("ShaderMaterial_xqsbl")
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme = ExtResource("2_plsgj")
 
 [node name="BackgroundColor" type="Panel" parent="MarginContainer/HBoxContainer/Container" unique_id=1608019550]
 layout_mode = 1
@@ -128,24 +113,15 @@ theme_override_constants/margin_bottom = 5
 [node name="Tree" type="Tree" parent="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer" unique_id=1139166924]
 layout_mode = 2
 focus_mode = 0
+theme_override_constants/draw_guides = 0
+theme_override_constants/draw_relationship_lines = 1
+theme_override_constants/relationship_line_width = 1
 theme_override_font_sizes/font_size = 14
 theme_override_styles/panel = SubResource("StyleBoxEmpty_plsgj")
 allow_rmb_select = true
 allow_search = false
 hide_root = true
 select_mode = 1
-
-[node name="Control" type="Control" parent="MarginContainer/HBoxContainer" unique_id=1467781859]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Control2" type="Control" parent="MarginContainer/HBoxContainer" unique_id=455979801]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Control3" type="Control" parent="MarginContainer/HBoxContainer" unique_id=1260114532]
-layout_mode = 2
-size_flags_horizontal = 3
 
 [node name="PopupMenu" type="PopupMenu" parent="." unique_id=1180236363]
 oversampling_override = 1.0
