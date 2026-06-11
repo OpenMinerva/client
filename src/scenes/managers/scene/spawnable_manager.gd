@@ -80,8 +80,25 @@ func create(node_type: int, node_parent: int, model_path: String = "") -> Varian
 		return _database[database_index].node
 
 
-# TODO: Require actioning user
-# TODO: Status response for spawn?
+@rpc("any_peer", "reliable")
+func destroy(node_id: int) -> Variant:
+	var my_id: int = app_network_m._database.sessions_api[app_scene_m.active_session].get_unique_id()
+	var caller_id: int = multiplayer.get_remote_sender_id()
+
+	if my_id == 1:
+		delete_spawnable(str(node_id))
+		delete_spawnable.rpc(str(node_id))
+
+		if caller_id != 0 && caller_id != my_id:
+			# This is a client request to delete
+			return
+
+		return
+	else:
+		await rpcawaiter.send_rpc(1, destroy.bind(node_id))
+		return
+
+
 # TODO: How would large assets work?
 @rpc("authority", "reliable")
 func spawn_spawnable(p_type: int, p_name: String = "", p_path: String = "", parent_id: int = 0) -> int:

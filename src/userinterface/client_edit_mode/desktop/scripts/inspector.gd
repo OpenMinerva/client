@@ -134,8 +134,7 @@ func _on_popup_menu_id_pressed(id: int):
 				get_node("Popup").set_meta("selected_node", node)
 				get_node("Popup").visible = true
 			1:
-				spawnable_m.delete_spawnable.rpc(node.name)
-				spawnable_m.delete_spawnable(node.name)
+				await spawnable_m.destroy(int(node.name))
 				session_signalbus.node_destroyed.emit(node)
 			2:
 				# TODO: Some nodes crash the client, figure out how to detect?
