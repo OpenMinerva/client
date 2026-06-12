@@ -170,10 +170,20 @@ func _update_selection_ui() -> void:
 		gizmo_root.set_text(0, "Gizmo")
 		gizmo_root.set_icon(0, get_class_icon("Gizmo"))
 
+		# TODO: Show all children of nodes that are selected.
+		# TODO: Don't allow selection of nodes that are a child of a selected node.
 		for selected_node in gizmo.node._selections.keys():
 			var item = selection_ui.create_item(gizmo_root)
 			item.set_text(0, selected_node.get_meta("pretty_name"))
 
+	return
+
+
+func _set_gizmo_render_state(state: bool = false) -> void:
+	for gizmo in gizmos:
+		var _node = gizmo.node
+		_node.show_selection_box = state
+		_node.mode = 0 if state == false else _node.ToolMode.SCALE | _node.ToolMode.MOVE | _node.ToolMode.ROTATE
 	return
 
 
@@ -189,14 +199,6 @@ func _gizmo_new(node_id: int) -> void:
 
 	gizmo_node.select(target_node.node)
 	_update_selection_ui()
-	return
-
-
-func _set_gizmo_render_state(state: bool = false) -> void:
-	for gizmo in gizmos:
-		var _node = gizmo.node
-		_node.show_selection_box = state
-		_node.mode = 0 if state == false else _node.ToolMode.SCALE | _node.ToolMode.MOVE | _node.ToolMode.ROTATE
 	return
 
 
