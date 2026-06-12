@@ -174,6 +174,12 @@ func get_all_node_children(node: Node) -> Array:
 	return nodes
 
 
+func get_by_id(spawnable_id: int) -> Dictionary:
+	var target_entry = _database.find_custom(func(entry): return entry.id == spawnable_id)
+
+	return _database[target_entry]
+
+
 func _spawn_node(node_type: int, node_owner: int, parent: Node = instance_root, model_path = "") -> Node:
 	var _node: Node
 	var _node_name = NSB.get_valid()[node_type]

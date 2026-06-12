@@ -1,5 +1,7 @@
 extends Node
 
+var gizmo_last_used: Node
+var gizmos: Array[Dictionary] = []
 var _clicked_item: TreeItem = null
 
 @onready var tree_view: Tree = get_node("MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer/Tree")
@@ -119,7 +121,7 @@ func _on_item_activated(index: int) -> void:
 
 	var entity = await spawnable_m.create(item_type, int(parent_node.name))
 	# TODO: Handle failed entity creation request.
-	_select_node_with_gizmo(entity)
+	_gizmo_new(int(entity.name))
 
 	return
 
@@ -137,24 +139,54 @@ func _on_popup_menu_id_pressed(id: int):
 				get_node("Popup").visible = true
 			1:
 				var _name = node.name
+				if node.get_meta("pretty_name") == "Gizmo":
+					_gizmo_delete(int(_name))
+					return
+
 				await spawnable_m.destroy(int(_name))
 			2:
-				_select_node_with_gizmo(node)
+				if gizmo_last_used != null:
+					_gizmo_add(int(gizmo_last_used.name), int(node.name))
+					return
+				_gizmo_new(int(node.name))
 
 
-func _select_node_with_gizmo(node: Node) -> void:
-	var the_root = scene_m.get_master_root(scene_m.active_session)
-	var schema_index = NSB.get_node_index("Gizmo")
-	var gizmo = await spawnable_m.create(schema_index, int(node.name))
+func _gizmo_new(node_id: int) -> void:
+	var target_node = spawnable_m.get_by_id(node_id)
+	var gizmo_schema_index = NSB.get_node_index("Gizmo")
+	var gizmo_node = await spawnable_m.create(gizmo_schema_index, node_id)
 
-	gizmo.set_meta("scene_node", true)
-	gizmo.set_meta("pretty_name", "Gizmo")
-	the_root.add_child(gizmo)
-	gizmo.transform_changed.connect(func(mode, value): _transform_gizmo(mode, value, gizmo._selections))
+	gizmos.append({ "node": gizmo_node, "id": int(gizmo_node.name) })
+	gizmo_last_used = gizmo_node
 
-	gizmo.clear_selection()
-	gizmo.select(node)
+	gizmo_node.transform_changed.connect(func(mode, value): _transform_gizmo(mode, value, gizmo_node._selections))
 
+	gizmo_node.select(target_node.node)
+	print(gizmos)
+	return
+
+
+func _gizmo_add(gizmo_id: int, node_id: int) -> void:
+	var gizmo = spawnable_m.get_by_id(gizmo_id)
+	var target_node = spawnable_m.get_by_id(node_id)
+	gizmo.node.select(target_node.node)
+	# TODO: Emit event gizmo changed
+	return
+
+
+func _gizmo_remove(gizmo_id: int, node_id: int) -> void:
+	var gizmo = spawnable_m.get_by_id(gizmo_id)
+	var target_node = spawnable_m.get_by_id(node_id)
+	gizmo.node.deselect(target_node.node)
+	# TODO: Emit event gizmo changed
+	return
+
+
+func _gizmo_delete(node_id: int) -> void:
+	var gizmo_index = gizmos.find_custom(func(entry): return entry.id == node_id)
+	gizmos.remove_at(gizmo_index)
+
+	await spawnable_m.destroy(node_id)
 	return
 
 
