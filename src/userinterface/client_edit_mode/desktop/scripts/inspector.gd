@@ -196,7 +196,7 @@ func _set_gizmo_render_state(state: bool = false) -> void:
 	for gizmo in gizmos:
 		var _node = gizmo.node
 		_node.show_selection_box = state
-		_node.mode = _node.TransformMode.NONE if state == false else _node.TransformMode.TRANSLATE | _node.TransformMode.ROTATE | _node.TransformMode.SCALE
+		_node.mode = 0 if state == false else _node.ToolMode.SCALE | _node.ToolMode.MOVE | _node.ToolMode.ROTATE
 	return
 
 
