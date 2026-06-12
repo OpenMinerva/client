@@ -190,7 +190,7 @@ func _set_gizmo_render_state(state: bool = false) -> void:
 func _gizmo_new(node_id: int) -> void:
 	var target_node = spawnable_m.get_by_id(node_id)
 	var gizmo_schema_index = NSB.get_node_index("Gizmo")
-	var gizmo_node = await spawnable_m.create(gizmo_schema_index, node_id)
+	var gizmo_node = await spawnable_m.create(gizmo_schema_index)
 
 	gizmos.append({ "node": gizmo_node, "id": int(gizmo_node.name) })
 	gizmo_last_used = gizmo_node

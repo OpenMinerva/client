@@ -61,7 +61,7 @@ func sync_all() -> void:
 
 
 @rpc("any_peer", "reliable")
-func create(node_type: int, node_parent: int, model_path: String = "") -> Variant:
+func create(node_type: int, node_parent: int = 0, model_path: String = "") -> Variant:
 	var my_id: int = app_network_m._database.sessions_api[app_scene_m.active_session].get_unique_id()
 	var caller_id: int = multiplayer.get_remote_sender_id()
 
