@@ -39,6 +39,8 @@ signal instance_root_changed(instance: Dictionary)
 # Client Edit Mode
 @warning_ignore("unused_signal")
 signal cem_set_state(is_open: bool)
+@warning_ignore("unused_signal")
+signal cem_set_gizmo_state(state: bool)
 # Multiplayer
 @warning_ignore("unused_signal")
 signal session_joined(instance: Dictionary)

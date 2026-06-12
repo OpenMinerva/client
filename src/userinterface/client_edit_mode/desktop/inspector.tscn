@@ -27,14 +27,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=1608777570]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=989599199]
 layout_mode = 2
 
-[node name="Container" type="Control" parent="MarginContainer/HBoxContainer" unique_id=1148377667]
+[node name="Container" type="Control" parent="MarginContainer/VBoxContainer" unique_id=1148377667]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="BackgroundColor" type="Panel" parent="MarginContainer/HBoxContainer/Container" unique_id=1608019550]
+[node name="BackgroundColor" type="Panel" parent="MarginContainer/VBoxContainer/Container" unique_id=1608019550]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -44,7 +45,7 @@ grow_vertical = 2
 theme = ExtResource("2_plsgj")
 theme_override_styles/panel = SubResource("StyleBoxFlat_plsgj")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/Container" unique_id=1984121645]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Container" unique_id=1984121645]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -52,7 +53,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/HBoxContainer/Container/VBoxContainer" unique_id=2024427458]
+[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/VBoxContainer/Container/VBoxContainer" unique_id=2024427458]
+visible = false
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 theme_override_constants/margin_left = 5
@@ -60,83 +62,80 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2" unique_id=1181858590]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2" unique_id=1181858590]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer" unique_id=18256717]
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer" unique_id=18256717]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Inspector" parent="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer2" unique_id=649942124 instance=ExtResource("4_xqsbl")]
+[node name="Inspector" parent="MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer2" unique_id=649942124 instance=ExtResource("4_xqsbl")]
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 size_flags_vertical = 1
 
-[node name="Button" parent="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer2/Inspector" index="0" unique_id=1422381468]
+[node name="Button" parent="MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer2/Inspector" index="0" unique_id=1422381468]
 custom_minimum_size = Vector2(0, 0)
 toggle_mode = false
 
-[node name="Label" parent="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer2/Inspector/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(649942124, 86696220) index="1" unique_id=1807295119]
-text = "Root"
+[node name="Label" parent="MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer2/Inspector/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(649942124, 86696220) index="1" unique_id=1807295119]
+text = "Inspector"
 
-[node name="Selections" parent="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer2" unique_id=1857668287 instance=ExtResource("4_xqsbl")]
+[node name="Selections" parent="MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer2" unique_id=1857668287 instance=ExtResource("4_xqsbl")]
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 size_flags_vertical = 1
 
-[node name="Button" parent="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer2/Selections" index="0" unique_id=1422381468]
+[node name="Button" parent="MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer2/Selections" index="0" unique_id=1422381468]
 custom_minimum_size = Vector2(0, 0)
 toggle_mode = false
 
-[node name="Label" parent="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer2/Selections/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(1857668287, 86696220) index="1" unique_id=1807295119]
-text = "Focus"
+[node name="Label" parent="MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer2/Selections/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(1857668287, 86696220) index="1" unique_id=1807295119]
+text = "Selections"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer" unique_id=731058431]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer" unique_id=731058431]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Root" parent="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer" unique_id=755678352 instance=ExtResource("4_xqsbl")]
+[node name="Root" parent="MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer" unique_id=755678352 instance=ExtResource("4_xqsbl")]
 visible = false
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 size_flags_vertical = 1
 
-[node name="Button" parent="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer/Root" index="0" unique_id=1422381468]
+[node name="Button" parent="MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer/Root" index="0" unique_id=1422381468]
 custom_minimum_size = Vector2(0, 0)
 toggle_mode = false
 
-[node name="Label" parent="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer/Root/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(755678352, 86696220) index="1" unique_id=1807295119]
+[node name="Label" parent="MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer/Root/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(755678352, 86696220) index="1" unique_id=1807295119]
 text = "Root"
 
-[node name="Focus" parent="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer" unique_id=1495961442 instance=ExtResource("4_xqsbl")]
+[node name="Focus" parent="MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer" unique_id=1495961442 instance=ExtResource("4_xqsbl")]
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 size_flags_vertical = 1
 
-[node name="Button" parent="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer/Focus" index="0" unique_id=1422381468]
+[node name="Button" parent="MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer/Focus" index="0" unique_id=1422381468]
 custom_minimum_size = Vector2(0, 0)
 toggle_mode = false
 
-[node name="Label" parent="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer/Focus/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(1495961442, 86696220) index="1" unique_id=1807295119]
+[node name="Label" parent="MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer/Focus/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(1495961442, 86696220) index="1" unique_id=1807295119]
 text = "Focus"
 
-[node name="Focus Parent" parent="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer" unique_id=1944860213 instance=ExtResource("4_xqsbl")]
+[node name="Focus Parent" parent="MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer" unique_id=1944860213 instance=ExtResource("4_xqsbl")]
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 size_flags_vertical = 1
 
-[node name="Button" parent="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer/Focus Parent" index="0" unique_id=1422381468]
+[node name="Button" parent="MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer/Focus Parent" index="0" unique_id=1422381468]
 custom_minimum_size = Vector2(0, 0)
 toggle_mode = false
 
-[node name="Label" parent="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer/Focus Parent/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(1944860213, 86696220) index="1" unique_id=1807295119]
+[node name="Label" parent="MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer/Focus Parent/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(1944860213, 86696220) index="1" unique_id=1807295119]
 text = "Focus Parent"
 
-[node name="MarginContainer3" type="MarginContainer" parent="MarginContainer/HBoxContainer/Container/VBoxContainer" unique_id=1361864166]
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/Container/VBoxContainer" unique_id=1666616570]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Container/VBoxContainer" unique_id=1666616570]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 5
@@ -144,7 +143,52 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="Tree" type="Tree" parent="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer" unique_id=1139166924]
+[node name="Tree" type="Tree" parent="MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer" unique_id=1139166924]
+layout_mode = 2
+focus_mode = 0
+theme_override_constants/draw_guides = 0
+theme_override_constants/draw_relationship_lines = 1
+theme_override_constants/relationship_line_width = 1
+theme_override_font_sizes/font_size = 14
+theme_override_styles/panel = SubResource("StyleBoxEmpty_plsgj")
+allow_rmb_select = true
+allow_search = false
+hide_root = true
+select_mode = 1
+
+[node name="SelectionArea" type="Control" parent="MarginContainer/VBoxContainer" unique_id=1692445644]
+custom_minimum_size = Vector2(0, 250)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BackgroundColor" type="Panel" parent="MarginContainer/VBoxContainer/SelectionArea" unique_id=1277487641]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_plsgj")
+theme_override_styles/panel = SubResource("StyleBoxFlat_plsgj")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/SelectionArea" unique_id=1497237280]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SelectionContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/SelectionArea/VBoxContainer" unique_id=1041746032]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Selections" type="Tree" parent="MarginContainer/VBoxContainer/SelectionArea/VBoxContainer/SelectionContainer" unique_id=458051864]
 layout_mode = 2
 focus_mode = 0
 theme_override_constants/draw_guides = 0
@@ -187,8 +231,8 @@ theme = ExtResource("2_plsgj")
 texture_filter = 2
 layout_mode = 2
 
-[editable path="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer2/Inspector"]
-[editable path="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer2/Selections"]
-[editable path="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer/Root"]
-[editable path="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer/Focus"]
-[editable path="MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer/Focus Parent"]
+[editable path="MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer2/Inspector"]
+[editable path="MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer2/Selections"]
+[editable path="MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer/Root"]
+[editable path="MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer/Focus"]
+[editable path="MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer/Focus Parent"]

@@ -4,12 +4,13 @@ var gizmo_last_used: Node
 var gizmos: Array[Dictionary] = []
 var _clicked_item: TreeItem = null
 
-@onready var tree_view: Tree = get_node("MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer/Tree")
+@onready var tree_view: Tree = get_node("MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer/Tree")
 @onready var scene_m = get_tree().current_scene.get_node("SceneManager")
 @onready var spawnable_m: Node
 @onready var session_signalbus: Node
 @onready var popup_menu = $PopupMenu
 @onready var session_root: Node
+@onready var selection_ui: Tree = get_node("MarginContainer/VBoxContainer/SelectionArea/VBoxContainer/SelectionContainer/Selections")
 
 
 func _ready() -> void:
@@ -17,6 +18,8 @@ func _ready() -> void:
 
 	# Instance signals
 	Events.dash_session_changed.connect(_session_changed)
+	Events.cem_set_gizmo_state.connect(_set_gizmo_render_state)
+	Events.cem_set_state.connect(_set_cem_state)
 
 	tree_view.item_mouse_selected.connect(_on_tree_item_mouse_selected)
 	popup_menu.id_pressed.connect(_on_popup_menu_id_pressed)
@@ -69,6 +72,11 @@ func popupmenu_populate_generic() -> void:
 	popup_menu.add_item("Add Child", 0)
 	popup_menu.add_item("Remove Node", 1)
 	popup_menu.add_item("Select", 2)
+	return
+
+
+func _set_cem_state(state: bool) -> void:
+	_set_gizmo_render_state(state)
 	return
 
 
@@ -151,6 +159,24 @@ func _on_popup_menu_id_pressed(id: int):
 				_gizmo_new(int(node.name))
 
 
+func _update_selection_ui() -> void:
+	selection_ui.clear()
+
+	# TODO: Why is this required?
+	selection_ui.create_item()
+
+	for gizmo in gizmos:
+		var gizmo_root = selection_ui.create_item()
+		gizmo_root.set_text(0, "Gizmo")
+		gizmo_root.set_icon(0, get_class_icon("Gizmo"))
+
+		for selected_node in gizmo.node._selections.keys():
+			var item = selection_ui.create_item(gizmo_root)
+			item.set_text(0, selected_node.get_meta("pretty_name"))
+
+	return
+
+
 func _gizmo_new(node_id: int) -> void:
 	var target_node = spawnable_m.get_by_id(node_id)
 	var gizmo_schema_index = NSB.get_node_index("Gizmo")
@@ -162,7 +188,15 @@ func _gizmo_new(node_id: int) -> void:
 	gizmo_node.transform_changed.connect(func(mode, value): _transform_gizmo(mode, value, gizmo_node._selections))
 
 	gizmo_node.select(target_node.node)
-	print(gizmos)
+	_update_selection_ui()
+	return
+
+
+func _set_gizmo_render_state(state: bool = false) -> void:
+	for gizmo in gizmos:
+		var _node = gizmo.node
+		_node.show_selection_box = state
+		_node.mode = _node.TransformMode.NONE if state == false else _node.TransformMode.TRANSLATE | _node.TransformMode.ROTATE | _node.TransformMode.SCALE
 	return
 
 
@@ -170,7 +204,10 @@ func _gizmo_add(gizmo_id: int, node_id: int) -> void:
 	var gizmo = spawnable_m.get_by_id(gizmo_id)
 	var target_node = spawnable_m.get_by_id(node_id)
 	gizmo.node.select(target_node.node)
+	# TODO: Check if node is already under another selection?
+	# TODO: Don't allow selecting root
 	# TODO: Emit event gizmo changed
+	_update_selection_ui()
 	return
 
 
@@ -179,6 +216,7 @@ func _gizmo_remove(gizmo_id: int, node_id: int) -> void:
 	var target_node = spawnable_m.get_by_id(node_id)
 	gizmo.node.deselect(target_node.node)
 	# TODO: Emit event gizmo changed
+	_update_selection_ui()
 	return
 
 
@@ -187,6 +225,7 @@ func _gizmo_delete(node_id: int) -> void:
 	gizmos.remove_at(gizmo_index)
 
 	await spawnable_m.destroy(node_id)
+	_update_selection_ui()
 	return
 
 
