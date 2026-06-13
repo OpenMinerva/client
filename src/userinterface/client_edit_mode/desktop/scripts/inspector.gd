@@ -1,6 +1,5 @@
 extends Node
 
-var gizmo_last_used: Node
 var gizmos: Array[Dictionary] = []
 var _clicked_item: TreeItem = null
 
@@ -8,7 +7,8 @@ var _clicked_item: TreeItem = null
 @onready var scene_m = get_tree().current_scene.get_node("SceneManager")
 @onready var spawnable_m: Node
 @onready var session_signalbus: Node
-@onready var popup_menu = $PopupMenu
+@onready var inspector_popup_menu = $InspectorPopup
+@onready var gizmo_popup_menu = $GizmoPopup
 @onready var session_root: Node
 @onready var selection_ui: Tree = get_node("MarginContainer/VBoxContainer/SelectionArea/VBoxContainer/SelectionContainer/Selections")
 
@@ -18,13 +18,16 @@ func _ready() -> void:
 
 	# Instance signals
 	Events.dash_session_changed.connect(_session_changed)
-	Events.cem_set_gizmo_state.connect(_set_gizmo_render_state)
+	Events.cem_set_gizmo_state.connect(_toggle_gizmos)
 	Events.cem_set_state.connect(_set_cem_state)
 
 	tree_view.item_mouse_selected.connect(_on_tree_item_mouse_selected)
-	popup_menu.id_pressed.connect(_on_popup_menu_id_pressed)
+	inspector_popup_menu.id_pressed.connect(_on_inspector_popup_menu_id_pressed)
 
-	popup_menu.hide()
+	selection_ui.item_mouse_selected.connect(_on_gizmo_item_selected)
+	gizmo_popup_menu.id_pressed.connect(_on_gizmo_popup_pressed)
+
+	inspector_popup_menu.hide()
 	pass
 
 
@@ -67,16 +70,34 @@ func get_class_icon(class_n: String) -> Texture2D:
 
 
 func popupmenu_populate_generic() -> void:
-	for i in popup_menu.item_count:
-		popup_menu.remove_item(0)
-	popup_menu.add_item("Add Child", 0)
-	popup_menu.add_item("Remove Node", 1)
-	popup_menu.add_item("Select", 2)
+	for i in inspector_popup_menu.item_count:
+		inspector_popup_menu.remove_item(0)
+	inspector_popup_menu.add_item("Add Child", 0)
+	inspector_popup_menu.add_item("Remove Node", 1)
+	inspector_popup_menu.add_item("Select", 2)
+	return
+
+
+func _on_gizmo_popup_pressed(id: int) -> void:
+	var gizmo_node = _clicked_item.get_metadata(0)
+	match id:
+		0:
+			_set_active_gizmo(int(gizmo_node.name))
+		1:
+			_gizmo_delete(int(gizmo_node.name))
+	return
+
+
+func _on_node_destroyed(node_name: String) -> void:
+	var _node = spawnable_m.get_by_id(int(node_name)).node
+	for gizmo in gizmos:
+		if gizmo.node.is_selected(_node):
+			gizmo.node.deselect(_node)
 	return
 
 
 func _set_cem_state(state: bool) -> void:
-	_set_gizmo_render_state(state)
+	_toggle_gizmos(state)
 	return
 
 
@@ -88,6 +109,7 @@ func _session_changed():
 	if session_signalbus.is_connected("node_created", populate_tree_from_node) == false:
 		session_signalbus.node_created.connect(populate_tree_from_node)
 		session_signalbus.node_destroyed.connect(populate_tree_from_node)
+		session_signalbus.node_destroyed.connect(_on_node_destroyed)
 	populate_tree_from_node()
 
 
@@ -98,8 +120,18 @@ func _on_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_index: i
 		if _clicked_item:
 			var global_pos = tree_view.get_global_mouse_position()
 			popupmenu_populate_generic()
-			popup_menu.position = global_pos
-			popup_menu.popup()
+			inspector_popup_menu.position = global_pos
+			inspector_popup_menu.popup()
+
+
+func _on_gizmo_item_selected(mouse_position: Vector2, mouse_button_index: int):
+	if mouse_button_index == MOUSE_BUTTON_RIGHT:
+		_clicked_item = selection_ui.get_item_at_position(mouse_position)
+
+		if _clicked_item:
+			var global_pos = selection_ui.get_global_mouse_position()
+			gizmo_popup_menu.position = global_pos
+			gizmo_popup_menu.popup()
 
 
 func _build_add_node_popup() -> void:
@@ -134,7 +166,7 @@ func _on_item_activated(index: int) -> void:
 	return
 
 
-func _on_popup_menu_id_pressed(id: int):
+func _on_inspector_popup_menu_id_pressed(id: int):
 	if _clicked_item:
 		var node = _clicked_item.get_metadata(0)
 		if node == null && id != 0:
@@ -153,8 +185,9 @@ func _on_popup_menu_id_pressed(id: int):
 
 				await spawnable_m.destroy(int(_name))
 			2:
-				if gizmo_last_used != null:
-					_gizmo_add(int(gizmo_last_used.name), int(node.name))
+				if gizmos.size() > 0:
+					var target_gizmo_node = gizmos.back().node
+					_gizmo_add(int(target_gizmo_node.name), int(node.name))
 					return
 				_gizmo_new(int(node.name))
 
@@ -169,21 +202,40 @@ func _update_selection_ui() -> void:
 		var gizmo_root = selection_ui.create_item()
 		gizmo_root.set_text(0, "Gizmo")
 		gizmo_root.set_icon(0, get_class_icon("Gizmo"))
+		gizmo_root.set_metadata(0, gizmo.node)
 
 		# TODO: Show all children of nodes that are selected.
 		# TODO: Don't allow selection of nodes that are a child of a selected node.
 		for selected_node in gizmo.node._selections.keys():
 			var item = selection_ui.create_item(gizmo_root)
 			item.set_text(0, selected_node.get_meta("pretty_name"))
+			item.set_selectable(0, false)
 
 	return
 
 
-func _set_gizmo_render_state(state: bool = false) -> void:
+func _set_active_gizmo(gizmo_id: int) -> void:
+	for gizmo in gizmos:
+		if gizmo.id == gizmo_id:
+			# Set the target gizmo to on.
+			_set_gizmo_render_state(gizmo.node, true)
+			continue
+		# Turn off all gizmos.
+		_set_gizmo_render_state(gizmo.node, false)
+	return
+
+
+func _toggle_gizmos(state: bool = false) -> void:
 	for gizmo in gizmos:
 		var _node = gizmo.node
 		_node.show_selection_box = state
 		_node.mode = 0 if state == false else _node.ToolMode.SCALE | _node.ToolMode.MOVE | _node.ToolMode.ROTATE
+	return
+
+
+func _set_gizmo_render_state(gizmo: Node, state: bool = false) -> void:
+	gizmo.show_selection_box = state
+	gizmo.mode = 0 if state == false else gizmo.ToolMode.SCALE | gizmo.ToolMode.MOVE | gizmo.ToolMode.ROTATE
 	return
 
 
@@ -193,11 +245,11 @@ func _gizmo_new(node_id: int) -> void:
 	var gizmo_node = await spawnable_m.create(gizmo_schema_index)
 
 	gizmos.append({ "node": gizmo_node, "id": int(gizmo_node.name) })
-	gizmo_last_used = gizmo_node
 
 	gizmo_node.transform_changed.connect(func(mode, value): _transform_gizmo(mode, value, gizmo_node._selections))
 
 	gizmo_node.select(target_node.node)
+	_set_active_gizmo(int(gizmo_node.name))
 	_update_selection_ui()
 	return
 

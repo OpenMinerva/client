@@ -201,9 +201,18 @@ allow_search = false
 hide_root = true
 select_mode = 1
 
-[node name="PopupMenu" type="PopupMenu" parent="." unique_id=1180236363]
+[node name="InspectorPopup" type="PopupMenu" parent="." unique_id=1180236363]
 oversampling_override = 1.0
 title = "Select"
+
+[node name="GizmoPopup" type="PopupMenu" parent="." unique_id=1763270290]
+oversampling_override = 1.0
+title = "Select"
+item_count = 2
+item_0/text = "Use"
+item_0/id = 0
+item_1/text = "Remove"
+item_1/id = 1
 
 [node name="Popup" type="Popup" parent="." unique_id=79464639]
 transparent_bg = true
