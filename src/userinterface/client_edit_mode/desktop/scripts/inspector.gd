@@ -93,6 +93,10 @@ func _on_node_destroyed(node_name: String) -> void:
 	for gizmo in gizmos:
 		if gizmo.node.is_selected(_node):
 			gizmo.node.deselect(_node)
+			if gizmo.node.get_selected_count() == 0:
+				_gizmo_delete(gizmo.id)
+
+	_update_selection_ui()
 	return
 
 
@@ -242,7 +246,13 @@ func _set_gizmo_render_state(gizmo: Node, state: bool = false) -> void:
 func _gizmo_new(node_id: int) -> void:
 	var target_node = spawnable_m.get_by_id(node_id)
 	var gizmo_schema_index = NSB.get_node_index("Gizmo")
-	var gizmo_node = await spawnable_m.create(gizmo_schema_index)
+	var gizmo_node: Node
+
+	if target_node == { }:
+		GlobalLogger.log("Tried to add a gizmo to an invalid node.", Enum.LogLevel.WARNING)
+		return
+
+	gizmo_node = await spawnable_m.create(gizmo_schema_index)
 
 	gizmos.append({ "node": gizmo_node, "id": int(gizmo_node.name) })
 

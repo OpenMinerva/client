@@ -130,9 +130,9 @@ func delete_spawnable(node_name: String) -> void:
 	var _entry = _database[_entry_index]
 	# TODO: Remove all Gizmos relating to the node first
 
+	session_signalbus.node_destroyed.emit(node_name)
 	_entry.node.queue_free()
 	_database.remove_at(_entry_index)
-	session_signalbus.node_destroyed.emit(node_name)
 	return
 
 
@@ -176,6 +176,9 @@ func get_all_node_children(node: Node) -> Array:
 
 func get_by_id(spawnable_id: int) -> Dictionary:
 	var target_entry = _database.find_custom(func(entry): return entry.id == spawnable_id)
+
+	if target_entry == -1:
+		return { }
 
 	return _database[target_entry]
 
