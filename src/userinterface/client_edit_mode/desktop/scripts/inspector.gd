@@ -199,7 +199,6 @@ func _on_inspector_popup_menu_id_pressed(id: int):
 func _update_selection_ui() -> void:
 	selection_ui.clear()
 
-	# TODO: Why is this required?
 	selection_ui.create_item()
 
 	for gizmo in gizmos:
@@ -209,7 +208,6 @@ func _update_selection_ui() -> void:
 		gizmo_root.set_metadata(0, gizmo.node)
 
 		# TODO: Show all children of nodes that are selected.
-		# TODO: Don't allow selection of nodes that are a child of a selected node.
 		for selected_node in gizmo.node._selections.keys():
 			var item = selection_ui.create_item(gizmo_root)
 			item.set_text(0, selected_node.get_meta("pretty_name"))
@@ -267,10 +265,19 @@ func _gizmo_new(node_id: int) -> void:
 func _gizmo_add(gizmo_id: int, node_id: int) -> void:
 	var gizmo = spawnable_m.get_by_id(gizmo_id)
 	var target_node = spawnable_m.get_by_id(node_id)
+
+	# Check if we are selecting a child of a selected node.
+	for selected_node in gizmo.node._selections:
+		if selected_node.is_ancestor_of(target_node.node):
+			_gizmo_new(target_node.id)
+			return
+
+	# Check if we are selecting a parent of a selected node.
+	for selected_node in gizmo.node._selections:
+		if target_node.node.is_ancestor_of(selected_node):
+			gizmo.node.deselect(selected_node)
+
 	gizmo.node.select(target_node.node)
-	# TODO: Check if node is already under another selection?
-	# TODO: Don't allow selecting root
-	# TODO: Emit event gizmo changed
 	_update_selection_ui()
 	return
 
@@ -279,7 +286,6 @@ func _gizmo_remove(gizmo_id: int, node_id: int) -> void:
 	var gizmo = spawnable_m.get_by_id(gizmo_id)
 	var target_node = spawnable_m.get_by_id(node_id)
 	gizmo.node.deselect(target_node.node)
-	# TODO: Emit event gizmo changed
 	_update_selection_ui()
 	return
 
