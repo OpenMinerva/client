@@ -273,7 +273,7 @@ func _gizmo_add(gizmo_id: int, node_id: int) -> void:
 			return
 
 	# Check if we are selecting a parent of a selected node.
-	for selected_node in gizmo.node._selections:
+	for selected_node in gizmo.node._selections.keys():
 		if target_node.node.is_ancestor_of(selected_node):
 			gizmo.node.deselect(selected_node)
 
