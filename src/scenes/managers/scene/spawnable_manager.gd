@@ -61,7 +61,7 @@ func sync_all() -> void:
 
 
 @rpc("any_peer", "reliable")
-func create(node_type: int, node_parent: int, model_path: String = "") -> Variant:
+func create(node_type: int, node_parent: int = 0, model_path: String = "") -> Variant:
 	var my_id: int = app_network_m._database.sessions_api[app_scene_m.active_session].get_unique_id()
 	var caller_id: int = multiplayer.get_remote_sender_id()
 
@@ -130,9 +130,9 @@ func delete_spawnable(node_name: String) -> void:
 	var _entry = _database[_entry_index]
 	# TODO: Remove all Gizmos relating to the node first
 
+	session_signalbus.node_destroyed.emit(node_name)
 	_entry.node.queue_free()
 	_database.remove_at(_entry_index)
-	session_signalbus.node_destroyed.emit(node_name)
 	return
 
 
@@ -172,6 +172,15 @@ func get_all_node_children(node: Node) -> Array:
 		nodes.append_array(get_all_node_children(child))
 
 	return nodes
+
+
+func get_by_id(spawnable_id: int) -> Dictionary:
+	var target_entry = _database.find_custom(func(entry): return entry.id == spawnable_id)
+
+	if target_entry == -1:
+		return { }
+
+	return _database[target_entry]
 
 
 func _spawn_node(node_type: int, node_owner: int, parent: Node = instance_root, model_path = "") -> Node:

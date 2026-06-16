@@ -1,13 +1,16 @@
 extends Node
 
+var gizmos: Array[Dictionary] = []
 var _clicked_item: TreeItem = null
 
-@onready var tree_view: Tree = get_node("MarginContainer/HBoxContainer/Container/VBoxContainer/MarginContainer/Tree")
+@onready var tree_view: Tree = get_node("MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer/Tree")
 @onready var scene_m = get_tree().current_scene.get_node("SceneManager")
 @onready var spawnable_m: Node
 @onready var session_signalbus: Node
-@onready var popup_menu = $PopupMenu
+@onready var inspector_popup_menu = $InspectorPopup
+@onready var gizmo_popup_menu = $GizmoPopup
 @onready var session_root: Node
+@onready var selection_ui: Tree = get_node("MarginContainer/VBoxContainer/SelectionArea/VBoxContainer/SelectionContainer/Selections")
 
 
 func _ready() -> void:
@@ -15,11 +18,16 @@ func _ready() -> void:
 
 	# Instance signals
 	Events.dash_session_changed.connect(_session_changed)
+	Events.cem_set_gizmo_state.connect(_toggle_gizmos)
+	Events.cem_set_state.connect(_set_cem_state)
 
 	tree_view.item_mouse_selected.connect(_on_tree_item_mouse_selected)
-	popup_menu.id_pressed.connect(_on_popup_menu_id_pressed)
+	inspector_popup_menu.id_pressed.connect(_on_inspector_popup_menu_id_pressed)
 
-	popup_menu.hide()
+	selection_ui.item_mouse_selected.connect(_on_gizmo_item_selected)
+	gizmo_popup_menu.id_pressed.connect(_on_gizmo_popup_pressed)
+
+	inspector_popup_menu.hide()
 	pass
 
 
@@ -62,11 +70,38 @@ func get_class_icon(class_n: String) -> Texture2D:
 
 
 func popupmenu_populate_generic() -> void:
-	for i in popup_menu.item_count:
-		popup_menu.remove_item(0)
-	popup_menu.add_item("Add Child", 0)
-	popup_menu.add_item("Remove Node", 1)
-	popup_menu.add_item("Select", 2)
+	for i in inspector_popup_menu.item_count:
+		inspector_popup_menu.remove_item(0)
+	inspector_popup_menu.add_item("Add Child", 0)
+	inspector_popup_menu.add_item("Remove Node", 1)
+	inspector_popup_menu.add_item("Select", 2)
+	return
+
+
+func _on_gizmo_popup_pressed(id: int) -> void:
+	var gizmo_node = _clicked_item.get_metadata(0)
+	match id:
+		0:
+			_set_active_gizmo(int(gizmo_node.name))
+		1:
+			_gizmo_delete(int(gizmo_node.name))
+	return
+
+
+func _on_node_destroyed(node_name: String) -> void:
+	var _node = spawnable_m.get_by_id(int(node_name)).node
+	for gizmo in gizmos:
+		if gizmo.node.is_selected(_node):
+			gizmo.node.deselect(_node)
+			if gizmo.node.get_selected_count() == 0:
+				_gizmo_delete(gizmo.id)
+
+	_update_selection_ui()
+	return
+
+
+func _set_cem_state(state: bool) -> void:
+	_toggle_gizmos(state)
 	return
 
 
@@ -78,6 +113,7 @@ func _session_changed():
 	if session_signalbus.is_connected("node_created", populate_tree_from_node) == false:
 		session_signalbus.node_created.connect(populate_tree_from_node)
 		session_signalbus.node_destroyed.connect(populate_tree_from_node)
+		session_signalbus.node_destroyed.connect(_on_node_destroyed)
 	populate_tree_from_node()
 
 
@@ -88,8 +124,18 @@ func _on_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_index: i
 		if _clicked_item:
 			var global_pos = tree_view.get_global_mouse_position()
 			popupmenu_populate_generic()
-			popup_menu.position = global_pos
-			popup_menu.popup()
+			inspector_popup_menu.position = global_pos
+			inspector_popup_menu.popup()
+
+
+func _on_gizmo_item_selected(mouse_position: Vector2, mouse_button_index: int):
+	if mouse_button_index == MOUSE_BUTTON_RIGHT:
+		_clicked_item = selection_ui.get_item_at_position(mouse_position)
+
+		if _clicked_item:
+			var global_pos = selection_ui.get_global_mouse_position()
+			gizmo_popup_menu.position = global_pos
+			gizmo_popup_menu.popup()
 
 
 func _build_add_node_popup() -> void:
@@ -119,12 +165,12 @@ func _on_item_activated(index: int) -> void:
 
 	var entity = await spawnable_m.create(item_type, int(parent_node.name))
 	# TODO: Handle failed entity creation request.
-	_select_node_with_gizmo(entity)
+	_gizmo_new(int(entity.name))
 
 	return
 
 
-func _on_popup_menu_id_pressed(id: int):
+func _on_inspector_popup_menu_id_pressed(id: int):
 	if _clicked_item:
 		var node = _clicked_item.get_metadata(0)
 		if node == null && id != 0:
@@ -137,24 +183,119 @@ func _on_popup_menu_id_pressed(id: int):
 				get_node("Popup").visible = true
 			1:
 				var _name = node.name
+				if node.get_meta("pretty_name") == "Gizmo":
+					_gizmo_delete(int(_name))
+					return
+
 				await spawnable_m.destroy(int(_name))
 			2:
-				_select_node_with_gizmo(node)
+				if gizmos.size() > 0:
+					var target_gizmo_node = gizmos.back().node
+					_gizmo_add(int(target_gizmo_node.name), int(node.name))
+					return
+				_gizmo_new(int(node.name))
 
 
-func _select_node_with_gizmo(node: Node) -> void:
-	var the_root = scene_m.get_master_root(scene_m.active_session)
-	var schema_index = NSB.get_node_index("Gizmo")
-	var gizmo = await spawnable_m.create(schema_index, int(node.name))
+func _update_selection_ui() -> void:
+	selection_ui.clear()
 
-	gizmo.set_meta("scene_node", true)
-	gizmo.set_meta("pretty_name", "Gizmo")
-	the_root.add_child(gizmo)
-	gizmo.transform_changed.connect(func(mode, value): _transform_gizmo(mode, value, gizmo._selections))
+	selection_ui.create_item()
 
-	gizmo.clear_selection()
-	gizmo.select(node)
+	for gizmo in gizmos:
+		var gizmo_root = selection_ui.create_item()
+		gizmo_root.set_text(0, "Gizmo")
+		gizmo_root.set_icon(0, get_class_icon("Gizmo"))
+		gizmo_root.set_metadata(0, gizmo.node)
 
+		# TODO: Show all children of nodes that are selected.
+		for selected_node in gizmo.node._selections.keys():
+			var item = selection_ui.create_item(gizmo_root)
+			item.set_text(0, selected_node.get_meta("pretty_name"))
+			item.set_selectable(0, false)
+
+	return
+
+
+func _set_active_gizmo(gizmo_id: int) -> void:
+	for gizmo in gizmos:
+		if gizmo.id == gizmo_id:
+			# Set the target gizmo to on.
+			_set_gizmo_render_state(gizmo.node, true)
+			continue
+		# Turn off all gizmos.
+		_set_gizmo_render_state(gizmo.node, false)
+	return
+
+
+func _toggle_gizmos(state: bool = false) -> void:
+	for gizmo in gizmos:
+		var _node = gizmo.node
+		_node.show_selection_box = state
+		_node.mode = 0 if state == false else _node.ToolMode.SCALE | _node.ToolMode.MOVE | _node.ToolMode.ROTATE
+	return
+
+
+func _set_gizmo_render_state(gizmo: Node, state: bool = false) -> void:
+	gizmo.show_selection_box = state
+	gizmo.mode = 0 if state == false else gizmo.ToolMode.SCALE | gizmo.ToolMode.MOVE | gizmo.ToolMode.ROTATE
+	return
+
+
+func _gizmo_new(node_id: int) -> void:
+	var target_node = spawnable_m.get_by_id(node_id)
+	var gizmo_schema_index = NSB.get_node_index("Gizmo")
+	var gizmo_node: Node
+
+	if target_node == { }:
+		GlobalLogger.log("Tried to add a gizmo to an invalid node.", Enum.LogLevel.WARNING)
+		return
+
+	gizmo_node = await spawnable_m.create(gizmo_schema_index)
+
+	gizmos.append({ "node": gizmo_node, "id": int(gizmo_node.name) })
+
+	gizmo_node.transform_changed.connect(func(mode, value): _transform_gizmo(mode, value, gizmo_node._selections))
+
+	gizmo_node.select(target_node.node)
+	_set_active_gizmo(int(gizmo_node.name))
+	_update_selection_ui()
+	return
+
+
+func _gizmo_add(gizmo_id: int, node_id: int) -> void:
+	var gizmo = spawnable_m.get_by_id(gizmo_id)
+	var target_node = spawnable_m.get_by_id(node_id)
+
+	# Check if we are selecting a child of a selected node.
+	for selected_node in gizmo.node._selections:
+		if selected_node.is_ancestor_of(target_node.node):
+			_gizmo_new(target_node.id)
+			return
+
+	# Check if we are selecting a parent of a selected node.
+	for selected_node in gizmo.node._selections.keys():
+		if target_node.node.is_ancestor_of(selected_node):
+			gizmo.node.deselect(selected_node)
+
+	gizmo.node.select(target_node.node)
+	_update_selection_ui()
+	return
+
+
+func _gizmo_remove(gizmo_id: int, node_id: int) -> void:
+	var gizmo = spawnable_m.get_by_id(gizmo_id)
+	var target_node = spawnable_m.get_by_id(node_id)
+	gizmo.node.deselect(target_node.node)
+	_update_selection_ui()
+	return
+
+
+func _gizmo_delete(node_id: int) -> void:
+	var gizmo_index = gizmos.find_custom(func(entry): return entry.id == node_id)
+	gizmos.remove_at(gizmo_index)
+
+	await spawnable_m.destroy(node_id)
+	_update_selection_ui()
 	return
 
 

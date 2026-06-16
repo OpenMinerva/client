@@ -85,6 +85,10 @@ func dev_request_sync() -> void:
 	return
 
 
+func gizmo_selection(node_id: int, to_select: bool) -> void:
+	return
+
+
 func _on_connected_to_server():
 	GlobalLogger.log("[%s] I am connected to a server." % _my_id)
 	rpc_id(1, "dev_request_spawnables_database")
