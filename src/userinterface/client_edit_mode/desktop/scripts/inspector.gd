@@ -5,6 +5,7 @@ var _clicked_item: TreeItem = null
 
 @onready var tree_view: Tree = get_node("MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer/Tree")
 @onready var scene_m = get_tree().current_scene.get_node("SceneManager")
+@onready var dev_spawn_m = get_tree().current_scene.get_node("DevSpawnManager")
 @onready var spawnable_m: Node
 @onready var session_signalbus: Node
 @onready var inspector_popup_menu = $InspectorPopup
@@ -75,6 +76,8 @@ func popupmenu_populate_generic() -> void:
 	inspector_popup_menu.add_item("Add Child", 0)
 	inspector_popup_menu.add_item("Remove Node", 1)
 	inspector_popup_menu.add_item("Select", 2)
+	inspector_popup_menu.add_item("Save", 3)
+	inspector_popup_menu.add_item("Load", 4)
 	return
 
 
@@ -194,6 +197,12 @@ func _on_inspector_popup_menu_id_pressed(id: int):
 					_gizmo_add(int(target_gizmo_node.name), int(node.name))
 					return
 				_gizmo_new(int(node.name))
+			3:
+				print("Trying to save spawnable")
+				dev_spawn_m.save_spawnable(node)
+			4:
+				print("Loading spawnable")
+				dev_spawn_m.load_spawnable(session_root)
 
 
 func _update_selection_ui() -> void:

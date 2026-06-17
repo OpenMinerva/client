@@ -113,6 +113,7 @@ func spawn_spawnable(p_type: int, p_name: String = "", p_path: String = "", pare
 		parent_node = _database[database_index].node
 
 	_spawned_entity = _spawn_node(p_type, 1, parent_node, p_path)
+	_spawned_entity.owner = parent_node
 
 	session_signalbus.node_created.emit(_spawned_entity)
 	return int(_spawned_entity.name)
@@ -197,6 +198,7 @@ func _spawn_node(node_type: int, node_owner: int, parent: Node = instance_root, 
 	set_node_visible_to_inspector(_node)
 	_node.name = str(_db_id)
 	_node.set_meta("pretty_name", str(_node_schema.pretty_name))
+	_node.set_meta("spawnable_type", node_type)
 	_node.position = Vector3(0, 0, 0)
 
 	# Add to scene tree
