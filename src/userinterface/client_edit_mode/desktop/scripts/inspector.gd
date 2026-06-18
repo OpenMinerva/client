@@ -198,10 +198,10 @@ func _on_inspector_popup_menu_id_pressed(id: int):
 					return
 				_gizmo_new(int(node.name))
 			3:
-				print("Trying to save spawnable")
+				GlobalLogger.log("Saving spawnable.")
 				dev_spawn_m.save_spawnable(node)
 			4:
-				print("Loading spawnable")
+				GlobalLogger.log("Loading spawnable.")
 				dev_spawn_m.load_spawnable(session_root)
 
 
