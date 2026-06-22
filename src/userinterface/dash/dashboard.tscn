@@ -25,7 +25,7 @@
 [ext_resource type="PackedScene" uid="uid://bgr4s3s31rfsi" path="res://userinterface/dash/partials/input_stringlist.tscn" id="18_njqt8"]
 [ext_resource type="PackedScene" uid="uid://c314yewjhuk8s" path="res://userinterface/dash/partials/input_stringconfirm.tscn" id="19_s6s1v"]
 [ext_resource type="PackedScene" uid="uid://gopciccm8xx5" path="res://userinterface/dash/partials/removable_string_listing.tscn" id="20_v67rh"]
-[ext_resource type="Script" uid="uid://2vk6cxto4xw" path="res://userinterface/dash/scripts/pages/assets.gd" id="21_d3sj0"]
+[ext_resource type="Script" uid="uid://2vk6cxto4xw" path="res://userinterface/dash/scripts/pages/spawnables.gd" id="21_d3sj0"]
 [ext_resource type="Texture2D" uid="uid://8fwxg1ipf0fp" path="res://resources/icons/exit.svg" id="24_nakrv"]
 [ext_resource type="Script" uid="uid://cnm74wceowx3y" path="res://userinterface/dash/scripts/pages/debug.gd" id="24_v7inj"]
 [ext_resource type="Script" uid="uid://cah3jpmu1x72b" path="res://userinterface/dash/scripts/pages/exit.gd" id="24_wvg7d"]
@@ -436,7 +436,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Spawnables" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=1982137112 instance=ExtResource("3_av8ee")]
-visible = false
 layout_mode = 2
 script = ExtResource("21_d3sj0")
 
@@ -453,6 +452,19 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_constants/separation = 15
+
+[node name="Path" type="HFlowContainer" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Right/Local" unique_id=1614962154]
+layout_mode = 2
+
+[node name="Search" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Right/Local" unique_id=645937409 instance=ExtResource("9_gtfiv")]
+layout_mode = 2
+
+[node name="Folders" type="HFlowContainer" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Right/Local" unique_id=924126430]
+layout_mode = 2
+
+[node name="Files" type="HFlowContainer" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Right/Local" unique_id=68463159]
+layout_mode = 2
 
 [node name="Cloud" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Right" parent_id_path=PackedInt32Array(1982137112, 892180341) index="1" unique_id=1583883317]
 visible = false
@@ -501,6 +513,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Exit" type="Control" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=2026000436]
+visible = false
 layout_mode = 2
 script = ExtResource("24_wvg7d")
 
