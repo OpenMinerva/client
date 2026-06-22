@@ -55,6 +55,7 @@ func add_node_to_tree(node: Node, parent_item: TreeItem):
 		item.set_text(0, node.get_meta("pretty_name", node.name))
 		var icon_texture = get_class_icon(node.get_meta("pretty_name", node.get_class()))
 		item.set_icon(0, icon_texture)
+		item.set_icon_max_width(0, 20)
 		item.set_metadata(0, node)
 
 		for child in node.get_children():
@@ -214,6 +215,7 @@ func _update_selection_ui() -> void:
 		var gizmo_root = selection_ui.create_item()
 		gizmo_root.set_text(0, "Gizmo")
 		gizmo_root.set_icon(0, get_class_icon("Gizmo"))
+		gizmo_root.set_icon_max_width(0, 20)
 		gizmo_root.set_metadata(0, gizmo.node)
 
 		# TODO: Show all children of nodes that are selected.
