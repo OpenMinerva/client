@@ -1,5 +1,21 @@
+# --- License
+# File: /client/src/scripts/utils/files.gd
+# Project: OpenMinerva
+# Created Date: 05 February 2026
+# Copyright (c) 2026 OpenMinerva
+# License: MIT License
+# Authors: Armored Dragon
+# --- License
+
 extends Node
 
+
+const BASE_SPAWNABLE_DIR = "user://spawnables/"
+var spawnables_dir: Array[String] = []
+
+func _ready() -> void:
+	_initialize_spawnable_folder()
+	return
 
 ## Creates a log file following the internal format.
 func create_log_file() -> String:
@@ -45,3 +61,48 @@ func _get_today_log_file_name() -> String:
 	var current_timestring = Time.get_datetime_string_from_system()
 	var file_name = current_timestring.replace("-", "_").replace("T", "-").replace(":", "_")
 	return file_name
+
+
+# Spawnables local file management
+func _initialize_spawnable_folder() -> void:
+	# Check if the folder exists
+	DirAccess.make_dir_recursive_absolute(BASE_SPAWNABLE_DIR)
+
+	return
+
+func get_inv_filelist() -> Dictionary:
+	var response = {"files": [], "directories": []}
+
+	response.files = DirAccess.get_files_at(BASE_SPAWNABLE_DIR + _current_path())
+	response.directories = DirAccess.get_directories_at(BASE_SPAWNABLE_DIR + _current_path())
+
+	return response
+
+func _current_path() -> String:
+	return "/".join(spawnables_dir)
+
+
+func create_inv_file(name: String = "", data: Variant = null) -> void:
+	# Get current inventory dir
+	# Create file
+	# Write data
+	# Close File
+	return
+
+
+func delete_inv_file(name: String = "") -> void:
+	# Get current inventory dir
+	# Validate file exists
+	# Delete file
+	return
+
+func move_inv_deeper(folder: String) -> void:
+	# Move to a new folder from the current _maybe_make_directory
+	# TODO: Validate folder exists
+	spawnables_dir.append(folder)
+	return
+
+func move_inv_relocate(target: int) -> void:
+	# Relocate the current spawnable file path to a previous position in the path.
+	spawnables_dir.resize(target)
+	return

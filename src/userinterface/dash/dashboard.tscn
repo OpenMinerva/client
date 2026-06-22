@@ -460,6 +460,24 @@ layout_mode = 2
 [node name="Search" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Right/Local" unique_id=645937409 instance=ExtResource("9_gtfiv")]
 layout_mode = 2
 
+[node name="Actions" type="HFlowContainer" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Right/Local" unique_id=1048294567]
+layout_mode = 2
+
+[node name="NewFolder" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Right/Local/Actions" unique_id=1102827445 instance=ExtResource("4_ql400")]
+custom_minimum_size = Vector2(200, 35)
+layout_mode = 2
+metadata/label = "New Folder"
+
+[node name="DeleteFolder" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Right/Local/Actions" unique_id=802159313 instance=ExtResource("4_ql400")]
+custom_minimum_size = Vector2(200, 35)
+layout_mode = 2
+metadata/label = "Delete Folder"
+
+[node name="DeleteSelected" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Right/Local/Actions" unique_id=52618569 instance=ExtResource("4_ql400")]
+custom_minimum_size = Vector2(200, 35)
+layout_mode = 2
+metadata/label = "Delete Selected"
+
 [node name="Folders" type="HFlowContainer" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Right/Local" unique_id=924126430]
 layout_mode = 2
 

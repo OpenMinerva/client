@@ -26,14 +26,13 @@ var _template_button = preload("res://userinterface/dash/partials/category_butto
 #
 # When spawning something, validate the node before spawning it?
 # Some way to quickly get the list? File library?
-#
+
 
 func _ready():
 	super._ready()
 
 	Events.dash_switch_tab.connect(_handle_page_opened)
 
-	_initialize_inventory()
 	_build_view()
 	return
 
@@ -44,16 +43,10 @@ func _handle_page_opened(page_name) -> void:
 
 	return
 
-func _initialize_inventory() -> void:
-	# Check if the folder exists
-	DirAccess.make_dir_recursive_absolute(BASE_DIR)
-
-	return
-
-
 func _build_view() -> void:
-	var _files = DirAccess.get_files_at(BASE_DIR + _current_path())
-	var _dirs = DirAccess.get_directories_at(BASE_DIR + _current_path())
+	var _filelist = FileManager.get_inv_filelist()
+	var _files = _filelist["files"]
+	var _dirs = _filelist["directories"]
 
 	await _clear_view()
 
@@ -78,8 +71,8 @@ func _build_view() -> void:
 	_path_container.add_child(_base_listing)
 
 	# Any lower path
-	for index in current_dir.size():
-		var _path = current_dir[index]
+	for index in FileManager.spawnables_dir.size():
+		var _path = FileManager.spawnables_dir[index]
 		var _label = Label.new()
 		var _listing = _create_button(_path, "", _dir_relocate.bind(index), Vector2(200, 35))
 
@@ -88,16 +81,6 @@ func _build_view() -> void:
 		_path_container.add_child(_label)
 		_path_container.add_child(_listing)
 		continue
-	return
-
-func _dir_deeper(path: String) -> void:
-	current_dir.append(path)
-	_build_view()
-	return
-
-func _dir_relocate(index: int) -> void:
-	current_dir.resize(index + 1)
-	_build_view()
 	return
 
 func _create_button(name: String, icon: String = "", double_click = null, min_size: Vector2 = Vector2(350, 50)) -> Node:
@@ -114,9 +97,6 @@ func _create_button(name: String, icon: String = "", double_click = null, min_si
 
 	return _listing
 
-func _current_path() -> String:
-	return "/".join(current_dir)
-
 func _clear_view() -> void:
 	for child in _folder_container.get_children():
 		child.queue_free()
@@ -129,12 +109,4 @@ func _clear_view() -> void:
 
 	await get_tree().process_frame
 
-	return
-
-
-func _create_folder(name: String) -> void:
-	return
-
-
-func _delete_folder(name: String) -> void:
 	return
