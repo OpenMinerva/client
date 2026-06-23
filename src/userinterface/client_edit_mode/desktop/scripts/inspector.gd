@@ -2,6 +2,7 @@ extends Node
 
 var gizmos: Array[Dictionary] = []
 var _clicked_item: TreeItem = null
+var _editing_item: TreeItem = null
 
 @onready var tree_view: Tree = get_node("MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer/Tree")
 @onready var scene_m = get_tree().current_scene.get_node("SceneManager")
@@ -22,6 +23,7 @@ func _ready() -> void:
 	Events.cem_set_gizmo_state.connect(_toggle_gizmos)
 	Events.cem_set_state.connect(_set_cem_state)
 
+	tree_view.item_edited.connect(_on_tree_item_edited)
 	tree_view.item_mouse_selected.connect(_on_tree_item_mouse_selected)
 	inspector_popup_menu.id_pressed.connect(_on_inspector_popup_menu_id_pressed)
 
@@ -79,6 +81,7 @@ func popupmenu_populate_generic() -> void:
 	inspector_popup_menu.add_item("Select", 2)
 	inspector_popup_menu.add_item("Save", 3)
 	inspector_popup_menu.add_item("Load", 4)
+	inspector_popup_menu.add_item("Rename", 5)
 	return
 
 
@@ -173,6 +176,10 @@ func _on_item_activated(index: int) -> void:
 
 	return
 
+func _on_tree_item_edited() -> void:
+	_editing_item.set_editable(0, false)
+	_editing_item.get_metadata(0).set_meta("pretty_name", _editing_item.get_text(0))
+	return
 
 func _on_inspector_popup_menu_id_pressed(id: int):
 	if _clicked_item:
@@ -200,10 +207,14 @@ func _on_inspector_popup_menu_id_pressed(id: int):
 				_gizmo_new(int(node.name))
 			3:
 				GlobalLogger.log("Saving spawnable.")
+				FileManager._current_path()
 				dev_spawn_m.save_spawnable(node)
 			4:
 				GlobalLogger.log("Loading spawnable.")
 				dev_spawn_m.load_spawnable(session_root)
+			5:
+				_clicked_item.set_editable(0, true)
+				_editing_item = _clicked_item
 
 
 func _update_selection_ui() -> void:

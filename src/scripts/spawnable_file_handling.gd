@@ -22,7 +22,8 @@ func save_spawnable(root: Node) -> void:
 	_set_temporary_ownership_recursive(root, root)
 
 	var packed_scene = _create_packed_scene(root)
-	ResourceSaver.save(packed_scene, "user://dev_save.tscn")
+	var file_path = FileManager._current_path() + root.get_meta("pretty_name", "NO_NAME") + ".tscn"
+	ResourceSaver.save(packed_scene, file_path)
 
 	# I have no idea what ownership is in terms of nodes are right now, so put it back as to not break anything
 	_restore_ownership(root, original_owners)

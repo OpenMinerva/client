@@ -73,13 +73,13 @@ func _initialize_spawnable_folder() -> void:
 func get_inv_filelist() -> Dictionary:
 	var response = {"files": [], "directories": []}
 
-	response.files = DirAccess.get_files_at(BASE_SPAWNABLE_DIR + _current_path())
-	response.directories = DirAccess.get_directories_at(BASE_SPAWNABLE_DIR + _current_path())
+	response.files = DirAccess.get_files_at(_current_path())
+	response.directories = DirAccess.get_directories_at(_current_path())
 
 	return response
 
 func _current_path() -> String:
-	return "/".join(spawnables_dir)
+	return BASE_SPAWNABLE_DIR + "/".join(spawnables_dir)
 
 
 func create_inv_file(name: String = "", data: Variant = null) -> void:

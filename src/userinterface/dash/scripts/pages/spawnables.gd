@@ -83,6 +83,16 @@ func _build_view() -> void:
 		continue
 	return
 
+func _dir_deeper(path: String) -> void:
+	FileManager.move_inv_deeper(path)
+	_build_view()
+	return
+
+func _dir_relocate(index: int) -> void:
+	FileManager.move_inv_relocate(index + 1)
+	_build_view()
+	return
+
 func _create_button(name: String, icon: String = "", double_click = null, min_size: Vector2 = Vector2(350, 50)) -> Node:
 	var _listing = _template_button.instantiate()
 	_listing.set_meta("label", name)
