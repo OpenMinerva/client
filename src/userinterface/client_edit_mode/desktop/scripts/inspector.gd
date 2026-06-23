@@ -80,7 +80,6 @@ func popupmenu_populate_generic() -> void:
 	inspector_popup_menu.add_item("Remove Node", 1)
 	inspector_popup_menu.add_item("Select", 2)
 	inspector_popup_menu.add_item("Save", 3)
-	inspector_popup_menu.add_item("Load", 4)
 	inspector_popup_menu.add_item("Rename", 5)
 	return
 
@@ -209,9 +208,6 @@ func _on_inspector_popup_menu_id_pressed(id: int):
 				GlobalLogger.log("Saving spawnable.")
 				FileManager._current_path()
 				dev_spawn_m.save_spawnable(node)
-			4:
-				GlobalLogger.log("Loading spawnable.")
-				dev_spawn_m.load_spawnable(session_root)
 			5:
 				_clicked_item.set_editable(0, true)
 				_editing_item = _clicked_item

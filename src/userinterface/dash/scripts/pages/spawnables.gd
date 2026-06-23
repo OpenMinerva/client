@@ -14,6 +14,7 @@ const BASE_DIR = "user://inventory/"
 var current_dir: Array[String] = []
 var _template_button = preload("res://userinterface/dash/partials/category_button.tscn")
 
+@onready var dev_spawn_m = get_tree().current_scene.get_node("DevSpawnManager")
 @onready var _path_container = $"HBox/Right/Local/Path"
 @onready var _folder_container = $"HBox/Right/Local/Folders"
 @onready var _file_container = $"HBox/Right/Local/Files"
@@ -51,7 +52,7 @@ func _build_view() -> void:
 	await _clear_view()
 
 	for file in _files:
-		var _listing = _create_button(file)
+		var _listing = _create_button(file, "", _load_file.bind(file))
 		_file_container.add_child(_listing)
 		continue
 
@@ -91,6 +92,11 @@ func _dir_deeper(path: String) -> void:
 func _dir_relocate(index: int) -> void:
 	FileManager.move_inv_relocate(index + 1)
 	_build_view()
+	return
+
+func _load_file(file_name: String) -> void:
+	var _path = FileManager._current_path() + file_name
+	dev_spawn_m.load_spawnable(_path)
 	return
 
 func _create_button(name: String, icon: String = "", double_click = null, min_size: Vector2 = Vector2(350, 50)) -> Node:

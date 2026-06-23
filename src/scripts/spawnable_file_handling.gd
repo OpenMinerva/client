@@ -31,10 +31,10 @@ func save_spawnable(root: Node) -> void:
 	return
 
 
-func load_spawnable(scene_node: Node) -> void:
+func load_spawnable(path: String) -> void:
 	# For testing, just load it into the current active session
 	var session_spawnable_manager = scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager")
-	var loaded_scene = ResourceLoader.load("user://dev_save.tscn")
+	var loaded_scene = ResourceLoader.load(path)
 
 	var parent_session_root = scene_m.get_master_root(scene_m.active_session)
 	var spawn_tasks: Array[Dictionary] = []
