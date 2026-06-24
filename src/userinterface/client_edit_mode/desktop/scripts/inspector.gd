@@ -77,7 +77,7 @@ func popupmenu_populate_generic() -> void:
 	for i in inspector_popup_menu.item_count:
 		inspector_popup_menu.remove_item(0)
 	inspector_popup_menu.add_item("Add Child", 0)
-	inspector_popup_menu.add_item("Remove Node", 1)
+	inspector_popup_menu.add_item("Delete", 1)
 	inspector_popup_menu.add_item("Select", 2)
 	inspector_popup_menu.add_item("Save", 3)
 	inspector_popup_menu.add_item("Rename", 5)

@@ -21,6 +21,8 @@ func save_spawnable(root: Node) -> void:
 	var original_owners = _get_node_ownership(root)
 	_set_temporary_ownership_recursive(root, root)
 
+	_externalize_assets(root)
+
 	var packed_scene = _create_packed_scene(root)
 	var file_path = FileManager._current_path() + root.get_meta("pretty_name", "NO_NAME") + ".tscn"
 	ResourceSaver.save(packed_scene, file_path)
@@ -30,6 +32,23 @@ func save_spawnable(root: Node) -> void:
 
 	return
 
+func _externalize_assets(root: Node) -> Node:
+	for property in root.get_property_list():
+		var value = root.get(property.name)
+
+		if value is Resource and value.resource_path.is_empty():
+			var external_path = "user://spawnables_assets/texture_%d.res" % randi()
+			ResourceSaver.save(value, external_path)
+
+			var external_resource = load(external_path)
+			external_resource.take_over_path(external_path)
+
+			root.set(property.name, external_resource)
+
+	for child in root.get_children():
+		_externalize_assets(child)
+
+	return root
 
 func load_spawnable(path: String) -> void:
 	# For testing, just load it into the current active session
@@ -51,6 +70,8 @@ func load_spawnable(path: String) -> void:
 		var spn_type: int = -1
 		var spn_transform: Transform3D
 
+		var dev_spn_mesh: Mesh
+
 		var property_count = state.get_node_property_count(node_id)
 
 		for property_id in range(property_count):
@@ -65,13 +86,18 @@ func load_spawnable(path: String) -> void:
 				spn_transform = _value
 				continue
 
-		spawn_tasks.append({ "task_id": node_id, "spawnable_type": spn_type, "transform": spn_transform, "path": str(node_path), "parent_task": -1 })
+			if _name == "mesh":
+				dev_spn_mesh = _value
+				continue
+
+		spawn_tasks.append({ "task_id": node_id, "spawnable_type": spn_type, "transform": spn_transform, "path": str(node_path), "mesh": dev_spn_mesh, "parent_task": -1 })
 
 	# Order the task list so that based upon the paths of the nodes, each sequential node is guaranteed to have its parent exist.
 	spawn_tasks.sort_custom(
 		func(a: Dictionary, b: Dictionary) -> bool:
 			return a["path"] < b["path"]
 	)
+
 
 	# From here, we need to get a relationship between a spawn task, and the parent node that will have a given spawn task node as its child.
 	for task_id in range(spawn_tasks.size()):
@@ -106,6 +132,9 @@ func load_spawnable(path: String) -> void:
 
 		task["node"] = _node
 		_node.transform = task.transform
+		if "mesh" in _node:
+			print(task.mesh)
+			_node.mesh = task.mesh
 
 	GlobalLogger.log("Loading completed.")
 	return
@@ -146,6 +175,7 @@ func _create_packed_scene(root: Node) -> PackedScene:
 	var packed_scene = PackedScene.new()
 	packed_scene.pack(root)
 	return packed_scene
+
 
 
 func _create_pck(_name: String = "") -> PCKPacker:

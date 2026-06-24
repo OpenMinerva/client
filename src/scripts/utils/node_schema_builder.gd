@@ -9,6 +9,7 @@
 class_name NSB
 extends Node
 
+
 static var schema = {
 	"Gizmo": {
 		"requires_setup": true,
@@ -45,6 +46,12 @@ static var schema = {
 		"pretty_name": "RigidBody3D",
 		"node": RigidBody3D,
 		"icon": load("res://resources/icons/godot/RigidBody3D.svg"),
+	},
+	"MeshInstance3D": {
+		"requires_setup": false,
+		"pretty_name": "MeshInstance3D",
+		"node": "MeshInstance3D",
+		"icon": load("res://resources/icons/godot/MeshInstance3D.svg"),
 	},
 }
 
@@ -91,13 +98,11 @@ static func _build_node(node_name: String, model_path: String = "") -> Node:
 		return _work_node
 
 	if node_name == "Model":
-		var _work_node = MeshInstance3D.new()
 		var doc = GLTFDocument.new()
 		var state = GLTFState.new()
 		doc.append_from_file(model_path, state)
 		var glb_scene: Node3D = doc.generate_scene(state)
-		_work_node.add_child(glb_scene)
-		return _work_node
+		return glb_scene
 
 	# FIXME: This function should always return what the user wants. If it gets to this point then I made an error in the schema. Proper reporting to the user somehow?
 	return Node3D.new()
