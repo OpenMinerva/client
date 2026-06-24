@@ -189,15 +189,21 @@ func _spawn_node(node_type: int, node_owner: int, parent: Node = instance_root, 
 	var _node_name = NSB.get_valid()[node_type]
 	var _schema_index = NSB.get_node_index(_node_name)
 	var _node_schema = NSB.get_formatted(_schema_index)
+	var _pretty_name: String
 	_node = NSB._build_node(_node_name, model_path)
 
 	# Add to database
 	var _db_id = _add_to_database(_node, node_type, node_owner)
 
+	if model_path != "":
+		_pretty_name = model_path.get_file()
+	else:
+		_pretty_name = str(_node_schema.pretty_name)
+
 	# Editor changes
 	set_node_visible_to_inspector(_node)
 	_node.name = str(_db_id)
-	_node.set_meta("pretty_name", str(_node_schema.pretty_name))
+	_node.set_meta("pretty_name", _pretty_name)
 	_node.set_meta("spawnable_type", node_type)
 	_node.position = Vector3(0, 0, 0)
 

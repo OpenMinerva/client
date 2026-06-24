@@ -102,6 +102,7 @@ static func _build_node(node_name: String, model_path: String = "") -> Node:
 		var state = GLTFState.new()
 		doc.append_from_file(model_path, state)
 		var glb_scene: Node3D = doc.generate_scene(state)
+		# TODO: Go through each node and add spawnable type to the nodes?
 		return glb_scene
 
 	# FIXME: This function should always return what the user wants. If it gets to this point then I made an error in the schema. Proper reporting to the user somehow?

@@ -37,7 +37,8 @@ func _externalize_assets(root: Node) -> Node:
 		var value = root.get(property.name)
 
 		if value is Resource and value.resource_path.is_empty():
-			var external_path = "user://spawnables_assets/texture_%d.res" % randi()
+			# TODO: Hash the files to use as names?
+			var external_path = "user://spawnables_assets/%d.res" % randi()
 			ResourceSaver.save(value, external_path)
 
 			var external_resource = load(external_path)
