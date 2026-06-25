@@ -22,6 +22,7 @@ var _selected_folder: Node
 
 @onready var _create_folder_btn = $"HBox/Right/Local/Actions/NewFolder/Button"
 @onready var _delete_folder_btn = $"HBox/Right/Local/Actions/DeleteFolder/Button"
+@onready var _delete_selected_btn = $"HBox/Right/Local/Actions/DeleteSelected/Button"
 
 @onready var _folder_creation_dialog = $"FolderCreation"
 
@@ -41,6 +42,7 @@ func _ready():
 
 	_create_folder_btn.pressed.connect(_open_file_dialog)
 	_delete_folder_btn.pressed.connect(_delete_folder)
+	_delete_selected_btn.pressed.connect(_delete_selected)
 
 	_folder_creation_dialog.confirmed.connect(_create_folder)
 
@@ -104,7 +106,7 @@ func _dir_relocate(index: int) -> void:
 	return
 
 func _load_file(file_name: String) -> void:
-	var _path = FileManager._current_path() + file_name
+	var _path = FileManager._current_path() + "/" + file_name
 	dev_spawn_m.load_spawnable(_path)
 	return
 
@@ -116,7 +118,6 @@ func _create_button(name: String, icon: String = "", double_click = null, min_si
 	_listing.toggle = false
 
 	_listing.get_node("Button").pressed.connect(func(): _selected_folder = _listing)
-
 
 	if double_click != null:
 		# TODO: Check if double_click param is a function
@@ -153,5 +154,12 @@ func _delete_folder() -> void:
 	# TODO Confirmation before delete
 	var _folder_name = _selected_folder.get_meta("label")
 	GlobalLogger.log("Deleting folder '%s'" % _folder_name)
+	FileManager.delete_folder(_folder_name)
+	return
+
+func _delete_selected() -> void:
+	# TODO Confirmation before delete
+	var _folder_name = _selected_folder.get_meta("label")
+	GlobalLogger.log("Deleting Item '%s'" % _folder_name)
 	FileManager.delete_folder(_folder_name)
 	return
