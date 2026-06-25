@@ -14,6 +14,7 @@ signal double_clicked
 @onready var button_node = $Button
 @export_enum(\"Art\", \"Environment\", \"Science\", \"Games\", \"Folder\") var selected_icon: String
 @export_enum(\"Danger\") var selected_theme_type: String
+@export var toggle: bool = false 
 
 var _click_count: int = 0
 var _last_click_time: float = 0
@@ -36,6 +37,8 @@ func _ready():
 	if icon_paths.has(selected_icon):
 		icon_node.texture = load(icon_paths[selected_icon])
 	button_node.theme_type_variation = selected_theme_type if selected_theme_type != null else \"\"
+	
+	button_node.toggle_mode = toggle
 	return
 
 func _get_label_text() -> void:
@@ -74,6 +77,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 4
 theme = ExtResource("1_dnctg")
 script = SubResource("GDScript_q3lw4")
+toggle = null
 metadata/_edit_use_anchors_ = true
 metadata/label = ""
 

@@ -106,3 +106,14 @@ func move_inv_relocate(target: int) -> void:
 	# Relocate the current spawnable file path to a previous position in the path.
 	spawnables_dir.resize(target)
 	return
+
+func create_folder(name: String = "New Folder") -> void:
+	# TODO: Sanatize file name
+	DirAccess.make_dir_recursive_absolute(_current_path() + "/%s" % name)
+	return
+
+func delete_folder(name: String) -> void:
+	# TODO: Sanatize file name
+	# TODO: Recursive delete for all files
+	DirAccess.remove_absolute(_current_path() + "/%s" % name)
+	return

@@ -203,15 +203,19 @@ script = ExtResource("7_o4evp")
 
 [node name="Users" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Left" parent_id_path=PackedInt32Array(17586745, 1799305671) index="0" unique_id=612707214 instance=ExtResource("4_ql400")]
 layout_mode = 2
+toggle = false
 
 [node name="Permissions" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Left" parent_id_path=PackedInt32Array(17586745, 1799305671) index="1" unique_id=915845213 instance=ExtResource("4_ql400")]
 layout_mode = 2
+toggle = false
 
 [node name="World" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Left" parent_id_path=PackedInt32Array(17586745, 1799305671) index="2" unique_id=1224429742 instance=ExtResource("4_ql400")]
 layout_mode = 2
+toggle = false
 
 [node name="Hosting" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Left" parent_id_path=PackedInt32Array(17586745, 1799305671) index="3" unique_id=536388283 instance=ExtResource("4_ql400")]
 layout_mode = 2
+toggle = false
 
 [node name="Users" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right" parent_id_path=PackedInt32Array(17586745, 892180341) index="0" unique_id=1908722423]
 visible = false
@@ -287,18 +291,22 @@ script = ExtResource("7_kk4yy")
 [node name="Art" parent="MarginContainer/VBoxContainer/Content/Container/Sessions/HBox/Left" parent_id_path=PackedInt32Array(1512510126, 1799305671) index="0" unique_id=790930258 instance=ExtResource("4_ql400")]
 layout_mode = 2
 selected_icon = "Art"
+toggle = false
 
 [node name="Environment" parent="MarginContainer/VBoxContainer/Content/Container/Sessions/HBox/Left" parent_id_path=PackedInt32Array(1512510126, 1799305671) index="1" unique_id=1381397115 instance=ExtResource("4_ql400")]
 layout_mode = 2
 selected_icon = "Environment"
+toggle = false
 
 [node name="Science" parent="MarginContainer/VBoxContainer/Content/Container/Sessions/HBox/Left" parent_id_path=PackedInt32Array(1512510126, 1799305671) index="2" unique_id=937204749 instance=ExtResource("4_ql400")]
 layout_mode = 2
 selected_icon = "Science"
+toggle = false
 
 [node name="Games" parent="MarginContainer/VBoxContainer/Content/Container/Sessions/HBox/Left" parent_id_path=PackedInt32Array(1512510126, 1799305671) index="3" unique_id=618470106 instance=ExtResource("4_ql400")]
 layout_mode = 2
 selected_icon = "Games"
+toggle = false
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Sessions/HBox/Right" parent_id_path=PackedInt32Array(1512510126, 892180341) index="0" unique_id=1522418383]
 layout_mode = 2
@@ -329,33 +337,43 @@ script = ExtResource("4_ap0b5")
 
 [node name="General" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Left" parent_id_path=PackedInt32Array(739538319, 1799305671) index="0" unique_id=1084146267 instance=ExtResource("4_ql400")]
 layout_mode = 2
+toggle = false
 
 [node name="Display" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Left" parent_id_path=PackedInt32Array(739538319, 1799305671) index="1" unique_id=884696286 instance=ExtResource("4_ql400")]
 layout_mode = 2
+toggle = false
 
 [node name="Audio" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Left" parent_id_path=PackedInt32Array(739538319, 1799305671) index="2" unique_id=83468254 instance=ExtResource("4_ql400")]
 layout_mode = 2
+toggle = false
 
 [node name="Controls" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Left" parent_id_path=PackedInt32Array(739538319, 1799305671) index="3" unique_id=1439698396 instance=ExtResource("4_ql400")]
 layout_mode = 2
+toggle = false
 
 [node name="Interface" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Left" parent_id_path=PackedInt32Array(739538319, 1799305671) index="4" unique_id=1049312458 instance=ExtResource("4_ql400")]
 layout_mode = 2
+toggle = false
 
 [node name="Network" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Left" parent_id_path=PackedInt32Array(739538319, 1799305671) index="5" unique_id=1617618443 instance=ExtResource("4_ql400")]
 layout_mode = 2
+toggle = false
 
 [node name="Config" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Left" parent_id_path=PackedInt32Array(739538319, 1799305671) index="6" unique_id=599049097 instance=ExtResource("4_ql400")]
 layout_mode = 2
+toggle = false
 
 [node name="Security" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Left" parent_id_path=PackedInt32Array(739538319, 1799305671) index="7" unique_id=1818668003 instance=ExtResource("4_ql400")]
 layout_mode = 2
+toggle = false
 
 [node name="Misc" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Left" parent_id_path=PackedInt32Array(739538319, 1799305671) index="8" unique_id=1457644847 instance=ExtResource("4_ql400")]
 layout_mode = 2
+toggle = false
 
 [node name="Advanced" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Left" parent_id_path=PackedInt32Array(739538319, 1799305671) index="9" unique_id=498611097 instance=ExtResource("4_ql400")]
 layout_mode = 2
+toggle = false
 
 [node name="General" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right" parent_id_path=PackedInt32Array(739538319, 892180341) index="0" unique_id=1586946041]
 layout_mode = 2
@@ -441,12 +459,15 @@ script = ExtResource("21_d3sj0")
 
 [node name="Filesystem" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Left" parent_id_path=PackedInt32Array(1982137112, 1799305671) index="0" unique_id=1857841582 instance=ExtResource("4_ql400")]
 layout_mode = 2
+toggle = false
 
 [node name="Local" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Left" parent_id_path=PackedInt32Array(1982137112, 1799305671) index="1" unique_id=1530762010 instance=ExtResource("4_ql400")]
 layout_mode = 2
+toggle = false
 
 [node name="Cloud" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Left" parent_id_path=PackedInt32Array(1982137112, 1799305671) index="2" unique_id=1842483100 instance=ExtResource("4_ql400")]
 layout_mode = 2
+toggle = false
 
 [node name="Local" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Right" parent_id_path=PackedInt32Array(1982137112, 892180341) index="0" unique_id=99513489]
 layout_mode = 2
@@ -466,16 +487,19 @@ layout_mode = 2
 [node name="NewFolder" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Right/Local/Actions" unique_id=1102827445 instance=ExtResource("4_ql400")]
 custom_minimum_size = Vector2(200, 35)
 layout_mode = 2
+toggle = false
 metadata/label = "New Folder"
 
 [node name="DeleteFolder" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Right/Local/Actions" unique_id=802159313 instance=ExtResource("4_ql400")]
 custom_minimum_size = Vector2(200, 35)
 layout_mode = 2
+toggle = false
 metadata/label = "Delete Folder"
 
 [node name="DeleteSelected" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Right/Local/Actions" unique_id=52618569 instance=ExtResource("4_ql400")]
 custom_minimum_size = Vector2(200, 35)
 layout_mode = 2
+toggle = false
 metadata/label = "Delete Selected"
 
 [node name="Folders" type="HFlowContainer" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Right/Local" unique_id=924126430]
@@ -490,6 +514,20 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
+[node name="FolderCreation" type="ConfirmationDialog" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables" unique_id=1641134432]
+oversampling_override = 1.0
+title = "Create Folder"
+initial_position = 2
+
+[node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/FolderCreation" unique_id=306815796]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 192.0
+offset_bottom = 51.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+placeholder_text = "Folder Name..."
+
 [node name="Debug" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=506436187 instance=ExtResource("3_av8ee")]
 visible = false
 layout_mode = 2
@@ -497,33 +535,43 @@ script = ExtResource("24_v7inj")
 
 [node name="General" parent="MarginContainer/VBoxContainer/Content/Container/Debug/HBox/Left" parent_id_path=PackedInt32Array(506436187, 1799305671) index="0" unique_id=725321320 instance=ExtResource("4_ql400")]
 layout_mode = 2
+toggle = false
 
 [node name="Display" parent="MarginContainer/VBoxContainer/Content/Container/Debug/HBox/Left" parent_id_path=PackedInt32Array(506436187, 1799305671) index="1" unique_id=1791779287 instance=ExtResource("4_ql400")]
 layout_mode = 2
+toggle = false
 
 [node name="Audio" parent="MarginContainer/VBoxContainer/Content/Container/Debug/HBox/Left" parent_id_path=PackedInt32Array(506436187, 1799305671) index="2" unique_id=1517275417 instance=ExtResource("4_ql400")]
 layout_mode = 2
+toggle = false
 
 [node name="Controls" parent="MarginContainer/VBoxContainer/Content/Container/Debug/HBox/Left" parent_id_path=PackedInt32Array(506436187, 1799305671) index="3" unique_id=127589259 instance=ExtResource("4_ql400")]
 layout_mode = 2
+toggle = false
 
 [node name="Interface" parent="MarginContainer/VBoxContainer/Content/Container/Debug/HBox/Left" parent_id_path=PackedInt32Array(506436187, 1799305671) index="4" unique_id=1269426169 instance=ExtResource("4_ql400")]
 layout_mode = 2
+toggle = false
 
 [node name="Network" parent="MarginContainer/VBoxContainer/Content/Container/Debug/HBox/Left" parent_id_path=PackedInt32Array(506436187, 1799305671) index="5" unique_id=571186988 instance=ExtResource("4_ql400")]
 layout_mode = 2
+toggle = false
 
 [node name="Config" parent="MarginContainer/VBoxContainer/Content/Container/Debug/HBox/Left" parent_id_path=PackedInt32Array(506436187, 1799305671) index="6" unique_id=1737883581 instance=ExtResource("4_ql400")]
 layout_mode = 2
+toggle = false
 
 [node name="Security" parent="MarginContainer/VBoxContainer/Content/Container/Debug/HBox/Left" parent_id_path=PackedInt32Array(506436187, 1799305671) index="7" unique_id=1319373843 instance=ExtResource("4_ql400")]
 layout_mode = 2
+toggle = false
 
 [node name="Misc" parent="MarginContainer/VBoxContainer/Content/Container/Debug/HBox/Left" parent_id_path=PackedInt32Array(506436187, 1799305671) index="8" unique_id=821001346 instance=ExtResource("4_ql400")]
 layout_mode = 2
+toggle = false
 
 [node name="Advanced" parent="MarginContainer/VBoxContainer/Content/Container/Debug/HBox/Left" parent_id_path=PackedInt32Array(506436187, 1799305671) index="9" unique_id=59859102 instance=ExtResource("4_ql400")]
 layout_mode = 2
+toggle = false
 
 [node name="General" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Debug/HBox/Right" parent_id_path=PackedInt32Array(506436187, 892180341) index="0" unique_id=588937059]
 layout_mode = 2

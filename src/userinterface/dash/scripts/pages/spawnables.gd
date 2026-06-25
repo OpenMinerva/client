@@ -13,12 +13,17 @@ const BASE_DIR = "user://inventory/"
 
 var current_dir: Array[String] = []
 var _template_button = preload("res://userinterface/dash/partials/category_button.tscn")
+var _selected_folder: Node
 
 @onready var dev_spawn_m = get_tree().current_scene.get_node("DevSpawnManager")
 @onready var _path_container = $"HBox/Right/Local/Path"
 @onready var _folder_container = $"HBox/Right/Local/Folders"
 @onready var _file_container = $"HBox/Right/Local/Files"
 
+@onready var _create_folder_btn = $"HBox/Right/Local/Actions/NewFolder/Button"
+@onready var _delete_folder_btn = $"HBox/Right/Local/Actions/DeleteFolder/Button"
+
+@onready var _folder_creation_dialog = $"FolderCreation"
 
 # TODO:
 # Filesystem Browser
@@ -34,9 +39,13 @@ func _ready():
 
 	Events.dash_switch_tab.connect(_handle_page_opened)
 
+	_create_folder_btn.pressed.connect(_open_file_dialog)
+	_delete_folder_btn.pressed.connect(_delete_folder)
+
+	_folder_creation_dialog.confirmed.connect(_create_folder)
+
 	_build_view()
 	return
-
 
 func _handle_page_opened(page_name) -> void:
 	if page_name != "Spawnables":
@@ -104,8 +113,10 @@ func _create_button(name: String, icon: String = "", double_click = null, min_si
 	_listing.set_meta("label", name)
 	_listing.selected_icon = icon
 	_listing.custom_minimum_size = min_size
+	_listing.toggle = false
 
-	_listing.get_node("Button").toggle_mode = false
+	_listing.get_node("Button").pressed.connect(func(): _selected_folder = _listing)
+
 
 	if double_click != null:
 		# TODO: Check if double_click param is a function
@@ -125,4 +136,22 @@ func _clear_view() -> void:
 
 	await get_tree().process_frame
 
+	return
+
+func _open_file_dialog() -> void:
+	_folder_creation_dialog.show()
+	return
+
+func _create_folder() -> void:
+	var _folder_name = _folder_creation_dialog.get_node("LineEdit").text
+	GlobalLogger.log("Creating folder '%s'" % _folder_name)
+	FileManager.create_folder(_folder_name)
+	_folder_creation_dialog.get_node("LineEdit").text = ""
+	return
+
+func _delete_folder() -> void:
+	# TODO Confirmation before delete
+	var _folder_name = _selected_folder.get_meta("label")
+	GlobalLogger.log("Deleting folder '%s'" % _folder_name)
+	FileManager.delete_folder(_folder_name)
 	return
