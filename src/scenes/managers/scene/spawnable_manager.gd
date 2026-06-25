@@ -190,7 +190,12 @@ func _spawn_node(node_type: int, node_owner: int, parent: Node = instance_root, 
 	var _schema_index = NSB.get_node_index(_node_name)
 	var _node_schema = NSB.get_formatted(_schema_index)
 	var _pretty_name: String
-	_node = NSB._build_node(_node_name, model_path)
+
+	# FIXME: Hack for importing skeletons?
+	if _node_name == "Model" && model_path == "":
+		_node = NSB._build_node("Node3D")
+	else:
+		_node = NSB._build_node(_node_name, model_path)
 
 	# Add to database
 	var _db_id = _add_to_database(_node, node_type, node_owner)

@@ -53,6 +53,12 @@ static var schema = {
 		"node": "MeshInstance3D",
 		"icon": load("res://resources/icons/godot/MeshInstance3D.svg"),
 	},
+	"Skeleton3D": {
+		"requires_setup": false,
+		"pretty_name": "Skeleton3D",
+		"node": "Skeleton3D",
+		"icon": load("res://resources/icons/godot/Skeleton3D.svg"),
+	},
 }
 
 
@@ -63,7 +69,14 @@ static func get_valid() -> Array[String]:
 
 
 static func get_node_index(node_name: String) -> int:
-	return schema.keys().find(node_name)
+	# As a safety, invalid nodes return a Node3D.
+	# FIXME: While a fallback is nice for stability, whatever needs to use the fallback should probably just fail gracefully.
+	var _index = schema.keys().find(node_name)
+	if _index > -1:
+		return _index
+	else:
+		var _node3d_index = schema.keys().find("Node3D")
+		return _node3d_index
 
 
 static func get_formatted(node_name: int) -> Variant:
@@ -102,8 +115,23 @@ static func _build_node(node_name: String, model_path: String = "") -> Node:
 		var state = GLTFState.new()
 		doc.append_from_file(model_path, state)
 		var glb_scene: Node3D = doc.generate_scene(state)
-		# TODO: Go through each node and add spawnable type to the nodes?
+
+		_add_node_metadata(glb_scene)
+
 		return glb_scene
 
 	# FIXME: This function should always return what the user wants. If it gets to this point then I made an error in the schema. Proper reporting to the user somehow?
 	return Node3D.new()
+
+static func _add_node_metadata(root: Node) -> void:
+
+	var _class = root.get_class()
+	var schema_index = get_node_index(_class)
+
+	root.set_meta("spawnable_type", schema_index)
+	root.set_meta("pretty_name", _class)
+
+	for child in root.get_children():
+		_add_node_metadata(child)
+
+	return

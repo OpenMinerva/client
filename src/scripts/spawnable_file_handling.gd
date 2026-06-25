@@ -52,6 +52,7 @@ func _externalize_assets(root: Node) -> Node:
 	return root
 
 func load_spawnable(path: String) -> void:
+	# TODO: Invalid nodes have a -1 value for the node_type
 	# For testing, just load it into the current active session
 	var session_spawnable_manager = scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager")
 	var loaded_scene = ResourceLoader.load(path)
@@ -72,6 +73,8 @@ func load_spawnable(path: String) -> void:
 		var spn_transform: Transform3D
 
 		var dev_spn_mesh: Mesh
+		var dev_spn_skin: Skin
+		var dev_bones: Dictionary = {}
 
 		var property_count = state.get_node_property_count(node_id)
 
@@ -91,7 +94,23 @@ func load_spawnable(path: String) -> void:
 				dev_spn_mesh = _value
 				continue
 
-		spawn_tasks.append({ "task_id": node_id, "spawnable_type": spn_type, "transform": spn_transform, "path": str(node_path), "mesh": dev_spn_mesh, "parent_task": -1 })
+			if _name == "skin":
+				dev_spn_skin = _value
+				continue
+
+			# HACK: Manually read the bones and add them to the work queue.
+			if _name.contains("bones/"):
+				var parts = _name.split("/")
+				var _bone_name = parts[1]
+				var _bone_property = parts[2]
+
+				if dev_bones.has(_bone_name) == false:
+					dev_bones[_bone_name] = {}
+
+				dev_bones[_bone_name][_bone_property] = _value
+
+		# print(dev_bones)
+		spawn_tasks.append({ "task_id": node_id, "spawnable_type": spn_type, "transform": spn_transform, "path": str(node_path), "mesh": dev_spn_mesh, "skin": dev_spn_skin, "bone_data": dev_bones,  "parent_task": -1 })
 
 	# Order the task list so that based upon the paths of the nodes, each sequential node is guaranteed to have its parent exist.
 	spawn_tasks.sort_custom(
@@ -121,6 +140,7 @@ func load_spawnable(path: String) -> void:
 			spawn_tasks[task_id]["parent_task"] = _parent_task_id
 
 	# Now, with our ordered and relational task queue, start spawning in the nodes.
+	var _debug_skeleton_node: Node
 	for task in spawn_tasks:
 		var _parent_task_index = spawn_tasks.find_custom(func(entry): return entry.task_id == task.parent_task)
 		var _parent_task = spawn_tasks[_parent_task_index]
@@ -133,13 +153,36 @@ func load_spawnable(path: String) -> void:
 
 		task["node"] = _node
 		_node.transform = task.transform
+
 		if "mesh" in _node:
-			print(task.mesh)
 			_node.mesh = task.mesh
+
+		if "skin" in _node:
+			_node.skin = task.skin
+
+		# FIXME: Hack to get the skeleton reinitialized and repositioned correctly
+		if _node.get_class() == "Skeleton3D":
+			_debug_skeleton_node = _node
+			for bone_id in task.bone_data.keys():
+				var _pack = task.bone_data[bone_id]
+
+				var _name = _pack.name
+				var _parent = _pack.parent
+				var _transform = _pack.rest
+
+				if _name.is_empty() == false:
+					_debug_skeleton_node.add_bone(_name)
+				else:
+					_debug_skeleton_node.add_bone("Bone_%d" % bone_id)
+
+				if _parent >= 0:
+					_debug_skeleton_node.set_bone_parent(int(bone_id), _parent)
+
+				_debug_skeleton_node.set_bone_pose(int(bone_id), _transform)
+
 
 	GlobalLogger.log("Loading completed.")
 	return
-
 
 func _get_node_ownership(root: Node) -> Dictionary:
 	var ownership: Dictionary = { }
