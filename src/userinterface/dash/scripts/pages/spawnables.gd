@@ -148,6 +148,7 @@ func _create_folder() -> void:
 	GlobalLogger.log("Creating folder '%s'" % _folder_name)
 	FileManager.create_folder(_folder_name)
 	_folder_creation_dialog.get_node("LineEdit").text = ""
+	_build_view()
 	return
 
 func _delete_folder() -> void:
@@ -155,6 +156,7 @@ func _delete_folder() -> void:
 	var _folder_name = _selected_folder.get_meta("label")
 	GlobalLogger.log("Deleting folder '%s'" % _folder_name)
 	FileManager.delete_folder(_folder_name)
+	_build_view()
 	return
 
 func _delete_selected() -> void:
@@ -162,4 +164,5 @@ func _delete_selected() -> void:
 	var _folder_name = _selected_folder.get_meta("label")
 	GlobalLogger.log("Deleting Item '%s'" % _folder_name)
 	FileManager.delete_folder(_folder_name)
+	_build_view()
 	return
