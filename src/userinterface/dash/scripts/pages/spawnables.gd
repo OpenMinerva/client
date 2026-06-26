@@ -57,7 +57,8 @@ func _build_view() -> void:
 	await _clear_view()
 
 	for file in _files:
-		var _listing = _create_button(file, "", _load_file.bind(file))
+		var _file_name = file.get_basename()
+		var _listing = _create_button(_file_name, "", _load_file.bind(file))
 		_file_container.add_child(_listing)
 		continue
 
