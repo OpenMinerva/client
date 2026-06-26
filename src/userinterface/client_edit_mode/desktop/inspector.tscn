@@ -239,6 +239,7 @@ theme = ExtResource("2_plsgj")
 [node name="ItemList" type="ItemList" parent="Popup/PanelContainer" unique_id=315396140]
 texture_filter = 2
 layout_mode = 2
+fixed_icon_size = Vector2i(20, 20)
 
 [editable path="MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer2/Inspector"]
 [editable path="MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer2/Selections"]
