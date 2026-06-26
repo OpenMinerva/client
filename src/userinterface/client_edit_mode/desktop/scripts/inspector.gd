@@ -65,11 +65,16 @@ func add_node_to_tree(node: Node, parent_item: TreeItem):
 
 
 # FIXME: Add this function to the NSB class, and add safe fallbacks.
+# FIXME: Hardcoded values!
 func get_class_icon(class_n: String) -> Texture2D:
+
+	var fallback_index = NSB.get_node_index("Node3D")
 	var schema_index = NSB.get_node_index(class_n)
 	var icon = NSB.get_formatted(schema_index).icon
-	if schema_index == -1:
+
+	if schema_index == fallback_index && class_n != "Node3D":
 		return load("res://resources/icons/godot/%s.svg" % class_n)
+
 	return icon
 
 
