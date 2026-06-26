@@ -26,8 +26,7 @@ var _selected_folder: Node
 @onready var _delete_selected_btn = $"HBox/Right/Local/Actions/DeleteSelected/Button"
 
 @onready var _folder_creation_dialog = $"FolderCreation"
-
-
+@onready var _deletion_dialog = $"DeleteConfirmation"
 
 func _ready():
 	super._ready()
@@ -35,10 +34,10 @@ func _ready():
 	Events.dash_switch_tab.connect(_handle_page_opened)
 
 	_create_folder_btn.pressed.connect(_open_file_dialog)
-	_delete_folder_btn.pressed.connect(_delete_folder)
-	_delete_selected_btn.pressed.connect(_delete_selected)
+	_delete_selected_btn.pressed.connect(_open_delete_dialog)
 
 	_folder_creation_dialog.confirmed.connect(_create_folder)
+	_deletion_dialog.confirmed.connect(_delete_selected)
 
 	_build_view()
 	return
@@ -135,6 +134,7 @@ func _button_selected(selected: Node) -> void:
 
 func _clear_view() -> void:
 	_action_buttons = []
+	_selected_folder = null
 
 	for child in _folder_container.get_children():
 		child.queue_free()
@@ -161,16 +161,20 @@ func _create_folder() -> void:
 	_build_view()
 	return
 
-func _delete_folder() -> void:
-	# TODO Confirmation before delete
+func _open_delete_dialog() -> void:
+	if _selected_folder == null:
+		GlobalLogger.log("Tried to open the delete dialog without anything selected.", Enum.LogLevel.WARNING)
+		return
+
 	var _folder_name = _selected_folder.get_meta("label")
-	GlobalLogger.log("Deleting folder '%s'" % _folder_name)
-	FileManager.delete_folder(_folder_name)
-	_build_view()
+	var _text = "Are you sure you want to delete\n\"%s\"" % _folder_name
+
+	_deletion_dialog.dialog_text = _text
+
+	_deletion_dialog.show()
 	return
 
 func _delete_selected() -> void:
-	# TODO Confirmation before delete
 	var _folder_name = _selected_folder.get_meta("label")
 	GlobalLogger.log("Deleting Item '%s'" % _folder_name)
 	FileManager.delete_folder(_folder_name)

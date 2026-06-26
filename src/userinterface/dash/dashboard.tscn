@@ -490,12 +490,6 @@ layout_mode = 2
 toggle = false
 metadata/label = "New Folder"
 
-[node name="DeleteFolder" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Right/Local/Actions" unique_id=802159313 instance=ExtResource("4_ql400")]
-custom_minimum_size = Vector2(200, 35)
-layout_mode = 2
-toggle = false
-metadata/label = "Delete Folder"
-
 [node name="DeleteSelected" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Right/Local/Actions" unique_id=52618569 instance=ExtResource("4_ql400")]
 custom_minimum_size = Vector2(200, 35)
 layout_mode = 2
@@ -527,6 +521,15 @@ offset_bottom = 51.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 placeholder_text = "Folder Name..."
+
+[node name="DeleteConfirmation" type="ConfirmationDialog" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables" unique_id=167116521]
+oversampling_override = 1.0
+title = "Delete Item"
+initial_position = 2
+size = Vector2i(348, 104)
+ok_button_text = "Delete"
+dialog_text = "Are you sure you want to delete the item
+\"Item\""
 
 [node name="Debug" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=506436187 instance=ExtResource("3_av8ee")]
 visible = false
