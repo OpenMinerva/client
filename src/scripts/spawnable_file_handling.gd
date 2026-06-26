@@ -71,10 +71,12 @@ func load_spawnable(path: String) -> void:
 		# Spn = "Spawnable" shorthand.
 		var spn_type: int = -1
 		var spn_transform: Transform3D
+		var spn_pretty_name: String
 
 		var dev_spn_mesh: Mesh
 		var dev_spn_skin: Skin
 		var dev_bones: Dictionary = {}
+
 
 		var property_count = state.get_node_property_count(node_id)
 
@@ -98,6 +100,10 @@ func load_spawnable(path: String) -> void:
 				dev_spn_skin = _value
 				continue
 
+			if _name == "metadata/pretty_name":
+				spn_pretty_name = _value
+				continue
+
 			# HACK: Manually read the bones and add them to the work queue.
 			if _name.contains("bones/"):
 				var parts = _name.split("/")
@@ -110,7 +116,7 @@ func load_spawnable(path: String) -> void:
 				dev_bones[_bone_name][_bone_property] = _value
 
 		# print(dev_bones)
-		spawn_tasks.append({ "task_id": node_id, "spawnable_type": spn_type, "transform": spn_transform, "path": str(node_path), "mesh": dev_spn_mesh, "skin": dev_spn_skin, "bone_data": dev_bones,  "parent_task": -1 })
+		spawn_tasks.append({ "task_id": node_id, "spawnable_type": spn_type, "transform": spn_transform, "path": str(node_path), "mesh": dev_spn_mesh, "skin": dev_spn_skin, "bone_data": dev_bones, "pretty_name": spn_pretty_name, "parent_task": -1 })
 
 	# Order the task list so that based upon the paths of the nodes, each sequential node is guaranteed to have its parent exist.
 	spawn_tasks.sort_custom(
@@ -180,6 +186,7 @@ func load_spawnable(path: String) -> void:
 
 				_debug_skeleton_node.set_bone_pose(int(bone_id), _transform)
 
+		_node.set_meta("pretty_name", task.pretty_name)
 
 	GlobalLogger.log("Loading completed.")
 	return
