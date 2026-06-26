@@ -115,7 +115,6 @@ func load_spawnable(path: String) -> void:
 
 				dev_bones[_bone_name][_bone_property] = _value
 
-		# print(dev_bones)
 		spawn_tasks.append({ "task_id": node_id, "spawnable_type": spn_type, "transform": spn_transform, "path": str(node_path), "mesh": dev_spn_mesh, "skin": dev_spn_skin, "bone_data": dev_bones, "pretty_name": spn_pretty_name, "parent_task": -1 })
 
 	# Order the task list so that based upon the paths of the nodes, each sequential node is guaranteed to have its parent exist.
