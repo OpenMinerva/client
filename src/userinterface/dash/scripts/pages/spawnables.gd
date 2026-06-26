@@ -12,6 +12,7 @@ extends "res://userinterface/dash/scripts/pages/left_nav_container.gd"
 const BASE_DIR = "user://inventory/"
 
 var current_dir: Array[String] = []
+var _action_buttons: Array[Node] = []
 var _template_button = preload("res://userinterface/dash/partials/category_button.tscn")
 var _selected_folder: Node
 
@@ -26,13 +27,6 @@ var _selected_folder: Node
 
 @onready var _folder_creation_dialog = $"FolderCreation"
 
-# TODO:
-# Filesystem Browser
-# Local storage browser
-# Cloud storage browser (Select which cloud storage to use?)
-#
-# When spawning something, validate the node before spawning it?
-# Some way to quickly get the list? File library?
 
 
 func _ready():
@@ -115,17 +109,32 @@ func _create_button(name: String, icon: String = "", double_click = null, min_si
 	_listing.set_meta("label", name)
 	_listing.selected_icon = icon
 	_listing.custom_minimum_size = min_size
-	_listing.toggle = false
+	_listing.toggle = true
 
-	_listing.get_node("Button").pressed.connect(func(): _selected_folder = _listing)
+	_listing.get_node("Button").pressed.connect(_button_selected.bind(_listing))
 
 	if double_click != null:
 		# TODO: Check if double_click param is a function
 		_listing.double_clicked.connect(double_click)
 
+	_action_buttons.append(_listing)
 	return _listing
 
+func _button_selected(selected: Node) -> void:
+	var _button_name = selected.get_meta("label")
+
+
+	for button in _action_buttons:
+		button.get_node("Button").button_pressed = false
+
+	selected.get_node("Button").button_pressed = true
+
+	_selected_folder = selected
+	return
+
 func _clear_view() -> void:
+	_action_buttons = []
+
 	for child in _folder_container.get_children():
 		child.queue_free()
 
