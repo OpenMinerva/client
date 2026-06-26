@@ -6,6 +6,7 @@
 [ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="2_q3f5g"]
 [ext_resource type="PackedScene" uid="uid://c4y1sb6lmdr0q" path="res://userinterface/dash/dashboard.tscn" id="4_h2qy3"]
 [ext_resource type="PackedScene" uid="uid://bqtqfooa7qncp" path="res://userinterface/client_edit_mode/desktop/inspector.tscn" id="5_q3f5g"]
+[ext_resource type="Script" uid="uid://be2ckahbhewms" path="res://scripts/spawnable_file_handling.gd" id="6_kjytq"]
 
 [sub_resource type="GDScript" id="GDScript_q3f5g"]
 script/source = "extends SubViewportContainer
@@ -97,6 +98,9 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_q3f5g")
 [node name="NetworkManager" parent="." unique_id=1960146969 instance=ExtResource("1_jooxx")]
 
 [node name="SceneManager" parent="." unique_id=5477810 instance=ExtResource("2_h2qy3")]
+
+[node name="DevSpawnManager" type="Node" parent="." unique_id=1121013970]
+script = ExtResource("6_kjytq")
 
 [node name="Dashboard" parent="." unique_id=505457833 instance=ExtResource("4_h2qy3")]
 visible = false

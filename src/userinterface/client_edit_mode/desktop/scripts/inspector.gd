@@ -2,9 +2,11 @@ extends Node
 
 var gizmos: Array[Dictionary] = []
 var _clicked_item: TreeItem = null
+var _editing_item: TreeItem = null
 
 @onready var tree_view: Tree = get_node("MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer/Tree")
 @onready var scene_m = get_tree().current_scene.get_node("SceneManager")
+@onready var dev_spawn_m = get_tree().current_scene.get_node("DevSpawnManager")
 @onready var spawnable_m: Node
 @onready var session_signalbus: Node
 @onready var inspector_popup_menu = $InspectorPopup
@@ -21,6 +23,7 @@ func _ready() -> void:
 	Events.cem_set_gizmo_state.connect(_toggle_gizmos)
 	Events.cem_set_state.connect(_set_cem_state)
 
+	tree_view.item_edited.connect(_on_tree_item_edited)
 	tree_view.item_mouse_selected.connect(_on_tree_item_mouse_selected)
 	inspector_popup_menu.id_pressed.connect(_on_inspector_popup_menu_id_pressed)
 
@@ -54,6 +57,7 @@ func add_node_to_tree(node: Node, parent_item: TreeItem):
 		item.set_text(0, node.get_meta("pretty_name", node.name))
 		var icon_texture = get_class_icon(node.get_meta("pretty_name", node.get_class()))
 		item.set_icon(0, icon_texture)
+		item.set_icon_max_width(0, 20)
 		item.set_metadata(0, node)
 
 		for child in node.get_children():
@@ -61,11 +65,16 @@ func add_node_to_tree(node: Node, parent_item: TreeItem):
 
 
 # FIXME: Add this function to the NSB class, and add safe fallbacks.
+# FIXME: Hardcoded values!
 func get_class_icon(class_n: String) -> Texture2D:
+
+	var fallback_index = NSB.get_node_index("Node3D")
 	var schema_index = NSB.get_node_index(class_n)
 	var icon = NSB.get_formatted(schema_index).icon
-	if schema_index == -1:
+
+	if schema_index == fallback_index && class_n != "Node3D":
 		return load("res://resources/icons/godot/%s.svg" % class_n)
+
 	return icon
 
 
@@ -73,8 +82,10 @@ func popupmenu_populate_generic() -> void:
 	for i in inspector_popup_menu.item_count:
 		inspector_popup_menu.remove_item(0)
 	inspector_popup_menu.add_item("Add Child", 0)
-	inspector_popup_menu.add_item("Remove Node", 1)
+	inspector_popup_menu.add_item("Delete", 1)
 	inspector_popup_menu.add_item("Select", 2)
+	inspector_popup_menu.add_item("Save", 3)
+	inspector_popup_menu.add_item("Rename", 5)
 	return
 
 
@@ -169,6 +180,10 @@ func _on_item_activated(index: int) -> void:
 
 	return
 
+func _on_tree_item_edited() -> void:
+	_editing_item.set_editable(0, false)
+	_editing_item.get_metadata(0).set_meta("pretty_name", _editing_item.get_text(0))
+	return
 
 func _on_inspector_popup_menu_id_pressed(id: int):
 	if _clicked_item:
@@ -194,6 +209,13 @@ func _on_inspector_popup_menu_id_pressed(id: int):
 					_gizmo_add(int(target_gizmo_node.name), int(node.name))
 					return
 				_gizmo_new(int(node.name))
+			3:
+				GlobalLogger.log("Saving spawnable.")
+				FileManager._current_path()
+				dev_spawn_m.save_spawnable(node)
+			5:
+				_clicked_item.set_editable(0, true)
+				_editing_item = _clicked_item
 
 
 func _update_selection_ui() -> void:
@@ -205,6 +227,7 @@ func _update_selection_ui() -> void:
 		var gizmo_root = selection_ui.create_item()
 		gizmo_root.set_text(0, "Gizmo")
 		gizmo_root.set_icon(0, get_class_icon("Gizmo"))
+		gizmo_root.set_icon_max_width(0, 20)
 		gizmo_root.set_metadata(0, gizmo.node)
 
 		# TODO: Show all children of nodes that are selected.

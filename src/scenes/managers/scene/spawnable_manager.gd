@@ -113,6 +113,7 @@ func spawn_spawnable(p_type: int, p_name: String = "", p_path: String = "", pare
 		parent_node = _database[database_index].node
 
 	_spawned_entity = _spawn_node(p_type, 1, parent_node, p_path)
+	_spawned_entity.owner = parent_node
 
 	session_signalbus.node_created.emit(_spawned_entity)
 	return int(_spawned_entity.name)
@@ -188,15 +189,27 @@ func _spawn_node(node_type: int, node_owner: int, parent: Node = instance_root, 
 	var _node_name = NSB.get_valid()[node_type]
 	var _schema_index = NSB.get_node_index(_node_name)
 	var _node_schema = NSB.get_formatted(_schema_index)
-	_node = NSB._build_node(_node_name, model_path)
+	var _pretty_name: String
+
+	# FIXME: Hack for importing skeletons?
+	if _node_name == "Model" && model_path == "":
+		_node = NSB._build_node("Node3D")
+	else:
+		_node = NSB._build_node(_node_name, model_path)
 
 	# Add to database
 	var _db_id = _add_to_database(_node, node_type, node_owner)
 
+	if model_path != "":
+		_pretty_name = model_path.get_file()
+	else:
+		_pretty_name = str(_node_schema.pretty_name)
+
 	# Editor changes
 	set_node_visible_to_inspector(_node)
 	_node.name = str(_db_id)
-	_node.set_meta("pretty_name", str(_node_schema.pretty_name))
+	_node.set_meta("pretty_name", _pretty_name)
+	_node.set_meta("spawnable_type", node_type)
 	_node.position = Vector3(0, 0, 0)
 
 	# Add to scene tree
