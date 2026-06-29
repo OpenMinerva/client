@@ -4,7 +4,7 @@ var gizmos: Array[Dictionary] = []
 var _clicked_item: TreeItem = null
 var _editing_item: TreeItem = null
 
-@onready var tree_view: Tree = get_node("MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer/Tree")
+@onready var tree_view: Tree = get_node("HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer/Tree")
 @onready var scene_m = get_tree().current_scene.get_node("SceneManager")
 @onready var dev_spawn_m = get_tree().current_scene.get_node("DevSpawnManager")
 @onready var spawnable_m: Node
@@ -12,8 +12,11 @@ var _editing_item: TreeItem = null
 @onready var inspector_popup_menu = $InspectorPopup
 @onready var gizmo_popup_menu = $GizmoPopup
 @onready var session_root: Node
-@onready var selection_ui: Tree = get_node("MarginContainer/VBoxContainer/SelectionArea/VBoxContainer/SelectionContainer/Selections")
+@onready var selection_ui: Tree = get_node("HBoxContainer/MarginContainer/VBoxContainer/SelectionArea/VBoxContainer/SelectionContainer/Selections")
 
+
+@onready var inspector: Node = get_tree().current_scene.get_node("Inspector")
+@onready var crosshair: Node = get_tree().current_scene.get_node("Crosshair")
 
 func _ready() -> void:
 	_build_add_node_popup()
@@ -113,6 +116,13 @@ func _on_node_destroyed(node_name: String) -> void:
 
 func _set_cem_state(state: bool) -> void:
 	_toggle_gizmos(state)
+
+	if state == true:
+		inspector.visible = true
+		crosshair.visible = false
+	else:
+		inspector.visible = false
+		crosshair.visible = true
 	return
 
 
