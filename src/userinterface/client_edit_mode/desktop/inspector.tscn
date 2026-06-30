@@ -5,9 +5,19 @@
 [ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="2_plsgj"]
 [ext_resource type="PackedScene" uid="uid://71vuc3qrtgi7" path="res://userinterface/dash/partials/category_button.tscn" id="4_xqsbl"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_yi8pr"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lsah3"]
 shader = ExtResource("2_lsah3")
-shader_parameter/blur_size = Vector2(3, 3)
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/blur_amount = 4.0
+shader_parameter/roughness = 0.2
+shader_parameter/roughness_affect = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bstjd"]
+shader = ExtResource("2_lsah3")
+shader_parameter/color = Color(0.4, 0.4, 0.4, 1)
+shader_parameter/blur_amount = 3.0000001392401203
+shader_parameter/roughness = 0.2
+shader_parameter/roughness_affect = 0.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_plsgj"]
 bg_color = Color(0.078431375, 0.078431375, 0.078431375, 0.78431374)
@@ -36,20 +46,17 @@ grow_vertical = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="BlurPanel" type="Panel" parent="HBoxContainer/MarginContainer" unique_id=1925389533]
-material = SubResource("ShaderMaterial_yi8pr")
-layout_mode = 2
-theme = ExtResource("2_plsgj")
-
 [node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/MarginContainer" unique_id=989599199]
 layout_mode = 2
 
 [node name="Container" type="Control" parent="HBoxContainer/MarginContainer/VBoxContainer" unique_id=1148377667]
+material = SubResource("ShaderMaterial_lsah3")
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="BackgroundColor" type="Panel" parent="HBoxContainer/MarginContainer/VBoxContainer/Container" unique_id=1608019550]
+material = SubResource("ShaderMaterial_bstjd")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -165,6 +172,7 @@ theme_override_constants/margin_bottom = 5
 [node name="Tree" type="Tree" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer" unique_id=1139166924]
 layout_mode = 2
 focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_constants/draw_guides = 0
 theme_override_constants/draw_relationship_lines = 1
 theme_override_constants/relationship_line_width = 1
@@ -180,7 +188,8 @@ custom_minimum_size = Vector2(0, 250)
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="BackgroundColor" type="Panel" parent="HBoxContainer/MarginContainer/VBoxContainer/SelectionArea" unique_id=1277487641]
+[node name="BackgroundColor" type="Panel" parent="HBoxContainer/MarginContainer/VBoxContainer/SelectionArea" unique_id=1749082714]
+material = SubResource("ShaderMaterial_bstjd")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -226,6 +235,11 @@ size_flags_horizontal = 3
 mouse_filter = 1
 
 [node name="Control2" type="Control" parent="HBoxContainer" unique_id=1101087081]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 1
+
+[node name="Control4" type="Control" parent="HBoxContainer" unique_id=82603249]
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
