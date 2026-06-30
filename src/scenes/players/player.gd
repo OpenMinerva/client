@@ -108,7 +108,7 @@ func _unhandled_input(event):
 
 		get_viewport().set_input_as_handled()
 
-	if "keycode" in event && event.keycode == 4194333 && event.pressed == true:
+	if "keycode" in event && event.keycode == 4194306 && event.pressed == true:
 		capture_mouse(!mouse_captured)
 		get_viewport().set_input_as_handled()
 		return
