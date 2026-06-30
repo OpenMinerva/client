@@ -4,6 +4,11 @@
 [ext_resource type="Shader" uid="uid://bwr4b0mhgi4w6" path="res://userinterface/dash/shaders/blur.gdshader" id="2_lsah3"]
 [ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="2_plsgj"]
 [ext_resource type="PackedScene" uid="uid://71vuc3qrtgi7" path="res://userinterface/dash/partials/category_button.tscn" id="4_xqsbl"]
+[ext_resource type="PackedScene" uid="uid://cyom30b1p54df" path="res://userinterface/dash/partials/search.tscn" id="4_yi8pr"]
+[ext_resource type="Texture2D" uid="uid://fo1d37jtb6vk" path="res://resources/icons/godot/OmniLight3D.svg" id="6_3dh21"]
+[ext_resource type="Texture2D" uid="uid://dbh1x1f04arga" path="res://resources/icons/godot/Object.svg" id="6_y7tqo"]
+[ext_resource type="Texture2D" uid="uid://ms7inrk1pn1d" path="res://resources/icons/godot/RigidBody3D.svg" id="8_0debx"]
+[ext_resource type="Texture2D" uid="uid://bx7irvaofgk6n" path="res://resources/icons/godot/CharacterBody3D.svg" id="9_840b7"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lsah3"]
 shader = ExtResource("2_lsah3")
@@ -63,6 +68,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 theme = ExtResource("2_plsgj")
 theme_override_styles/panel = SubResource("StyleBoxFlat_plsgj")
 
@@ -74,92 +80,77 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MarginContainer2" type="MarginContainer" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer" unique_id=2024427458]
-visible = false
-custom_minimum_size = Vector2(0, 40)
+[node name="InputString" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer" unique_id=1236567120 instance=ExtResource("4_yi8pr")]
+layout_mode = 2
+display_text = "Search..."
+
+[node name="Filters" type="MarginContainer" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer" unique_id=104307759]
 layout_mode = 2
 theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2" unique_id=1181858590]
-custom_minimum_size = Vector2(0, 80)
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters" unique_id=831013929]
 layout_mode = 2
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer" unique_id=18256717]
+[node name="Spawnables" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer" unique_id=649942124 instance=ExtResource("4_xqsbl")]
+custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
-size_flags_vertical = 3
+toggle = true
+only_icon = true
+icon = ExtResource("6_y7tqo")
 
-[node name="Inspector" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer2" unique_id=649942124 instance=ExtResource("4_xqsbl")]
-custom_minimum_size = Vector2(0, 0)
+[node name="Button" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer/Spawnables" index="0" unique_id=1422381468]
+toggle_mode = true
+
+[node name="TextureRect" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer/Spawnables/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(649942124, 86696220) index="0" unique_id=1429445374]
+size_flags_horizontal = 3
+texture = ExtResource("6_3dh21")
+stretch_mode = 5
+
+[node name="Lights" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer" unique_id=835715123 instance=ExtResource("4_xqsbl")]
+custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
-size_flags_vertical = 1
-toggle = false
+toggle = true
+only_icon = true
+icon = ExtResource("6_3dh21")
 
-[node name="Button" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer2/Inspector" index="0" unique_id=1422381468]
-custom_minimum_size = Vector2(0, 0)
-toggle_mode = false
+[node name="Button" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer/Lights" index="0" unique_id=1422381468]
+toggle_mode = true
 
-[node name="Label" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer2/Inspector/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(649942124, 86696220) index="1" unique_id=1807295119]
-text = "Inspector"
+[node name="TextureRect" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer/Lights/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(835715123, 86696220) index="0" unique_id=1429445374]
+size_flags_horizontal = 3
+texture = ExtResource("6_3dh21")
+stretch_mode = 5
 
-[node name="Selections" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer2" unique_id=1857668287 instance=ExtResource("4_xqsbl")]
-custom_minimum_size = Vector2(0, 0)
+[node name="Phys" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer" unique_id=519550475 instance=ExtResource("4_xqsbl")]
+custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
-size_flags_vertical = 1
-toggle = false
+toggle = true
+only_icon = true
+icon = ExtResource("8_0debx")
 
-[node name="Button" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer2/Selections" index="0" unique_id=1422381468]
-custom_minimum_size = Vector2(0, 0)
-toggle_mode = false
+[node name="Button" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer/Phys" index="0" unique_id=1422381468]
+toggle_mode = true
 
-[node name="Label" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer2/Selections/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(1857668287, 86696220) index="1" unique_id=1807295119]
-text = "Selections"
+[node name="TextureRect" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer/Phys/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(519550475, 86696220) index="0" unique_id=1429445374]
+size_flags_horizontal = 3
+texture = ExtResource("8_0debx")
+stretch_mode = 5
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer" unique_id=731058431]
+[node name="Players" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer" unique_id=930128724 instance=ExtResource("4_xqsbl")]
+custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
-size_flags_vertical = 3
+toggle = true
+only_icon = true
+icon = ExtResource("9_840b7")
 
-[node name="Root" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer" unique_id=755678352 instance=ExtResource("4_xqsbl")]
-visible = false
-custom_minimum_size = Vector2(0, 0)
-layout_mode = 2
-size_flags_vertical = 1
-toggle = false
+[node name="Button" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer/Players" index="0" unique_id=1422381468]
+toggle_mode = true
 
-[node name="Button" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer/Root" index="0" unique_id=1422381468]
-custom_minimum_size = Vector2(0, 0)
-toggle_mode = false
-
-[node name="Label" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer/Root/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(755678352, 86696220) index="1" unique_id=1807295119]
-text = "Root"
-
-[node name="Focus" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer" unique_id=1495961442 instance=ExtResource("4_xqsbl")]
-custom_minimum_size = Vector2(0, 0)
-layout_mode = 2
-size_flags_vertical = 1
-toggle = false
-
-[node name="Button" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer/Focus" index="0" unique_id=1422381468]
-custom_minimum_size = Vector2(0, 0)
-toggle_mode = false
-
-[node name="Label" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer/Focus/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(1495961442, 86696220) index="1" unique_id=1807295119]
-text = "Focus"
-
-[node name="Focus Parent" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer" unique_id=1944860213 instance=ExtResource("4_xqsbl")]
-custom_minimum_size = Vector2(0, 0)
-layout_mode = 2
-size_flags_vertical = 1
-toggle = false
-
-[node name="Button" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer/Focus Parent" index="0" unique_id=1422381468]
-custom_minimum_size = Vector2(0, 0)
-toggle_mode = false
-
-[node name="Label" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer/Focus Parent/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(1944860213, 86696220) index="1" unique_id=1807295119]
-text = "Focus Parent"
+[node name="TextureRect" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer/Players/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(930128724, 86696220) index="0" unique_id=1429445374]
+size_flags_horizontal = 3
+texture = ExtResource("9_840b7")
+stretch_mode = 5
 
 [node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer" unique_id=1666616570]
 layout_mode = 2
@@ -243,8 +234,8 @@ texture_filter = 2
 layout_mode = 2
 fixed_icon_size = Vector2i(20, 20)
 
-[editable path="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer2/Inspector"]
-[editable path="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer2/Selections"]
-[editable path="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer/Root"]
-[editable path="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer/Focus"]
-[editable path="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer2/VBoxContainer/HBoxContainer/Focus Parent"]
+[editable path="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/InputString"]
+[editable path="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer/Spawnables"]
+[editable path="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer/Lights"]
+[editable path="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer/Phys"]
+[editable path="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer/Players"]
