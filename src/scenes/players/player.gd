@@ -153,6 +153,7 @@ func capture_mouse(to_capture: bool):
 
 func _toggle_client_edit_mode() -> void:
 	Events.emit_signal("cem_set_state", !cem_state)
+	capture_mouse(cem_state)
 	cem_state = !cem_state
 	return
 
