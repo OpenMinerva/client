@@ -17,6 +17,7 @@ var _editing_item: TreeItem = null
 
 @onready var gizmo_control_container: Node = get_node("VBoxContainer/Toolbar/MarginContainer/HBoxContainer/GizmoControl")
 @onready var gizmo_control_misc_container: Node = get_node("VBoxContainer/Toolbar/MarginContainer/HBoxContainer/GizmoControlMisc")
+@onready var toolbar_spawnable_count: Node = get_node("VBoxContainer/Toolbar/MarginContainer/HBoxContainer/SpawnableCount")
 
 @onready var inspector: Node = get_tree().current_scene.get_node("Inspector")
 @onready var crosshair: Node = get_tree().current_scene.get_node("Crosshair")
@@ -61,6 +62,7 @@ func populate_tree_from_node(_node: Variant = ""):
 	var tree_root = tree_view.create_item()
 
 	add_node_to_tree(session_root, tree_root)
+	update_toolbar()
 
 
 # FIXME: The open-ness of the current view is not maintained when refreshing the tree view.
@@ -128,6 +130,10 @@ func _update_gizmo_modes() -> void:
 
 		my_gizmo.use_local_space = !misc_node_children[0].get_node("Button").button_pressed
 
+	return
+
+func update_toolbar() -> void:
+	toolbar_spawnable_count.update_meta(str(spawnable_m._database.size()))
 	return
 
 func popupmenu_populate_generic() -> void:

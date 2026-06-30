@@ -20,3 +20,8 @@ func _ready() -> void:
 		icon_node.texture = icon
 
 	label_node.text = label
+
+func update_meta(value: String) -> void:
+	set_meta("label", value)
+	label_node.text = value
+	return

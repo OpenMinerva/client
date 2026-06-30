@@ -120,6 +120,7 @@ func spawn_spawnable(p_type: int, p_name: String = "", p_path: String = "", pare
 
 
 # TODO: require actioning user
+# FIXME: Deleting a parent does not free the children of the node from the database.
 @rpc("authority", "reliable")
 func delete_spawnable(node_name: String) -> void:
 	GlobalLogger.log("Deleting node '%s'." % node_name)
