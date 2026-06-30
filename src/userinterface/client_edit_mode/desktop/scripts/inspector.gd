@@ -5,7 +5,7 @@ var my_gizmo: Node
 var _clicked_item: TreeItem = null
 var _editing_item: TreeItem = null
 
-@onready var tree_view: Tree = get_node("HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer/Tree")
+@onready var tree_view: Tree = get_node("VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer/Tree")
 @onready var scene_m = get_tree().current_scene.get_node("SceneManager")
 @onready var dev_spawn_m = get_tree().current_scene.get_node("DevSpawnManager")
 @onready var spawnable_m: Node
@@ -13,14 +13,16 @@ var _editing_item: TreeItem = null
 @onready var inspector_popup_menu = get_node("InspectorPopup")
 @onready var gizmo_popup_menu = get_node("GizmoPopup")
 @onready var session_root: Node
-@onready var selection_ui: Tree = get_node("HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/SelectionArea/VBoxContainer/SelectionContainer/Selections")
+@onready var selection_ui: Tree = get_node("VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/SelectionArea/VBoxContainer/SelectionContainer/Selections")
 
+@onready var gizmo_control_container: Node = get_node("VBoxContainer/Toolbar/MarginContainer/HBoxContainer/GizmoControl")
 
 @onready var inspector: Node = get_tree().current_scene.get_node("Inspector")
 @onready var crosshair: Node = get_tree().current_scene.get_node("Crosshair")
 
 func _ready() -> void:
 	_build_add_node_popup()
+	_add_gizmo_mode_event_listners()
 
 	# Instance signals
 	Events.dash_session_changed.connect(_session_changed)
@@ -32,6 +34,8 @@ func _ready() -> void:
 	inspector_popup_menu.id_pressed.connect(_on_inspector_popup_menu_id_pressed)
 
 	gizmo_popup_menu.id_pressed.connect(_on_gizmo_popup_pressed)
+
+	gizmo_control_container.get_children()
 
 	inspector_popup_menu.hide()
 	pass
@@ -86,6 +90,38 @@ func get_class_icon(class_n: String) -> Texture2D:
 
 	return icon
 
+func _add_gizmo_mode_event_listners() -> void:
+	var node_children: Array[Node] = gizmo_control_container.get_children()
+
+	for node_index in node_children.size():
+		var _node = node_children[node_index]
+		_node.get_node("Button").pressed.connect(_update_gizmo_modes)
+
+	return
+
+func _update_gizmo_modes() -> void:
+	var _gizmo_modes: Dictionary
+	var node_children: Array[Node] = gizmo_control_container.get_children()
+
+	for node_index in node_children.size():
+		var _node = node_children[node_index]
+		var _dict_name = _node.name.to_lower()
+		var _is_active = _node.get_node("Button").button_pressed
+
+		_gizmo_modes[_dict_name] = _is_active
+
+	if my_gizmo != null:
+		var new_mode = 0
+
+		if _gizmo_modes.get("transform", false):
+			new_mode |= Gizmo3D.ToolMode.MOVE
+		if _gizmo_modes.get("rotation", false):
+			new_mode |= Gizmo3D.ToolMode.ROTATE
+		if _gizmo_modes.get("scale", false):
+			new_mode |= Gizmo3D.ToolMode.SCALE
+
+		my_gizmo.mode = new_mode
+	return
 
 func popupmenu_populate_generic() -> void:
 	for i in inspector_popup_menu.item_count:

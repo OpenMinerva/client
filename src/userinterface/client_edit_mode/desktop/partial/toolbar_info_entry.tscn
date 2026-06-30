@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://clxgcncfyislv"]
+
+[ext_resource type="Shader" uid="uid://bwr4b0mhgi4w6" path="res://userinterface/dash/shaders/blur.gdshader" id="1_i1jlm"]
+[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="2_l5h25"]
+[ext_resource type="Script" uid="uid://bsuywy3ql6bof" path="res://userinterface/client_edit_mode/desktop/scripts/toolbar_info_entry.gd" id="3_l5h25"]
+[ext_resource type="Texture2D" uid="uid://dbh1x1f04arga" path="res://resources/icons/godot/Object.svg" id="3_uolk7"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0debx"]
+shader = ExtResource("1_i1jlm")
+shader_parameter/color = Color(0.2, 0.2, 0.2, 1)
+shader_parameter/blur_amount = 3.0000001392401203
+shader_parameter/roughness = 0.2
+shader_parameter/roughness_affect = 0.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_plsgj"]
+bg_color = Color(0.078431375, 0.078431375, 0.078431375, 0.78431374)
+
+[node name="ToolbarInfoEntry" type="Panel" unique_id=1405780292]
+material = SubResource("ShaderMaterial_0debx")
+custom_minimum_size = Vector2(150, 30)
+mouse_filter = 1
+theme = ExtResource("2_l5h25")
+theme_override_styles/panel = SubResource("StyleBoxFlat_plsgj")
+script = ExtResource("3_l5h25")
+metadata/label = ""
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=993431883]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=121293984]
+layout_mode = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/HBoxContainer" unique_id=477031744]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+stretch_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/HBoxContainer/AspectRatioContainer" unique_id=569244619]
+layout_mode = 2
+texture = ExtResource("3_uolk7")
+expand_mode = 4
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer" unique_id=1632303862]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "0"
+horizontal_alignment = 2

@@ -15,6 +15,7 @@ signal double_clicked
 @export_enum(\"Art\", \"Environment\", \"Science\", \"Games\", \"Folder\") var selected_icon: String
 @export_enum(\"Danger\") var selected_theme_type: String
 @export var toggle: bool = false 
+@export var default_state: bool = false 
 @export var only_icon: bool = false 
 @export var icon: Texture2D
 
@@ -32,6 +33,9 @@ var icon_paths = {
 }
 
 func _ready():
+	button_node.toggle_mode = toggle
+	button_node.button_pressed = default_state
+		
 	button_node.pressed.connect(_on_single_click)
 	
 	_get_label_text()
@@ -42,7 +46,6 @@ func _ready():
 		icon_node.texture = load(icon_paths[selected_icon])
 	button_node.theme_type_variation = selected_theme_type if selected_theme_type != null else \"\"
 	
-	button_node.toggle_mode = toggle
 	return
 
 func _get_label_text() -> void:
@@ -86,7 +89,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 4
 theme = ExtResource("1_dnctg")
 script = SubResource("GDScript_q3lw4")
-only_icon = null
+default_state = null
 metadata/_edit_use_anchors_ = true
 metadata/label = ""
 
