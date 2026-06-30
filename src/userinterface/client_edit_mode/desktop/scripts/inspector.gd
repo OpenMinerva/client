@@ -1,6 +1,7 @@
 extends Node
 
 var gizmos: Array[Dictionary] = []
+var my_gizmo: Node
 var _clicked_item: TreeItem = null
 var _editing_item: TreeItem = null
 
@@ -30,7 +31,6 @@ func _ready() -> void:
 	tree_view.item_mouse_selected.connect(_on_tree_item_mouse_selected)
 	inspector_popup_menu.id_pressed.connect(_on_inspector_popup_menu_id_pressed)
 
-	selection_ui.item_mouse_selected.connect(_on_gizmo_item_selected)
 	gizmo_popup_menu.id_pressed.connect(_on_gizmo_popup_pressed)
 
 	inspector_popup_menu.hide()
@@ -110,7 +110,6 @@ func _on_node_destroyed(node_name: String) -> void:
 			if gizmo.node.get_selected_count() == 0:
 				_gizmo_delete(gizmo.id)
 
-	_update_selection_ui()
 	return
 
 
@@ -214,10 +213,6 @@ func _on_inspector_popup_menu_id_pressed(id: int):
 
 				await spawnable_m.destroy(int(_name))
 			2:
-				if gizmos.size() > 0:
-					var target_gizmo_node = gizmos.back().node
-					_gizmo_add(int(target_gizmo_node.name), int(node.name))
-					return
 				_gizmo_new(int(node.name))
 			3:
 				GlobalLogger.log("Saving spawnable.")
@@ -226,27 +221,6 @@ func _on_inspector_popup_menu_id_pressed(id: int):
 			5:
 				_clicked_item.set_editable(0, true)
 				_editing_item = _clicked_item
-
-
-func _update_selection_ui() -> void:
-	selection_ui.clear()
-
-	selection_ui.create_item()
-
-	for gizmo in gizmos:
-		var gizmo_root = selection_ui.create_item()
-		gizmo_root.set_text(0, "Gizmo")
-		gizmo_root.set_icon(0, get_class_icon("Gizmo"))
-		gizmo_root.set_icon_max_width(0, 20)
-		gizmo_root.set_metadata(0, gizmo.node)
-
-		# TODO: Show all children of nodes that are selected.
-		for selected_node in gizmo.node._selections.keys():
-			var item = selection_ui.create_item(gizmo_root)
-			item.set_text(0, selected_node.get_meta("pretty_name"))
-			item.set_selectable(0, false)
-
-	return
 
 
 func _set_active_gizmo(gizmo_id: int) -> void:
@@ -277,21 +251,22 @@ func _set_gizmo_render_state(gizmo: Node, state: bool = false) -> void:
 func _gizmo_new(node_id: int) -> void:
 	var target_node = spawnable_m.get_by_id(node_id)
 	var gizmo_schema_index = NSB.get_node_index("Gizmo")
-	var gizmo_node: Node
+
+	if my_gizmo != null:
+		_gizmo_delete(int(my_gizmo.name))
 
 	if target_node == { }:
 		GlobalLogger.log("Tried to add a gizmo to an invalid node.", Enum.LogLevel.WARNING)
 		return
 
-	gizmo_node = await spawnable_m.create(gizmo_schema_index)
+	my_gizmo = await spawnable_m.create(gizmo_schema_index)
 
-	gizmos.append({ "node": gizmo_node, "id": int(gizmo_node.name) })
+	gizmos.append({ "node": my_gizmo, "id": int(my_gizmo.name) })
 
-	gizmo_node.transform_changed.connect(func(mode, value): _transform_gizmo(mode, value, gizmo_node._selections))
+	my_gizmo.transform_changed.connect(func(mode, value): _transform_gizmo(mode, value, my_gizmo._selections))
 
-	gizmo_node.select(target_node.node)
-	_set_active_gizmo(int(gizmo_node.name))
-	_update_selection_ui()
+	my_gizmo.select(target_node.node)
+	_set_active_gizmo(int(my_gizmo.name))
 	return
 
 
@@ -311,7 +286,6 @@ func _gizmo_add(gizmo_id: int, node_id: int) -> void:
 			gizmo.node.deselect(selected_node)
 
 	gizmo.node.select(target_node.node)
-	_update_selection_ui()
 	return
 
 
@@ -319,7 +293,6 @@ func _gizmo_remove(gizmo_id: int, node_id: int) -> void:
 	var gizmo = spawnable_m.get_by_id(gizmo_id)
 	var target_node = spawnable_m.get_by_id(node_id)
 	gizmo.node.deselect(target_node.node)
-	_update_selection_ui()
 	return
 
 
@@ -328,7 +301,6 @@ func _gizmo_delete(node_id: int) -> void:
 	gizmos.remove_at(gizmo_index)
 
 	await spawnable_m.destroy(node_id)
-	_update_selection_ui()
 	return
 
 

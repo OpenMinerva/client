@@ -183,52 +183,6 @@ allow_search = false
 hide_root = true
 select_mode = 1
 
-[node name="SelectionArea" type="Control" parent="HBoxContainer/MarginContainer/VBoxContainer" unique_id=1692445644]
-custom_minimum_size = Vector2(0, 250)
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="BackgroundColor" type="Panel" parent="HBoxContainer/MarginContainer/VBoxContainer/SelectionArea" unique_id=1749082714]
-material = SubResource("ShaderMaterial_bstjd")
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme = ExtResource("2_plsgj")
-theme_override_styles/panel = SubResource("StyleBoxFlat_plsgj")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/MarginContainer/VBoxContainer/SelectionArea" unique_id=1497237280]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="SelectionContainer" type="MarginContainer" parent="HBoxContainer/MarginContainer/VBoxContainer/SelectionArea/VBoxContainer" unique_id=1041746032]
-custom_minimum_size = Vector2(0, 150)
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="Selections" type="Tree" parent="HBoxContainer/MarginContainer/VBoxContainer/SelectionArea/VBoxContainer/SelectionContainer" unique_id=458051864]
-layout_mode = 2
-focus_mode = 0
-theme_override_constants/draw_guides = 0
-theme_override_constants/draw_relationship_lines = 1
-theme_override_constants/relationship_line_width = 1
-theme_override_font_sizes/font_size = 14
-theme_override_styles/panel = SubResource("StyleBoxEmpty_plsgj")
-allow_rmb_select = true
-allow_search = false
-hide_root = true
-select_mode = 1
-
 [node name="Control" type="Control" parent="HBoxContainer" unique_id=250118725]
 layout_mode = 2
 size_flags_horizontal = 3
