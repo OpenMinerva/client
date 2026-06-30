@@ -104,7 +104,7 @@ toggle_mode = true
 
 [node name="TextureRect" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer/Spawnables/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(649942124, 86696220) index="0" unique_id=1429445374]
 size_flags_horizontal = 3
-texture = ExtResource("6_3dh21")
+texture = ExtResource("6_y7tqo")
 stretch_mode = 5
 
 [node name="Lights" parent="HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer" unique_id=835715123 instance=ExtResource("4_xqsbl")]

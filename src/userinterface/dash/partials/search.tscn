@@ -68,6 +68,7 @@ theme_override_constants/margin_bottom = 5
 [node name="LineEdit" type="LineEdit" parent="MarginContainer/HBoxContainer/MarginContainer" unique_id=828836954]
 layout_mode = 2
 size_flags_horizontal = 3
+focus_behavior_recursive = 2
 theme = ExtResource("2_p0vin")
 placeholder_text = "Search..."
 clear_button_enabled = true
