@@ -90,6 +90,9 @@ grow_vertical = 2
 layout_mode = 2
 display_text = "Search..."
 
+[node name="LineEdit" parent="HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/InputString/MarginContainer/HBoxContainer/MarginContainer" parent_id_path=PackedInt32Array(1236567120, 514760511) index="0" unique_id=828836954]
+focus_mode = 1
+
 [node name="Filters" type="MarginContainer" parent="HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer" unique_id=104307759]
 layout_mode = 2
 theme_override_constants/margin_left = 5

@@ -36,6 +36,12 @@ func _ready() -> void:
 	inspector_popup_menu.hide()
 	pass
 
+func _input(event: InputEvent):
+	# Used to remove focus of the search area when clicking inside of the scene.
+	if event is InputEventMouseButton && event.pressed:
+		var focused = get_viewport().gui_get_focus_owner()
+		if focused:
+			focused.release_focus()
 
 func populate_tree_from_node(_node: Variant = ""):
 	# Wait a frame to get the updated scene from when it was called.
