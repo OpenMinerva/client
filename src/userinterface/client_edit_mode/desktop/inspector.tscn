@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://d0eu0hptxnvjd" path="res://resources/icons/godot/ToolRotate.svg" id="6_840b7"]
 [ext_resource type="Texture2D" uid="uid://dbh1x1f04arga" path="res://resources/icons/godot/Object.svg" id="6_y7tqo"]
 [ext_resource type="Texture2D" uid="uid://bu6vtb71stcjq" path="res://resources/icons/godot/ToolScale.svg" id="7_7pj7g"]
+[ext_resource type="Texture2D" uid="uid://8rvofwa4k380" path="res://resources/icons/godot/WorldEnvironment.svg" id="8_7pj7g"]
 [ext_resource type="Texture2D" uid="uid://bx7irvaofgk6n" path="res://resources/icons/godot/CharacterBody3D.svg" id="9_840b7"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_bstjd"]
@@ -107,6 +108,20 @@ toggle = true
 default_state = true
 only_icon = true
 icon = ExtResource("7_7pj7g")
+
+[node name="GizmoControlMisc" type="HBoxContainer" parent="VBoxContainer/Toolbar/MarginContainer/HBoxContainer" unique_id=2047894102]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Space" parent="VBoxContainer/Toolbar/MarginContainer/HBoxContainer/GizmoControlMisc" unique_id=1555249008 instance=ExtResource("4_xqsbl")]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 1
+toggle = true
+default_state = true
+only_icon = true
+icon = ExtResource("8_7pj7g")
 
 [node name="Spacer" type="Control" parent="VBoxContainer/Toolbar/MarginContainer/HBoxContainer" unique_id=1030984806]
 layout_mode = 2

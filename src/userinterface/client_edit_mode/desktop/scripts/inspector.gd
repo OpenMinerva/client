@@ -16,6 +16,7 @@ var _editing_item: TreeItem = null
 @onready var selection_ui: Tree = get_node("VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/SelectionArea/VBoxContainer/SelectionContainer/Selections")
 
 @onready var gizmo_control_container: Node = get_node("VBoxContainer/Toolbar/MarginContainer/HBoxContainer/GizmoControl")
+@onready var gizmo_control_misc_container: Node = get_node("VBoxContainer/Toolbar/MarginContainer/HBoxContainer/GizmoControlMisc")
 
 @onready var inspector: Node = get_tree().current_scene.get_node("Inspector")
 @onready var crosshair: Node = get_tree().current_scene.get_node("Crosshair")
@@ -92,16 +93,19 @@ func get_class_icon(class_n: String) -> Texture2D:
 
 func _add_gizmo_mode_event_listners() -> void:
 	var node_children: Array[Node] = gizmo_control_container.get_children()
+	var misc_node_children: Array[Node] = gizmo_control_misc_container.get_children()
 
 	for node_index in node_children.size():
 		var _node = node_children[node_index]
 		_node.get_node("Button").pressed.connect(_update_gizmo_modes)
 
+	misc_node_children[0].get_node("Button").pressed.connect(_update_gizmo_modes)
 	return
 
 func _update_gizmo_modes() -> void:
 	var _gizmo_modes: Dictionary
 	var node_children: Array[Node] = gizmo_control_container.get_children()
+	var misc_node_children: Array[Node] = gizmo_control_misc_container.get_children()
 
 	for node_index in node_children.size():
 		var _node = node_children[node_index]
@@ -121,6 +125,9 @@ func _update_gizmo_modes() -> void:
 			new_mode |= Gizmo3D.ToolMode.SCALE
 
 		my_gizmo.mode = new_mode
+
+		my_gizmo.use_local_space = !misc_node_children[0].get_node("Button").button_pressed
+
 	return
 
 func popupmenu_populate_generic() -> void:
