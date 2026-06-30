@@ -5,15 +5,15 @@ var my_gizmo: Node
 var _clicked_item: TreeItem = null
 var _editing_item: TreeItem = null
 
-@onready var tree_view: Tree = get_node("HBoxContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer/Tree")
+@onready var tree_view: Tree = get_node("HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer/Tree")
 @onready var scene_m = get_tree().current_scene.get_node("SceneManager")
 @onready var dev_spawn_m = get_tree().current_scene.get_node("DevSpawnManager")
 @onready var spawnable_m: Node
 @onready var session_signalbus: Node
-@onready var inspector_popup_menu = $InspectorPopup
-@onready var gizmo_popup_menu = $GizmoPopup
+@onready var inspector_popup_menu = get_node("InspectorPopup")
+@onready var gizmo_popup_menu = get_node("GizmoPopup")
 @onready var session_root: Node
-@onready var selection_ui: Tree = get_node("HBoxContainer/MarginContainer/VBoxContainer/SelectionArea/VBoxContainer/SelectionContainer/Selections")
+@onready var selection_ui: Tree = get_node("HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/SelectionArea/VBoxContainer/SelectionContainer/Selections")
 
 
 @onready var inspector: Node = get_tree().current_scene.get_node("Inspector")
