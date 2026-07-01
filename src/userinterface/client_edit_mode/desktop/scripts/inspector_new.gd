@@ -221,6 +221,7 @@ func _inspector_popup_button_pressed(label: String) -> void:
 			await session_spawnable_m.destroy(int(_node.name))
 		"Rename":
 			_inspector_selected.set_editable(0, true)
+			_inspector_tree.edit_selected()
 			_inspector_editing = _inspector_selected
 		"Save":
 			GlobalLogger.log("Saving spawnable.")
