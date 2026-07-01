@@ -203,5 +203,22 @@ func _inspector_popup_button_pressed(label: String) -> void:
 func _inspector_spawn_node(type: int, parent: int) -> void:
 	GlobalLogger.log("Spawning node type '%s' with parent '%s'" % [type, parent])
 	var _entity = await session_spawnable_m.create(type, parent)
+	_select(int(_entity.name))
 	# TODO: Gizmo select the new entity
+	return
+
+func _select(target_node: int) -> void:
+	var _node_db_entry = session_spawnable_m.get_by_id(target_node)
+	var _gizmo_schema_index = NSB.get_node_index("Gizmo")
+
+	if my_gizmo != null:
+		_gizmo_delete()
+
+	my_gizmo = await session_spawnable_m.create(_gizmo_schema_index)
+	# TODO: Add to array of Gizmos
+	my_gizmo.select(_node_db_entry.node)
+
+func _gizmo_delete() -> void:
+	my_gizmo.clear_selection()
+	await session_spawnable_m.destroy(int(my_gizmo.name))
 	return

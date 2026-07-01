@@ -130,7 +130,7 @@ func delete_spawnable(node_name: String) -> void:
 		GlobalLogger.log("'%s' could not be located in the scene tree.", Enum.LogLevel.ERROR)
 
 	var _entry = _database[_entry_index]
-	# TODO: Remove all Gizmos relating to the node first
+	# TODO: Check if this node is selected by any gizmos, remove the selection if it is.
 
 	session_signalbus.node_destroyed.emit(node_name)
 	_entry.node.queue_free()
