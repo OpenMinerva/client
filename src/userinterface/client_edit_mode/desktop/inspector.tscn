@@ -302,6 +302,7 @@ theme = ExtResource("2_plsgj")
 theme_override_styles/panel = SubResource("StyleBoxFlat_plsgj")
 
 [node name="InspectorPopup" parent="." unique_id=629092317 instance=ExtResource("14_cuj5f")]
+visible = false
 layout_mode = 0
 offset_right = 150.0
 offset_bottom = 102.0

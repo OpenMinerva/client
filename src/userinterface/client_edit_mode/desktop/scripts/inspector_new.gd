@@ -9,6 +9,7 @@
 extends Control
 
 # FIXME: Selecting Gizmo crashes
+# FIXME: You can select the selected spawnable. (Safe but probably should be changed)
 
 # External Libraries / scripts
 # FIXME: DevSpawnableManager node
@@ -21,10 +22,13 @@ extends Control
 # Gizmos
 var world_gizmos: Array[Dictionary] = []
 var my_gizmo: Node
+var _gizmo_mode: int = 0
+var _gizmo_space_local: bool = true
 
 # UI Elements
 @onready var _node_toolbar: Control = get_node("VBoxContainer/Toolbar")
-@onready var _node_toolbar_gizmo_control_container: Control = _node_toolbar.get_node("MarginContainer/HBoxContainer/GizmoControlMisc")
+@onready var _node_toolbar_gizmo_control_container: Control = _node_toolbar.get_node("MarginContainer/HBoxContainer/GizmoControl")
+@onready var _node_toolbar_gizmo_control_container_misc: Control = _node_toolbar.get_node("MarginContainer/HBoxContainer/GizmoControlMisc")
 @onready var _node_toolbar_spawnable_count: Control = _node_toolbar.get_node("MarginContainer/HBoxContainer/SpawnableCount")
 @onready var crosshair: Node = get_tree().current_scene.get_node("Crosshair")
 @onready var _inspector_popup: Node = get_node("InspectorPopup")
@@ -41,6 +45,7 @@ var _inspector_focused: TreeItem = null
 func _ready() -> void:
 	_set_state(false)
 	_add_signalbus_event_listeners()
+	_add_gizmo_event_listeners()
 	_add_button_event_listeners()
 	_add_misc_event_listeners()
 
@@ -50,6 +55,7 @@ func _ready() -> void:
 	await get_tree().process_frame
 
 	_inspector_build()
+	_gizmo_set_mode()
 	return
 
 func _input(event: InputEvent):
@@ -67,12 +73,26 @@ func _input(event: InputEvent):
 			if _rect.has_point(_mouse_pos) == false:
 				_inspector_popup.visible = false
 
+	return
+
 # Signals and other event listeners
 func _add_signalbus_event_listeners() -> void:
 	GlobalLogger.log("Adding signal bus event listeners to the inspector.")
 	Events.cem_set_state.connect(_set_state)
 	Events.dash_session_changed.connect(_on_session_changed)
 	# TODO: Events.cem_set_gizmo_state.connect(_toggle_gizmos)
+	return
+
+func _add_gizmo_event_listeners() -> void:
+	var _node_children: Array[Node] = _node_toolbar_gizmo_control_container.get_children()
+	var _misc_node_children: Array[Node] = _node_toolbar_gizmo_control_container_misc.get_children()
+
+	for node_index in _node_children.size():
+		var _node = _node_children[node_index]
+		_node.get_node("Button").pressed.connect(_gizmo_set_mode)
+
+	_misc_node_children[0].get_node("Button").pressed.connect(_gizmo_set_mode)
+	return
 
 func _add_button_event_listeners() -> void:
 	_inspector_popup.entry_clicked.connect(_inspector_popup_button_pressed)
@@ -230,8 +250,38 @@ func _select(target_node: int) -> void:
 	my_gizmo = await session_spawnable_m.create(_gizmo_schema_index)
 	# TODO: Add to array of Gizmos
 	my_gizmo.select(_node_db_entry.node)
+	my_gizmo.mode = _gizmo_mode
+	my_gizmo.use_local_space = _gizmo_space_local
 
 func _gizmo_delete() -> void:
 	my_gizmo.clear_selection()
 	await session_spawnable_m.destroy(int(my_gizmo.name))
+	return
+
+func _gizmo_set_mode() -> void:
+	var _gizmo_modes: Dictionary
+	var _node_children: Array[Node] = _node_toolbar_gizmo_control_container.get_children()
+	var _misc_node_children: Array[Node] = _node_toolbar_gizmo_control_container_misc.get_children()
+
+	for node_index in _node_children.size():
+		var _node = _node_children[node_index]
+		var _dict_name = _node.name.to_lower()
+		var _is_active = _node.get_node("Button").button_pressed
+
+		_gizmo_modes[_dict_name] = _is_active
+
+	_gizmo_mode = 0
+	_gizmo_space_local = !_misc_node_children[0].get_node("Button").button_pressed
+
+	if _gizmo_modes.get("transform", false):
+		_gizmo_mode |= Gizmo3D.ToolMode.MOVE
+	if _gizmo_modes.get("rotation", false):
+		_gizmo_mode |= Gizmo3D.ToolMode.ROTATE
+	if _gizmo_modes.get("scale", false):
+		_gizmo_mode |= Gizmo3D.ToolMode.SCALE
+
+	if my_gizmo != null:
+		my_gizmo.mode = _gizmo_mode
+		my_gizmo.use_local_space = _gizmo_space_local
+
 	return
