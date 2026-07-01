@@ -8,6 +8,8 @@
 # --- License
 extends Control
 
+# FIXME: Selecting Gizmo crashes
+
 # External Libraries / scripts
 # FIXME: DevSpawnableManager node
 @onready var dev_spawn_m: Node = get_tree().current_scene.get_node("DevSpawnManager")
@@ -83,17 +85,24 @@ func _add_misc_event_listeners() -> void:
 	return
 
 func _inspector_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_index: int) -> void:
-	if mouse_button_index != MOUSE_BUTTON_RIGHT:
+	if mouse_button_index == MOUSE_BUTTON_LEFT:
+		_inspector_selected = _inspector_tree.get_item_at_position(mouse_position)
+
+		if _inspector_selected == null:
+			return
+
+		_select(int(_inspector_selected.get_metadata(0).name))
 		return
 
-	_inspector_selected = _inspector_tree.get_item_at_position(mouse_position)
+	if mouse_button_index == MOUSE_BUTTON_RIGHT:
+		_inspector_selected = _inspector_tree.get_item_at_position(mouse_position)
 
-	if _inspector_selected == null:
-		return
+		if _inspector_selected == null:
+			return
 
-	var _mouse_pos = _inspector_tree.get_global_mouse_position()
-	_inspector_popup.position = _mouse_pos
-	_inspector_popup.visible = true
+		var _mouse_pos = _inspector_tree.get_global_mouse_position()
+		_inspector_popup.position = _mouse_pos
+		_inspector_popup.visible = true
 	return
 
 func _set_state(state: bool) -> void:
@@ -213,6 +222,10 @@ func _select(target_node: int) -> void:
 
 	if my_gizmo != null:
 		_gizmo_delete()
+
+	if _node_db_entry == {}:
+		GlobalLogger.log("Tried to select a node that should not exist!", Enum.LogLevel.ERROR)
+		return
 
 	my_gizmo = await session_spawnable_m.create(_gizmo_schema_index)
 	# TODO: Add to array of Gizmos
