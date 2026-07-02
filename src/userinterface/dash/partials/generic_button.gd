@@ -34,6 +34,11 @@ func _ready() -> void:
 	_node_label.text = label
 	_node_icon.texture = icon
 
+	if only_icon == true:
+		_node_label.queue_free()
+		_node_icon.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		return
+
 	return
 
 func _on_single_click() -> void:

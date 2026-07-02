@@ -19,7 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://b54viv8d54q83" path="res://resources/icons/godot/Remove.svg" id="17_akq5y"]
 [ext_resource type="Texture2D" uid="uid://dtwfvglraa8t7" path="res://resources/icons/godot/Edit.svg" id="18_akq5y"]
 [ext_resource type="Texture2D" uid="uid://blnd7x2qc6b7q" path="res://resources/icons/godot/Save.svg" id="18_k3kne"]
-[ext_resource type="Script" uid="uid://f3bibh57bqdj" path="res://userinterface/client_edit_mode/desktop/scripts/add_node_window.gd" id="19_4px38"]
+[ext_resource type="PackedScene" uid="uid://bnimj67377v8l" path="res://userinterface/client_edit_mode/desktop/partial/add_node_window.tscn" id="21_q5c3n"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_bstjd"]
 shader = ExtResource("2_lsah3")
@@ -330,42 +330,14 @@ layout_mode = 2
 label = "Rename"
 icon = ExtResource("18_akq5y")
 
-[node name="GizmoPopup" type="PopupMenu" parent="." unique_id=1763270290]
-oversampling_override = 1.0
-title = "Select"
-size = Vector2i(103, 100)
-item_count = 2
-item_0/text = "Use"
-item_0/id = 0
-item_1/text = "Remove"
-item_1/id = 1
-
-[node name="Popup" type="Popup" parent="." unique_id=79464639]
-transparent_bg = true
-oversampling_override = 1.0
-title = "Add Node"
-initial_position = 1
-size = Vector2i(500, 600)
-unresizable = false
-borderless = false
-transparent = true
-content_scale_mode = 2
-content_scale_aspect = 1
-content_scale_stretch = 1
-script = ExtResource("19_4px38")
-
-[node name="PanelContainer" type="PanelContainer" parent="Popup" unique_id=1988065676]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme = ExtResource("2_plsgj")
-
-[node name="ItemList" type="ItemList" parent="Popup/PanelContainer" unique_id=315396140]
-texture_filter = 2
-layout_mode = 2
-fixed_icon_size = Vector2i(20, 20)
+[node name="AddNodeWindow" parent="." unique_id=524781090 instance=ExtResource("21_q5c3n")]
+visible = false
+layout_mode = 1
+offset_left = 50.0
+offset_top = 50.0
+offset_right = -1570.0
+offset_bottom = -630.0
+window_name = "Add Node"
 
 [editable path="VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/InputString"]
 [editable path="VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer/Spawnables"]

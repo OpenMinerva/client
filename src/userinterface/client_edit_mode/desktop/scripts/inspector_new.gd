@@ -32,7 +32,7 @@ var _gizmo_space_local: bool = true
 @onready var _node_toolbar_spawnable_count: Control = _node_toolbar.get_node("MarginContainer/HBoxContainer/SpawnableCount")
 @onready var crosshair: Node = get_tree().current_scene.get_node("Crosshair")
 @onready var _inspector_popup: Node = get_node("InspectorPopup")
-@onready var _inspector_add_node_window: Node = get_node("Popup")
+@onready var _inspector_add_node_window: Node = get_node("AddNodeWindow")
 
 # UI Inspector
 @onready var _inspector_tree: Tree = get_node("VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer/Tree")
@@ -215,7 +215,7 @@ func _inspector_popup_button_pressed(label: String) -> void:
 
 	match label:
 		"New":
-			_inspector_add_node_window.set_meta("selected_node", _node)
+			_inspector_add_node_window.parent_node_id = int(_node.name)
 			_inspector_add_node_window.show()
 		"Remove":
 			await session_spawnable_m.destroy(int(_node.name))
