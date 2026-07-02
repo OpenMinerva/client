@@ -7,45 +7,94 @@ resource_name = "export"
 script/source = "@tool
 extends Control
 
+signal double_clicked
+
 @onready var label_node = $Button/MarginContainer/VBoxContainer/Label
 @onready var icon_node = $Button/MarginContainer/VBoxContainer/TextureRect
 @onready var button_node = $Button
-@export_enum(\"Art\", \"Environment\", \"Science\", \"Games\") var selected_icon: String
+@export_enum(\"Art\", \"Environment\", \"Science\", \"Games\", \"Folder\") var selected_icon: String
 @export_enum(\"Danger\") var selected_theme_type: String
+@export var toggle: bool = false 
+@export var default_state: bool = false 
+@export var only_icon: bool = false 
+@export var icon: Texture2D
+
+var _click_count: int = 0
+var _last_click_time: float = 0
+const DOUBLE_CLICK_TIME: float = 0.25 
 
 var icon_paths = {
 	\"Art\": \"res://resources/icons/art.svg\",
 	\"Environment\": \"res://resources/icons/environment.svg\",
 	\"Science\": \"res://resources/icons/science.svg\",
 	\"Games\": \"res://resources/icons/circus.svg\",
+	
+	\"Folder\": \"res://resources/icons/godot/Folder.svg\"
 }
 
 func _ready():
+	button_node.toggle_mode = toggle
+	button_node.button_pressed = default_state
+		
+	button_node.pressed.connect(_on_single_click)
+	
+	_get_label_text()
+	
+	if icon != null:
+		icon_node.texture = icon
+	elif icon_paths.has(selected_icon):
+		icon_node.texture = load(icon_paths[selected_icon])
+	button_node.theme_type_variation = selected_theme_type if selected_theme_type != null else \"\"
+	
+	return
+
+func _get_label_text() -> void:
+	if only_icon == true:
+		label_node.queue_free()
+		icon_node.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		return
+		
+	var _label_meta = get_meta(\"label\", \"\")
+	if _label_meta != \"\":
+		label_node.text = _label_meta
+		return
+		
 	var display_text: String = name
 	label_node.text = display_text
-	if icon_paths.has(selected_icon):
-		icon_node.texture = load(icon_paths[selected_icon])
-	button_node.theme_type_variation = selected_theme_type if selected_theme_type != null else null
+	
+	return
+
+func _on_single_click() -> void:
+	var now = Time.get_ticks_msec() / 1000.0
+	if now - _last_click_time < DOUBLE_CLICK_TIME:
+		_click_count += 1
+		if _click_count >= 2:
+			double_clicked.emit()
+			_click_count = 0
+	else:
+		_click_count = 1
+	_last_click_time = now
 "
 
 [node name="CategoryButton" type="Control" unique_id=649942124]
-custom_minimum_size = Vector2(200, 50)
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 3
 anchor_top = 0.47685185
 anchor_right = 1.0
 anchor_bottom = 0.5231481
 offset_top = 25.0
 offset_bottom = -24.999939
-grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 theme = ExtResource("1_dnctg")
 script = SubResource("GDScript_q3lw4")
+default_state = null
 metadata/_edit_use_anchors_ = true
+metadata/label = ""
 
 [node name="Button" type="Button" parent="." unique_id=1422381468]
-custom_minimum_size = Vector2(140, 0)
+clip_contents = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -54,10 +103,9 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_default_cursor_shape = 2
 theme = ExtResource("1_dnctg")
-theme_type_variation = &"Danger"
-toggle_mode = true
 
 [node name="MarginContainer" type="MarginContainer" parent="Button" unique_id=665374152]
+clip_contents = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -70,6 +118,7 @@ theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
 [node name="VBoxContainer" type="HBoxContainer" parent="Button/MarginContainer" unique_id=86696220]
+clip_contents = true
 layout_mode = 2
 theme_override_constants/separation = 10
 
@@ -79,5 +128,7 @@ expand_mode = 2
 
 [node name="Label" type="Label" parent="Button/MarginContainer/VBoxContainer" unique_id=1807295119]
 layout_mode = 2
-text = "ERROR"
-horizontal_alignment = 1
+size_flags_horizontal = 3
+text = "CategoryButton"
+clip_text = true
+text_overrun_behavior = 3

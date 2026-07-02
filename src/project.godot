@@ -33,13 +33,14 @@ FileManager="*uid://d2s50p717g3n"
 SettingsManager="*uid://cgvvntx8o26ds"
 AccountServers="*uid://bpysjoq7n0ytu"
 Random="*uid://1js68qt8w0mv"
-Accounts="*uid://dtlb70kxvbtvn"
+Accounts="*uid://sdrs0dnojnes"
 Events="*uid://c656spc3ppdlw"
 SessionQuery="*uid://dbrabs53sf0x5"
 Enum="*uid://dgpvcem71xdbn"
 Bootstrap="*uid://cvj10vdw6hlqw"
 NetworkCompression="*uid://b2iq75uom64x2"
 HTTP="*uid://d3cnfdwjxopsx"
+FileDrop="*uid://btgqgfpx0av4m"
 OAuth2Client="*uid://c4b880pwgfrty"
 UrlParser="*uid://budprjmmpally"
 
@@ -52,7 +53,12 @@ window/stretch/aspect="expand"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/godot-oauth2client/plugin.cfg", "res://addons/godot-urlparser/plugin.cfg")
+enabled=PackedStringArray("res://addons/Gizmo3DScript/plugin.cfg", "res://addons/godot-oauth2client/plugin.cfg", "res://addons/godot-urlparser/plugin.cfg", "res://addons/rpc-await/plugin.cfg")
+
+[gui]
+
+theme/default_font_hinting=2
+theme/default_font_multichannel_signed_distance_field=true
 
 [input]
 
@@ -101,7 +107,10 @@ sprint={
 
 3d/run_on_separate_thread=true
 3d/physics_engine="Jolt Physics"
+common/physics_interpolation=true
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 textures/default_filters/use_nearest_mipmap_filter=true
+anti_aliasing/quality/msaa_3d=3

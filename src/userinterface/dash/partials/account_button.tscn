@@ -9,13 +9,11 @@ script/source = "extends Control
 
 @export var display_text: String = \"Default Text\"
 
-@onready var label_node = $Button/MarginContainer/VBoxContainer/Label
-@onready var icon_node = $Button/MarginContainer/VBoxContainer/TextureRect
 @onready var button_node = $Button
 @export_enum(\"Danger\", \"LightButton\") var selected_theme_type: String
 
 func _ready():
-	button_node.theme_type_variation = selected_theme_type if selected_theme_type != null else null
+	button_node.theme_type_variation = selected_theme_type if selected_theme_type != null else \"\"
 "
 
 [node name="AccountButton" type="Control" unique_id=649942124]

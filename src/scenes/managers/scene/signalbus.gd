@@ -6,7 +6,11 @@
 # License: MIT License
 # Authors: Armored Dragon
 # --- License
-
 extends Node
+
+@warning_ignore("unused_signal")
+signal node_created(node: Node)
+@warning_ignore("unused_signal")
+signal node_destroyed(node: Node)
 
 var module_active = false

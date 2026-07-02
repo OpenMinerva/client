@@ -25,6 +25,9 @@ signal dash_message_received(message: Dictionary)
 signal dash_notification(notification: Dictionary)
 @warning_ignore("unused_signal")
 signal dash_account_list_loaded(account_list: PackedStringArray)
+# Debug
+@warning_ignore("unused_signal")
+signal debug_entity_set_state()
 # Settings
 @warning_ignore("unused_signal")
 signal dash_settings_updated()
@@ -33,6 +36,11 @@ signal dash_settings_updated()
 signal instance_updated(instance: Dictionary)
 @warning_ignore("unused_signal")
 signal instance_root_changed(instance: Dictionary)
+# Client Edit Mode
+@warning_ignore("unused_signal")
+signal cem_set_state(is_open: bool)
+@warning_ignore("unused_signal")
+signal cem_set_gizmo_state(state: bool)
 # Multiplayer
 @warning_ignore("unused_signal")
 signal session_joined(instance: Dictionary)

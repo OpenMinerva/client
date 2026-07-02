@@ -1,0 +1,82 @@
+[gd_scene format=3 uid="uid://ddgslcpp435h2"]
+
+[ext_resource type="Script" uid="uid://c42y2oy6y12o0" path="res://userinterface/debug/scripts/entity_menu.gd" id="1_1tggb"]
+[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="1_cxy8m"]
+[ext_resource type="Shader" uid="uid://bwr4b0mhgi4w6" path="res://userinterface/dash/shaders/blur.gdshader" id="1_uh73d"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bi134"]
+shader = ExtResource("1_uh73d")
+shader_parameter/blur_size = Vector2(3, 3)
+
+[node name="DebugEntityMenu" type="Control" unique_id=1715465872]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_1tggb")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=690664034]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Control" type="Control" parent="HBoxContainer" unique_id=876715315]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Control2" type="Control" parent="HBoxContainer" unique_id=1695573247]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer" unique_id=1160979510]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="BlurPanel" type="Panel" parent="HBoxContainer/MarginContainer" unique_id=358379684]
+material = SubResource("ShaderMaterial_bi134")
+layout_mode = 2
+theme = ExtResource("1_cxy8m")
+
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/MarginContainer" unique_id=1039615838]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/MarginContainer/PanelContainer" unique_id=464002874]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/MarginContainer/PanelContainer/MarginContainer" unique_id=1731548394]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_cxy8m")
+
+[node name="Label" type="Label" parent="HBoxContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=275308719]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Entity Spawner Debug Menu"
+horizontal_alignment = 1
+
+[node name="Cube" type="Button" parent="HBoxContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=568477424]
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("1_cxy8m")
+text = "Cube"
+
+[node name="Capsule" type="Button" parent="HBoxContainer/MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=926432263]
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("1_cxy8m")
+text = "Capsule"

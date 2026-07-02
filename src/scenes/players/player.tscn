@@ -4,15 +4,22 @@
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_p1mvi"]
 
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_plyga"]
+
 [sub_resource type="SeparationRayShape3D" id="SeparationRayShape3D_xrm3l"]
 length = 0.25
 
 [node name="Player" type="CharacterBody3D" unique_id=823362684 groups=["Players"]]
 script = ExtResource("1_plyga")
+metadata/scene_node = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1660137540]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("CapsuleMesh_p1mvi")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2036338215]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_plyga")
 
 [node name="Head" type="Node3D" parent="." unique_id=401421687]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, -0.15)
