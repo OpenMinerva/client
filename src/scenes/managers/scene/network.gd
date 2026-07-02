@@ -57,12 +57,6 @@ func add_players(players: Dictionary):
 		player_m.add_player(int(_player))
 
 
-# FIXME: Marked for termination
-@rpc("authority", "reliable")
-func spawn_entity():
-	GlobalLogger.log("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
-
-
 @rpc("any_peer", "unreliable")
 func entity_position(entity_id: int, position):
 	var caller_id = multiplayer.get_remote_sender_id()
@@ -78,7 +72,7 @@ func entity_position(entity_id: int, position):
 func dev_request_spawnables_database() -> void:
 	var caller_id = multiplayer.get_remote_sender_id()
 	var the_data = spawnable_m._database
-	spawnable_m.receive_database.rpc_id(caller_id, the_data, spawnable_m._id)
+	spawnable_m.receive_database.rpc_id(caller_id, the_data, spawnable_m._database_id)
 	spawnable_m.sync_all()
 	return
 
@@ -88,6 +82,10 @@ func dev_request_sync() -> void:
 	if is_multiplayer_authority() == false:
 		return
 	spawnable_m.sync_all()
+	return
+
+
+func gizmo_selection(node_id: int, to_select: bool) -> void:
 	return
 
 

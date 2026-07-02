@@ -17,6 +17,7 @@ var speed = 5.0
 var mouse_captured: bool = false
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
+var cem_state: bool = false
 
 @onready var scene_m = get_tree().current_scene.get_node("SceneManager")
 # TODO: Mouse sensitivity from settings
@@ -42,8 +43,8 @@ func _physics_process(delta):
 	# TODO: Simplify focus detection code from "mouse_captured".
 	if is_multiplayer_authority() == false:
 		return
-	# Add the gravity.
 
+	# Add the gravity.
 	if not is_on_floor():
 		velocity.y -= gravity * delta + 0.05
 
@@ -87,7 +88,7 @@ func _input(event):
 	if is_multiplayer_authority() == false:
 		return
 
-	if event is InputEventMouseMotion && mouse_captured:
+	if mouse_captured && event is InputEventMouseMotion:
 		body.rotate_y(-event.relative.x * mouse_sensitivity * 0.001)
 		camera.rotate_x(-event.relative.y * mouse_sensitivity * 0.001)
 		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-85), deg_to_rad(89))
@@ -106,18 +107,18 @@ func _unhandled_input(event):
 			Events.emit_signal("dash_set_state", false)
 
 		get_viewport().set_input_as_handled()
-	if event is InputEventMouseMotion:
-		return
 
-	if event is InputEventMouseButton:
-		return
-
-	if event.keycode == 4194333 && event.pressed == true:
+	if "keycode" in event && event.keycode == 4194306 && event.pressed == true:
 		capture_mouse(!mouse_captured)
 		get_viewport().set_input_as_handled()
 		return
 
-	if event.keycode == 4194340 && event.pressed == true:
+	if "keycode" in event && event.keycode == 4194334 && event.pressed == true:
+		_toggle_client_edit_mode()
+		get_viewport().set_input_as_handled()
+		return
+
+	if "keycode" in event && event.keycode == 4194340 && event.pressed == true:
 		if mouse_captured:
 			capture_mouse(false)
 			Events.emit_signal("debug_entity_set_state")
@@ -147,6 +148,13 @@ func capture_mouse(to_capture: bool):
 	else:
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		mouse_captured = true
+	return
+
+
+func _toggle_client_edit_mode() -> void:
+	Events.emit_signal("cem_set_state", !cem_state)
+	capture_mouse(cem_state)
+	cem_state = !cem_state
 	return
 
 

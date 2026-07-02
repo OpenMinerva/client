@@ -53,7 +53,12 @@ window/stretch/aspect="expand"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/godot-oauth2client/plugin.cfg", "res://addons/godot-urlparser/plugin.cfg")
+enabled=PackedStringArray("res://addons/Gizmo3DScript/plugin.cfg", "res://addons/godot-oauth2client/plugin.cfg", "res://addons/godot-urlparser/plugin.cfg", "res://addons/rpc-await/plugin.cfg")
+
+[gui]
+
+theme/default_font_hinting=2
+theme/default_font_multichannel_signed_distance_field=true
 
 [input]
 
@@ -106,5 +111,6 @@ common/physics_interpolation=true
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 textures/default_filters/use_nearest_mipmap_filter=true
 anti_aliasing/quality/msaa_3d=3

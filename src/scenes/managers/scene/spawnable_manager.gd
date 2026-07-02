@@ -8,28 +8,25 @@
 # --- License
 extends Node
 
-enum SpawnableType {
-	EMPTY = 0,
-	CUBE = 1,
-	CAPSULE = 3,
-	MODEL = 10,
-}
-
 const SPAWNABLE_TEMPLATE: Dictionary = {
-	"type": 0,
-	"spawner": "1",
-	"has_physics": true,
-	"physics_owner": "1",
+	"type": -1,
+	"spawner": -1,
+	"physics_owner": 1,
 	"node": "",
-	"id": 1,
+	"id": -1,
 	"pretty_name": "ERROR",
 }
 
-var _dev_num_network_batches: int = 4
-var _id = 10
+var _spawnable_network_batches: int = 4
+var _database_id = 10
 var _database := []
 
+@onready var app_scene_m: Node = get_tree().current_scene.get_node("SceneManager")
+@onready var app_network_m: Node = get_tree().current_scene.get_node("NetworkManager")
 @onready var network_m = get_node("../NetworkManager")
+@onready var instance_root = get_parent().get_node("root")
+@onready var rpcawaiter = get_parent().get_node("RpcAwaiter")
+@onready var session_signalbus: Node = get_node("../SignalBus")
 
 
 # TODO: Handle physics for our items, and
@@ -38,16 +35,16 @@ func _physics_process(_delta):
 	# There was no reason in me doing this, but I think I was trying to make it so that you do not have to network so many things in a given instant.
 	# As far as I know there was not an existing problem I was trying to solve and I have no idea what I was thinking.
 	# However, it's not breaking anything in the current instant so I will leave it in until it proves to be a problem or if I think of a better way of doing this.
-	var current_batch = Engine.get_physics_frames() % _dev_num_network_batches
+	var current_batch = Engine.get_physics_frames() % _spawnable_network_batches
 
 	if !is_multiplayer_authority():
 		return
 	for spawnable in _database:
-		if spawnable.has_physics == false:
+		if spawnable.type != NSB.get_node_index("RigidBody3D"):
 			continue
 		if spawnable.node.sleeping == true:
 			continue
-		if spawnable.id % _dev_num_network_batches == current_batch:
+		if spawnable.id % _spawnable_network_batches == current_batch:
 			continue
 
 		position_spawnable.rpc(spawnable.id, spawnable.node.position, spawnable.node.rotation)
@@ -59,185 +56,206 @@ func sync_all() -> void:
 	if !is_multiplayer_authority():
 		return
 	for spawnable in _database:
-		if spawnable.has_physics == false:
-			continue
-
 		position_spawnable.rpc(spawnable.id, spawnable.node.position, spawnable.node.rotation)
 	return
 
 
-# TODO: Require actioning user
-# TODO: Status response for spawn?
-# TODO: How would large assets work?
-@rpc("authority", "reliable")
-func spawn_spawnable(p_type: int = 0, p_name: String = "", p_path = "") -> void:
-	var _spawnable_id = p_name if p_name != "" else str(_id)
-	var _spawned_entity
+@rpc("any_peer", "reliable")
+func create(node_type: int, node_parent: int = 0, model_path: String = "") -> Variant:
+	var my_id: int = app_network_m._database.sessions_api[app_scene_m.active_session].get_unique_id()
+	var caller_id: int = multiplayer.get_remote_sender_id()
 
-	match p_type:
-		SpawnableType.CAPSULE:
-			_spawned_entity = _spawn_capsule(_spawnable_id)
-		SpawnableType.CUBE:
-			_spawned_entity = _spawn_cube(_spawnable_id)
-		SpawnableType.MODEL:
-			_spawned_entity = _spawn_model(_spawnable_id, p_path)
-		_:
+	if my_id == 1:
+		var entity = spawn_spawnable(node_type, "", model_path, node_parent)
+		spawn_spawnable.rpc(node_type, "", model_path, node_parent)
+
+		var database_index: int = _database.find_custom(func(entry): return entry.id == entity)
+		if caller_id != 0 && caller_id != my_id:
+			# This is a client request to spawn
+			return int(_database[database_index].node.name)
+
+		return _database[database_index].node
+	else:
+		var entity = await rpcawaiter.send_rpc(1, create.bind(node_type, node_parent, model_path))
+		var database_index: int = _database.find_custom(func(entry): return entry.id == entity)
+		return _database[database_index].node
+
+
+@rpc("any_peer", "reliable")
+func destroy(node_id: int) -> Variant:
+	var my_id: int = app_network_m._database.sessions_api[app_scene_m.active_session].get_unique_id()
+	var caller_id: int = multiplayer.get_remote_sender_id()
+
+	if my_id == 1:
+		var _queue = _get_deletion_queue(str(node_id))
+		for node in _queue:
+			delete_spawnable(node.name)
+			delete_spawnable.rpc(node.name)
+
+		if caller_id != 0 && caller_id != my_id:
+			# This is a client request to delete
 			return
 
-	# Add to scene
-	get_parent().get_node("root").add_child(_spawned_entity)
+		return
+	else:
+		await rpcawaiter.send_rpc(1, destroy.bind(node_id))
+		return
 
-	# Update debug id
-	if p_name == "":
-		_id = _id + 1
 
-	return
+# TODO: How would large assets work?
+@rpc("authority", "reliable")
+func spawn_spawnable(p_type: int, p_name: String = "", p_path: String = "", parent_id: int = 0) -> int:
+	var _spawnable_id = p_name if p_name != "" else str(_database_id)
+	var _spawned_entity
+	var parent_node = get_parent().get_node("root")
+
+	# FIXME: This is silly! instance_root variable is in an invalid state here on clients?
+	if parent_id > 1:
+		var database_index = _database.find_custom(func(entry): return entry.id == parent_id)
+		parent_node = _database[database_index].node
+
+	_spawned_entity = _spawn_node(p_type, 1, parent_node, p_path)
+	_spawned_entity.owner = parent_node
+
+	session_signalbus.node_created.emit(_spawned_entity)
+	return int(_spawned_entity.name)
 
 
 # TODO: require actioning user
 @rpc("authority", "reliable")
-func delete_spawnable() -> void:
-	GlobalLogger.log("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
-	# TODO: Delete from database
-	# TODO: Delete from scene
+func delete_spawnable(node_name: String) -> void:
+	GlobalLogger.log("Deleting node '%s'." % node_name)
+	var _entry_index = _database.find_custom(func(item): return item.id == int(node_name))
+	if _entry_index == -1:
+		# This should never happen! The node can never be removed from the scene tree then.
+		GlobalLogger.log("'%s' could not be located in the scene tree." % node_name, Enum.LogLevel.ERROR)
+		return
+
+	var _entry = _database[_entry_index]
+
+	session_signalbus.node_destroyed.emit(_entry)
+	_entry.node.queue_free()
+	_database.remove_at(_entry_index)
 	return
+
+func _get_deletion_queue(node_name: String) -> Array:
+	var _entry_index = _database.find_custom(func(item): return item.id == int(node_name))
+	var _node = _database[_entry_index].node
+
+	var _queue = _add_to_deletion_queue(_node)
+	_queue.reverse()
+	return _queue
+
+func _add_to_deletion_queue(node: Node, list: Array[Node] = []) -> Array[Node]:
+	list.append(node)
+
+	if node.get_meta("deep_delete", true) == false:
+		return list
+
+	for child in node.get_children():
+		_add_to_deletion_queue(child, list)
+
+	return list
 
 
 @rpc("authority", "reliable")
 func receive_database(database: Array, id: int) -> void:
-	_id = id
 	for spawnable in database:
-		print("Client syncing '%s'" % spawnable.id)
 		spawn_spawnable(spawnable.type, str(spawnable.id))
 	network_m.rpc_id(1, "dev_request_sync")
 	return
 
 
-# TODO: Research "unreliable" connections. I think this is an applicable use case since a missed packet would probably be corrected in the next instant?
-@rpc("authority", "unreliable")
-func position_spawnable(id: int, p_position: Vector3, p_rotation: Vector3) -> void:
-	# FIXME: Flimsy!
-	var node = get_parent().get_node_or_null("root/%s" % id)
-
+# TODO: SECURITY Make this so that the client can move the item on their end, but the host must move it for everyone else.
+@rpc("any_peer", "unreliable")
+func position_spawnable(id: int, p_position: Vector3, p_rotation: Vector3, p_scale: Vector3) -> void:
+	var database_entry = _database.find_custom(func(entry): return entry.id == id)
+	var node = _database[database_entry].node
 	if node:
 		node.position = p_position
 		node.rotation = p_rotation
+		node.scale = p_scale
 	return
 
 
-func _spawn_cube(p_name: String = "") -> RigidBody3D:
-	# Create the physics body
-	var rigid_body = RigidBody3D.new()
+func set_node_visible_to_inspector(node: Node) -> void:
+	var nodes = get_all_node_children(node)
 
-	# Create a MeshInstance
-	var mesh_instance = MeshInstance3D.new()
-	var cube_mesh = BoxMesh.new()
-	cube_mesh.size = Vector3(0.5, 0.5, 0.5)
-	mesh_instance.mesh = cube_mesh
-	rigid_body.add_child(mesh_instance)
+	# Check if we had already declared this node to be hidden.
+	if node.get_meta("scene_node", true) == false:
+		return
 
-	# Create collision shape
-	var collision_shape = CollisionShape3D.new()
-	var box_shape = BoxShape3D.new()
-	box_shape.size = Vector3(0.5, 0.5, 0.5)
-	collision_shape.shape = box_shape
-	rigid_body.add_child(collision_shape)
+	for target in nodes:
+		target.set_meta("scene_node", true)
 
-	# If we are a client, we are not simulating the physics
-	if !is_multiplayer_authority():
-		rigid_body.freeze = true
-
-	# Add to database
-	var _entry = SPAWNABLE_TEMPLATE.duplicate()
-	_entry.physics_owner = 1 # TODO: Always the host, is this correct?
-	_entry.spawner = 1 # TODO: The host is currently the only one that can spawn in anyways, but this will need to be changed.
-	_entry.node = rigid_body
-	_entry.id = int(p_name)
-	_entry.type = SpawnableType.CUBE
-	_database.append(_entry)
-
-	# Set scene data
-	rigid_body.name = str(p_name)
-	rigid_body.physics_interpolation_mode = true
-	rigid_body.position = Vector3(0, 5, -10)
-	return rigid_body
+	return
 
 
-func _spawn_capsule(p_name: String = "") -> RigidBody3D:
-	# Create the physics body
-	var rigid_body = RigidBody3D.new()
+func get_all_node_children(node: Node) -> Array:
+	var nodes = []
 
-	# Create a MeshInstance
-	var mesh_instance = MeshInstance3D.new()
-	var mesh = CapsuleMesh.new()
-	mesh.radius = 0.5
-	mesh.height = 2
-	mesh_instance.mesh = mesh
-	rigid_body.add_child(mesh_instance)
+	if node:
+		nodes.append(node)
+	for child in node.get_children():
+		nodes.append_array(get_all_node_children(child))
 
-	# Create collision shape
-	var collision_shape = CollisionShape3D.new()
-	var box_shape = CapsuleShape3D.new()
-	mesh.radius = 0.5
-	mesh.height = 2
-	collision_shape.shape = box_shape
-	rigid_body.add_child(collision_shape)
+	return nodes
 
-	# If we are a client, we are not simulating the physics
-	if !is_multiplayer_authority():
-		rigid_body.freeze = true
+
+func get_by_id(spawnable_id: int) -> Dictionary:
+	var target_entry = _database.find_custom(func(entry): return entry.id == spawnable_id)
+
+	if target_entry == -1:
+		return { }
+
+	return _database[target_entry]
+
+
+func _spawn_node(node_type: int, node_owner: int, parent: Node = instance_root, model_path = "") -> Node:
+	var _node: Node
+	var _node_name = NSB.get_valid()[node_type]
+	var _schema_index = NSB.get_node_index(_node_name)
+	var _node_schema = NSB.get_formatted(_schema_index)
+	var _pretty_name: String
+
+	# FIXME: Hack for importing skeletons?
+	if _node_name == "Model" && model_path == "":
+		_node = NSB._build_node("Node3D")
+	else:
+		_node = NSB._build_node(_node_name, model_path)
 
 	# Add to database
-	var _entry = SPAWNABLE_TEMPLATE.duplicate()
-	_entry.physics_owner = 1 # TODO: Always the host, is this correct?
-	_entry.spawner = 1 # TODO: The host is currently the only one that can spawn in anyways, but this will need to be changed.
-	_entry.node = rigid_body
-	_entry.id = int(p_name)
-	_entry.type = SpawnableType.CAPSULE
-	_database.append(_entry)
+	var _db_id = _add_to_database(_node, node_type, node_owner)
 
-	# Set scene data
-	rigid_body.name = str(p_name)
-	rigid_body.physics_interpolation_mode = true
-	rigid_body.position = Vector3(0, 5, -10)
-	return rigid_body
+	if model_path != "":
+		_pretty_name = model_path.get_file()
+	else:
+		_pretty_name = str(_node_schema.pretty_name)
+
+	# Editor changes
+	set_node_visible_to_inspector(_node)
+	_node.name = str(_db_id)
+	_node.set_meta("pretty_name", _pretty_name)
+	_node.set_meta("spawnable_type", node_type)
+	_node.set_meta("icon", _node_schema.icon)
+	_node.position = Vector3(0, 0, 0)
+
+	# Add to scene tree
+	parent.add_child(_node)
+	return _node
 
 
-func _spawn_model(p_name: String = "", p_path = "") -> RigidBody3D:
-	# Create the physics body
-	var rigid_body = RigidBody3D.new()
+func _add_to_database(node: Node, type: int, node_owner: int) -> int:
+	var _db_entry = SPAWNABLE_TEMPLATE.duplicate()
+	_db_entry.id = int(_database_id)
+	_db_entry.node = node
+	_db_entry.type = type
+	_db_entry.spawner = node_owner
+	_database.append(_db_entry)
 
-	# Create a MeshInstance
-	var doc = GLTFDocument.new()
-	var state = GLTFState.new()
+	_database_id = _database_id + 1
 
-	# TODO: Dynamic file path on machine?
-	doc.append_from_file(p_path, state)
-	var glb_scene: Node3D = doc.generate_scene(state)
-
-	rigid_body.add_child(glb_scene)
-	var colliders_to_add = _add_collisions_recursive(rigid_body)
-
-	for collider in colliders_to_add:
-		rigid_body.add_child(collider)
-	# If we are a client, we are not simulating the physics
-	if !is_multiplayer_authority():
-		rigid_body.freeze = true
-
-	# Add to database
-	var _entry = SPAWNABLE_TEMPLATE.duplicate()
-	_entry.physics_owner = 1 # TODO: Always the host, is this correct?
-	_entry.spawner = 1 # TODO: The host is currently the only one that can spawn in anyways, but this will need to be changed.
-	_entry.node = rigid_body
-	_entry.id = int(p_name)
-	_entry.type = SpawnableType.MODEL
-	_database.append(_entry)
-
-	# Set scene data
-	rigid_body.name = str(p_name)
-	rigid_body.physics_interpolation_mode = true
-	rigid_body.position = Vector3(0, 2, -10)
-	return rigid_body
+	return _db_entry.id
 
 
 func _add_collisions_recursive(node: Node):

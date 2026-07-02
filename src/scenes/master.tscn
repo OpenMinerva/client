@@ -2,19 +2,60 @@
 
 [ext_resource type="PackedScene" uid="uid://5v8rbnp716b0" path="res://scenes/managers/app/network.tscn" id="1_jooxx"]
 [ext_resource type="PackedScene" uid="uid://cmknpdx5ba15o" path="res://scenes/managers/app/scene.tscn" id="2_h2qy3"]
-[ext_resource type="PackedScene" uid="uid://ddgslcpp435h2" path="res://userinterface/debug/entity_menu.tscn" id="3_h2qy3"]
 [ext_resource type="PackedScene" uid="uid://c4y1sb6lmdr0q" path="res://userinterface/dash/dashboard.tscn" id="4_h2qy3"]
+[ext_resource type="PackedScene" uid="uid://bqtqfooa7qncp" path="res://userinterface/client_edit_mode/desktop/inspector.tscn" id="5_q3f5g"]
+[ext_resource type="Script" uid="uid://be2ckahbhewms" path="res://scripts/spawnable_file_handling.gd" id="6_kjytq"]
 
 [node name="Master" type="Node3D" unique_id=420526444]
+
+[node name="Inspector" parent="." unique_id=879206536 instance=ExtResource("5_q3f5g")]
+visible = false
+custom_minimum_size = Vector2(400, 0)
+mouse_filter = 1
+
+[node name="Crosshair" type="Control" parent="." unique_id=472699475]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="Crosshair" unique_id=2141251222]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Line2D" type="Line2D" parent="Crosshair/CenterContainer" unique_id=880619905]
+points = PackedVector2Array(5, 0, -5, 0)
+closed = true
+width = 2.0
+
+[node name="Line2D2" type="Line2D" parent="Crosshair/CenterContainer" unique_id=696942631]
+points = PackedVector2Array(0, 5, 0, -5)
+closed = true
+width = 2.0
+
+[node name="Scenes" type="Node3D" parent="." unique_id=308239834]
+top_level = true
 
 [node name="NetworkManager" parent="." unique_id=1960146969 instance=ExtResource("1_jooxx")]
 
 [node name="SceneManager" parent="." unique_id=5477810 instance=ExtResource("2_h2qy3")]
 
-[node name="DebugEntityMenu" parent="." unique_id=1715465872 instance=ExtResource("3_h2qy3")]
-visible = false
+[node name="DevSpawnManager" type="Node" parent="." unique_id=1121013970]
+script = ExtResource("6_kjytq")
 
 [node name="Dashboard" parent="." unique_id=505457833 instance=ExtResource("4_h2qy3")]
 visible = false
-
-[node name="Scenes" type="Node3D" parent="." unique_id=308239834]
+mouse_filter = 1
