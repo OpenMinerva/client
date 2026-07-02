@@ -131,13 +131,13 @@ func _set_state(state: bool) -> void:
 	crosshair.visible = !state
 	return
 
-func _on_node_created(node: Node) -> void:
+func _on_node_created(_node: Node) -> void:
 	# TODO: Instead of rebuilding the entire tree, just update the respective entry.
 	GlobalLogger.log("Inspector: Node created.")
 	_inspector_build()
 	return
 
-func _on_node_destroyed(node: String) -> void:
+func _on_node_destroyed(_node: String) -> void:
 	# TODO: Instead of rebuilding the entire tree, just update the respective entry.
 	GlobalLogger.log("Inspector: Node destroyed.")
 	_inspector_build()
@@ -162,10 +162,15 @@ func _inspector_build(root_node: Node = session_root) -> void:
 	# TODO: Proper wait until building the inspector.
 	await get_tree().process_frame
 
+	var _total_spawnable_label: String = str(session_spawnable_m._database.size())
+
 	GlobalLogger.log("Generating the inspector view with parent '%s'." % root_node)
 	_inspector_clear()
 	var _inspector_root = _inspector_tree.create_item()
 	_inspector_add_node(root_node, _inspector_root)
+
+	# Update the Toolbar counts
+	_node_toolbar_spawnable_count.update_meta(_total_spawnable_label)
 	return
 
 func _inspector_add_node(node: Node, parent: TreeItem) -> void:
@@ -198,9 +203,6 @@ func _get_node_icon(class_n: String) -> Texture2D:
 func _inspector_clear() -> void:
 	GlobalLogger.log("Clearing the inspector.")
 	_inspector_tree.clear()
-	return
-
-func _node_selected(node: Node) -> void:
 	return
 
 func _inspector_popup_button_pressed(label: String) -> void:
