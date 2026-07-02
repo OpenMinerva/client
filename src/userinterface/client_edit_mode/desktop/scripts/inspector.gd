@@ -127,6 +127,7 @@ func _inspector_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_i
 
 func _set_state(state: bool) -> void:
 	GlobalLogger.log("Inspector state is being set to '%s'." % state)
+	_gizmo_visibility(state)
 	visible = state
 	_node_crosshair.visible = !state
 	return
@@ -287,4 +288,19 @@ func _gizmo_set_mode() -> void:
 		my_gizmo.mode = _gizmo_mode
 		my_gizmo.use_local_space = _gizmo_space_local
 
+	return
+
+func _gizmo_visibility(visible: bool = false) -> void:
+	var _gizmo_target_mode = 0
+
+	if visible == true:
+		_gizmo_target_mode = _gizmo_mode
+
+	if my_gizmo:
+		my_gizmo.show_selection_box = visible
+		my_gizmo.mode = _gizmo_target_mode
+
+	for gizmo in world_gizmos:
+		gizmo.show_selection_box = visible
+		gizmo.mode = _gizmo_target_mode
 	return
