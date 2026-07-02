@@ -30,8 +30,8 @@ func _ready() -> void:
 
 	_button_close.clicked.connect(_close)
 
-	self.gui_input.connect(_on_input)
-	self.gui_input.connect(_on_input)
+	gui_input.connect(_on_input)
+	gui_input.connect(_on_input)
 	return
 
 func _build_content() -> void:
@@ -61,7 +61,7 @@ func _node_selected(node_db_index) -> void:
 	return
 
 func _close() -> void:
-	self.visible = false
+	visible = false
 	return
 
 func _on_input(event) -> void:
@@ -77,7 +77,12 @@ func _on_input(event) -> void:
 
 func _mouse_drag(_event) -> void:
 	if _is_dragging:
-		global_position = get_global_mouse_position() - _drag_offset
+		var _game_size: Vector2 = DisplayServer.window_get_size()
+		var _target_position = get_global_mouse_position() - _drag_offset
+		var _is_out_of_bounds = _target_position.x < 0 || _target_position.y < 0 || _target_position.x >= _game_size.x - size.x || _target_position.y >= _game_size.y - size.y
+
+		if _is_out_of_bounds == false:
+			global_position = _target_position
 	return
 
 func _mouse_click(event) -> void:
