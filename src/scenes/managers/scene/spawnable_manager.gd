@@ -211,6 +211,7 @@ func _spawn_node(node_type: int, node_owner: int, parent: Node = instance_root, 
 	_node.name = str(_db_id)
 	_node.set_meta("pretty_name", _pretty_name)
 	_node.set_meta("spawnable_type", node_type)
+	_node.set_meta("icon", _node_schema.icon)
 	_node.position = Vector3(0, 0, 0)
 
 	# Add to scene tree

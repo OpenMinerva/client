@@ -170,7 +170,7 @@ func _inspector_build(root_node: Node = session_root) -> void:
 	var _inspector_root = _inspector_tree.create_item()
 	_inspector_add_node(root_node, _inspector_root)
 
-	# Update the Toolbar counts
+	# Update the Toolbar counts.
 	_node_toolbar_spawnable_count.update_meta(_total_spawnable_label)
 	return
 
@@ -180,7 +180,7 @@ func _inspector_add_node(node: Node, parent: TreeItem) -> void:
 		return
 
 	var _tree_node = _inspector_tree.create_item(parent)
-	var _tree_icon = _get_node_icon(node.get_class())
+	var _tree_icon = _get_node_icon(node)
 
 	_tree_node.set_text(0, node.get_meta("pretty_name", node.name))
 	_tree_node.set_icon(0, _tree_icon)
@@ -196,8 +196,15 @@ func _inspector_item_edited() -> void:
 	_inspector_editing.set_editable(0, false)
 	_inspector_editing.get_metadata(0).set_meta("pretty_name", _inspector_editing.get_text(0))
 
-func _get_node_icon(class_n: String) -> Texture2D:
-	var _schema_index = NSB.get_node_index(class_n)
+func _get_node_icon(node: Node) -> Texture2D:
+	# Check if we have the icon in the metadata.
+	var _meta_icon = node.get_meta("icon")
+	if _meta_icon != null:
+		return _meta_icon
+
+	# Get the icon from the nodes class.
+	var _node_class: String = node.get_class()
+	var _schema_index = NSB.get_node_index(_node_class)
 	var _icon = NSB.get_formatted(_schema_index).icon
 	return _icon
 
