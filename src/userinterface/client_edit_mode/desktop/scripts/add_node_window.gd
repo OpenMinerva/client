@@ -41,6 +41,10 @@ func _build_content() -> void:
 		var _schema_index = NSB.get_node_index(node)
 		var _schema_listing = NSB.get_formatted(_schema_index)
 
+		if _schema_listing.hidden == true:
+			# This is not available for spawning.
+			continue
+
 		var _button = _button_template.instantiate()
 
 		_list_container.add_child(_button)
