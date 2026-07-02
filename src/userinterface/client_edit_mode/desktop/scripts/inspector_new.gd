@@ -30,7 +30,7 @@ var _gizmo_space_local: bool = true
 @onready var _node_toolbar_gizmo_control_container: Control = _node_toolbar.get_node("MarginContainer/HBoxContainer/GizmoControl")
 @onready var _node_toolbar_gizmo_control_container_misc: Control = _node_toolbar.get_node("MarginContainer/HBoxContainer/GizmoControlMisc")
 @onready var _node_toolbar_spawnable_count: Control = _node_toolbar.get_node("MarginContainer/HBoxContainer/SpawnableCount")
-@onready var crosshair: Node = get_tree().current_scene.get_node("Crosshair")
+@onready var _node_crosshair: Node = get_tree().current_scene.get_node("Crosshair")
 @onready var _inspector_popup: Node = get_node("InspectorPopup")
 @onready var _inspector_add_node_window: Node = get_node("AddNodeWindow")
 
@@ -128,7 +128,7 @@ func _inspector_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_i
 func _set_state(state: bool) -> void:
 	GlobalLogger.log("Inspector state is being set to '%s'." % state)
 	visible = state
-	crosshair.visible = !state
+	_node_crosshair.visible = !state
 	return
 
 func _on_node_created(_node: Node) -> void:
