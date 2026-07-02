@@ -15,6 +15,9 @@ signal double_clicked
 @export_enum(\"Art\", \"Environment\", \"Science\", \"Games\", \"Folder\") var selected_icon: String
 @export_enum(\"Danger\") var selected_theme_type: String
 @export var toggle: bool = false 
+@export var default_state: bool = false 
+@export var only_icon: bool = false 
+@export var icon: Texture2D
 
 var _click_count: int = 0
 var _last_click_time: float = 0
@@ -30,18 +33,27 @@ var icon_paths = {
 }
 
 func _ready():
+	button_node.toggle_mode = toggle
+	button_node.button_pressed = default_state
+		
 	button_node.pressed.connect(_on_single_click)
 	
 	_get_label_text()
 	
-	if icon_paths.has(selected_icon):
+	if icon != null:
+		icon_node.texture = icon
+	elif icon_paths.has(selected_icon):
 		icon_node.texture = load(icon_paths[selected_icon])
 	button_node.theme_type_variation = selected_theme_type if selected_theme_type != null else \"\"
 	
-	button_node.toggle_mode = toggle
 	return
 
 func _get_label_text() -> void:
+	if only_icon == true:
+		label_node.queue_free()
+		icon_node.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		return
+		
 	var _label_meta = get_meta(\"label\", \"\")
 	if _label_meta != \"\":
 		label_node.text = _label_meta
@@ -65,7 +77,7 @@ func _on_single_click() -> void:
 "
 
 [node name="CategoryButton" type="Control" unique_id=649942124]
-custom_minimum_size = Vector2(200, 50)
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 3
 anchor_top = 0.47685185
 anchor_right = 1.0
@@ -77,13 +89,12 @@ size_flags_horizontal = 3
 size_flags_vertical = 4
 theme = ExtResource("1_dnctg")
 script = SubResource("GDScript_q3lw4")
-toggle = null
+default_state = null
 metadata/_edit_use_anchors_ = true
 metadata/label = ""
 
 [node name="Button" type="Button" parent="." unique_id=1422381468]
 clip_contents = true
-custom_minimum_size = Vector2(140, 0)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -92,7 +103,6 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_default_cursor_shape = 2
 theme = ExtResource("1_dnctg")
-toggle_mode = true
 
 [node name="MarginContainer" type="MarginContainer" parent="Button" unique_id=665374152]
 clip_contents = true

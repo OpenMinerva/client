@@ -1,327 +1,369 @@
-extends Node
+# --- License
+# File: /client/src/userinterface/client_edit_mode/desktop/scripts/inspector.gd
+# Project: OpenMinerva
+# Created Date: 10 June 2026
+# Copyright (c) 2026 OpenMinerva
+# License: MIT License
+# Authors: Armored Dragon
+# --- License
+extends Control
 
-var gizmos: Array[Dictionary] = []
-var _clicked_item: TreeItem = null
-var _editing_item: TreeItem = null
+# FIXME: Selecting Gizmo crashes
+# FIXME: You can select the selected spawnable. (Safe but probably should be changed)
 
-@onready var tree_view: Tree = get_node("MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer/Tree")
-@onready var scene_m = get_tree().current_scene.get_node("SceneManager")
-@onready var dev_spawn_m = get_tree().current_scene.get_node("DevSpawnManager")
-@onready var spawnable_m: Node
+# External Libraries / scripts
+# FIXME: DevSpawnableManager node
+@onready var dev_spawn_m: Node = get_tree().current_scene.get_node("DevSpawnManager")
+@onready var app_scene_m: Node = get_tree().current_scene.get_node("SceneManager")
+@onready var session_spawnable_m: Node
 @onready var session_signalbus: Node
-@onready var inspector_popup_menu = $InspectorPopup
-@onready var gizmo_popup_menu = $GizmoPopup
-@onready var session_root: Node
-@onready var selection_ui: Tree = get_node("MarginContainer/VBoxContainer/SelectionArea/VBoxContainer/SelectionContainer/Selections")
+@onready var session_root: Node3D
 
+# Gizmos
+var world_gizmos: Array[Dictionary] = []
+var my_gizmo: Node
+var _gizmo_mode: int = 0
+var _gizmo_space_local: bool = true
+
+# UI Elements
+@onready var _node_toolbar: Control = get_node("VBoxContainer/Toolbar")
+@onready var _node_toolbar_gizmo_control_container: Control = _node_toolbar.get_node("MarginContainer/HBoxContainer/GizmoControl")
+@onready var _node_toolbar_gizmo_control_container_misc: Control = _node_toolbar.get_node("MarginContainer/HBoxContainer/GizmoControlMisc")
+@onready var _node_toolbar_spawnable_count: Control = _node_toolbar.get_node("MarginContainer/HBoxContainer/SpawnableCount")
+@onready var _node_crosshair: Node = get_tree().current_scene.get_node("Crosshair")
+@onready var _inspector_popup: Node = get_node("InspectorPopup")
+@onready var _inspector_add_node_window: Node = get_node("AddNodeWindow")
+
+# UI Inspector
+@onready var _inspector_tree: Tree = get_node("VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer/Tree")
+
+# Inspector data
+var _inspector_selected: TreeItem = null
+var _inspector_editing: TreeItem = null
+var _inspector_focused: TreeItem = null
 
 func _ready() -> void:
-	_build_add_node_popup()
+	_set_state(false)
+	_add_signalbus_event_listeners()
+	_add_gizmo_event_listeners()
+	_add_button_event_listeners()
+	_add_misc_event_listeners()
 
-	# Instance signals
-	Events.dash_session_changed.connect(_session_changed)
-	Events.cem_set_gizmo_state.connect(_toggle_gizmos)
-	Events.cem_set_state.connect(_set_cem_state)
+	_add_drag_events()
 
-	tree_view.item_edited.connect(_on_tree_item_edited)
-	tree_view.item_mouse_selected.connect(_on_tree_item_mouse_selected)
-	inspector_popup_menu.id_pressed.connect(_on_inspector_popup_menu_id_pressed)
+	_inspector_popup.visible = false
 
-	selection_ui.item_mouse_selected.connect(_on_gizmo_item_selected)
-	gizmo_popup_menu.id_pressed.connect(_on_gizmo_popup_pressed)
-
-	inspector_popup_menu.hide()
-	pass
-
-
-func populate_tree_from_node(_node: Variant = ""):
-	# Wait a frame to get the updated scene from when it was called.
-	# This should be changed in the future when I learn how to properly wait for the scene to update before trying to update the inspector.
+	# TODO: Proper wait until building the inspector.
 	await get_tree().process_frame
-	await get_tree().process_frame
-	tree_view.clear()
-	if not session_root:
-		GlobalLogger.log("No session root defined.", Enum.LogLevel.ERROR)
+
+	_inspector_build()
+	_gizmo_set_mode()
+	return
+
+func _add_drag_events() -> void:
+	_inspector_tree.set_drag_forwarding(
+		self._get_drag_data,
+		self._can_drop_data,
+		self._drop_data
+	)
+	return
+
+func _get_drag_data(position: Vector2):
+	var _target_tree_item: TreeItem = _inspector_tree.get_item_at_position(position)
+
+	if _target_tree_item && _target_tree_item.get_parent():
+		return {"item": _target_tree_item, "node": _target_tree_item.get_metadata(0)}
+
+	return null
+
+func _can_drop_data(position: Vector2, data: Variant):
+	var _target_item: TreeItem = _inspector_tree.get_item_at_position(position)
+	var _dragged_item: TreeItem = data["item"]
+
+	if _dragged_item == _target_item:
+		# Don't parent to self.
+		return false
+
+	# Don't parent to any of own children.
+	# FIXME: Find safe ways to escape this while loop.
+	var _checking = _target_item
+	while _checking:
+		if _checking == _dragged_item:
+			return false
+		_checking = _checking.get_parent()
+
+	# TODO: Check to see if node is inside of root.
+
+	return true
+
+func _drop_data(position: Vector2, data: Variant):
+	var _dragged_node: Node = data["node"]
+	var _target_tree_item: TreeItem = _inspector_tree.get_item_at_position(position)
+	var _target_node: Node
+
+	if _target_tree_item == null:
+		_target_node = session_root
+	else:
+		_target_node = _target_tree_item.get_metadata(0)
+
+	_dragged_node.reparent(_target_node)
+	_inspector_build()
+
+func _input(event: InputEvent):
+	# Used to remove focus of the search area when clicking inside of the scene.
+	if event is InputEventMouseButton && event.pressed:
+		var focused = get_viewport().gui_get_focus_owner()
+		if focused:
+			focused.release_focus()
+
+		# Close the inspector popup
+		if _inspector_popup.visible == true:
+			var _rect = _inspector_popup.get_global_rect()
+			var _mouse_pos = event.position
+
+			if _rect.has_point(_mouse_pos) == false:
+				_inspector_popup.visible = false
+
+	return
+
+# Signals and other event listeners
+func _add_signalbus_event_listeners() -> void:
+	GlobalLogger.log("Adding signal bus event listeners to the inspector.")
+	Events.cem_set_state.connect(_set_state)
+	Events.dash_session_changed.connect(_on_session_changed)
+	# TODO: Events.cem_set_gizmo_state.connect(_toggle_gizmos)
+	return
+
+func _add_gizmo_event_listeners() -> void:
+	var _node_children: Array[Node] = _node_toolbar_gizmo_control_container.get_children()
+	var _misc_node_children: Array[Node] = _node_toolbar_gizmo_control_container_misc.get_children()
+
+	for node_index in _node_children.size():
+		var _node = _node_children[node_index]
+		_node.get_node("Button").pressed.connect(_gizmo_set_mode)
+
+	_misc_node_children[0].get_node("Button").pressed.connect(_gizmo_set_mode)
+	return
+
+func _add_button_event_listeners() -> void:
+	_inspector_popup.entry_clicked.connect(_inspector_popup_button_pressed)
+	_inspector_tree.item_mouse_selected.connect(_inspector_tree_item_mouse_selected)
+	return
+
+func _add_misc_event_listeners() -> void:
+	_inspector_add_node_window.selection.connect(_inspector_spawn_node)
+	_inspector_tree.item_edited.connect(_inspector_item_edited)
+	return
+
+func _inspector_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_index: int) -> void:
+	if mouse_button_index == MOUSE_BUTTON_LEFT:
+		_inspector_selected = _inspector_tree.get_item_at_position(mouse_position)
+
+		if _inspector_selected == null:
+			return
+
+		_select(int(_inspector_selected.get_metadata(0).name))
 		return
 
-	var tree_root = tree_view.create_item()
+	if mouse_button_index == MOUSE_BUTTON_RIGHT:
+		_inspector_selected = _inspector_tree.get_item_at_position(mouse_position)
 
-	add_node_to_tree(session_root, tree_root)
+		if _inspector_selected == null:
+			return
 
-
-# FIXME: The open-ness of the current view is not maintained when refreshing the tree view.
-func add_node_to_tree(node: Node, parent_item: TreeItem):
-	if node.get_meta("scene_node", false):
-		var item = tree_view.create_item(parent_item)
-
-		item.set_text(0, node.get_meta("pretty_name", node.name))
-		var icon_texture = get_class_icon(node.get_meta("pretty_name", node.get_class()))
-		item.set_icon(0, icon_texture)
-		item.set_icon_max_width(0, 20)
-		item.set_metadata(0, node)
-
-		for child in node.get_children():
-			add_node_to_tree(child, item)
-
-
-# FIXME: Add this function to the NSB class, and add safe fallbacks.
-# FIXME: Hardcoded values!
-func get_class_icon(class_n: String) -> Texture2D:
-
-	var fallback_index = NSB.get_node_index("Node3D")
-	var schema_index = NSB.get_node_index(class_n)
-	var icon = NSB.get_formatted(schema_index).icon
-
-	if schema_index == fallback_index && class_n != "Node3D":
-		return load("res://resources/icons/godot/%s.svg" % class_n)
-
-	return icon
-
-
-func popupmenu_populate_generic() -> void:
-	for i in inspector_popup_menu.item_count:
-		inspector_popup_menu.remove_item(0)
-	inspector_popup_menu.add_item("Add Child", 0)
-	inspector_popup_menu.add_item("Delete", 1)
-	inspector_popup_menu.add_item("Select", 2)
-	inspector_popup_menu.add_item("Save", 3)
-	inspector_popup_menu.add_item("Rename", 5)
+		var _mouse_pos = _inspector_tree.get_global_mouse_position()
+		_inspector_popup.position = _mouse_pos
+		_inspector_popup.visible = true
 	return
 
-
-func _on_gizmo_popup_pressed(id: int) -> void:
-	var gizmo_node = _clicked_item.get_metadata(0)
-	match id:
-		0:
-			_set_active_gizmo(int(gizmo_node.name))
-		1:
-			_gizmo_delete(int(gizmo_node.name))
+func _set_state(state: bool) -> void:
+	GlobalLogger.log("Inspector state is being set to '%s'." % state)
+	_gizmo_visibility(state)
+	visible = state
+	_node_crosshair.visible = !state
 	return
 
-
-func _on_node_destroyed(node_name: String) -> void:
-	var _node = spawnable_m.get_by_id(int(node_name)).node
-	for gizmo in gizmos:
-		if gizmo.node.is_selected(_node):
-			gizmo.node.deselect(_node)
-			if gizmo.node.get_selected_count() == 0:
-				_gizmo_delete(gizmo.id)
-
-	_update_selection_ui()
+func _on_node_created(_node: Node) -> void:
+	# TODO: Instead of rebuilding the entire tree, just update the respective entry.
+	GlobalLogger.log("Inspector: Node created.")
+	_inspector_build()
 	return
 
+func _on_node_destroyed(node_entry: Dictionary) -> void:
+	# TODO: Instead of rebuilding the entire tree, just update the respective entry.
+	GlobalLogger.log("Inspector: Node destroyed.")
 
-func _set_cem_state(state: bool) -> void:
-	_toggle_gizmos(state)
+	# Deselect the node if selected.
+	if my_gizmo:
+		my_gizmo.deselect(node_entry.node)
+
+	_inspector_build()
 	return
 
+func _on_session_changed() -> void:
+	session_signalbus = app_scene_m.get_master_scene(app_scene_m.active_session).get_node("SignalBus")
+	session_spawnable_m = app_scene_m.get_master_scene(app_scene_m.active_session).get_node("SpawnableManager")
+	session_root = app_scene_m.get_master_root(app_scene_m.active_session)
 
-func _session_changed():
-	session_root = scene_m.get_master_root(scene_m.active_session)
-	spawnable_m = scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager")
-	session_signalbus = scene_m.get_master_scene(scene_m.active_session).get_node("SignalBus")
+	_inspector_selected = null
+	_inspector_editing = null
+	_inspector_focused = null
 
-	if session_signalbus.is_connected("node_created", populate_tree_from_node) == false:
-		session_signalbus.node_created.connect(populate_tree_from_node)
-		session_signalbus.node_destroyed.connect(populate_tree_from_node)
+	if session_signalbus.is_connected("node_created", _on_node_created) == false:
+		session_signalbus.node_created.connect(_on_node_created)
 		session_signalbus.node_destroyed.connect(_on_node_destroyed)
-	populate_tree_from_node()
-
-
-func _on_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_index: int):
-	if mouse_button_index == MOUSE_BUTTON_RIGHT:
-		_clicked_item = tree_view.get_item_at_position(mouse_position)
-
-		if _clicked_item:
-			var global_pos = tree_view.get_global_mouse_position()
-			popupmenu_populate_generic()
-			inspector_popup_menu.position = global_pos
-			inspector_popup_menu.popup()
-
-
-func _on_gizmo_item_selected(mouse_position: Vector2, mouse_button_index: int):
-	if mouse_button_index == MOUSE_BUTTON_RIGHT:
-		_clicked_item = selection_ui.get_item_at_position(mouse_position)
-
-		if _clicked_item:
-			var global_pos = selection_ui.get_global_mouse_position()
-			gizmo_popup_menu.position = global_pos
-			gizmo_popup_menu.popup()
-
-
-func _build_add_node_popup() -> void:
-	var valid_options = NSB.get_valid()
-	var tree_node = get_node("Popup").get_node("PanelContainer/ItemList")
-	tree_node.item_activated.connect(_on_item_activated)
-
-	for node in valid_options:
-		var schema_index = NSB.get_node_index(node)
-		var schema_listing = NSB.get_formatted(schema_index)
-		var _item = tree_node.add_item(schema_listing.pretty_name, schema_listing.icon)
 	return
 
+# User Interface
+func _inspector_build(root_node: Node = session_root) -> void:
+	# TODO: Proper wait until building the inspector.
+	await get_tree().process_frame
 
-func _on_item_activated(index: int) -> void:
-	var popup = get_node("Popup")
-	var tree_node = get_node("Popup").get_node("PanelContainer/ItemList")
-	var item_text = tree_node.get_item_text(index)
-	var item_type = NSB.get_node_index(item_text)
+	var _total_spawnable_label: String = str(session_spawnable_m._database.size())
 
-	var parent_node = popup.get_meta("selected_node")
-	if parent_node == null:
-		GlobalLogger.log("Tried to add a child to an invalid node.", Enum.LogLevel.WARNING)
-		populate_tree_from_node()
+	GlobalLogger.log("Generating the inspector view with parent '%s'." % root_node)
+	_inspector_clear()
+	var _inspector_root = _inspector_tree.create_item()
+	_inspector_add_node(root_node, _inspector_root)
 
+	# Update the Toolbar counts.
+	_node_toolbar_spawnable_count.update_meta(_total_spawnable_label)
+
+	return
+
+func _inspector_add_node(node: Node, parent: TreeItem) -> void:
+	if node.get_meta("scene_node", false) == false:
+		GlobalLogger.log("Ignoring node '%s' in the inspector." % node)
 		return
 
-	var entity = await spawnable_m.create(item_type, int(parent_node.name))
-	# TODO: Handle failed entity creation request.
-	_gizmo_new(int(entity.name))
+	var _tree_node = _inspector_tree.create_item(parent)
+	var _tree_icon = _get_node_icon(node)
 
+	_tree_node.set_text(0, node.get_meta("pretty_name", node.name))
+	_tree_node.set_icon(0, _tree_icon)
+	_tree_node.set_icon_max_width(0, 20)
+	_tree_node.set_metadata(0, node)
+
+
+	for child in node.get_children():
+		_inspector_add_node(child, _tree_node)
 	return
 
-func _on_tree_item_edited() -> void:
-	_editing_item.set_editable(0, false)
-	_editing_item.get_metadata(0).set_meta("pretty_name", _editing_item.get_text(0))
+func _inspector_item_edited() -> void:
+	_inspector_editing.set_editable(0, false)
+	_inspector_editing.get_metadata(0).set_meta("pretty_name", _inspector_editing.get_text(0))
+
+func _get_node_icon(node: Node) -> Texture2D:
+	# Check if we have the icon in the metadata.
+	if node.has_meta("icon") == true:
+		return node.get_meta("icon")
+
+	# Get the icon from the nodes class.
+	var _node_class: String = node.get_class()
+	var _schema_index = NSB.get_node_index(_node_class)
+	var _icon = NSB.get_formatted(_schema_index).icon
+	return _icon
+
+func _inspector_clear() -> void:
+	GlobalLogger.log("Clearing the inspector.")
+	_inspector_tree.clear()
 	return
 
-func _on_inspector_popup_menu_id_pressed(id: int):
-	if _clicked_item:
-		var node = _clicked_item.get_metadata(0)
-		if node == null && id != 0:
-			GlobalLogger.log("Tried to preform an action on an invalid node.", Enum.LogLevel.WARNING)
-			populate_tree_from_node()
-			return
-		match id:
-			0:
-				get_node("Popup").set_meta("selected_node", node)
-				get_node("Popup").visible = true
-			1:
-				var _name = node.name
-				if node.get_meta("pretty_name") == "Gizmo":
-					_gizmo_delete(int(_name))
-					return
+func _inspector_popup_button_pressed(label: String) -> void:
+	GlobalLogger.log("Pressed button: '%s' on '%s'" % [label, _inspector_selected.get_text(0)])
+	_inspector_popup.visible = false
 
-				await spawnable_m.destroy(int(_name))
-			2:
-				if gizmos.size() > 0:
-					var target_gizmo_node = gizmos.back().node
-					_gizmo_add(int(target_gizmo_node.name), int(node.name))
-					return
-				_gizmo_new(int(node.name))
-			3:
-				GlobalLogger.log("Saving spawnable.")
-				FileManager._current_path()
-				dev_spawn_m.save_spawnable(node)
-			5:
-				_clicked_item.set_editable(0, true)
-				_editing_item = _clicked_item
-
-
-func _update_selection_ui() -> void:
-	selection_ui.clear()
-
-	selection_ui.create_item()
-
-	for gizmo in gizmos:
-		var gizmo_root = selection_ui.create_item()
-		gizmo_root.set_text(0, "Gizmo")
-		gizmo_root.set_icon(0, get_class_icon("Gizmo"))
-		gizmo_root.set_icon_max_width(0, 20)
-		gizmo_root.set_metadata(0, gizmo.node)
-
-		# TODO: Show all children of nodes that are selected.
-		for selected_node in gizmo.node._selections.keys():
-			var item = selection_ui.create_item(gizmo_root)
-			item.set_text(0, selected_node.get_meta("pretty_name"))
-			item.set_selectable(0, false)
-
-	return
-
-
-func _set_active_gizmo(gizmo_id: int) -> void:
-	for gizmo in gizmos:
-		if gizmo.id == gizmo_id:
-			# Set the target gizmo to on.
-			_set_gizmo_render_state(gizmo.node, true)
-			continue
-		# Turn off all gizmos.
-		_set_gizmo_render_state(gizmo.node, false)
-	return
-
-
-func _toggle_gizmos(state: bool = false) -> void:
-	for gizmo in gizmos:
-		var _node = gizmo.node
-		_node.show_selection_box = state
-		_node.mode = 0 if state == false else _node.ToolMode.SCALE | _node.ToolMode.MOVE | _node.ToolMode.ROTATE
-	return
-
-
-func _set_gizmo_render_state(gizmo: Node, state: bool = false) -> void:
-	gizmo.show_selection_box = state
-	gizmo.mode = 0 if state == false else gizmo.ToolMode.SCALE | gizmo.ToolMode.MOVE | gizmo.ToolMode.ROTATE
-	return
-
-
-func _gizmo_new(node_id: int) -> void:
-	var target_node = spawnable_m.get_by_id(node_id)
-	var gizmo_schema_index = NSB.get_node_index("Gizmo")
-	var gizmo_node: Node
-
-	if target_node == { }:
-		GlobalLogger.log("Tried to add a gizmo to an invalid node.", Enum.LogLevel.WARNING)
+	var _node = _inspector_selected.get_metadata(0)
+	if _node == null:
+		GlobalLogger.log("Tried to preform an action on an invalid node.", Enum.LogLevel.WARNING)
+		_inspector_build()
 		return
 
-	gizmo_node = await spawnable_m.create(gizmo_schema_index)
-
-	gizmos.append({ "node": gizmo_node, "id": int(gizmo_node.name) })
-
-	gizmo_node.transform_changed.connect(func(mode, value): _transform_gizmo(mode, value, gizmo_node._selections))
-
-	gizmo_node.select(target_node.node)
-	_set_active_gizmo(int(gizmo_node.name))
-	_update_selection_ui()
+	match label:
+		"New":
+			_inspector_add_node_window.parent_node_id = int(_node.name)
+			_inspector_add_node_window.show()
+		"Remove":
+			await session_spawnable_m.destroy(int(_node.name))
+		"Rename":
+			_inspector_selected.set_editable(0, true)
+			_inspector_tree.edit_selected()
+			_inspector_editing = _inspector_selected
+		"Save":
+			GlobalLogger.log("Saving spawnable.")
+			dev_spawn_m.save_spawnable(_node)
+		_:
+			GlobalLogger.log("Unhandled inspector popup selection", Enum.LogLevel.WARNING)
 	return
 
-
-func _gizmo_add(gizmo_id: int, node_id: int) -> void:
-	var gizmo = spawnable_m.get_by_id(gizmo_id)
-	var target_node = spawnable_m.get_by_id(node_id)
-
-	# Check if we are selecting a child of a selected node.
-	for selected_node in gizmo.node._selections:
-		if selected_node.is_ancestor_of(target_node.node):
-			_gizmo_new(target_node.id)
-			return
-
-	# Check if we are selecting a parent of a selected node.
-	for selected_node in gizmo.node._selections.keys():
-		if target_node.node.is_ancestor_of(selected_node):
-			gizmo.node.deselect(selected_node)
-
-	gizmo.node.select(target_node.node)
-	_update_selection_ui()
+func _inspector_spawn_node(type: int, parent: int) -> void:
+	GlobalLogger.log("Spawning node type '%s' with parent '%s'" % [type, parent])
+	var _entity = await session_spawnable_m.create(type, parent)
+	_select(int(_entity.name))
+	# TODO: Gizmo select the new entity
 	return
 
+func _select(target_node: int) -> void:
+	var _node_db_entry = session_spawnable_m.get_by_id(target_node)
+	var _gizmo_schema_index = NSB.get_node_index("Gizmo")
 
-func _gizmo_remove(gizmo_id: int, node_id: int) -> void:
-	var gizmo = spawnable_m.get_by_id(gizmo_id)
-	var target_node = spawnable_m.get_by_id(node_id)
-	gizmo.node.deselect(target_node.node)
-	_update_selection_ui()
+	if my_gizmo != null:
+		_gizmo_delete()
+
+	if _node_db_entry == {}:
+		GlobalLogger.log("Tried to select a node that should not exist!", Enum.LogLevel.ERROR)
+		return
+
+	my_gizmo = await session_spawnable_m.create(_gizmo_schema_index)
+	# TODO: Add to array of Gizmos
+	my_gizmo.select(_node_db_entry.node)
+	my_gizmo.mode = _gizmo_mode
+	my_gizmo.use_local_space = _gizmo_space_local
+
+func _gizmo_delete() -> void:
+	my_gizmo.clear_selection()
+	await session_spawnable_m.destroy(int(my_gizmo.name))
 	return
 
+func _gizmo_set_mode() -> void:
+	var _gizmo_modes: Dictionary
+	var _node_children: Array[Node] = _node_toolbar_gizmo_control_container.get_children()
+	var _misc_node_children: Array[Node] = _node_toolbar_gizmo_control_container_misc.get_children()
 
-func _gizmo_delete(node_id: int) -> void:
-	var gizmo_index = gizmos.find_custom(func(entry): return entry.id == node_id)
-	gizmos.remove_at(gizmo_index)
+	for node_index in _node_children.size():
+		var _node = _node_children[node_index]
+		var _dict_name = _node.name.to_lower()
+		var _is_active = _node.get_node("Button").button_pressed
 
-	await spawnable_m.destroy(node_id)
-	_update_selection_ui()
+		_gizmo_modes[_dict_name] = _is_active
+
+	_gizmo_mode = 0
+	_gizmo_space_local = !_misc_node_children[0].get_node("Button").button_pressed
+
+	if _gizmo_modes.get("transform", false):
+		_gizmo_mode |= Gizmo3D.ToolMode.MOVE
+	if _gizmo_modes.get("rotation", false):
+		_gizmo_mode |= Gizmo3D.ToolMode.ROTATE
+	if _gizmo_modes.get("scale", false):
+		_gizmo_mode |= Gizmo3D.ToolMode.SCALE
+
+	if my_gizmo != null:
+		my_gizmo.mode = _gizmo_mode
+		my_gizmo.use_local_space = _gizmo_space_local
+
 	return
 
+func _gizmo_visibility(visible: bool = false) -> void:
+	var _gizmo_target_mode = 0
 
-func _transform_gizmo(_mode: int, _value: Vector3, nodes: Dictionary) -> void:
-	for node_to_move in nodes:
-		spawnable_m.position_spawnable.rpc(int(node_to_move.name), node_to_move.position, node_to_move.rotation, node_to_move.scale)
+	if visible == true:
+		_gizmo_target_mode = _gizmo_mode
+
+	if my_gizmo:
+		my_gizmo.show_selection_box = visible
+		my_gizmo.mode = _gizmo_target_mode
+
+	for gizmo in world_gizmos:
+		gizmo.show_selection_box = visible
+		gizmo.mode = _gizmo_target_mode
+	return

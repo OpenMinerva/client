@@ -108,7 +108,7 @@ func _unhandled_input(event):
 
 		get_viewport().set_input_as_handled()
 
-	if "keycode" in event && event.keycode == 4194333 && event.pressed == true:
+	if "keycode" in event && event.keycode == 4194306 && event.pressed == true:
 		capture_mouse(!mouse_captured)
 		get_viewport().set_input_as_handled()
 		return
@@ -153,6 +153,7 @@ func capture_mouse(to_capture: bool):
 
 func _toggle_client_edit_mode() -> void:
 	Events.emit_signal("cem_set_state", !cem_state)
+	capture_mouse(cem_state)
 	cem_state = !cem_state
 	return
 

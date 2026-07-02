@@ -16,48 +16,64 @@ static var schema = {
 		"pretty_name": "Gizmo",
 		"node": null,
 		"icon": load("res://resources/icons/Gizmo.svg"),
+		"hidden": true,
+		"deep_delete": false,
 	},
 	"Model": {
 		"requires_setup": true,
 		"pretty_name": "Imported Model",
 		"node": null,
 		"icon": load("res://resources/icons/godot/MeshInstance3D.svg"),
+		"hidden": true,
+		"deep_delete": true,
 	},
 	"Node3D": {
 		"requires_setup": false,
 		"pretty_name": "Node3D",
 		"node": "Node3D",
 		"icon": load("res://resources/icons/godot/Node3D.svg"),
+		"hidden": false,
+		"deep_delete": true,
 	},
 	"Box": {
 		"requires_setup": true,
 		"pretty_name": "Box",
 		"node": null,
 		"icon": load("res://resources/icons/godot/MeshInstance3D.svg"),
+		"hidden": false,
+		"deep_delete": true,
 	},
 	"Capsule": {
 		"requires_setup": true,
 		"pretty_name": "Capsule",
 		"node": null,
 		"icon": load("res://resources/icons/godot/MeshInstance3D.svg"),
+		"hidden": false,
+		"deep_delete": true,
 	},
 	"RigidBody3D": {
 		"requires_setup": true,
 		"pretty_name": "RigidBody3D",
 		"node": RigidBody3D,
 		"icon": load("res://resources/icons/godot/RigidBody3D.svg"),
+		"hidden": false,
+		"deep_delete": true,
 	},
 	"MeshInstance3D": {
 		"requires_setup": false,
 		"pretty_name": "MeshInstance3D",
 		"node": "MeshInstance3D",
 		"icon": load("res://resources/icons/godot/MeshInstance3D.svg"),
+		"hidden": false,
+		"deep_delete": true,
 	},
 	"Skeleton3D": {
 		"requires_setup": false,
 		"pretty_name": "Skeleton3D",
 		"node": "Skeleton3D",
 		"icon": load("res://resources/icons/godot/Skeleton3D.svg"),
+		"hidden": false,
+		"deep_delete": true,
 	},
 }
 
@@ -108,9 +124,13 @@ static func _build_node(node_name: String, model_path: String = "") -> Node:
 	if node_name == "Gizmo":
 		var _work_node = Gizmo3D.new()
 		_work_node.top_level = true
+		_work_node.set_meta("scene_node", false)
+		_work_node.set_meta("deep_delete", false)
 		return _work_node
 
 	if node_name == "Model":
+		# TODO: Generating the scene does not seem to properly set up the MeshInstance3D, causing deletion errors.
+		# That also means that this probably will not work for sending meshes over the network.
 		var doc = GLTFDocument.new()
 		var state = GLTFState.new()
 		doc.append_from_file(model_path, state)
