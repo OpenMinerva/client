@@ -181,7 +181,7 @@ func set_node_visible_to_inspector(node: Node) -> void:
 	var nodes = get_all_node_children(node)
 
 	# Check if we had already declared this node to be hidden.
-	if node.get_meta("scene_node") == false:
+	if node.get_meta("scene_node", true) == false:
 		return
 
 	for target in nodes:

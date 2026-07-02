@@ -253,9 +253,8 @@ func _inspector_item_edited() -> void:
 
 func _get_node_icon(node: Node) -> Texture2D:
 	# Check if we have the icon in the metadata.
-	var _meta_icon = node.get_meta("icon")
-	if _meta_icon != null:
-		return _meta_icon
+	if node.has_meta("icon") == true:
+		return node.get_meta("icon")
 
 	# Get the icon from the nodes class.
 	var _node_class: String = node.get_class()
