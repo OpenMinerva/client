@@ -194,7 +194,9 @@ func _on_node_destroyed(node_entry: Dictionary) -> void:
 	GlobalLogger.log("Inspector: Node destroyed.")
 
 	# Deselect the node if selected.
-	my_gizmo.deselect(node_entry.node)
+	if my_gizmo:
+		my_gizmo.deselect(node_entry.node)
+
 	_inspector_build()
 	return
 

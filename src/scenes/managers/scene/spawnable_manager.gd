@@ -129,6 +129,7 @@ func delete_spawnable(node_name: String) -> void:
 	if _entry_index == -1:
 		# This should never happen! The node can never be removed from the scene tree then.
 		GlobalLogger.log("'%s' could not be located in the scene tree." % node_name, Enum.LogLevel.ERROR)
+		return
 
 	var _entry = _database[_entry_index]
 

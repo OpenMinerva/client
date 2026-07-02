@@ -129,6 +129,8 @@ static func _build_node(node_name: String, model_path: String = "") -> Node:
 		return _work_node
 
 	if node_name == "Model":
+		# TODO: Generating the scene does not seem to properly set up the MeshInstance3D, causing deletion errors.
+		# That also means that this probably will not work for sending meshes over the network.
 		var doc = GLTFDocument.new()
 		var state = GLTFState.new()
 		doc.append_from_file(model_path, state)
