@@ -17,6 +17,7 @@ static var schema = {
 		"node": null,
 		"icon": load("res://resources/icons/Gizmo.svg"),
 		"hidden": true,
+		"deep_delete": false,
 	},
 	"Model": {
 		"requires_setup": true,
@@ -24,6 +25,7 @@ static var schema = {
 		"node": null,
 		"icon": load("res://resources/icons/godot/MeshInstance3D.svg"),
 		"hidden": true,
+		"deep_delete": true,
 	},
 	"Node3D": {
 		"requires_setup": false,
@@ -31,6 +33,7 @@ static var schema = {
 		"node": "Node3D",
 		"icon": load("res://resources/icons/godot/Node3D.svg"),
 		"hidden": false,
+		"deep_delete": true,
 	},
 	"Box": {
 		"requires_setup": true,
@@ -38,6 +41,7 @@ static var schema = {
 		"node": null,
 		"icon": load("res://resources/icons/godot/MeshInstance3D.svg"),
 		"hidden": false,
+		"deep_delete": true,
 	},
 	"Capsule": {
 		"requires_setup": true,
@@ -45,6 +49,7 @@ static var schema = {
 		"node": null,
 		"icon": load("res://resources/icons/godot/MeshInstance3D.svg"),
 		"hidden": false,
+		"deep_delete": true,
 	},
 	"RigidBody3D": {
 		"requires_setup": true,
@@ -52,6 +57,7 @@ static var schema = {
 		"node": RigidBody3D,
 		"icon": load("res://resources/icons/godot/RigidBody3D.svg"),
 		"hidden": false,
+		"deep_delete": true,
 	},
 	"MeshInstance3D": {
 		"requires_setup": false,
@@ -59,6 +65,7 @@ static var schema = {
 		"node": "MeshInstance3D",
 		"icon": load("res://resources/icons/godot/MeshInstance3D.svg"),
 		"hidden": false,
+		"deep_delete": true,
 	},
 	"Skeleton3D": {
 		"requires_setup": false,
@@ -66,6 +73,7 @@ static var schema = {
 		"node": "Skeleton3D",
 		"icon": load("res://resources/icons/godot/Skeleton3D.svg"),
 		"hidden": false,
+		"deep_delete": true,
 	},
 }
 
@@ -117,6 +125,7 @@ static func _build_node(node_name: String, model_path: String = "") -> Node:
 		var _work_node = Gizmo3D.new()
 		_work_node.top_level = true
 		_work_node.set_meta("scene_node", false)
+		_work_node.set_meta("deep_delete", false)
 		return _work_node
 
 	if node_name == "Model":

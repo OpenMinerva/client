@@ -189,9 +189,12 @@ func _on_node_created(_node: Node) -> void:
 	_inspector_build()
 	return
 
-func _on_node_destroyed(_node: String) -> void:
+func _on_node_destroyed(node_entry: Dictionary) -> void:
 	# TODO: Instead of rebuilding the entire tree, just update the respective entry.
 	GlobalLogger.log("Inspector: Node destroyed.")
+
+	# Deselect the node if selected.
+	my_gizmo.deselect(node_entry.node)
 	_inspector_build()
 	return
 

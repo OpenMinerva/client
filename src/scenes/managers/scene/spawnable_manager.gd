@@ -87,8 +87,10 @@ func destroy(node_id: int) -> Variant:
 	var caller_id: int = multiplayer.get_remote_sender_id()
 
 	if my_id == 1:
-		delete_spawnable(str(node_id))
-		delete_spawnable.rpc(str(node_id))
+		var _queue = _get_deletion_queue(str(node_id))
+		for node in _queue:
+			delete_spawnable(node.name)
+			delete_spawnable.rpc(node.name)
 
 		if caller_id != 0 && caller_id != my_id:
 			# This is a client request to delete
@@ -120,22 +122,39 @@ func spawn_spawnable(p_type: int, p_name: String = "", p_path: String = "", pare
 
 
 # TODO: require actioning user
-# FIXME: Deleting a parent does not free the children of the node from the database.
 @rpc("authority", "reliable")
 func delete_spawnable(node_name: String) -> void:
 	GlobalLogger.log("Deleting node '%s'." % node_name)
 	var _entry_index = _database.find_custom(func(item): return item.id == int(node_name))
 	if _entry_index == -1:
 		# This should never happen! The node can never be removed from the scene tree then.
-		GlobalLogger.log("'%s' could not be located in the scene tree.", Enum.LogLevel.ERROR)
+		GlobalLogger.log("'%s' could not be located in the scene tree." % node_name, Enum.LogLevel.ERROR)
 
 	var _entry = _database[_entry_index]
-	# TODO: Check if this node is selected by any gizmos, remove the selection if it is.
 
-	session_signalbus.node_destroyed.emit(node_name)
+	session_signalbus.node_destroyed.emit(_entry)
 	_entry.node.queue_free()
 	_database.remove_at(_entry_index)
 	return
+
+func _get_deletion_queue(node_name: String) -> Array:
+	var _entry_index = _database.find_custom(func(item): return item.id == int(node_name))
+	var _node = _database[_entry_index].node
+
+	var _queue = _add_to_deletion_queue(_node)
+	_queue.reverse()
+	return _queue
+
+func _add_to_deletion_queue(node: Node, list: Array[Node] = []) -> Array[Node]:
+	list.append(node)
+
+	if node.get_meta("deep_delete", true) == false:
+		return list
+
+	for child in node.get_children():
+		_add_to_deletion_queue(child, list)
+
+	return list
 
 
 @rpc("authority", "reliable")
