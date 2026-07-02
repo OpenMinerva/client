@@ -49,6 +49,8 @@ func _ready() -> void:
 	_add_button_event_listeners()
 	_add_misc_event_listeners()
 
+	_add_drag_events()
+
 	_inspector_popup.visible = false
 
 	# TODO: Proper wait until building the inspector.
@@ -57,6 +59,55 @@ func _ready() -> void:
 	_inspector_build()
 	_gizmo_set_mode()
 	return
+
+func _add_drag_events() -> void:
+	_inspector_tree.set_drag_forwarding(
+		self._get_drag_data,
+		self._can_drop_data,
+		self._drop_data
+	)
+	return
+
+func _get_drag_data(position: Vector2):
+	var _target_tree_item: TreeItem = _inspector_tree.get_item_at_position(position)
+
+	if _target_tree_item && _target_tree_item.get_parent():
+		return {"item": _target_tree_item, "node": _target_tree_item.get_metadata(0)}
+
+	return null
+
+func _can_drop_data(position: Vector2, data: Variant):
+	var _target_item: TreeItem = _inspector_tree.get_item_at_position(position)
+	var _dragged_item: TreeItem = data["item"]
+
+	if _dragged_item == _target_item:
+		# Don't parent to self.
+		return false
+
+	# Don't parent to any of own children.
+	# FIXME: Find safe ways to escape this while loop.
+	var _checking = _target_item
+	while _checking:
+		if _checking == _dragged_item:
+			return false
+		_checking = _checking.get_parent()
+
+	# TODO: Check to see if node is inside of root.
+
+	return true
+
+func _drop_data(position: Vector2, data: Variant):
+	var _dragged_node: Node = data["node"]
+	var _target_tree_item: TreeItem = _inspector_tree.get_item_at_position(position)
+	var _target_node: Node
+
+	if _target_tree_item == null:
+		_target_node = session_root
+	else:
+		_target_node = _target_tree_item.get_metadata(0)
+
+	_dragged_node.reparent(_target_node)
+	_inspector_build()
 
 func _input(event: InputEvent):
 	# Used to remove focus of the search area when clicking inside of the scene.
@@ -172,6 +223,7 @@ func _inspector_build(root_node: Node = session_root) -> void:
 
 	# Update the Toolbar counts.
 	_node_toolbar_spawnable_count.update_meta(_total_spawnable_label)
+
 	return
 
 func _inspector_add_node(node: Node, parent: TreeItem) -> void:
