@@ -42,6 +42,9 @@ var _inspector_selected: TreeItem = null
 var _inspector_editing: TreeItem = null
 var _inspector_focused: TreeItem = null
 
+var _cem_state: bool = false
+var _cem_camera: bool = false
+
 func _ready() -> void:
 	_set_state(false)
 	_add_signalbus_event_listeners()
@@ -123,6 +126,25 @@ func _input(event: InputEvent):
 
 			if _rect.has_point(_mouse_pos) == false:
 				_inspector_popup.visible = false
+
+
+	if event.is_action_pressed("cem_activate"):
+		_cem_state = !_cem_state
+		Events.emit_signal("cem_set_state", _cem_state)
+
+		# TODO: Global mouse capture handler?
+		if _cem_state == true:
+			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		else:
+			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+
+		Events.emit_signal("app_mouse_captured", !_cem_state)
+
+		get_viewport().set_input_as_handled()
+
+	if event.is_action_pressed("cem_camera"):
+		_cem_camera = !_cem_camera
+		Events.emit_signal("cem_camera", _cem_camera)
 
 	return
 

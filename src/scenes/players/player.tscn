@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dvx1vs2ig7st4"]
 
-[ext_resource type="Script" uid="uid://dxa60xi5uelay" path="res://scenes/players/player.gd" id="1_plyga"]
+[ext_resource type="Script" uid="uid://dutdx0fa6di2g" path="res://scenes/players/player_new.gd" id="1_plyga"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_p1mvi"]
 
@@ -43,9 +43,3 @@ transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 
 [node name="StairStep" type="CollisionShape3D" parent="." unique_id=1633399245]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.3, -0.5194253)
 shape = SubResource("SeparationRayShape3D_xrm3l")
-
-[node name="PlayerMovement" type="Node" parent="." unique_id=1713886755]
-
-[node name="PlayerInput" type="Node" parent="." unique_id=903642472]
-
-[node name="PlayerInventory" type="Node" parent="." unique_id=1423667068]
