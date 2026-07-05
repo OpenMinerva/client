@@ -65,7 +65,7 @@ func _phys_buildmode(delta) -> void:
 		return
 
 	var _input_dir = Input.get_vector("left", "right", "forward", "backward")
-	var _direction = (_node_camera.global_position * Vector3(_input_dir.x, 0, _input_dir.y)).normalized()
+	var _local_direction = Vector3(_input_dir.x, 0, _input_dir.y)
 
 	if Input.is_action_just_pressed("cem_camera_pan"):
 		_cem_panning = true
@@ -85,7 +85,7 @@ func _phys_buildmode(delta) -> void:
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		return
 
-	_node_camera.translate(Vector3(_direction.x * 0.1, 0, _direction.z * 0.1))
+	_node_camera.translate(Vector3(_local_direction.x * 0.1, 0, _local_direction.z * 0.1))
 	return
 
 func _phys_normal(delta) -> void:
@@ -132,10 +132,8 @@ func _input(event) -> void:
 				_node_camera.translate(Vector3(event.relative.x * 0.01, -event.relative.y * 0.01, 0))
 
 			if _cem_rotating == true:
-				_node_camera.rotate_object_local(Vector3.RIGHT, -event.relative.y * _DEFAULT_SENSITIVITY * 0.001)
-				_node_camera.rotate_y(-event.relative.x * _DEFAULT_SENSITIVITY * 0.001)
-				_node_camera.rotation.x = clamp(_node_camera.rotation.x, deg_to_rad(-85), deg_to_rad(89))
-
+				_node_camera.rotation.y -= event.relative.x * _DEFAULT_SENSITIVITY * 0.001
+				_node_camera.rotation.x = clampf(_node_camera.rotation.x - event.relative.y * _DEFAULT_SENSITIVITY * 0.001, deg_to_rad(-89), deg_to_rad(89))
 
 	return
 
