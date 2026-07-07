@@ -8,6 +8,11 @@
 # --- License
 extends CharacterBody3D
 
+# FIXME: Multiplayer CEM camera:
+	# When one player activates CEM camera, all players spawn the camera?
+	# Size not networked.
+	# Position not networked.
+
 # Libraries
 @onready var _app_scene_m: Node = get_tree().current_scene.get_node("SceneManager")
 @onready var _session_spawnable_m: Node
@@ -148,6 +153,17 @@ func _on_mouse_captured(state: bool) -> void:
 	return
 
 func _send_player_position() -> void:
+	if is_multiplayer_authority() == false:
+		return
+
+	var compressed_position = NetworkCompression.c_16_pos(position)
+	var compressed_rotation = NetworkCompression.c_16_vec3(rotation)
+
+	# HACK: We are just appending the rotation bits at the end here. It should probably be more efficient somewhere else.
+	compressed_position.append_array(compressed_rotation)
+
+	_app_scene_m.get_master_scene(_app_scene_m.active_session).get_node("NetworkManager").entity_position.rpc(int(name), compressed_position)
+
 	return
 
 func _handle_dash_state(state: bool) -> void:
