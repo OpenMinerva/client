@@ -20,7 +20,7 @@ static var schema = {
 		"deep_delete": false,
 	},
 	"CEM_Camera": {
-		"requires_setup": false,
+		"requires_setup": true,
 		"pretty_name": "PlayerCamera",
 		"node": "Camera3D",
 		"icon": load("res://resources/icons/godot/GizmoCamera3D.svg"),
@@ -134,6 +134,11 @@ static func _build_node(node_name: String, model_path: String = "") -> Node:
 		_work_node.top_level = true
 		_work_node.set_meta("scene_node", false)
 		_work_node.set_meta("deep_delete", false)
+		return _work_node
+
+	if node_name == "CEM_Camera":
+		var _work_node = Camera3D.new()
+		_work_node.current = false
 		return _work_node
 
 	if node_name == "Model":
