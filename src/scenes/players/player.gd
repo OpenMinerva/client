@@ -58,7 +58,6 @@ func _ready() -> void:
 
 	Events.connect("dash_set_state", _handle_dash_state)
 	Events.connect("app_mouse_captured", _on_mouse_captured)
-	Events.connect("cem_camera", _cem_camera_state)
 	return
 
 func _physics_process(delta) -> void:

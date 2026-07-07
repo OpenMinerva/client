@@ -44,8 +44,6 @@ signal instance_root_changed(instance: Dictionary)
 @warning_ignore("unused_signal")
 signal cem_set_state(is_open: bool)
 @warning_ignore("unused_signal")
-signal cem_camera(state: bool)
-@warning_ignore("unused_signal")
 signal cem_set_gizmo_state(state: bool)
 
 # Multiplayer
