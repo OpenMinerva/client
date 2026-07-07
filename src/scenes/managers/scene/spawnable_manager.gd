@@ -8,6 +8,13 @@
 # --- License
 extends Node
 
+# TODO: Network:
+	# Node renaming.
+	# Node reparenting.
+	# Node position updating.
+# TODO: Database:
+	# Sane _database_id. Don't hardcode 10.
+
 const SPAWNABLE_TEMPLATE: Dictionary = {
 	"type": -1,
 	"spawner": -1,
@@ -76,6 +83,7 @@ func create(node_type: int, node_parent: int = 0, model_path: String = "") -> Va
 
 		return _database[database_index].node
 	else:
+		# TODO: Graceful error for when RPC target is not found?
 		var entity = await rpcawaiter.send_rpc(1, create.bind(node_type, node_parent, model_path))
 		var database_index: int = _database.find_custom(func(entry): return entry.id == entity)
 		return _database[database_index].node

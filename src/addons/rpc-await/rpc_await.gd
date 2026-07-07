@@ -96,8 +96,9 @@ func send_rpc_timeout(timeout: float, net_id: int, callable: Callable, default_r
 	_next_id += 1
 	_open_requests[req_id] = req_obj
 
+	# HACK: Bypass the mismatched scene ids by just looking at the scene root.
 	var regex = RegEx.new()
-	regex.compile("/root/Master/HBoxContainer/VBoxContainer/SubViewportContainer/SubViewport/Scenes/[A-Za-z0-9]+/")
+	regex.compile("/root/Master/Scenes/[A-Za-z0-9]+/")
 	var result = regex.sub(source_obj.get_path(), "")
 
 	_handle_callable_request.rpc_id(
