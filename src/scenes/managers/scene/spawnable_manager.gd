@@ -8,6 +8,13 @@
 # --- License
 extends Node
 
+# TODO: Network:
+	# Node renaming.
+	# Node reparenting.
+	# Node position updating.
+# TODO: Database:
+	# Sane _database_id. Don't hardcode 10.
+
 const SPAWNABLE_TEMPLATE: Dictionary = {
 	"type": -1,
 	"spawner": -1,

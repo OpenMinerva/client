@@ -9,12 +9,14 @@
 extends CharacterBody3D
 
 # Libraries
-@onready var _app_scene_m = get_tree().current_scene.get_node("SceneManager")
+@onready var _app_scene_m: Node = get_tree().current_scene.get_node("SceneManager")
+@onready var _session_spawnable_m: Node
 
 # Nodes
 @onready var _node_head = get_node("Head")
 @onready var _node_body = get_node(".")
 @onready var _node_camera = get_node("Head/Camera3D")
+@onready var _node_cem_camera: Node3D = null
 
 # Constants
 const _DEFAULT_FOV: float = 90.0
@@ -41,6 +43,9 @@ var _mouse_captured: bool = false
 
 func _enter_tree() -> void:
 	set_multiplayer_authority(0)
+
+	# FIXME: Properly get the session spawnable node.
+	_session_spawnable_m = get_parent().get_parent().get_node("SpawnableManager")
 	return
 
 func _ready() -> void:
@@ -85,7 +90,8 @@ func _phys_buildmode(delta) -> void:
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		return
 
-	_node_camera.translate(Vector3(_local_direction.x * 0.1, 0, _local_direction.z * 0.1))
+	if _node_cem_camera != null:
+		_node_cem_camera.translate(Vector3(_local_direction.x * 0.1, 0, _local_direction.z * 0.1))
 	return
 
 func _phys_normal(delta) -> void:
@@ -127,13 +133,13 @@ func _input(event) -> void:
 			_node_camera.rotate_x(-event.relative.y * _DEFAULT_SENSITIVITY * 0.001)
 			_node_camera.rotation.x = clamp(_node_camera.rotation.x, deg_to_rad(-85), deg_to_rad(89))
 
-		if _cem_camera == true:
+		if _cem_camera == true && _node_cem_camera != null:
 			if _cem_panning == true:
-				_node_camera.translate(Vector3(event.relative.x * 0.01, -event.relative.y * 0.01, 0))
+				_node_cem_camera.translate(Vector3(event.relative.x * 0.01, -event.relative.y * 0.01, 0))
 
 			if _cem_rotating == true:
-				_node_camera.rotation.y -= event.relative.x * _DEFAULT_SENSITIVITY * 0.001
-				_node_camera.rotation.x = clampf(_node_camera.rotation.x - event.relative.y * _DEFAULT_SENSITIVITY * 0.001, deg_to_rad(-89), deg_to_rad(89))
+				_node_cem_camera.rotation.y -= event.relative.x * _DEFAULT_SENSITIVITY * 0.001
+				_node_cem_camera.rotation.x = clampf(_node_cem_camera.rotation.x - event.relative.y * _DEFAULT_SENSITIVITY * 0.001, deg_to_rad(-89), deg_to_rad(89))
 
 	return
 
@@ -157,17 +163,35 @@ func _cem_camera_state(state: bool) -> void:
 	_cem_camera = state
 
 	if _cem_camera == true:
+		_node_cem_camera = await _cem_camera_build()
 		var _player_pos = position
-		_node_camera.reparent(_scene_root)
-		_node_camera.position = Vector3(_player_pos.x + 2, _player_pos.y + 2, _player_pos.z + 2)
-		_node_camera.look_at(_node_body.global_position)
+
+		_node_camera.current = false
+		# FIXME: Improper camera get.
+		_node_cem_camera.get_child(0).current = true
+
+		_node_cem_camera.position = Vector3(_player_pos.x + 2, _player_pos.y + 2, _player_pos.z + 2)
+		_node_cem_camera.look_at(_node_body.global_position)
 		return
 
-	_node_camera.reparent(_node_head)
-	_node_camera.position = Vector3(0,0,0)
-	_node_camera.rotation = Vector3(0,0,0)
+	# FIXME: Improper camera get.
+	_node_cem_camera.get_child(0).current = false
+	_node_camera.current = true
+	await _session_spawnable_m.destroy(int(_node_cem_camera.name))
 
 	return
+
+func _cem_camera_build() -> Node3D:
+	var _nsb_empty_index: int = NSB.get_node_index("Node3D")
+	var _nsb_camera_index: int = NSB.get_node_index("CEM_Camera")
+	var _nsb_mesh_index: int = NSB.get_node_index("Box")
+
+	var _node_root = await _session_spawnable_m.create(_nsb_empty_index)
+	var _node_camera = await _session_spawnable_m.create(_nsb_camera_index, int(_node_root.name))
+	var _node_model = await _session_spawnable_m.create(_nsb_mesh_index, int(_node_root.name))
+
+	_node_model.mesh.size = Vector3(0.2, 0.2, 0.2)
+	return _node_root
 
 func _cem_camera_lookat(node: Node) -> void:
 	_node_camera.look_at(node)

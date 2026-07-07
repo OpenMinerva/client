@@ -19,6 +19,14 @@ static var schema = {
 		"hidden": true,
 		"deep_delete": false,
 	},
+	"CEM_Camera": {
+		"requires_setup": false,
+		"pretty_name": "PlayerCamera",
+		"node": "Camera3D",
+		"icon": load("res://resources/icons/godot/GizmoCamera3D.svg"),
+		"hidden": true,
+		"deep_delete": false,
+	},
 	"Model": {
 		"requires_setup": true,
 		"pretty_name": "Imported Model",
@@ -54,7 +62,7 @@ static var schema = {
 	"RigidBody3D": {
 		"requires_setup": true,
 		"pretty_name": "RigidBody3D",
-		"node": RigidBody3D,
+		"node": "RigidBody3D",
 		"icon": load("res://resources/icons/godot/RigidBody3D.svg"),
 		"hidden": false,
 		"deep_delete": true,
