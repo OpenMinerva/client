@@ -1,164 +1,158 @@
+# --- License
+# File: /client/src/scenes/players/player_new.gd
+# Project: OpenMinerva
+# Created Date: 04 July 2026
+# Copyright (c) 2026 OpenMinerva
+# License: MIT License
+# Authors: Armored Dragon
+# --- License
 extends CharacterBody3D
 
-const base_fov = 90.0
-const fov_change = 1.1
-# Player speed
-const SPRINT_SPEED = 6.0
-const WALK_SPEED = 3.0
-const CROUCH_SPEED = 1.5
-const PRONE_SPEED = 0.5
-const JUMP_VELOCITY = 4.5
-const SENSITIVITY = 1.5
+# FIXME: Multiplayer CEM camera:
+	# When one player activates CEM camera, all players spawn the camera?
+	# Size not networked.
+	# Position not networked.
 
-@export var mouse_sensitivity: float = 1.5
+# Libraries
+@onready var _app_scene_m: Node = get_tree().current_scene.get_node("SceneManager")
+@onready var _session_spawnable_m: Node
 
-var speed = 5.0
-# Player statuses
-var mouse_captured: bool = false
-# Get the gravity from the project settings to be synced with RigidBody nodes.
-var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
-var cem_state: bool = false
+# Nodes
+@onready var _node_head = get_node("Head")
+@onready var _node_body = get_node(".")
+@onready var _node_camera = get_node("Head/Camera3D")
+@onready var _node_cem_camera: Node3D = null
 
-@onready var scene_m = get_tree().current_scene.get_node("SceneManager")
-# TODO: Mouse sensitivity from settings
-# TODO: Replace interaction ray
-# TODO: Add skeleton controller
-# TODO: Mouse captured from HUD, not player controller
-# TODO: Rotate climbing collider as you move WASD
-@onready var body = $"."
-@onready var head = $Head
-@onready var camera = $Head/Camera3D
+# Constants
+const _DEFAULT_FOV: float = 90.0
+const _DEFAULT_JUMP_VELOCITY: float = 4.5
+const _DEFAULT_SENSITIVITY: float = 1.5
+const _DEFAULT_GRAVITY: float = 9.81
+const _DEFAULT_SPRINT_SPEED: float = 6.0
+const _DEFAULT_SPEED: float = 3.0
+const _DEFAULT_CROUCH_SPEED: float = 1.5
 
+# States
+var _cem_state: bool = false
+var _cem_camera: bool = false
+var _dash_state: bool = false
 
-func _enter_tree():
+var _cem_panning: bool = false
+var _cem_rotating: bool = false
+
+var _scene_root: Node3D
+
+# Variables
+var _speed: float = 0
+var _mouse_captured: bool = false
+
+func _enter_tree() -> void:
 	set_multiplayer_authority(0)
 
+	# FIXME: Properly get the session spawnable node.
+	_session_spawnable_m = get_parent().get_parent().get_node("SpawnableManager")
+	return
 
-func _ready():
-	camera.fov = base_fov
-	camera.current = false
+func _ready() -> void:
+	_node_camera.fov = _DEFAULT_FOV
 
+	Events.connect("dash_set_state", _handle_dash_state)
+	Events.connect("app_mouse_captured", _on_mouse_captured)
+	Events.connect("cem_camera", _cem_camera_state)
+	return
 
-func _physics_process(delta):
-	# TODO: Simplify focus detection code from "mouse_captured".
+func _physics_process(delta) -> void:
 	if is_multiplayer_authority() == false:
 		return
 
-	# Add the gravity.
-	if not is_on_floor():
-		velocity.y -= gravity * delta + 0.05
+	_phys_buildmode(delta)
+	_phys_normal(delta)
 
-	if Input.is_action_pressed("sprint") && mouse_captured == true:
-		speed = lerp(speed, SPRINT_SPEED, delta * 7.0)
-		var pos = Vector3.ZERO
-		pos.y = 1.7
-		pos.z = -0.15
-	else:
-		speed = lerp(speed, WALK_SPEED, delta * 7.0)
-		var pos = Vector3.ZERO
-		pos.y = 1.7
-		pos.z = -0.15
-		head.transform.origin = lerp(head.transform.origin, pos, delta * 7.0)
+	return
 
-	if !is_on_floor():
-		speed = speed / 1.1
+func _phys_buildmode(delta) -> void:
+	if _cem_camera == false:
+		return
 
-	# Get the input direction and handle the movement/deceleration.
-	var input_dir: Vector2 = Vector2(0, 0)
+	var _input_dir = Input.get_vector("left", "right", "forward", "backward")
+	var _local_direction = Vector3(_input_dir.x, 0, _input_dir.y)
 
-	if mouse_captured == true:
-		input_dir = Input.get_vector("left", "right", "forward", "backward")
+	if Input.is_action_just_pressed("cem_camera_pan"):
+		_cem_panning = true
+		return
 
-	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-	if direction:
-		velocity.x = direction.x * speed
-		velocity.z = direction.z * speed
-	else:
-		velocity.x = lerp(velocity.x, direction.x * speed, delta * 20.0)
-		velocity.z = lerp(velocity.z, direction.z * speed, delta * 20.0)
+	if Input.is_action_just_released("cem_camera_pan"):
+		_cem_panning = false
+		return
 
-	if Input.is_action_just_pressed("jump") && is_on_floor() && mouse_captured == true:
-		velocity.y = JUMP_VELOCITY
+	if Input.is_action_just_pressed("cem_camera_rotate"):
+		_cem_rotating = true
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		return
+
+	if Input.is_action_just_released("cem_camera_rotate"):
+		_cem_rotating = false
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		return
+
+	if _node_cem_camera != null:
+		_node_cem_camera.translate(Vector3(_local_direction.x * 0.1, 0, _local_direction.z * 0.1))
+	return
+
+func _phys_normal(delta) -> void:
+	if is_on_floor() == false:
+		velocity.y -= _DEFAULT_GRAVITY * delta
+
+	if _mouse_captured == false:
+		velocity.x = 0
+		velocity.z = 0
+
+		move_and_slide()
+		_send_player_position()
+		return
+
+	_speed = _DEFAULT_SPEED
+	if Input.is_action_pressed("sprint"):
+		_speed = _DEFAULT_SPRINT_SPEED
+
+	if _cem_camera == false:
+		var _input_dir = Input.get_vector("left", "right", "forward", "backward")
+		var _direction = (transform.basis * Vector3(_input_dir.x, 0, _input_dir.y)).normalized()
+		velocity.x = _direction.x * _speed
+		velocity.z = _direction.z * _speed
+
+	if Input.is_action_pressed("jump") && is_on_floor():
+		velocity.y = _DEFAULT_JUMP_VELOCITY
 
 	move_and_slide()
-	_send_player_synchronization_info()
+	_send_player_position()
+	return
 
-
-func _input(event):
+func _input(event) -> void:
 	if is_multiplayer_authority() == false:
 		return
 
-	if mouse_captured && event is InputEventMouseMotion:
-		body.rotate_y(-event.relative.x * mouse_sensitivity * 0.001)
-		camera.rotate_x(-event.relative.y * mouse_sensitivity * 0.001)
-		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-85), deg_to_rad(89))
+	if _mouse_captured == true && event is InputEventMouseMotion:
+		if _cem_camera == false:
+			_node_body.rotate_y(-event.relative.x * _DEFAULT_SENSITIVITY * 0.001)
+			_node_camera.rotate_x(-event.relative.y * _DEFAULT_SENSITIVITY * 0.001)
+			_node_camera.rotation.x = clamp(_node_camera.rotation.x, deg_to_rad(-85), deg_to_rad(89))
 
+		if _cem_camera == true && _node_cem_camera != null:
+			if _cem_panning == true:
+				_node_cem_camera.translate(Vector3(event.relative.x * 0.01, -event.relative.y * 0.01, 0))
 
-func _unhandled_input(event):
-	if is_multiplayer_authority() == false:
-		return
+			if _cem_rotating == true:
+				_node_cem_camera.rotation.y -= event.relative.x * _DEFAULT_SENSITIVITY * 0.001
+				_node_cem_camera.rotation.x = clampf(_node_cem_camera.rotation.x - event.relative.y * _DEFAULT_SENSITIVITY * 0.001, deg_to_rad(-89), deg_to_rad(89))
 
-	if event.is_action_pressed("escape"):
-		if mouse_captured:
-			capture_mouse(false)
-			Events.emit_signal("dash_set_state", true)
-		else:
-			capture_mouse(true)
-			Events.emit_signal("dash_set_state", false)
-
-		get_viewport().set_input_as_handled()
-
-	if "keycode" in event && event.keycode == 4194306 && event.pressed == true:
-		capture_mouse(!mouse_captured)
-		get_viewport().set_input_as_handled()
-		return
-
-	if "keycode" in event && event.keycode == 4194334 && event.pressed == true:
-		_toggle_client_edit_mode()
-		get_viewport().set_input_as_handled()
-		return
-
-	if "keycode" in event && event.keycode == 4194340 && event.pressed == true:
-		if mouse_captured:
-			capture_mouse(false)
-			Events.emit_signal("debug_entity_set_state")
-		else:
-			capture_mouse(true)
-			Events.emit_signal("debug_entity_set_state")
-		get_viewport().set_input_as_handled()
-		return
-
-
-func round_to_dec(num, digit):
-	return round(num * pow(10.0, digit)) / pow(10.0, digit)
-
-
-func get_subscene_root(node: Node) -> Node:
-	var current_node = node
-	if current_node.get_parent() != null:
-		return current_node
-	else:
-		return null
-
-
-func capture_mouse(to_capture: bool):
-	if to_capture == false:
-		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-		mouse_captured = false
-	else:
-		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-		mouse_captured = true
 	return
 
-
-func _toggle_client_edit_mode() -> void:
-	Events.emit_signal("cem_set_state", !cem_state)
-	capture_mouse(cem_state)
-	cem_state = !cem_state
+func _on_mouse_captured(state: bool) -> void:
+	_mouse_captured = state
 	return
 
-
-func _send_player_synchronization_info():
+func _send_player_position() -> void:
 	if is_multiplayer_authority() == false:
 		return
 
@@ -168,4 +162,51 @@ func _send_player_synchronization_info():
 	# HACK: We are just appending the rotation bits at the end here. It should probably be more efficient somewhere else.
 	compressed_position.append_array(compressed_rotation)
 
-	scene_m.get_master_scene(scene_m.active_session).get_node("NetworkManager").entity_position.rpc(int(name), compressed_position)
+	_app_scene_m.get_master_scene(_app_scene_m.active_session).get_node("NetworkManager").entity_position.rpc(int(name), compressed_position)
+
+	return
+
+func _handle_dash_state(state: bool) -> void:
+	_dash_state = state
+	return
+
+func _cem_camera_state(state: bool) -> void:
+	_scene_root = _app_scene_m.get_master_root(_app_scene_m.active_session)
+	_cem_camera = state
+
+	if _cem_camera == true:
+		_node_cem_camera = await _cem_camera_build()
+		var _player_pos = position
+
+		_node_camera.current = false
+		# FIXME: Improper camera get.
+		_node_cem_camera.get_child(0).current = true
+
+		_node_cem_camera.position = Vector3(_player_pos.x + 2, _player_pos.y + 2, _player_pos.z + 2)
+		_node_cem_camera.look_at(_node_body.global_position)
+		return
+
+	if _node_cem_camera != null:
+	# FIXME: Improper camera get.
+	# TODO: Add error if this code is ran without _node_cem_camera defined.
+		_node_cem_camera.get_child(0).current = false
+		await _session_spawnable_m.destroy(int(_node_cem_camera.name))
+	_node_camera.current = true
+
+	return
+
+func _cem_camera_build() -> Node3D:
+	var _nsb_empty_index: int = NSB.get_node_index("Node3D")
+	var _nsb_camera_index: int = NSB.get_node_index("CEM_Camera")
+	var _nsb_mesh_index: int = NSB.get_node_index("Box")
+
+	var _node_root = await _session_spawnable_m.create(_nsb_empty_index)
+	var _node_camera = await _session_spawnable_m.create(_nsb_camera_index, int(_node_root.name))
+	var _node_model = await _session_spawnable_m.create(_nsb_mesh_index, int(_node_root.name))
+
+	_node_model.mesh.size = Vector3(0.2, 0.2, 0.2)
+	return _node_root
+
+func _cem_camera_lookat(node: Node) -> void:
+	_node_camera.look_at(node)
+	return

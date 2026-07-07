@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dvx1vs2ig7st4"]
 
-[ext_resource type="Script" uid="uid://dutdx0fa6di2g" path="res://scenes/players/player_new.gd" id="1_plyga"]
+[ext_resource type="Script" uid="uid://dutdx0fa6di2g" path="res://scenes/players/player.gd" id="1_plyga"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_p1mvi"]
 
