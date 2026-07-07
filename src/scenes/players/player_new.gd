@@ -171,10 +171,6 @@ func _handle_dash_state(state: bool) -> void:
 	return
 
 func _cem_camera_state(state: bool) -> void:
-	if _cem_camera == state:
-		GlobalLogger.log("CEM desired camera mode is what we are setting it to, desync!", Enum.LogLevel.WARNING)
-		return
-
 	_scene_root = _app_scene_m.get_master_root(_app_scene_m.active_session)
 	_cem_camera = state
 
@@ -190,10 +186,12 @@ func _cem_camera_state(state: bool) -> void:
 		_node_cem_camera.look_at(_node_body.global_position)
 		return
 
+	if _node_cem_camera != null:
 	# FIXME: Improper camera get.
-	_node_cem_camera.get_child(0).current = false
+	# TODO: Add error if this code is ran without _node_cem_camera defined.
+		_node_cem_camera.get_child(0).current = false
+		await _session_spawnable_m.destroy(int(_node_cem_camera.name))
 	_node_camera.current = true
-	await _session_spawnable_m.destroy(int(_node_cem_camera.name))
 
 	return
 

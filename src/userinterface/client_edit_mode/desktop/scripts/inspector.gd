@@ -15,8 +15,10 @@ extends Control
 # FIXME: DevSpawnableManager node
 @onready var dev_spawn_m: Node = get_tree().current_scene.get_node("DevSpawnManager")
 @onready var app_scene_m: Node = get_tree().current_scene.get_node("SceneManager")
+@onready var app_network_m: Node = get_tree().current_scene.get_node("NetworkManager")
 @onready var session_spawnable_m: Node
 @onready var session_signalbus: Node
+@onready var session_players_m: Node
 @onready var session_root: Node3D
 
 # Gizmos
@@ -144,7 +146,7 @@ func _input(event: InputEvent):
 
 	if event.is_action_pressed("cem_camera"):
 		_cem_camera = !_cem_camera
-		Events.emit_signal("cem_camera", _cem_camera)
+		_cem_camera_state(_cem_camera)
 
 	return
 
@@ -225,6 +227,7 @@ func _on_node_destroyed(node_entry: Dictionary) -> void:
 func _on_session_changed() -> void:
 	session_signalbus = app_scene_m.get_master_scene(app_scene_m.active_session).get_node("SignalBus")
 	session_spawnable_m = app_scene_m.get_master_scene(app_scene_m.active_session).get_node("SpawnableManager")
+	session_players_m = app_scene_m.get_master_scene(app_scene_m.active_session).get_node("PlayerManager")
 	session_root = app_scene_m.get_master_root(app_scene_m.active_session)
 
 	_inspector_selected = null
@@ -388,4 +391,22 @@ func _gizmo_visibility(visible: bool = false) -> void:
 	for gizmo in world_gizmos:
 		gizmo.show_selection_box = visible
 		gizmo.mode = _gizmo_target_mode
+	return
+
+# CEM Camera
+func _cem_camera_state(state: bool) -> void:
+	var _active_session_id = app_scene_m.active_session
+	var _session_api = app_network_m._database.sessions_api[_active_session_id]
+	var _player_id: int = _session_api.get_unique_id()
+	var _player_db = session_players_m.players[str(_player_id)]
+	var _player_node: Node3D
+
+	# HACK: Hardcoded fix for force host spawn.
+	# The host is forcefully spawned into a instance as it is created, bypassing the database entirely.
+	if _player_db == null:
+		_player_node = session_root.get_node("1")
+	else:
+		_player_node = session_players_m.players[str(_player_id)].node
+
+	_player_node._cem_camera_state(state)
 	return
