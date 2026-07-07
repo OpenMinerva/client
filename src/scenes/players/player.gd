@@ -1,5 +1,5 @@
 # --- License
-# File: /client/src/scenes/players/player_new.gd
+# File: /client/src/scenes/players/player.gd
 # Project: OpenMinerva
 # Created Date: 04 July 2026
 # Copyright (c) 2026 OpenMinerva
