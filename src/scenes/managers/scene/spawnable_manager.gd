@@ -54,7 +54,7 @@ func _physics_process(_delta):
 		if spawnable.id % _spawnable_network_batches == current_batch:
 			continue
 
-		position_spawnable.rpc(spawnable.id, spawnable.node.position, spawnable.node.rotation)
+		transform_spawnable.rpc(spawnable.id, spawnable.node.transform)
 	return
 
 
@@ -63,7 +63,7 @@ func sync_all() -> void:
 	if !is_multiplayer_authority():
 		return
 	for spawnable in _database:
-		position_spawnable.rpc(spawnable.id, spawnable.node.position, spawnable.node.rotation)
+		set_transform.rpc(spawnable.id, spawnable.node.transform)
 	return
 
 
@@ -110,6 +110,20 @@ func destroy(node_id: int) -> Variant:
 		return
 
 
+@rpc("any_peer", "reliable")
+func set_transform(node_id: int, transform: Transform3D) -> void:
+	var _my_id: int = app_network_m._database.sessions_api[app_scene_m.active_session].get_unique_id()
+	var _caller_id: int = multiplayer.get_remote_sender_id()
+
+	if _my_id == 1:
+		# TODO: Compress for network?
+		transform_spawnable.rpc(node_id, transform)
+	else:
+		await rpcawaiter.send_rpc(1, set_transform.bind(node_id, transform))
+		return
+	return
+
+
 # TODO: How would large assets work?
 @rpc("authority", "reliable")
 func spawn_spawnable(p_type: int, p_name: String = "", p_path: String = "", parent_id: int = 0) -> int:
@@ -128,7 +142,6 @@ func spawn_spawnable(p_type: int, p_name: String = "", p_path: String = "", pare
 	session_signalbus.node_created.emit(_spawned_entity)
 	return int(_spawned_entity.name)
 
-
 # TODO: require actioning user
 @rpc("authority", "reliable")
 func delete_spawnable(node_name: String) -> void:
@@ -144,6 +157,12 @@ func delete_spawnable(node_name: String) -> void:
 	session_signalbus.node_destroyed.emit(_entry)
 	_entry.node.queue_free()
 	_database.remove_at(_entry_index)
+	return
+
+@rpc("call_local", "authority", "reliable")
+func transform_spawnable(node_id: int, transform: Transform3D) -> void:
+	var _entity_db = get_by_id(node_id)
+	_entity_db.node.transform = transform
 	return
 
 func _get_deletion_queue(node_name: String) -> Array:
@@ -172,19 +191,6 @@ func receive_database(database: Array, id: int) -> void:
 		spawn_spawnable(spawnable.type, str(spawnable.id))
 	network_m.rpc_id(1, "dev_request_sync")
 	return
-
-
-# TODO: SECURITY Make this so that the client can move the item on their end, but the host must move it for everyone else.
-@rpc("any_peer", "unreliable")
-func position_spawnable(id: int, p_position: Vector3, p_rotation: Vector3, p_scale: Vector3) -> void:
-	var database_entry = _database.find_custom(func(entry): return entry.id == id)
-	var node = _database[database_entry].node
-	if node:
-		node.position = p_position
-		node.rotation = p_rotation
-		node.scale = p_scale
-	return
-
 
 func set_node_visible_to_inspector(node: Node) -> void:
 	var nodes = get_all_node_children(node)
