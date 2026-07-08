@@ -212,8 +212,6 @@ func _cem_camera_build() -> Node3D:
 	var _node_camera = await _session_spawnable_m.create(_nsb_camera_index, int(_node_root.name))
 	var _node_model = await _session_spawnable_m.create(_nsb_mesh_index, int(_node_root.name))
 
-	# TODO: Network node-specific settings.
-	# _node_model.mesh.size = Vector3(0.2, 0.2, 0.2)
 	return _node_root
 
 func _cem_camera_lookat(node: Node) -> void:
