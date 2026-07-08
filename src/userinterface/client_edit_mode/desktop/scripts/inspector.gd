@@ -345,6 +345,8 @@ func _select(target_node: int) -> void:
 	my_gizmo.mode = _gizmo_mode
 	my_gizmo.use_local_space = _gizmo_space_local
 
+	my_gizmo.transform_changed.connect(func(mode, value): session_spawnable_m.set_transform(target_node, _node_db_entry.node.transform))
+
 func _gizmo_delete() -> void:
 	my_gizmo.clear_selection()
 	await session_spawnable_m.destroy(int(my_gizmo.name))

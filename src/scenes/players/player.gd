@@ -96,6 +96,9 @@ func _phys_buildmode(delta) -> void:
 
 	if _node_cem_camera != null:
 		_node_cem_camera.translate(Vector3(_local_direction.x * 0.1, 0, _local_direction.z * 0.1))
+
+		var _transform = _node_cem_camera.transform
+		_session_spawnable_m.set_transform(int(_node_cem_camera.name), _transform)
 	return
 
 func _phys_normal(delta) -> void:
@@ -141,6 +144,10 @@ func _input(event) -> void:
 			if _cem_panning == true:
 				_node_cem_camera.translate(Vector3(event.relative.x * 0.01, -event.relative.y * 0.01, 0))
 
+				# Network position:
+				var _transform = _node_cem_camera.transform
+				_session_spawnable_m.set_transform(int(_node_cem_camera.name), _transform)
+
 			if _cem_rotating == true:
 				_node_cem_camera.rotation.y -= event.relative.x * _DEFAULT_SENSITIVITY * 0.001
 				_node_cem_camera.rotation.x = clampf(_node_cem_camera.rotation.x - event.relative.y * _DEFAULT_SENSITIVITY * 0.001, deg_to_rad(-89), deg_to_rad(89))
@@ -182,6 +189,8 @@ func _cem_camera_state(state: bool) -> void:
 		_node_cem_camera.get_child(0).current = true
 
 		_node_cem_camera.position = Vector3(_player_pos.x + 2, _player_pos.y + 2, _player_pos.z + 2)
+		_session_spawnable_m.set_transform(int(_node_cem_camera.name), _node_cem_camera.transform)
+
 		_node_cem_camera.look_at(_node_body.global_position)
 		return
 
@@ -203,7 +212,6 @@ func _cem_camera_build() -> Node3D:
 	var _node_camera = await _session_spawnable_m.create(_nsb_camera_index, int(_node_root.name))
 	var _node_model = await _session_spawnable_m.create(_nsb_mesh_index, int(_node_root.name))
 
-	_node_model.mesh.size = Vector3(0.2, 0.2, 0.2)
 	return _node_root
 
 func _cem_camera_lookat(node: Node) -> void:
