@@ -66,6 +66,7 @@ static var schema = {
 		"icon": load("res://resources/icons/godot/RigidBody3D.svg"),
 		"hidden": false,
 		"deep_delete": true,
+		"tags": ["RigidBody"]
 	},
 	"MeshInstance3D": {
 		"requires_setup": false,
@@ -82,6 +83,15 @@ static var schema = {
 		"icon": load("res://resources/icons/godot/Skeleton3D.svg"),
 		"hidden": false,
 		"deep_delete": true,
+	},
+	"OmniLight3D": {
+		"requires_setup": false,
+		"pretty_name": "OmniLight3D",
+		"node": "OmniLight3D",
+		"icon": load("res://resources/icons/godot/OmniLight3D.svg"),
+		"hidden": false,
+		"deep_delete": true,
+		"tags": ["Light"]
 	},
 }
 

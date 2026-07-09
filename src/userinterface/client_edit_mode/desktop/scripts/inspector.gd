@@ -35,6 +35,7 @@ var _gizmo_space_local: bool = true
 @onready var _node_crosshair: Node = get_tree().current_scene.get_node("Crosshair")
 @onready var _inspector_popup: Node = get_node("InspectorPopup")
 @onready var _inspector_add_node_window: Node = get_node("AddNodeWindow")
+@onready var _inspector_filters: Node = get_node("VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer")
 
 # UI Inspector
 @onready var _inspector_tree: Tree = get_node("VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer/Tree")
@@ -252,6 +253,7 @@ func _inspector_build(root_node: Node = session_root) -> void:
 	_inspector_clear()
 	var _inspector_root = _inspector_tree.create_item()
 	_inspector_add_node(root_node, _inspector_root)
+	_inspector_apply_filters()
 
 	# Update the Toolbar counts.
 	_node_toolbar_spawnable_count.update_meta(_total_spawnable_label)
@@ -261,7 +263,7 @@ func _inspector_build(root_node: Node = session_root) -> void:
 func _inspector_save_openness() -> void:
 	# Parse the entire tree, and save node values that are open
 	_inspector_opened_tree_nodes = []
-	var _item := _inspector_tree.get_root()
+	var _item = _inspector_tree.get_root()
 
 	# TODO: Breakout / Safety!
 	while _item:
@@ -280,7 +282,6 @@ func _inspector_save_openness() -> void:
 
 func _inspector_add_node(node: Node, parent: TreeItem) -> void:
 	if node.get_meta("scene_node", false) == false:
-		GlobalLogger.log("Ignoring node '%s' in the inspector." % node)
 		return
 
 	var _tree_node = _inspector_tree.create_item(parent)
@@ -296,6 +297,70 @@ func _inspector_add_node(node: Node, parent: TreeItem) -> void:
 	for child in node.get_children():
 		_inspector_add_node(child, _tree_node)
 	return
+
+func _inspector_apply_filters():
+	var _all_items: Array[TreeItem] = _inspector_get_nodes(_inspector_tree)
+	var _filter_tags: Array[String] = []
+	var _valid_nodes: Array = []
+
+	# Get the filter tags
+	for child in _inspector_filters.get_children():
+		if child.get_node("Button").button_pressed:
+			_filter_tags.append(child.name)
+
+	# FIXME: There is probably a better place to preform this check.
+	if _filter_tags.size() == 0:
+		# No filters to apply, do nothing.
+		return
+
+	for item in all_items:
+		var _node = item.get_metadata(0)
+
+		if _node == null:
+			continue
+
+		# TODO: This is probably expensive to run, surely there is a better way to get this information.
+		# Would adding this to the metadata of the tree listing be more performant?
+		var _nsb_index = NSB.get_node_index(_node.get_class())
+		var _nsb_entry = NSB.get_formatted(_nsb_index)
+
+		# FIXME: This should at least be easier to read, break out into functions?
+		if "tags" in _nsb_entry:
+			for _node_tag in _nsb_entry.tags:
+				if _node_tag in _filter_tags:
+					for _ancestor in _inspector_get_ancestors(item):
+						if _ancestor not in _valid_nodes:
+							_valid_nodes.append(_ancestor)
+
+	for _tree_node in all_items:
+		_tree_node.set_visible(_valid_nodes.has(_tree_node))
+	return
+
+func _inspector_get_ancestors(item: TreeItem) -> Array[TreeItem]:
+	# FIXME: Wrote this in a delirium, review after sleep.
+	var ancestors: Array[TreeItem] = []
+	var parent = item.get_parent()
+	ancestors.append(item)
+	ancestors.append(parent)
+
+	# TODO: Breakout / Safety!
+	while parent:
+		parent = parent.get_parent()
+		if parent != null:
+			ancestors.append(parent)
+
+	return ancestors
+
+func _inspector_get_nodes(tree) -> Array[TreeItem]:
+	var items: Array[TreeItem] = []
+	var item = tree.get_root()
+
+	# TODO: Breakout / Safety!
+	while item:
+		items.append(item)
+		item = item.get_next_in_tree()
+
+	return items
 
 func _inspector_item_edited() -> void:
 	_inspector_editing.set_editable(0, false)
