@@ -43,6 +43,7 @@ var _gizmo_space_local: bool = true
 var _inspector_selected: TreeItem = null
 var _inspector_editing: TreeItem = null
 var _inspector_focused: TreeItem = null
+var _inspector_opened_tree_nodes: Array[Node] = []
 
 var _cem_state: bool = false
 var _cem_camera: bool = false
@@ -247,12 +248,33 @@ func _inspector_build(root_node: Node = session_root) -> void:
 	var _total_spawnable_label: String = str(session_spawnable_m._database.size())
 
 	GlobalLogger.log("Generating the inspector view with parent '%s'." % root_node)
+	_inspector_save_openness()
 	_inspector_clear()
 	var _inspector_root = _inspector_tree.create_item()
 	_inspector_add_node(root_node, _inspector_root)
 
 	# Update the Toolbar counts.
 	_node_toolbar_spawnable_count.update_meta(_total_spawnable_label)
+
+	return
+
+func _inspector_save_openness() -> void:
+	# Parse the entire tree, and save node values that are open
+	_inspector_opened_tree_nodes = []
+	var _item := _inspector_tree.get_root()
+
+	# TODO: Breakout / Safety!
+	while _item:
+		if _item.is_collapsed() == true:
+			_item = _item.get_next_in_tree()
+			continue
+
+		# Save the item to the list
+		var _node = _item.get_metadata(0)
+		if _node != null:
+			_inspector_opened_tree_nodes.append(_item.get_metadata(0))
+
+		_item = _item.get_next_in_tree()
 
 	return
 
@@ -263,12 +285,13 @@ func _inspector_add_node(node: Node, parent: TreeItem) -> void:
 
 	var _tree_node = _inspector_tree.create_item(parent)
 	var _tree_icon = _get_node_icon(node)
+	var _is_collapsed = !_inspector_opened_tree_nodes.has(node)
 
 	_tree_node.set_text(0, node.get_meta("pretty_name", node.name))
 	_tree_node.set_icon(0, _tree_icon)
 	_tree_node.set_icon_max_width(0, 20)
 	_tree_node.set_metadata(0, node)
-
+	_tree_node.collapsed = _is_collapsed
 
 	for child in node.get_children():
 		_inspector_add_node(child, _tree_node)
