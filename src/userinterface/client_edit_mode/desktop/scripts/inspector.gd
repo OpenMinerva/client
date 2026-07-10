@@ -35,6 +35,8 @@ var _gizmo_space_local: bool = true
 @onready var _node_crosshair: Node = get_tree().current_scene.get_node("Crosshair")
 @onready var _inspector_popup: Node = get_node("InspectorPopup")
 @onready var _inspector_add_node_window: Node = get_node("AddNodeWindow")
+@onready var _inspector_filter_search: LineEdit = get_node("VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/InputString/MarginContainer/HBoxContainer/MarginContainer/LineEdit")
+@onready var _inspector_filters: Node = get_node("VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer")
 
 # UI Inspector
 @onready var _inspector_tree: Tree = get_node("VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer/Tree")
@@ -43,6 +45,10 @@ var _gizmo_space_local: bool = true
 var _inspector_selected: TreeItem = null
 var _inspector_editing: TreeItem = null
 var _inspector_focused: TreeItem = null
+var _inspector_opened_tree_nodes: Array[Node] = []
+var _inspector_selected_node: Node = null
+var _inspector_tree_filters: Array[String] = []
+var _inspector_tree_search: String = ""
 
 var _cem_state: bool = false
 var _cem_camera: bool = false
@@ -134,13 +140,7 @@ func _input(event: InputEvent):
 		_cem_state = !_cem_state
 		Events.emit_signal("cem_set_state", _cem_state)
 
-		# TODO: Global mouse capture handler?
-		if _cem_state == true:
-			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-		else:
-			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-
-		Events.emit_signal("app_mouse_captured", !_cem_state)
+		StateManager.update_mouse_state()
 
 		get_viewport().set_input_as_handled()
 
@@ -172,6 +172,17 @@ func _add_gizmo_event_listeners() -> void:
 func _add_button_event_listeners() -> void:
 	_inspector_popup.entry_clicked.connect(_inspector_popup_button_pressed)
 	_inspector_tree.item_mouse_selected.connect(_inspector_tree_item_mouse_selected)
+
+	_inspector_filter_search.text_changed.connect(_inspector_search_changed)
+
+	# When clicking on a filter button, apply the filter immediately.
+	for _filter_button in _inspector_filters.get_children():
+		_filter_button.get_node("Button").pressed.connect(
+			func ():
+				_inspector_get_filters()
+				_inspector_build()
+		)
+
 	return
 
 func _add_misc_event_listeners() -> void:
@@ -186,6 +197,8 @@ func _inspector_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_i
 		if _inspector_selected == null:
 			return
 
+		_inspector_selected_node = _inspector_selected.get_metadata(0)
+
 		_select(int(_inspector_selected.get_metadata(0).name))
 		return
 
@@ -194,6 +207,8 @@ func _inspector_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_i
 
 		if _inspector_selected == null:
 			return
+
+		_inspector_selected_node = _inspector_selected.get_metadata(0)
 
 		var _mouse_pos = _inspector_tree.get_global_mouse_position()
 		_inspector_popup.position = _mouse_pos
@@ -247,33 +262,150 @@ func _inspector_build(root_node: Node = session_root) -> void:
 	var _total_spawnable_label: String = str(session_spawnable_m._database.size())
 
 	GlobalLogger.log("Generating the inspector view with parent '%s'." % root_node)
+	_inspector_save_openness()
 	_inspector_clear()
 	var _inspector_root = _inspector_tree.create_item()
 	_inspector_add_node(root_node, _inspector_root)
+
+	if _inspector_tree_filters.size() > 0 || _inspector_tree_search != "":
+		_inspector_apply_filters()
 
 	# Update the Toolbar counts.
 	_node_toolbar_spawnable_count.update_meta(_total_spawnable_label)
 
 	return
 
+func _inspector_save_openness() -> void:
+	# Parse the entire tree, and save node values that are open
+	_inspector_opened_tree_nodes = []
+	var _item = _inspector_tree.get_root()
+
+	# TODO: Breakout / Safety!
+	while _item:
+		if _item.is_collapsed() == true:
+			_item = _item.get_next_in_tree()
+			continue
+
+		# Save the item to the list
+		var _node = _item.get_metadata(0)
+		if _node != null:
+			_inspector_opened_tree_nodes.append(_item.get_metadata(0))
+
+		_item = _item.get_next_in_tree()
+
+	return
+
 func _inspector_add_node(node: Node, parent: TreeItem) -> void:
 	if node.get_meta("scene_node", false) == false:
-		GlobalLogger.log("Ignoring node '%s' in the inspector." % node)
 		return
 
 	var _tree_node = _inspector_tree.create_item(parent)
 	var _tree_icon = _get_node_icon(node)
+	var _is_collapsed = !_inspector_opened_tree_nodes.has(node)
 
 	_tree_node.set_text(0, node.get_meta("pretty_name", node.name))
 	_tree_node.set_icon(0, _tree_icon)
 	_tree_node.set_icon_max_width(0, 20)
 	_tree_node.set_metadata(0, node)
+	_tree_node.collapsed = _is_collapsed
 
+	if _inspector_selected_node == node:
+		_inspector_tree.set_selected(_tree_node, 0)
 
 	for child in node.get_children():
 		_inspector_add_node(child, _tree_node)
 	return
 
+# Inspector filters
+func _inspector_apply_filters():
+	var _all_tree_items: Array[TreeItem] = _inspector_get_all_tree_entries(_inspector_tree)
+	var _valid_nodes: Array = []
+
+	for _tree_item in _all_tree_items:
+		var _tree_item_node = _tree_item.get_metadata(0)
+		if _tree_item_node == null:
+			GlobalLogger.log("Could not find the associated node for entry '%s'" % _tree_item.get_text(0), Enum.LogLevel.WARNING)
+			continue
+
+		# TODO: This is probably expensive to run, surely there is a better way to get this information.
+		# Would adding this to the metadata of the tree listing be more performant?
+		var _nsb_index = NSB.get_node_index(_tree_item_node.get_class())
+		var _nsb_entry = NSB.get_formatted(_nsb_index)
+
+		if _tree_item_node.get_meta("pretty_name", "").contains(_inspector_tree_search):
+			# If the pretty name in the node contains text that matches the search.
+			for _ancestor in _inspector_get_all_tree_ancestors(_tree_item):
+				# Get all tree items that lead to this tree item. From listing up through each parent.
+				if _ancestor not in _valid_nodes:
+					# If we do not already have the tree item added to the list, add it.
+					_valid_nodes.append(_ancestor)
+
+		if "tags" in _nsb_entry:
+			# Does the NSB DB entry have the "tags" field? (Error check)
+			for _node_tag in _nsb_entry.tags:
+				# For each of the tags in the DB tags field.
+				if _node_tag in _inspector_tree_filters:
+					# Does this tag exist in the active inspector filter?
+					for _ancestor in _inspector_get_all_tree_ancestors(_tree_item):
+						# Get all tree items that lead to this tree item. From listing up through each parent.
+						if _ancestor not in _valid_nodes:
+							# If we do not already have the tree item added to the list, add it.
+							_valid_nodes.append(_ancestor)
+
+	for _tree_item in _all_tree_items:
+		# For each item in the tree, set the visible state based the items presense in the _valid_nodes variable, and if the name matches search.
+		var _is_visible: bool = false
+
+		if _valid_nodes.has(_tree_item):
+			_is_visible = true
+
+		elif _tree_item.get_text(0).contains(_inspector_tree_search):
+			_is_visible = true
+
+		_tree_item.set_visible(_is_visible)
+	return
+
+func _inspector_get_filters():
+	_inspector_tree_filters = []
+
+	for child in _inspector_filters.get_children():
+		if child.get_node("Button").button_pressed:
+			_inspector_tree_filters.append(child.name)
+
+	return
+
+func _inspector_search_changed(text) -> void:
+	_inspector_tree_search = text
+	_inspector_build()
+	return
+
+func _inspector_get_all_tree_entries(tree: Tree) -> Array[TreeItem]:
+	var _tree_items: Array[TreeItem] = []
+	var _tree_current = tree.get_root()
+
+	# NOTE: There is not a safety check for this, I hope I wont need one here.
+	while _tree_current:
+		_tree_items.append(_tree_current)
+		_tree_current = _tree_current.get_next_in_tree()
+
+	return _tree_items
+
+func _inspector_get_all_tree_ancestors(starting_item: TreeItem) -> Array[TreeItem]:
+	var _tree_ancestors: Array[TreeItem] = []
+	var _tree_item_parent: TreeItem = starting_item.get_parent()
+
+	_tree_ancestors.append(starting_item)
+	_tree_ancestors.append(_tree_item_parent)
+
+	# NOTE: There is not a safety check for this, I hope I wont need one here.
+	while _tree_item_parent:
+		_tree_item_parent = _tree_item_parent.get_parent()
+		if _tree_item_parent != null:
+			_tree_ancestors.append(_tree_item_parent)
+
+	return _tree_ancestors
+
+# Inspector events
 func _inspector_item_edited() -> void:
 	_inspector_editing.set_editable(0, false)
 	_inspector_editing.get_metadata(0).set_meta("pretty_name", _inspector_editing.get_text(0))
@@ -411,4 +543,5 @@ func _cem_camera_state(state: bool) -> void:
 		_player_node = session_players_m.players[str(_player_id)].node
 
 	_player_node._cem_camera_state(state)
+	Events.emit_signal("cem_camera_state", state)
 	return
