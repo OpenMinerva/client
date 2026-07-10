@@ -46,6 +46,7 @@ var _inspector_selected: TreeItem = null
 var _inspector_editing: TreeItem = null
 var _inspector_focused: TreeItem = null
 var _inspector_opened_tree_nodes: Array[Node] = []
+var _inspector_selected_node: Node = null
 var _inspector_tree_filters: Array[String] = []
 var _inspector_tree_search: String = ""
 
@@ -202,6 +203,8 @@ func _inspector_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_i
 		if _inspector_selected == null:
 			return
 
+		_inspector_selected_node = _inspector_selected.get_metadata(0)
+
 		_select(int(_inspector_selected.get_metadata(0).name))
 		return
 
@@ -210,6 +213,8 @@ func _inspector_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_i
 
 		if _inspector_selected == null:
 			return
+
+		_inspector_selected_node = _inspector_selected.get_metadata(0)
 
 		var _mouse_pos = _inspector_tree.get_global_mouse_position()
 		_inspector_popup.position = _mouse_pos
@@ -309,6 +314,9 @@ func _inspector_add_node(node: Node, parent: TreeItem) -> void:
 	_tree_node.set_icon_max_width(0, 20)
 	_tree_node.set_metadata(0, node)
 	_tree_node.collapsed = _is_collapsed
+
+	if _inspector_selected_node == node:
+		_inspector_tree.set_selected(_tree_node, 0)
 
 	for child in node.get_children():
 		_inspector_add_node(child, _tree_node)
