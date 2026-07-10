@@ -313,7 +313,7 @@ func _inspector_apply_filters():
 		# No filters to apply, do nothing.
 		return
 
-	for item in all_items:
+	for item in _all_items:
 		var _node = item.get_metadata(0)
 
 		if _node == null:
@@ -332,7 +332,7 @@ func _inspector_apply_filters():
 						if _ancestor not in _valid_nodes:
 							_valid_nodes.append(_ancestor)
 
-	for _tree_node in all_items:
+	for _tree_node in _all_items:
 		_tree_node.set_visible(_valid_nodes.has(_tree_node))
 	return
 
