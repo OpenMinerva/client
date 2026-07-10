@@ -40,6 +40,18 @@ shader_parameter/roughness_affect = 0.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_plsgj"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q5c3n"]
+bg_color = Color(0, 0.42455268, 0.75621223, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8u8qu"]
+bg_color = Color(0, 0.37461048, 0.6717304, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_at34i"]
+bg_color = Color(0.046598867, 0.577127, 0.99997205, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k3kne"]
+bg_color = Color(1.540184e-06, 0.32559153, 0.56908864, 1)
+
 [node name="Inspector" type="Control" unique_id=879206536]
 layout_mode = 3
 anchors_preset = 15
@@ -249,6 +261,10 @@ theme_override_constants/draw_relationship_lines = 1
 theme_override_constants/relationship_line_width = 1
 theme_override_font_sizes/font_size = 14
 theme_override_styles/panel = SubResource("StyleBoxEmpty_plsgj")
+theme_override_styles/hovered = SubResource("StyleBoxFlat_q5c3n")
+theme_override_styles/hovered_dimmed = SubResource("StyleBoxFlat_8u8qu")
+theme_override_styles/hovered_selected = SubResource("StyleBoxFlat_at34i")
+theme_override_styles/selected = SubResource("StyleBoxFlat_k3kne")
 allow_rmb_select = true
 allow_search = false
 hide_root = true
