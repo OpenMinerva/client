@@ -34,15 +34,9 @@ func _handle_switch_tab(tab_name):
 
 func _handle_dash_state(is_open: bool) -> void:
 	GlobalLogger.log("Changing dashboard state: '%s'" % is_open)
+	StateManager.update_mouse_state()
 	visible = is_open
 
-	Events.emit_signal("app_mouse_captured", !is_open)
-
-	if is_open == true:
-		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-		return
-
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 func _unhandled_input(event):
 	if event.is_action_pressed("escape"):

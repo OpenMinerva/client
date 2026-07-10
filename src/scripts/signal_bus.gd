@@ -45,6 +45,10 @@ signal instance_root_changed(instance: Dictionary)
 signal cem_set_state(is_open: bool)
 @warning_ignore("unused_signal")
 signal cem_set_gizmo_state(state: bool)
+@warning_ignore("unused_signal")
+signal cem_camera_state(state: bool)
+@warning_ignore("unused_signal")
+signal cem_camera_rotating(state: bool)
 
 # Multiplayer
 @warning_ignore("unused_signal")
@@ -53,5 +57,3 @@ signal session_joined(instance: Dictionary)
 signal session_left(instance: Dictionary)
 
 # App
-@warning_ignore("unused_signal")
-signal app_mouse_captured(captured: bool)

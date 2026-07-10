@@ -57,7 +57,6 @@ func _ready() -> void:
 	_node_camera.fov = _DEFAULT_FOV
 
 	Events.connect("dash_set_state", _handle_dash_state)
-	Events.connect("app_mouse_captured", _on_mouse_captured)
 	return
 
 func _physics_process(delta) -> void:
@@ -86,12 +85,14 @@ func _phys_buildmode(delta) -> void:
 
 	if Input.is_action_just_pressed("cem_camera_rotate"):
 		_cem_rotating = true
-		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		Events.emit_signal("cem_camera_rotating", true)
+		StateManager.update_mouse_state()
 		return
 
 	if Input.is_action_just_released("cem_camera_rotate"):
+		Events.emit_signal("cem_camera_rotating", false)
 		_cem_rotating = false
-		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		StateManager.update_mouse_state()
 		return
 
 	if _node_cem_camera != null:
@@ -105,7 +106,7 @@ func _phys_normal(delta) -> void:
 	if is_on_floor() == false:
 		velocity.y -= _DEFAULT_GRAVITY * delta
 
-	if _mouse_captured == false:
+	if StateManager.is_mouse_captured() == false:
 		velocity.x = 0
 		velocity.z = 0
 
@@ -134,7 +135,7 @@ func _input(event) -> void:
 	if is_multiplayer_authority() == false:
 		return
 
-	if _mouse_captured == true && event is InputEventMouseMotion:
+	if StateManager.is_mouse_captured() && event is InputEventMouseMotion:
 		if _cem_camera == false:
 			_node_body.rotate_y(-event.relative.x * _DEFAULT_SENSITIVITY * 0.001)
 			_node_camera.rotate_x(-event.relative.y * _DEFAULT_SENSITIVITY * 0.001)
@@ -148,14 +149,9 @@ func _input(event) -> void:
 				var _transform = _node_cem_camera.transform
 				_session_spawnable_m.set_transform(int(_node_cem_camera.name), _transform)
 
-			if _cem_rotating == true:
-				_node_cem_camera.rotation.y -= event.relative.x * _DEFAULT_SENSITIVITY * 0.001
-				_node_cem_camera.rotation.x = clampf(_node_cem_camera.rotation.x - event.relative.y * _DEFAULT_SENSITIVITY * 0.001, deg_to_rad(-89), deg_to_rad(89))
+			_node_cem_camera.rotation.y -= event.relative.x * _DEFAULT_SENSITIVITY * 0.001
+			_node_cem_camera.rotation.x = clampf(_node_cem_camera.rotation.x - event.relative.y * _DEFAULT_SENSITIVITY * 0.001, deg_to_rad(-89), deg_to_rad(89))
 
-	return
-
-func _on_mouse_captured(state: bool) -> void:
-	_mouse_captured = state
 	return
 
 func _send_player_position() -> void:

@@ -140,13 +140,7 @@ func _input(event: InputEvent):
 		_cem_state = !_cem_state
 		Events.emit_signal("cem_set_state", _cem_state)
 
-		# TODO: Global mouse capture handler?
-		if _cem_state == true:
-			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-		else:
-			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-
-		Events.emit_signal("app_mouse_captured", !_cem_state)
+		StateManager.update_mouse_state()
 
 		get_viewport().set_input_as_handled()
 
@@ -549,4 +543,5 @@ func _cem_camera_state(state: bool) -> void:
 		_player_node = session_players_m.players[str(_player_id)].node
 
 	_player_node._cem_camera_state(state)
+	Events.emit_signal("cem_camera_state", state)
 	return
