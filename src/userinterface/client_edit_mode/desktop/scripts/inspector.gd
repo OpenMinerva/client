@@ -35,6 +35,7 @@ var _gizmo_space_local: bool = true
 @onready var _node_crosshair: Node = get_tree().current_scene.get_node("Crosshair")
 @onready var _inspector_popup: Node = get_node("InspectorPopup")
 @onready var _inspector_add_node_window: Node = get_node("AddNodeWindow")
+@onready var _inspector_filter_search: LineEdit = get_node("VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/InputString/MarginContainer/HBoxContainer/MarginContainer/LineEdit")
 @onready var _inspector_filters: Node = get_node("VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer")
 
 # UI Inspector
@@ -46,6 +47,7 @@ var _inspector_editing: TreeItem = null
 var _inspector_focused: TreeItem = null
 var _inspector_opened_tree_nodes: Array[Node] = []
 var _inspector_tree_filters: Array[String] = []
+var _inspector_tree_search: String = ""
 
 var _cem_state: bool = false
 var _cem_camera: bool = false
@@ -176,6 +178,8 @@ func _add_button_event_listeners() -> void:
 	_inspector_popup.entry_clicked.connect(_inspector_popup_button_pressed)
 	_inspector_tree.item_mouse_selected.connect(_inspector_tree_item_mouse_selected)
 
+	_inspector_filter_search.text_changed.connect(_inspector_search_changed)
+
 	# When clicking on a filter button, apply the filter immediately.
 	for _filter_button in _inspector_filters.get_children():
 		_filter_button.get_node("Button").pressed.connect(
@@ -264,7 +268,7 @@ func _inspector_build(root_node: Node = session_root) -> void:
 	var _inspector_root = _inspector_tree.create_item()
 	_inspector_add_node(root_node, _inspector_root)
 
-	if _inspector_tree_filters.size() > 0:
+	if _inspector_tree_filters.size() > 0 || _inspector_tree_search != "":
 		_inspector_apply_filters()
 
 	# Update the Toolbar counts.
@@ -326,6 +330,14 @@ func _inspector_apply_filters():
 		var _nsb_index = NSB.get_node_index(_tree_item_node.get_class())
 		var _nsb_entry = NSB.get_formatted(_nsb_index)
 
+		if _tree_item_node.get_meta("pretty_name", "").contains(_inspector_tree_search):
+			# If the pretty name in the node contains text that matches the search.
+			for _ancestor in _inspector_get_all_tree_ancestors(_tree_item):
+				# Get all tree items that lead to this tree item. From listing up through each parent.
+				if _ancestor not in _valid_nodes:
+					# If we do not already have the tree item added to the list, add it.
+					_valid_nodes.append(_ancestor)
+
 		if "tags" in _nsb_entry:
 			# Does the NSB DB entry have the "tags" field? (Error check)
 			for _node_tag in _nsb_entry.tags:
@@ -339,8 +351,16 @@ func _inspector_apply_filters():
 							_valid_nodes.append(_ancestor)
 
 	for _tree_item in _all_tree_items:
-		# For each item in the tree, set the visible state based the items presense in the _valid_nodes variable.
-		_tree_item.set_visible(_valid_nodes.has(_tree_item))
+		# For each item in the tree, set the visible state based the items presense in the _valid_nodes variable, and if the name matches search.
+		var _is_visible: bool = false
+
+		if _valid_nodes.has(_tree_item):
+			_is_visible = true
+
+		elif _tree_item.get_text(0).contains(_inspector_tree_search):
+			_is_visible = true
+
+		_tree_item.set_visible(_is_visible)
 	return
 
 func _inspector_get_filters():
@@ -350,6 +370,11 @@ func _inspector_get_filters():
 		if child.get_node("Button").button_pressed:
 			_inspector_tree_filters.append(child.name)
 
+	return
+
+func _inspector_search_changed(text) -> void:
+	_inspector_tree_search = text
+	_inspector_build()
 	return
 
 func _inspector_get_all_tree_entries(tree: Tree) -> Array[TreeItem]:
