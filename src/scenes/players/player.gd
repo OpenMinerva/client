@@ -23,6 +23,10 @@ extends CharacterBody3D
 @onready var _node_camera = get_node("Head/Camera3D")
 @onready var _node_cem_camera: Node3D = null
 
+@onready var _inspector_tree_node: Node = get_tree().current_scene.get_node("Inspector/VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer")
+@onready var _inspector_properties_node: Node = get_tree().current_scene.get_node("Inspector/VBoxContainer/HBoxContainer/HSplitContainer/Properties")
+@onready var _inspector_toolbar_node: Node = get_tree().current_scene.get_node("Inspector/VBoxContainer/Toolbar")
+
 # Constants
 const _DEFAULT_FOV: float = 90.0
 const _DEFAULT_JUMP_VELOCITY: float = 4.5
@@ -84,6 +88,12 @@ func _phys_buildmode(delta) -> void:
 		return
 
 	if Input.is_action_just_pressed("cem_camera_rotate"):
+		# Check if we are interacting with the inspector.
+		var _hovered_node = get_viewport().gui_get_hovered_control()
+		if _hovered_node:
+			if _inspector_tree_node.is_ancestor_of(_hovered_node) || _inspector_properties_node.is_ancestor_of(_hovered_node) || _inspector_toolbar_node.is_ancestor_of(_hovered_node) :
+				return
+
 		_cem_rotating = true
 		Events.emit_signal("cem_camera_rotating", true)
 		StateManager.update_mouse_state()
