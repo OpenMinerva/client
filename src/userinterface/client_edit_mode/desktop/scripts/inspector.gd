@@ -13,7 +13,7 @@ extends Control
 
 # External Libraries / scripts
 # FIXME: DevSpawnableManager node
-@onready var dev_spawn_m: Node = get_tree().current_scene.get_node("DevSpawnManager")
+@onready var _app_spawnable_file_handling_m: Node = get_tree().current_scene.get_node("SpawnableFileHandling")
 @onready var app_scene_m: Node = get_tree().current_scene.get_node("SceneManager")
 @onready var app_network_m: Node = get_tree().current_scene.get_node("NetworkManager")
 @onready var session_spawnable_m: Node
@@ -448,7 +448,7 @@ func _inspector_popup_button_pressed(label: String) -> void:
 			_inspector_editing = _inspector_selected
 		"Save":
 			GlobalLogger.log("Saving spawnable.")
-			dev_spawn_m.save_spawnable(_node)
+			_app_spawnable_file_handling_m.save_spawnable(_node)
 		_:
 			GlobalLogger.log("Unhandled inspector popup selection", Enum.LogLevel.WARNING)
 	return

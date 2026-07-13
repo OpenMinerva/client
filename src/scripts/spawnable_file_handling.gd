@@ -14,7 +14,6 @@ extends Node
 func _ready() -> void:
 	return
 
-
 func save_spawnable(root: Node) -> void:
 	# Take a node path from the scene, and save that node to the file
 	# In order to save nodes using the ResourceSaver, we need to make all nodes that are a child of the root have the owner of the root.
@@ -195,7 +194,6 @@ func _get_node_ownership(root: Node) -> Dictionary:
 	_get_node_ownership_recursive(root, ownership)
 	return ownership
 
-
 func _get_node_ownership_recursive(node: Node, ownership: Dictionary) -> Dictionary:
 	if node.owner != null:
 		ownership[int(node.name)] = int(node.owner.name)
@@ -206,27 +204,21 @@ func _get_node_ownership_recursive(node: Node, ownership: Dictionary) -> Diction
 		_get_node_ownership_recursive(child, ownership)
 	return ownership
 
-
 func _set_temporary_ownership(root: Node) -> void:
 	return
-
 
 func _set_temporary_ownership_recursive(new_owner: Node, node: Node) -> void:
 	node.owner = new_owner
 	for child in node.get_children():
 		_set_temporary_ownership_recursive(new_owner, child)
 
-
 func _restore_ownership(root: Node, ownership_dict: Dictionary) -> void:
 	return
-
 
 func _create_packed_scene(root: Node) -> PackedScene:
 	var packed_scene = PackedScene.new()
 	packed_scene.pack(root)
 	return packed_scene
-
-
 
 func _create_pck(_name: String = "") -> PCKPacker:
 	var pck_packer = PCKPacker.new()

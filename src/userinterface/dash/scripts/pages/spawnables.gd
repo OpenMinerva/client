@@ -16,7 +16,7 @@ var _action_buttons: Array[Node] = []
 var _template_button = preload("res://userinterface/dash/partials/category_button.tscn")
 var _selected_folder: Node
 
-@onready var dev_spawn_m = get_tree().current_scene.get_node("DevSpawnManager")
+@onready var _app_spawnable_file_handling_m = get_tree().current_scene.get_node("SpawnableFileHandling")
 @onready var _path_container = $"HBox/Right/Local/Path"
 @onready var _folder_container = $"HBox/Right/Local/Folders"
 @onready var _file_container = $"HBox/Right/Local/Files"
@@ -101,7 +101,7 @@ func _dir_relocate(index: int) -> void:
 
 func _load_file(file_name: String) -> void:
 	var _path = FileManager._current_path() + "/" + file_name
-	dev_spawn_m.load_spawnable(_path)
+	_app_spawnable_file_handling_m.load_spawnable(_path)
 	return
 
 func _create_button(name: String, icon: String = "", double_click = null, min_size: Vector2 = Vector2(350, 50)) -> Node:

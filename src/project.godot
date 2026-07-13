@@ -41,9 +41,9 @@ NetworkCompression="*uid://b2iq75uom64x2"
 HTTP="*uid://d3cnfdwjxopsx"
 FileDrop="*uid://btgqgfpx0av4m"
 Events="*uid://c656spc3ppdlw"
+StateManager="*uid://b5vvw77bmn4yc"
 OAuth2Client="*uid://c4b880pwgfrty"
 UrlParser="*uid://budprjmmpally"
-StateManager="*uid://b5vvw77bmn4yc"
 
 [display]
 
