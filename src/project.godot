@@ -16,7 +16,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 config/name="OpenMinerva Client"
 run/main_scene="uid://cxk6c0uipjjpo"
-config/features=PackedStringArray("4.6", "Forward Plus")
+config/features=PackedStringArray("4.7", "Forward Plus")
 run/max_fps=144
 boot_splash/stretch_mode=0
 boot_splash/image="uid://dpdryj57noc4c"
