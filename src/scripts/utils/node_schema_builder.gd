@@ -16,14 +16,35 @@ static func init() -> void:
 	_schema = {}
 
 	# Load the schema json file
-	var _schema_raw = load("res://scripts/utils/schema.json")
-	var _schema_data = _schema_raw.data
+	var _fallback_icon: Texture2D = load("res:///resources/icons/godot/StatusError.svg")
+	var _schema_raw: Variant = load("res://scripts/utils/schema.json")
+	var _schema_data: Dictionary = {}
+
+	# TODO: This should be handled more gracefully instead of just closing the application.
+	# https://github.com/OpenMinerva/client/issues/148
+	if _fallback_icon == null:
+		var tree: SceneTree = Engine.get_main_loop()
+		GlobalLogger.log("Failed to load fallback icon for the schema.", Enum.LogLevel.ERROR)
+		tree.quit(1)
+		return
+
+	if _schema_raw == null:
+		var tree: SceneTree = Engine.get_main_loop()
+		GlobalLogger.log("Failed to load the schema.", Enum.LogLevel.ERROR)
+		tree.quit(1)
+		return
+
+	_schema_data = _schema_raw.data
 
 	# Build the schema from the information provided
 	for _item in _schema_data.keys():
 		var _entry = _schema_data[_item]
-		_entry.icon = load("res://resources/icons/%s" % _entry.icon)
-		# TODO: If the icon failed to load, use a fallback / placeholder
+		var _custom_icon = load("res://resources/icons/%s" % _entry.icon)
+
+		if _custom_icon != null:
+			_entry.icon = _custom_icon
+		else:
+			_entry.icon = _fallback_icon
 
 		_schema[_item] = _entry
 	return
