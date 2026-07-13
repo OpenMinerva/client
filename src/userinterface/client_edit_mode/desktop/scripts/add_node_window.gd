@@ -8,7 +8,7 @@
 # --- License
 extends Control
 
-signal selection(type: int, parent: int)
+signal selection(type: String, parent: int)
 
 @export var window_name: String = "Window Name"
 
@@ -35,11 +35,10 @@ func _ready() -> void:
 	return
 
 func _build_content() -> void:
-	var valid_options = NSB.get_valid()
+	var valid_options = NSB.get_schema().keys()
 
 	for node in valid_options:
-		var _schema_index = NSB.get_node_index(node)
-		var _schema_listing = NSB.get_formatted(_schema_index)
+		var _schema_listing = NSB.get_entry(node)
 
 		if _schema_listing.hidden == true:
 			# This is not available for spawning.
@@ -49,7 +48,7 @@ func _build_content() -> void:
 
 		_list_container.add_child(_button)
 
-		_button.clicked.connect(_node_selected.bind(_schema_index))
+		_button.clicked.connect(_node_selected.bind(node))
 
 		_button.custom_minimum_size = Vector2(0, 25)
 		_button.set_label(_schema_listing.pretty_name)
@@ -99,7 +98,7 @@ func _mouse_click(event) -> void:
 func _on_item_activated(index: int) -> void:
 	var tree_node = get_node("PanelContainer/ItemList")
 	var item_text = tree_node.get_item_text(index)
-	var item_type = NSB.get_node_index(item_text)
+	var item_type = NSB.get_entry(item_text)
 
 	var parent_node = get_meta("selected_node")
 	if parent_node == null:

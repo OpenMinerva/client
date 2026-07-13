@@ -210,13 +210,9 @@ func _cem_camera_state(state: bool) -> void:
 	return
 
 func _cem_camera_build() -> Node3D:
-	var _nsb_empty_index: int = NSB.get_node_index("Node3D")
-	var _nsb_camera_index: int = NSB.get_node_index("CEM_Camera")
-	var _nsb_mesh_index: int = NSB.get_node_index("Box")
-
-	var _node_root = await _session_spawnable_m.create(_nsb_empty_index)
-	var _node_camera = await _session_spawnable_m.create(_nsb_camera_index, int(_node_root.name))
-	var _node_model = await _session_spawnable_m.create(_nsb_mesh_index, int(_node_root.name))
+	var _node_root = await _session_spawnable_m.create("Node3D")
+	var _node_camera = await _session_spawnable_m.create("Camera3D", int(_node_root.name))
+	var _node_model = await _session_spawnable_m.create("Box", int(_node_root.name))
 
 	return _node_root
 

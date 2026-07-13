@@ -68,7 +68,7 @@ func load_spawnable(path: String) -> void:
 		var node_path = state.get_node_path(node_id)
 
 		# Spn = "Spawnable" shorthand.
-		var spn_type: int = -1
+		var spn_type: String = ""
 		var spn_transform: Transform3D
 		var spn_pretty_name: String
 

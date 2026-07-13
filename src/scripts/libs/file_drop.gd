@@ -20,18 +20,16 @@ func _ready():
 func on_drop(files) -> void:
 	GlobalLogger.log("'%s' file(s) dropped onto the window." % len(files))
 
-	var schema_index = NSB.get_node_index("Model")
-
 	for file in files:
 		# TODO: check if file exists
 		match file.get_extension():
 			"glb":
 				var model_path: String = ModelHandling.get_glb_assets(file)
-				scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager").spawn_spawnable(schema_index, "", model_path)
-				scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager").spawn_spawnable.rpc(schema_index, "", model_path)
+				scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager").spawn_spawnable("Model", "", model_path)
+				scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager").spawn_spawnable.rpc("Model", "", model_path)
 			"gltf":
-				scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager").spawn_spawnable(schema_index, "", file)
-				scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager").spawn_spawnable.rpc(schema_index, "", file)
+				scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager").spawn_spawnable("Model", "", file)
+				scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager").spawn_spawnable.rpc("Model", "", file)
 			"jpg", "png", "webp":
 				return
 			_:
