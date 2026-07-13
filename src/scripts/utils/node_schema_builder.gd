@@ -22,7 +22,7 @@ static func init() -> void:
 	# Build the schema from the information provided
 	for _item in _schema_data.keys():
 		var _entry = _schema_data[_item]
-		_entry.icon = load("res://resources/icons/godot/%s" % _entry.icon)
+		_entry.icon = load("res://resources/icons/%s" % _entry.icon)
 		# TODO: If the icon failed to load, use a fallback / placeholder
 
 		_schema[_item] = _entry

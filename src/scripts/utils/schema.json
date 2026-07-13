@@ -3,7 +3,7 @@
 		"requires_setup": true,
 		"pretty_name": "Gizmo",
 		"node": null,
-		"icon": "Gizmo.svg",
+		"icon": "godot/Gizmo.svg",
 		"hidden": true,
 		"deep_delete": false
 	},
@@ -11,7 +11,7 @@
 		"requires_setup": true,
 		"pretty_name": "Camera3D",
 		"node": "Camera3D",
-		"icon": "Camera3D.svg",
+		"icon": "godot/Camera3D.svg",
 		"hidden": true,
 		"deep_delete": false
 	},
@@ -19,7 +19,7 @@
 		"requires_setup": false,
 		"pretty_name": "WorldEnvironment",
 		"node": "WorldEnvironment",
-		"icon": "WorldEnvironment.svg",
+		"icon": "godot/WorldEnvironment.svg",
 		"hidden": false,
 		"deep_delete": true,
 		"tags": []
@@ -28,7 +28,7 @@
 		"requires_setup": true,
 		"pretty_name": "Imported Model",
 		"node": null,
-		"icon": "MeshInstance3D.svg",
+		"icon": "godot/MeshInstance3D.svg",
 		"hidden": true,
 		"deep_delete": true
 	},
@@ -36,7 +36,7 @@
 		"requires_setup": false,
 		"pretty_name": "Node3D",
 		"node": "Node3D",
-		"icon": "Node3D.svg",
+		"icon": "godot/Node3D.svg",
 		"hidden": false,
 		"deep_delete": true
 	},
@@ -44,7 +44,7 @@
 		"requires_setup": true,
 		"pretty_name": "Box",
 		"node": null,
-		"icon": "MeshInstance3D.svg",
+		"icon": "godot/MeshInstance3D.svg",
 		"hidden": false,
 		"deep_delete": true
 	},
@@ -52,7 +52,7 @@
 		"requires_setup": true,
 		"pretty_name": "Capsule",
 		"node": null,
-		"icon": "MeshInstance3D.svg",
+		"icon": "godot/MeshInstance3D.svg",
 		"hidden": false,
 		"deep_delete": true
 	},
@@ -60,7 +60,7 @@
 		"requires_setup": true,
 		"pretty_name": "RigidBody3D",
 		"node": "RigidBody3D",
-		"icon": "RigidBody3D.svg",
+		"icon": "godot/RigidBody3D.svg",
 		"hidden": false,
 		"deep_delete": true,
 		"tags": ["RigidBody"]
@@ -69,7 +69,7 @@
 		"requires_setup": false,
 		"pretty_name": "MeshInstance3D",
 		"node": "MeshInstance3D",
-		"icon": "MeshInstance3D.svg",
+		"icon": "godot/MeshInstance3D.svg",
 		"hidden": false,
 		"deep_delete": true
 	},
@@ -77,7 +77,7 @@
 		"requires_setup": false,
 		"pretty_name": "Skeleton3D",
 		"node": "Skeleton3D",
-		"icon": "Skeleton3D.svg",
+		"icon": "godot/Skeleton3D.svg",
 		"hidden": false,
 		"deep_delete": true
 	},
@@ -85,7 +85,7 @@
 		"requires_setup": false,
 		"pretty_name": "OmniLight3D",
 		"node": "OmniLight3D",
-		"icon": "OmniLight3D.svg",
+		"icon": "godot/OmniLight3D.svg",
 		"hidden": false,
 		"deep_delete": true,
 		"tags": ["Light"]
@@ -94,7 +94,7 @@
 		"requires_setup": false,
 		"pretty_name": "DirectionalLight3D",
 		"node": "DirectionalLight3D",
-		"icon": "DirectionalLight3D.svg",
+		"icon": "godot/DirectionalLight3D.svg",
 		"hidden": false,
 		"deep_delete": true,
 		"tags": ["Light"]
@@ -103,7 +103,7 @@
 		"requires_setup": false,
 		"pretty_name": "CharacterBody3D",
 		"node": "CharacterBody3D",
-		"icon": "CharacterBody3D.svg",
+		"icon": "godot/CharacterBody3D.svg",
 		"hidden": false,
 		"deep_delete": true,
 		"tags": []
