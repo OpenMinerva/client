@@ -12,6 +12,7 @@ extends Node
 
 func _ready() -> void:
 	NSB.init()
+	Discord.set_enabled(true)
 	return
 
 func _notification(what: int) -> void:

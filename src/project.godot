@@ -36,6 +36,7 @@ Random="*uid://1js68qt8w0mv"
 Accounts="*uid://sdrs0dnojnes"
 SessionQuery="*uid://dbrabs53sf0x5"
 Enum="*uid://dgpvcem71xdbn"
+DiscordRPCLoader="*uid://xq58uo0nw0gq"
 Bootstrap="*uid://cvj10vdw6hlqw"
 NetworkCompression="*uid://b2iq75uom64x2"
 HTTP="*uid://d3cnfdwjxopsx"
@@ -54,7 +55,7 @@ window/stretch/aspect="expand"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/Gizmo3DScript/plugin.cfg", "res://addons/godot-oauth2client/plugin.cfg", "res://addons/godot-urlparser/plugin.cfg", "res://addons/rpc-await/plugin.cfg")
+enabled=PackedStringArray("res://addons/Gizmo3DScript/plugin.cfg", "res://addons/discord-rpc-gd/plugin.cfg", "res://addons/godot-oauth2client/plugin.cfg", "res://addons/godot-urlparser/plugin.cfg", "res://addons/rpc-await/plugin.cfg")
 
 [gui]
 
