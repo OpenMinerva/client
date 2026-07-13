@@ -53,7 +53,7 @@ top_level = true
 
 [node name="SceneManager" parent="." unique_id=5477810 instance=ExtResource("2_h2qy3")]
 
-[node name="DevSpawnManager" type="Node" parent="." unique_id=1121013970]
+[node name="SpawnableFileHandling" type="Node" parent="." unique_id=1121013970]
 script = ExtResource("6_kjytq")
 
 [node name="Dashboard" parent="." unique_id=505457833 instance=ExtResource("4_h2qy3")]

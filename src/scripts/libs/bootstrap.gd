@@ -10,6 +10,9 @@ extends Node
 
 @onready var network_m = get_tree().current_scene.get_node("NetworkManager")
 
+func _ready() -> void:
+	NSB.init()
+	return
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:

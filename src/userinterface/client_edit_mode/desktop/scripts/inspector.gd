@@ -13,7 +13,7 @@ extends Control
 
 # External Libraries / scripts
 # FIXME: DevSpawnableManager node
-@onready var dev_spawn_m: Node = get_tree().current_scene.get_node("DevSpawnManager")
+@onready var _app_spawnable_file_handling_m: Node = get_tree().current_scene.get_node("SpawnableFileHandling")
 @onready var app_scene_m: Node = get_tree().current_scene.get_node("SceneManager")
 @onready var app_network_m: Node = get_tree().current_scene.get_node("NetworkManager")
 @onready var session_spawnable_m: Node
@@ -300,7 +300,7 @@ func _inspector_add_node(node: Node, parent: TreeItem) -> void:
 		return
 
 	var _tree_node = _inspector_tree.create_item(parent)
-	var _tree_icon = _get_node_icon(node)
+	var _tree_icon = NSB.get_entry(node.get_class()).icon
 	var _is_collapsed = !_inspector_opened_tree_nodes.has(node)
 
 	_tree_node.set_text(0, node.get_meta("pretty_name", node.name))
@@ -329,8 +329,7 @@ func _inspector_apply_filters():
 
 		# TODO: This is probably expensive to run, surely there is a better way to get this information.
 		# Would adding this to the metadata of the tree listing be more performant?
-		var _nsb_index = NSB.get_node_index(_tree_item_node.get_class())
-		var _nsb_entry = NSB.get_formatted(_nsb_index)
+		var _nsb_entry = NSB.get_entry(_tree_item_node.get_class())
 
 		if _tree_item_node.get_meta("pretty_name", "").contains(_inspector_tree_search):
 			# If the pretty name in the node contains text that matches the search.
@@ -410,17 +409,6 @@ func _inspector_item_edited() -> void:
 	_inspector_editing.set_editable(0, false)
 	_inspector_editing.get_metadata(0).set_meta("pretty_name", _inspector_editing.get_text(0))
 
-func _get_node_icon(node: Node) -> Texture2D:
-	# Check if we have the icon in the metadata.
-	if node.has_meta("icon") == true:
-		return node.get_meta("icon")
-
-	# Get the icon from the nodes class.
-	var _node_class: String = node.get_class()
-	var _schema_index = NSB.get_node_index(_node_class)
-	var _icon = NSB.get_formatted(_schema_index).icon
-	return _icon
-
 func _inspector_clear() -> void:
 	GlobalLogger.log("Clearing the inspector.")
 	_inspector_tree.clear()
@@ -448,12 +436,12 @@ func _inspector_popup_button_pressed(label: String) -> void:
 			_inspector_editing = _inspector_selected
 		"Save":
 			GlobalLogger.log("Saving spawnable.")
-			dev_spawn_m.save_spawnable(_node)
+			_app_spawnable_file_handling_m.save_spawnable(_node)
 		_:
 			GlobalLogger.log("Unhandled inspector popup selection", Enum.LogLevel.WARNING)
 	return
 
-func _inspector_spawn_node(type: int, parent: int) -> void:
+func _inspector_spawn_node(type: String, parent: int) -> void:
 	GlobalLogger.log("Spawning node type '%s' with parent '%s'" % [type, parent])
 	var _entity = await session_spawnable_m.create(type, parent)
 	_select(int(_entity.name))
@@ -462,7 +450,6 @@ func _inspector_spawn_node(type: int, parent: int) -> void:
 
 func _select(target_node: int) -> void:
 	var _node_db_entry = session_spawnable_m.get_by_id(target_node)
-	var _gizmo_schema_index = NSB.get_node_index("Gizmo")
 
 	if my_gizmo != null:
 		_gizmo_delete()
@@ -471,7 +458,7 @@ func _select(target_node: int) -> void:
 		GlobalLogger.log("Tried to select a node that should not exist!", Enum.LogLevel.ERROR)
 		return
 
-	my_gizmo = await session_spawnable_m.create(_gizmo_schema_index)
+	my_gizmo = await session_spawnable_m.create("Gizmo")
 	# TODO: Add to array of Gizmos
 	my_gizmo.select(_node_db_entry.node)
 	my_gizmo.mode = _gizmo_mode

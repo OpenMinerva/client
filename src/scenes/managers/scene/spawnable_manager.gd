@@ -47,7 +47,7 @@ func _physics_process(_delta):
 	if !is_multiplayer_authority():
 		return
 	for spawnable in _database:
-		if spawnable.type != NSB.get_node_index("RigidBody3D"):
+		if spawnable.type != "RigidBody3D":
 			continue
 		if spawnable.node.sleeping == true:
 			continue
@@ -68,7 +68,7 @@ func sync_all() -> void:
 
 
 @rpc("any_peer", "reliable")
-func create(node_type: int, node_parent: int = 0, model_path: String = "") -> Variant:
+func create(node_type: String, node_parent: int = 0, model_path: String = "") -> Variant:
 	var my_id: int = app_network_m._database.sessions_api[app_scene_m.active_session].get_unique_id()
 	var caller_id: int = multiplayer.get_remote_sender_id()
 
@@ -126,7 +126,7 @@ func set_transform(node_id: int, transform: Transform3D) -> void:
 
 # TODO: How would large assets work?
 @rpc("authority", "reliable")
-func spawn_spawnable(p_type: int, p_name: String = "", p_path: String = "", parent_id: int = 0) -> int:
+func spawn_spawnable(p_type: String, p_name: String = "", p_path: String = "", parent_id: int = 0) -> int:
 	var _spawnable_id = p_name if p_name != "" else str(_database_id)
 	var _spawned_entity
 	var parent_node = get_parent().get_node("root")
@@ -225,18 +225,17 @@ func get_by_id(spawnable_id: int) -> Dictionary:
 	return _database[target_entry]
 
 
-func _spawn_node(node_type: int, node_owner: int, parent: Node = instance_root, model_path = "") -> Node:
+func _spawn_node(node_type: String, node_owner: int, parent: Node = instance_root, model_path = "") -> Node:
 	var _node: Node
-	var _node_name = NSB.get_valid()[node_type]
-	var _schema_index = NSB.get_node_index(_node_name)
-	var _node_schema = NSB.get_formatted(_schema_index)
+	var _node_name = node_type
+	var _node_schema = NSB.get_entry(_node_name)
 	var _pretty_name: String
 
 	# FIXME: Hack for importing skeletons?
 	if _node_name == "Model" && model_path == "":
-		_node = NSB._build_node("Node3D")
+		_node = NSB.build("Node3D")
 	else:
-		_node = NSB._build_node(_node_name, model_path)
+		_node = NSB.build(_node_name, model_path)
 
 	# Add to database
 	var _db_id = _add_to_database(_node, node_type, node_owner)
@@ -259,7 +258,7 @@ func _spawn_node(node_type: int, node_owner: int, parent: Node = instance_root, 
 	return _node
 
 
-func _add_to_database(node: Node, type: int, node_owner: int) -> int:
+func _add_to_database(node: Node, type: String, node_owner: int) -> int:
 	var _db_entry = SPAWNABLE_TEMPLATE.duplicate()
 	_db_entry.id = int(_database_id)
 	_db_entry.node = node

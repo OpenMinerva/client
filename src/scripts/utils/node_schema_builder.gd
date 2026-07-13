@@ -9,150 +9,102 @@
 class_name NSB
 extends Node
 
+static var _schema: Dictionary = {}
 
-static var schema = {
-	"Gizmo": {
-		"requires_setup": true,
-		"pretty_name": "Gizmo",
-		"node": null,
-		"icon": load("res://resources/icons/Gizmo.svg"),
-		"hidden": true,
-		"deep_delete": false,
-	},
-	"CEM_Camera": {
-		"requires_setup": true,
-		"pretty_name": "PlayerCamera",
-		"node": "Camera3D",
-		"icon": load("res://resources/icons/godot/GizmoCamera3D.svg"),
-		"hidden": true,
-		"deep_delete": false,
-	},
-	"Model": {
-		"requires_setup": true,
-		"pretty_name": "Imported Model",
-		"node": null,
-		"icon": load("res://resources/icons/godot/MeshInstance3D.svg"),
-		"hidden": true,
-		"deep_delete": true,
-	},
-	"Node3D": {
-		"requires_setup": false,
-		"pretty_name": "Node3D",
-		"node": "Node3D",
-		"icon": load("res://resources/icons/godot/Node3D.svg"),
-		"hidden": false,
-		"deep_delete": true,
-	},
-	"Box": {
-		"requires_setup": true,
-		"pretty_name": "Box",
-		"node": null,
-		"icon": load("res://resources/icons/godot/MeshInstance3D.svg"),
-		"hidden": false,
-		"deep_delete": true,
-	},
-	"Capsule": {
-		"requires_setup": true,
-		"pretty_name": "Capsule",
-		"node": null,
-		"icon": load("res://resources/icons/godot/MeshInstance3D.svg"),
-		"hidden": false,
-		"deep_delete": true,
-	},
-	"RigidBody3D": {
-		"requires_setup": true,
-		"pretty_name": "RigidBody3D",
-		"node": "RigidBody3D",
-		"icon": load("res://resources/icons/godot/RigidBody3D.svg"),
-		"hidden": false,
-		"deep_delete": true,
-		"tags": ["RigidBody"]
-	},
-	"MeshInstance3D": {
-		"requires_setup": false,
-		"pretty_name": "MeshInstance3D",
-		"node": "MeshInstance3D",
-		"icon": load("res://resources/icons/godot/MeshInstance3D.svg"),
-		"hidden": false,
-		"deep_delete": true,
-	},
-	"Skeleton3D": {
-		"requires_setup": false,
-		"pretty_name": "Skeleton3D",
-		"node": "Skeleton3D",
-		"icon": load("res://resources/icons/godot/Skeleton3D.svg"),
-		"hidden": false,
-		"deep_delete": true,
-	},
-	"OmniLight3D": {
-		"requires_setup": false,
-		"pretty_name": "OmniLight3D",
-		"node": "OmniLight3D",
-		"icon": load("res://resources/icons/godot/OmniLight3D.svg"),
-		"hidden": false,
-		"deep_delete": true,
-		"tags": ["Light"]
-	},
-}
+static func init() -> void:
+	# Clear the schema just in case
+	_schema = {}
 
+	# Load the schema json file
+	var _fallback_icon: Texture2D = load("res:///resources/icons/godot/StatusError.svg")
+	var _schema_raw: Variant = load("res://scripts/utils/schema.json")
+	var _schema_data: Dictionary = {}
 
-static func get_valid() -> Array[String]:
-	var result: Array[String] = []
-	result.assign(schema.keys())
-	return result
+	# TODO: This should be handled more gracefully instead of just closing the application.
+	# https://github.com/OpenMinerva/client/issues/148
+	if _fallback_icon == null:
+		var tree: SceneTree = Engine.get_main_loop()
+		GlobalLogger.log("Failed to load fallback icon for the schema.", Enum.LogLevel.ERROR)
+		tree.quit(1)
+		return
 
+	if _schema_raw == null:
+		var tree: SceneTree = Engine.get_main_loop()
+		GlobalLogger.log("Failed to load the schema.", Enum.LogLevel.ERROR)
+		tree.quit(1)
+		return
 
-static func get_node_index(node_name: String) -> int:
-	# As a safety, invalid nodes return a Node3D.
-	# FIXME: While a fallback is nice for stability, whatever needs to use the fallback should probably just fail gracefully.
-	var _index = schema.keys().find(node_name)
-	if _index > -1:
-		return _index
-	else:
-		var _node3d_index = schema.keys().find("Node3D")
-		return _node3d_index
+	_schema_data = _schema_raw.data
 
+	# Build the schema from the information provided
+	for _item in _schema_data.keys():
+		var _entry = _schema_data[_item]
+		var _custom_icon = load("res://resources/icons/%s" % _entry.icon)
 
-static func get_formatted(node_name: int) -> Variant:
-	return schema[schema.keys()[node_name]]
+		if _custom_icon != null:
+			_entry.icon = _custom_icon
+		else:
+			_entry.icon = _fallback_icon
 
+		_schema[_item] = _entry
+	return
 
-static func _build_node(node_name: String, model_path: String = "") -> Node:
-	var schema_index = get_node_index(node_name)
-	var schema_entry = get_formatted(schema_index)
+static func is_valid(search_key: Variant) -> bool:
+	return false
 
-	if schema_entry.requires_setup == false:
-		return ClassDB.instantiate(schema_entry.node)
+static func get_schema() -> Dictionary:
+	return _schema
+
+static func get_entry(node_name: String) -> Dictionary:
+	if !_schema.keys().has(node_name):
+		# Invalid node_name
+		return {}
+
+	return _schema[node_name]
+
+static func build(node_name: String, model_path: String = "") -> Node:
+	var _entry = _schema[node_name]
+
+	if _entry.requires_setup == false:
+		var _work_node = ClassDB.instantiate(_entry.node)
+		_add_node_metadata(_work_node)
+		return _work_node
 
 	if node_name == "Box":
 		var _work_node = MeshInstance3D.new()
 		_work_node.mesh = BoxMesh.new()
+		_add_node_metadata(_work_node)
 		return _work_node
 
 	if node_name == "Capsule":
 		var _work_node = MeshInstance3D.new()
 		_work_node.mesh = CapsuleMesh.new()
+		_add_node_metadata(_work_node)
 		return _work_node
 
 	if node_name == "RigidBody3D":
 		var _work_node = RigidBody3D.new()
 		_work_node.freeze = true
+		_add_node_metadata(_work_node)
 		return _work_node
 
 	if node_name == "Gizmo":
 		var _work_node = Gizmo3D.new()
 		_work_node.top_level = true
+		_add_node_metadata(_work_node)
+
 		_work_node.set_meta("scene_node", false)
-		_work_node.set_meta("deep_delete", false)
 		return _work_node
 
-	if node_name == "CEM_Camera":
+	if node_name == "Camera3D":
 		var _work_node = Camera3D.new()
+		_add_node_metadata(_work_node)
 		_work_node.current = false
 		return _work_node
 
 	if node_name == "Model":
 		# TODO: Generating the scene does not seem to properly set up the MeshInstance3D, causing deletion errors.
+		# TODO: Throw this into another thread.
 		# That also means that this probably will not work for sending meshes over the network.
 		var doc = GLTFDocument.new()
 		var state = GLTFState.new()
@@ -167,14 +119,13 @@ static func _build_node(node_name: String, model_path: String = "") -> Node:
 	return Node3D.new()
 
 static func _add_node_metadata(root: Node) -> void:
-
 	var _class = root.get_class()
-	var schema_index = get_node_index(_class)
+	var _schema_entry = _schema[_class]
 
-	root.set_meta("spawnable_type", schema_index)
-	root.set_meta("pretty_name", _class)
+	root.set_meta("spawnable_type", _class)
+	root.set_meta("pretty_name", _schema_entry.pretty_name)
+	root.set_meta("deep_delete", _schema_entry.deep_delete)
 
 	for child in root.get_children():
 		_add_node_metadata(child)
-
 	return
