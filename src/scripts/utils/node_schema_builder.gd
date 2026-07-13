@@ -96,7 +96,6 @@ static func build(node_name: String, model_path: String = "") -> Node:
 		_work_node.set_meta("scene_node", false)
 		return _work_node
 
-	# TODO: Should this just be a camera?
 	if node_name == "Camera3D":
 		var _work_node = Camera3D.new()
 		_add_node_metadata(_work_node)
