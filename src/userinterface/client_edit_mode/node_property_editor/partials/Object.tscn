@@ -1,35 +1,11 @@
-[gd_scene format=3 uid="uid://dr4mc2gw53nb6"]
+[gd_scene format=3 uid="uid://c7animyvghvk"]
 
-[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="1_dt7qw"]
-[ext_resource type="PackedScene" uid="uid://sntuc3p6k4s6" path="res://userinterface/dash/partials/generic_button.tscn" id="2_dt7qw"]
 [ext_resource type="Script" uid="uid://s14au1dc165i" path="res://userinterface/client_edit_mode/node_property_editor/partials/object.gd" id="2_ijfgb"]
 
-[node name="Object" type="Control" unique_id=933711176]
-custom_minimum_size = Vector2(80, 30)
-layout_mode = 3
-anchor_right = 1.0
-anchor_bottom = 0.027777778
-offset_bottom = -30.0
-grow_horizontal = 2
-size_flags_horizontal = 3
-theme = ExtResource("1_dt7qw")
+[node name="FoldableContainer" type="FoldableContainer" unique_id=1542739099]
+title = "Transform"
+title_alignment = 1
 script = ExtResource("2_ijfgb")
-metadata/_edit_use_anchors_ = true
 
-[node name="VBoxContainer" type="HBoxContainer" parent="." unique_id=1972995258]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 0.053703703
-grow_horizontal = 2
-metadata/_edit_use_anchors_ = true
-
-[node name="Label" type="Label" parent="VBoxContainer" unique_id=482404396]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=238553897]
 layout_mode = 2
-size_flags_horizontal = 3
-text = "Vector3"
-
-[node name="GenericButton" parent="VBoxContainer" unique_id=649942124 instance=ExtResource("2_dt7qw")]
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-label = "Test"

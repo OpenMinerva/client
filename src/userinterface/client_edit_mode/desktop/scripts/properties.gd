@@ -10,7 +10,11 @@ extends MarginContainer
 
 const _dev_basic_props = ["position", "rotation", "scale", "visible"]
 const _dev_whitelist_properties = ["mesh"]
+const _dev_whitelist_mesh_properties = ["material", "flip_faces", "add_uv2", "uv2_padding", "size", "subdivide_width", "subdivide_height", "subdivide_depth", ]
+
 var _node: Node
+
+# TODO: Add protections from making changes on null nodes (invalid nodes)
 
 @onready var _dev_transform_container: Node = get_node("VBoxContainer/Container/ScrollContainer/MarginContainer/VBoxContainer/FoldableContainer/VBoxContainer")
 @onready var _dev_property_container: Node = get_node("VBoxContainer/Container/ScrollContainer/MarginContainer/VBoxContainer")
@@ -35,23 +39,52 @@ func get_node_properties(node: Node) -> void:
 
 		var _partial = _get_partial("%s" % type_string(prop.type))
 		if _partial == null:
-			print("Property: %s" % prop.name)
-			print("Type: %s" % type_string(prop.type))
-			print("Class: %s" % prop.class_name)
-			print("Hint: %s" % prop.hint)
-			print("Hint String: %s" % prop.hint_string)
-			print("Value: %s" % node.get(prop.name))
-			print("---")
+			# print("Property: %s" % prop.name)
+			# print("Type: %s" % type_string(prop.type))
+			# print("Class: %s" % prop.class_name)
+			# print("Hint String: %s" % prop.hint_string)
+			# print("Value: %s" % node.get(prop.name))
+			# print("---")
 			continue
 
 		_dev_property_container.add_child(_partial)
+
+		if prop.class_name == "Mesh":
+			_get_object_properties(_partial.get_node("VBoxContainer"), node.get("mesh"), "mesh")
+
 		_partial.set_label(prop.name.capitalize())
-		_partial.set_value(node.get(prop.name))
-		_partial.value_changed.connect(func (new_value): _property_changed(prop.name, new_value))
+
+		# HACK: Filter out Objects since we are treating them like containers.
+		# Aren't Materials and shaders also treated as objects?
+		if type_string(prop.type) != "Object":
+			_partial.set_value(node.get(prop.name))
+			_partial.value_changed.connect(func (new_value): _property_changed(prop.name, new_value))
 
 
 	# Display the values
 	update_node_properties(node)
+	return
+
+func _get_object_properties(object_container: Node, obj: Object, property_name: String) -> void:
+	var _properties = obj.get_property_list()
+	for _prop in _properties:
+		var _partial = _get_partial("%s" % type_string(_prop.type))
+
+		if _dev_whitelist_mesh_properties.has(_prop.name) == false:
+			continue
+
+		# HACK: Hardcoded avoidance of objects just for debug.
+		if type_string(_prop.type) == "Object":
+			continue
+
+		if _partial == null:
+			continue
+
+		object_container.add_child(_partial)
+
+		_partial.set_label(_prop.name.capitalize())
+		_partial.set_value(obj.get(_prop.name))
+		_partial.value_changed.connect(func (new_value): _property_changed("%s:%s" % [property_name, _prop.name], new_value))
 	return
 
 func _clear_node_properties() -> void:
@@ -72,7 +105,7 @@ func update_node_properties(node: Node) -> void:
 
 func _property_changed(property_name: String, property_value: Variant) -> void:
 	# TODO: Network change
-	_node.set(property_name, property_value)
+	_node.set_indexed(property_name, property_value)
 	return
 
 
