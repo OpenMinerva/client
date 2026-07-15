@@ -38,6 +38,8 @@ var _gizmo_space_local: bool = true
 @onready var _inspector_filter_search: LineEdit = get_node("VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/InputString/MarginContainer/HBoxContainer/MarginContainer/LineEdit")
 @onready var _inspector_filters: Node = get_node("VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer")
 
+@onready var _node_property_editor: Node = get_node("VBoxContainer/HBoxContainer/HSplitContainer/Properties")
+
 # UI Inspector
 @onready var _inspector_tree: Tree = get_node("VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer/Tree")
 
@@ -464,7 +466,10 @@ func _select(target_node: int) -> void:
 	my_gizmo.mode = _gizmo_mode
 	my_gizmo.use_local_space = _gizmo_space_local
 
+	_node_property_editor.get_node_properties(_node_db_entry.node)
 	my_gizmo.transform_changed.connect(func(mode, value): session_spawnable_m.set_transform(target_node, _node_db_entry.node.transform))
+	# HACK: Update ALL of the node properties after a transformation was done.
+	my_gizmo.transform_end.connect(func(mode): _node_property_editor.update_node_properties(_node_db_entry.node))
 
 func _gizmo_delete() -> void:
 	my_gizmo.clear_selection()
@@ -532,3 +537,5 @@ func _cem_camera_state(state: bool) -> void:
 	_player_node._cem_camera_state(state)
 	Events.emit_signal("cem_camera_state", state)
 	return
+
+# Node Property Editor

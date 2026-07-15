@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://b58b25jtckb2c"]
+
+[ext_resource type="Script" uid="uid://susq40b1r4sx" path="res://userinterface/client_edit_mode/node_property_editor/partials/spin_box.gd" id="1_30qog"]
+
+[node name="SpinBox" type="SpinBox" unique_id=1631362233]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+min_value = inf_neg
+max_value = inf
+step = 0.001
+alignment = 1
+script = ExtResource("1_30qog")
