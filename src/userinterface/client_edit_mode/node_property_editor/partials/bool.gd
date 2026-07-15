@@ -19,6 +19,7 @@ signal value_changed(new_value: bool)
 
 func _ready() -> void:
 	_label.text = property_name
+	_bool.toggled.connect(_on_value_changed)
 	return
 
 func set_value(new_value: bool) -> void:
@@ -30,3 +31,6 @@ func set_label(new_label: String) -> void:
 	_label.text = new_label
 	property_name = new_label
 	return
+
+func _on_value_changed(new_value: bool) -> void:
+	value_changed.emit(new_value)

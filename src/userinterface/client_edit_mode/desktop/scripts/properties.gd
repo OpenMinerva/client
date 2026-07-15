@@ -18,6 +18,7 @@ var _node: Node
 var partials: Dictionary = {}
 
 func _ready() -> void:
+	_dev_property_container.get_node("Visible").value_changed.connect(func (new_value): _property_changed("visible", new_value))
 	_dev_transform_container.get_node("Position").value_changed.connect(func (new_value): _property_changed("position", new_value))
 	_dev_transform_container.get_node("Rotation").value_changed.connect(func (new_value): _property_changed("rotation_degrees", new_value))
 	_dev_transform_container.get_node("Scale").value_changed.connect(func (new_value): _property_changed("scale", new_value))
@@ -63,6 +64,7 @@ func _clear_node_properties() -> void:
 	return
 
 func update_node_properties(node: Node) -> void:
+	_dev_property_container.get_node("Visible").set_value(node.get("visible"))
 	_dev_transform_container.get_node("Position").set_value(node.get("position"))
 	_dev_transform_container.get_node("Rotation").set_value(node.get("rotation_degrees"))
 	_dev_transform_container.get_node("Scale").set_value(node.get("scale"))

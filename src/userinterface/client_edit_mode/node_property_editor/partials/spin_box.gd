@@ -13,9 +13,9 @@ signal spinbox_value_changed(value: float)
 @export var max_decimals: int = 4
 
 func _ready() -> void:
-	value_changed.connect(_on_value_changed, CONNECT_DEFERRED)
-	get_line_edit().focus_entered.connect(_on_focus_entered, CONNECT_DEFERRED)
-	get_line_edit().focus_exited.connect(_on_focus_exited, CONNECT_DEFERRED)
+	value_changed.connect(_on_value_changed)
+	get_line_edit().focus_entered.connect(_on_focus_entered)
+	get_line_edit().focus_exited.connect(_on_focus_exited)
 
 	get_line_edit().text = _format_value(value)
 	return
