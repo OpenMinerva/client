@@ -129,7 +129,7 @@ func set_property(node_id: int, property_name: String, property_value: Variant) 
 	if _my_id == 1:
 		set_property_on_spawnable.rpc(node_id, property_name, property_value)
 	else:
-		await rpcawaiter.set_property(1, set_property_on_spawnable.bind(node_id, property_name, property_value))
+		await rpcawaiter.send_rpc(1, set_property.bind(node_id, property_name, property_value))
 		return
 	return
 
