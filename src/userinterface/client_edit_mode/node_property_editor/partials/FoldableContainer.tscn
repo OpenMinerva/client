@@ -1,11 +1,13 @@
 [gd_scene format=3 uid="uid://c7animyvghvk"]
 
-[ext_resource type="Script" uid="uid://s14au1dc165i" path="res://userinterface/client_edit_mode/node_property_editor/partials/object.gd" id="2_ijfgb"]
+[ext_resource type="Script" uid="uid://s14au1dc165i" path="res://userinterface/client_edit_mode/node_property_editor/partials/foldable_container.gd" id="1_wndr3"]
 
 [node name="FoldableContainer" type="FoldableContainer" unique_id=1542739099]
+folded = true
 title = "Transform"
 title_alignment = 1
-script = ExtResource("2_ijfgb")
+script = ExtResource("1_wndr3")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=238553897]
+visible = false
 layout_mode = 2

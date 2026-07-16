@@ -18,7 +18,7 @@
 [ext_resource type="PackedScene" uid="uid://chbjqqcikq7aj" path="res://userinterface/client_edit_mode/desktop/partial/popup_selection.tscn" id="14_cuj5f"]
 [ext_resource type="PackedScene" uid="uid://dkn0gmy8or4hq" path="res://userinterface/client_edit_mode/node_property_editor/partials/Vector3.tscn" id="14_q5c3n"]
 [ext_resource type="Texture2D" uid="uid://cq2ec6jy8kynp" path="res://resources/icons/godot/Add.svg" id="15_3i2mc"]
-[ext_resource type="PackedScene" uid="uid://c7animyvghvk" path="res://userinterface/client_edit_mode/node_property_editor/partials/Object.tscn" id="16_73wcm"]
+[ext_resource type="PackedScene" uid="uid://c7animyvghvk" path="res://userinterface/client_edit_mode/node_property_editor/partials/FoldableContainer.tscn" id="16_73wcm"]
 [ext_resource type="PackedScene" uid="uid://sntuc3p6k4s6" path="res://userinterface/dash/partials/generic_button.tscn" id="16_j7nog"]
 [ext_resource type="Texture2D" uid="uid://b54viv8d54q83" path="res://resources/icons/godot/Remove.svg" id="17_akq5y"]
 [ext_resource type="Texture2D" uid="uid://dtwfvglraa8t7" path="res://resources/icons/godot/Edit.svg" id="18_akq5y"]
@@ -332,18 +332,22 @@ property_name = "Visible"
 
 [node name="FoldableContainer" parent="VBoxContainer/HBoxContainer/HSplitContainer/Properties/VBoxContainer/Container/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1542739099 instance=ExtResource("16_73wcm")]
 layout_mode = 2
+folded = false
 
-[node name="Position" parent="VBoxContainer/HBoxContainer/HSplitContainer/Properties/VBoxContainer/Container/ScrollContainer/MarginContainer/VBoxContainer/FoldableContainer/VBoxContainer" parent_id_path=PackedInt32Array(1542739099, 238553897) index="0" unique_id=352534286 instance=ExtResource("14_q5c3n")]
+[node name="VBoxContainer" parent="VBoxContainer/HBoxContainer/HSplitContainer/Properties/VBoxContainer/Container/ScrollContainer/MarginContainer/VBoxContainer/FoldableContainer" index="0" unique_id=238553897]
+visible = true
+
+[node name="Position" parent="VBoxContainer/HBoxContainer/HSplitContainer/Properties/VBoxContainer/Container/ScrollContainer/MarginContainer/VBoxContainer/FoldableContainer/VBoxContainer" index="0" unique_id=352534286 instance=ExtResource("14_q5c3n")]
 layout_mode = 2
 size_flags_vertical = 1
 property_name = "Position"
 
-[node name="Rotation" parent="VBoxContainer/HBoxContainer/HSplitContainer/Properties/VBoxContainer/Container/ScrollContainer/MarginContainer/VBoxContainer/FoldableContainer/VBoxContainer" parent_id_path=PackedInt32Array(1542739099, 238553897) index="1" unique_id=204239032 instance=ExtResource("14_q5c3n")]
+[node name="Rotation" parent="VBoxContainer/HBoxContainer/HSplitContainer/Properties/VBoxContainer/Container/ScrollContainer/MarginContainer/VBoxContainer/FoldableContainer/VBoxContainer" index="1" unique_id=204239032 instance=ExtResource("14_q5c3n")]
 layout_mode = 2
 size_flags_vertical = 1
 property_name = "Rotation"
 
-[node name="Scale" parent="VBoxContainer/HBoxContainer/HSplitContainer/Properties/VBoxContainer/Container/ScrollContainer/MarginContainer/VBoxContainer/FoldableContainer/VBoxContainer" parent_id_path=PackedInt32Array(1542739099, 238553897) index="2" unique_id=172565004 instance=ExtResource("14_q5c3n")]
+[node name="Scale" parent="VBoxContainer/HBoxContainer/HSplitContainer/Properties/VBoxContainer/Container/ScrollContainer/MarginContainer/VBoxContainer/FoldableContainer/VBoxContainer" index="2" unique_id=172565004 instance=ExtResource("14_q5c3n")]
 layout_mode = 2
 size_flags_vertical = 1
 property_name = "Scale"
