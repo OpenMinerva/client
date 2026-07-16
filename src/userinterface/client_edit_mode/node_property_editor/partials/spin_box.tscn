@@ -9,6 +9,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
+focus_behavior_recursive = 2
 min_value = inf_neg
 max_value = inf
 step = 0.001

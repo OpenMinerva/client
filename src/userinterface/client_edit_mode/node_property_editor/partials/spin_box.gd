@@ -11,8 +11,13 @@ extends SpinBox
 signal spinbox_value_changed(value: float)
 
 @export var max_decimals: int = 4
+@export var is_int: bool = false
 
 func _ready() -> void:
+	if is_int == true:
+		max_decimals = 0
+		step = 1
+
 	value_changed.connect(_on_value_changed)
 	get_line_edit().focus_entered.connect(_on_focus_entered)
 	get_line_edit().focus_exited.connect(_on_focus_exited)

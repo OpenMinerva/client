@@ -15,6 +15,7 @@ const _dev_whitelist_mesh_properties = ["material", "flip_faces", "add_uv2", "uv
 var _node: Node
 
 # TODO: Add protections from making changes on null nodes (invalid nodes)
+# TODO: Handle enums for ints.
 
 @onready var _dev_transform_container: Node = get_node("VBoxContainer/Container/ScrollContainer/MarginContainer/VBoxContainer/FoldableContainer/VBoxContainer")
 @onready var _dev_property_container: Node = get_node("VBoxContainer/Container/ScrollContainer/MarginContainer/VBoxContainer")
@@ -49,11 +50,11 @@ func get_node_properties(node: Node) -> void:
 			if _sub_property == null:
 				continue
 
-			_category_node.add_child(_sub_property)
+			_category_node.get_node("VBoxContainer").add_child(_sub_property)
 			_sub_property.set_value(node.get(_prop.name))
 			_sub_property.set_label(_prop.name.capitalize())
 			_sub_property.value_changed.connect(func (new_value): _property_changed(_prop.name, new_value))
-			break
+			continue
 
 	update_node_properties(node)
 	return
@@ -83,11 +84,11 @@ func _get_property_tree(node: Node) -> Dictionary:
 			continue
 
 		if _usage & (PROPERTY_USAGE_GROUP | PROPERTY_USAGE_SUBGROUP):
+			# TODO: Subgroups?
 			# Ignore groups and subgroups.
 			continue
 
 		if _usage & PROPERTY_USAGE_EDITOR && !current_category.is_empty():
-
 			tree[current_category].append(_property)
 
 	return tree
