@@ -20,6 +20,10 @@ var _node: Node
 @onready var _dev_transform_container: Node = get_node("VBoxContainer/Container/ScrollContainer/MarginContainer/VBoxContainer/FoldableContainer/VBoxContainer")
 @onready var _dev_property_container: Node = get_node("VBoxContainer/Container/ScrollContainer/MarginContainer/VBoxContainer")
 
+@onready var app_scene_m: Node = get_tree().current_scene.get_node("SceneManager")
+
+var session_spawnable_m: Node
+
 var partials: Dictionary = {}
 
 func _ready() -> void:
@@ -27,6 +31,8 @@ func _ready() -> void:
 	_dev_transform_container.get_node("Position").value_changed.connect(func (new_value): _property_changed("position", new_value))
 	_dev_transform_container.get_node("Rotation").value_changed.connect(func (new_value): _property_changed("rotation_degrees", new_value))
 	_dev_transform_container.get_node("Scale").value_changed.connect(func (new_value): _property_changed("scale", new_value))
+
+	Events.dash_session_changed.connect(_on_session_changed)
 	return
 
 func get_node_properties(node: Node) -> void:
@@ -114,7 +120,7 @@ func _property_changed(property_name: String, property_value: Variant) -> void:
 	if _node == null:
 		return
 
-	_node.set_indexed(property_name, property_value)
+	session_spawnable_m.set_property(int(_node.name), property_name, property_value)
 	return
 
 func _get_partial(type: String) -> Node:
@@ -128,3 +134,7 @@ func _get_partial(type: String) -> Node:
 
 	partials[type] = _new_partial
 	return partials[type].instantiate()
+
+func _on_session_changed() -> void:
+	session_spawnable_m = app_scene_m.get_master_scene(app_scene_m.active_session).get_node("SpawnableManager")
+	return

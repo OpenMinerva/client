@@ -27,7 +27,9 @@ metadata/_edit_use_anchors_ = true
 [node name="Label" type="Label" parent="VBoxContainer" unique_id=482404396]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Vector3"
+text = "Float"
+clip_text = true
+text_overrun_behavior = 3
 
 [node name="SpinBox" parent="VBoxContainer" unique_id=1631362233 instance=ExtResource("3_j4p26")]
 layout_mode = 2

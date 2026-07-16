@@ -45,10 +45,11 @@ metadata/scene_node = true
 environment = SubResource("Environment_q28r8")
 metadata/scene_node = true
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1644270184]
+[node name="Ground" type="MeshInstance3D" parent="." unique_id=1644270184]
 mesh = SubResource("QuadMesh_8gpll")
+metadata/scene_node = true
 
-[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D" unique_id=1945745055]
+[node name="StaticBody3D" type="StaticBody3D" parent="Ground" unique_id=1945745055]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D" unique_id=1464818279]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/StaticBody3D" unique_id=1464818279]
 shape = SubResource("BoxShape3D_8gpll")
