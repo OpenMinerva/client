@@ -200,6 +200,7 @@ func _inspector_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_i
 			return
 
 		_inspector_selected_node = _inspector_selected.get_metadata(0)
+		_set_npe_state(_inspector_selected_node != null)
 
 		_select(int(_inspector_selected.get_metadata(0).name))
 		return
@@ -211,6 +212,7 @@ func _inspector_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_i
 			return
 
 		_inspector_selected_node = _inspector_selected.get_metadata(0)
+		_set_npe_state(_inspector_selected_node != null)
 
 		var _mouse_pos = _inspector_tree.get_global_mouse_position()
 		_inspector_popup.position = _mouse_pos
@@ -458,6 +460,8 @@ func _select(target_node: int) -> void:
 
 	if _node_db_entry == {}:
 		GlobalLogger.log("Tried to select a node that should not exist!", Enum.LogLevel.ERROR)
+		_inspector_selected_node == null
+		_set_npe_state(false)
 		return
 
 	my_gizmo = await session_spawnable_m.create("Gizmo")
@@ -539,3 +543,6 @@ func _cem_camera_state(state: bool) -> void:
 	return
 
 # Node Property Editor
+func _set_npe_state(state: bool) -> void:
+	_node_property_editor.visible = state
+	return

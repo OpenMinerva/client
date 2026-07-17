@@ -165,7 +165,7 @@ size_flags_vertical = 3
 [node name="HSplitContainer" type="HSplitContainer" parent="VBoxContainer/HBoxContainer" unique_id=234551977]
 layout_mode = 2
 size_flags_horizontal = 3
-split_offsets = PackedInt32Array(300, -300)
+split_offsets = PackedInt32Array(300)
 split_offset = 300
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer/HSplitContainer" unique_id=1929440074]
@@ -280,6 +280,7 @@ size_flags_horizontal = 3
 mouse_filter = 1
 
 [node name="Properties" type="MarginContainer" parent="VBoxContainer/HBoxContainer/HSplitContainer" unique_id=1127572109]
+visible = false
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 script = ExtResource("14_at34i")
