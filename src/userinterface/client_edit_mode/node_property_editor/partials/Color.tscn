@@ -30,3 +30,4 @@ text = "Color"
 [node name="ColorPickerButton" type="ColorPickerButton" parent="VBoxContainer" unique_id=1428418942]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
+theme = ExtResource("1_0b8ag")

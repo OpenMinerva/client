@@ -135,6 +135,7 @@ PopupMenu/constants/item_start_padding = 5
 PopupMenu/constants/v_separation = 10
 PopupMenu/styles/hover = SubResource("StyleBoxFlat_kpyni")
 PopupMenu/styles/panel = SubResource("StyleBoxFlat_x2xen")
+PopupPanel/styles/panel = SubResource("StyleBoxFlat_dgxsq")
 ScrollContainer/constants/scrollbar_h_separation = 10
 SessionListing/base_type = &"Button"
 SessionListing/styles/hover = SubResource("StyleBoxFlat_gvfoe")
