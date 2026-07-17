@@ -384,11 +384,6 @@ icon = ExtResource("18_akq5y")
 [node name="AddNodeWindow" parent="." unique_id=524781090 instance=ExtResource("21_q5c3n")]
 visible = false
 layout_mode = 1
-offset_left = 50.0
-offset_top = 50.0
-offset_right = -1570.0
-offset_bottom = -630.0
-window_name = "Add Node"
 
 [editable path="VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/InputString"]
 [editable path="VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer/Light"]
