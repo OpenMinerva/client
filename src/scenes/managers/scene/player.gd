@@ -69,3 +69,6 @@ func spawn_player(peer_id: String) -> void:
 func kill_player() -> void:
 	GlobalLogger.log("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	return
+
+func get_player_count() -> int:
+	return players.keys().size()

@@ -2,16 +2,16 @@
 
 [ext_resource type="Shader" uid="uid://bh250q6rfv615" path="res://resources/shaders/grid_shader.gdshader" id="1_ikf4c"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_dbach"]
-sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
-ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_bcgop"]
+sky_top_color = Color(0.297, 0.40241668, 0.55, 1)
+energy_multiplier = 1.25
 
-[sub_resource type="Sky" id="Sky_ikf4c"]
-sky_material = SubResource("ProceduralSkyMaterial_dbach")
+[sub_resource type="Sky" id="Sky_gbca3"]
+sky_material = SubResource("ProceduralSkyMaterial_bcgop")
 
 [sub_resource type="Environment" id="Environment_q28r8"]
 background_mode = 2
-sky = SubResource("Sky_ikf4c")
+sky = SubResource("Sky_gbca3")
 tonemap_mode = 2
 ssr_enabled = true
 ssao_enabled = true
@@ -45,10 +45,11 @@ metadata/scene_node = true
 environment = SubResource("Environment_q28r8")
 metadata/scene_node = true
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1644270184]
+[node name="Ground" type="MeshInstance3D" parent="." unique_id=1644270184]
 mesh = SubResource("QuadMesh_8gpll")
+metadata/scene_node = true
 
-[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D" unique_id=1945745055]
+[node name="StaticBody3D" type="StaticBody3D" parent="Ground" unique_id=1945745055]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D" unique_id=1464818279]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/StaticBody3D" unique_id=1464818279]
 shape = SubResource("BoxShape3D_8gpll")

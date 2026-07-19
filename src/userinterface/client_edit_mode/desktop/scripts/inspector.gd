@@ -32,11 +32,14 @@ var _gizmo_space_local: bool = true
 @onready var _node_toolbar_gizmo_control_container: Control = _node_toolbar.get_node("MarginContainer/HBoxContainer/GizmoControl")
 @onready var _node_toolbar_gizmo_control_container_misc: Control = _node_toolbar.get_node("MarginContainer/HBoxContainer/GizmoControlMisc")
 @onready var _node_toolbar_spawnable_count: Control = _node_toolbar.get_node("MarginContainer/HBoxContainer/SpawnableCount")
+@onready var _node_toolbar_player_count: Control = _node_toolbar.get_node("MarginContainer/HBoxContainer/PlayerCount")
 @onready var _node_crosshair: Node = get_tree().current_scene.get_node("Crosshair")
 @onready var _inspector_popup: Node = get_node("InspectorPopup")
 @onready var _inspector_add_node_window: Node = get_node("AddNodeWindow")
 @onready var _inspector_filter_search: LineEdit = get_node("VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/InputString/MarginContainer/HBoxContainer/MarginContainer/LineEdit")
 @onready var _inspector_filters: Node = get_node("VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer")
+
+@onready var _node_property_editor: Node = get_node("VBoxContainer/HBoxContainer/HSplitContainer/Properties")
 
 # UI Inspector
 @onready var _inspector_tree: Tree = get_node("VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer/Tree")
@@ -198,6 +201,7 @@ func _inspector_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_i
 			return
 
 		_inspector_selected_node = _inspector_selected.get_metadata(0)
+		_set_npe_state(_inspector_selected_node != null)
 
 		_select(int(_inspector_selected.get_metadata(0).name))
 		return
@@ -209,6 +213,7 @@ func _inspector_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_i
 			return
 
 		_inspector_selected_node = _inspector_selected.get_metadata(0)
+		_set_npe_state(_inspector_selected_node != null)
 
 		var _mouse_pos = _inspector_tree.get_global_mouse_position()
 		_inspector_popup.position = _mouse_pos
@@ -260,6 +265,7 @@ func _inspector_build(root_node: Node = session_root) -> void:
 	await get_tree().process_frame
 
 	var _total_spawnable_label: String = str(session_spawnable_m._database.size())
+	var _total_player_label: String = str(session_players_m.get_player_count())
 
 	GlobalLogger.log("Generating the inspector view with parent '%s'." % root_node)
 	_inspector_save_openness()
@@ -272,6 +278,7 @@ func _inspector_build(root_node: Node = session_root) -> void:
 
 	# Update the Toolbar counts.
 	_node_toolbar_spawnable_count.update_meta(_total_spawnable_label)
+	_node_toolbar_player_count.update_meta(_total_player_label)
 
 	return
 
@@ -456,6 +463,8 @@ func _select(target_node: int) -> void:
 
 	if _node_db_entry == {}:
 		GlobalLogger.log("Tried to select a node that should not exist!", Enum.LogLevel.ERROR)
+		_inspector_selected_node == null
+		_set_npe_state(false)
 		return
 
 	my_gizmo = await session_spawnable_m.create("Gizmo")
@@ -464,7 +473,10 @@ func _select(target_node: int) -> void:
 	my_gizmo.mode = _gizmo_mode
 	my_gizmo.use_local_space = _gizmo_space_local
 
+	_node_property_editor.get_node_properties(_node_db_entry.node)
 	my_gizmo.transform_changed.connect(func(mode, value): session_spawnable_m.set_transform(target_node, _node_db_entry.node.transform))
+	# HACK: Update ALL of the node properties after a transformation was done.
+	my_gizmo.transform_end.connect(func(mode): _node_property_editor.update_node_properties(_node_db_entry.node))
 
 func _gizmo_delete() -> void:
 	my_gizmo.clear_selection()
@@ -531,4 +543,9 @@ func _cem_camera_state(state: bool) -> void:
 
 	_player_node._cem_camera_state(state)
 	Events.emit_signal("cem_camera_state", state)
+	return
+
+# Node Property Editor
+func _set_npe_state(state: bool) -> void:
+	_node_property_editor.visible = state
 	return

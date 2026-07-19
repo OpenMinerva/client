@@ -88,7 +88,6 @@ func create(node_type: String, node_parent: int = 0, model_path: String = "") ->
 		var database_index: int = _database.find_custom(func(entry): return entry.id == entity)
 		return _database[database_index].node
 
-
 @rpc("any_peer", "reliable")
 func destroy(node_id: int) -> Variant:
 	var my_id: int = app_network_m._database.sessions_api[app_scene_m.active_session].get_unique_id()
@@ -109,7 +108,6 @@ func destroy(node_id: int) -> Variant:
 		await rpcawaiter.send_rpc(1, destroy.bind(node_id))
 		return
 
-
 @rpc("any_peer", "reliable")
 func set_transform(node_id: int, transform: Transform3D) -> void:
 	var _my_id: int = app_network_m._database.sessions_api[app_scene_m.active_session].get_unique_id()
@@ -123,6 +121,17 @@ func set_transform(node_id: int, transform: Transform3D) -> void:
 		return
 	return
 
+@rpc("any_peer", "reliable")
+func set_property(node_id: int, property_name: String, property_value: Variant) -> void:
+	var _my_id: int = app_network_m._database.sessions_api[app_scene_m.active_session].get_unique_id()
+	var _caller_id: int = multiplayer.get_remote_sender_id()
+
+	if _my_id == 1:
+		set_property_on_spawnable.rpc(node_id, property_name, property_value)
+	else:
+		await rpcawaiter.send_rpc(1, set_property.bind(node_id, property_name, property_value))
+		return
+	return
 
 # TODO: How would large assets work?
 @rpc("authority", "reliable")
@@ -163,6 +172,13 @@ func delete_spawnable(node_name: String) -> void:
 func transform_spawnable(node_id: int, transform: Transform3D) -> void:
 	var _entity_db = get_by_id(node_id)
 	_entity_db.node.transform = transform
+	return
+
+@rpc("call_local", "authority", "reliable")
+func set_property_on_spawnable(node_id: int, property_name: String, property_value: Variant):
+	var _entity_db = get_by_id(node_id)
+
+	_entity_db.node.set_indexed(property_name, property_value)
 	return
 
 func _get_deletion_queue(node_name: String) -> Array:

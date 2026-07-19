@@ -6,20 +6,10 @@
 # License: MIT License
 # Authors: Armored Dragon
 # --- License
-extends Control
-
-signal selection(type: String, parent: int)
-
-@export var window_name: String = "Window Name"
+extends "moveable_window.gd"
 
 @onready var _list_container = get_node("BackgroundColor/MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer")
-@onready var _button_close = get_node("BackgroundColor/MarginContainer/VBoxContainer/HBoxContainer/GenericButton")
-@onready var _node_window_title = get_node("BackgroundColor/MarginContainer/VBoxContainer/HBoxContainer/Label")
-
 @onready var _button_template = preload("res://userinterface/dash/partials/generic_button.tscn")
-
-var _is_dragging: bool = false
-var _drag_offset: Vector2
 
 var parent_node_id: int = 0
 
