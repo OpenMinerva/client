@@ -8,9 +8,11 @@
 # --- License
 extends Node
 
+@onready var spawnable_m = get_node("../SpawnableManager")
+
 const PLAYER_TEMPLATE = {
 	"peer_id": 0,
-	"has_spawned": false,
+	"node_id": -1,
 	"node": null,
 }
 
@@ -26,9 +28,18 @@ func add_player(peer_id: int) -> void:
 	GlobalLogger.log("[%s] Adding peer '%s' to the player list" % [caller_id, peer_id])
 	database_template.set("peer_id", peer_id)
 	players.set(str(peer_id), database_template)
+	return
 
-	spawn_player(str(peer_id))
+func set_player_database(database: Dictionary) -> void:
+	players = database
 
+	# Fix the database references
+	for _player in players.keys():
+		var _entry = players[_player]
+		var _db_entry = spawnable_m.get_by_id(int(_entry.node_id))
+		_entry.node = _db_entry.node
+
+	return
 
 @rpc("authority", "reliable")
 func remove_player(peer_id: int) -> void:
@@ -38,33 +49,22 @@ func remove_player(peer_id: int) -> void:
 	players[str(peer_id)].get("node").queue_free()
 	players.erase(str(peer_id))
 
+@rpc("authority", "reliable")
+func set_player_node(peer_id: int, node: Node3D) -> void:
+	var _target = players[str(peer_id)]
 
-@rpc("authority", "unreliable")
-func spawn_player(peer_id: String) -> void:
-	var caller_id = multiplayer.get_remote_sender_id()
-
-	if players[peer_id].get("has_spawned") == true:
-		GlobalLogger.log("[%s] Did not spawn peer '%s', already exists!" % [caller_id, peer_id], Enum.LogLevel.WARNING)
+	# TODO: Error warnings
+	if _target == null:
 		return
 
-	GlobalLogger.log("[%s] Spawning peer '%s'" % [caller_id, peer_id])
+	_target.node = node
+	_target.node_id = node.name
 
-	if module_active == false:
-		GlobalLogger.log("[%s] Could not spawn peer '%s', module inactive." % [caller_id, peer_id])
-		return
-
-	var _player_scene: PackedScene = load("res://scenes/players/player.tscn")
-	var _new_player: Node3D = _player_scene.instantiate()
-	_new_player.name = str(peer_id)
-	_new_player.position = Vector3(0, 0, 0)
-	_new_player.set_multiplayer_authority(int(peer_id))
-	get_node("../root").add_child(_new_player)
-	var player_node = get_node("../root").get_node(str(peer_id))
-	GlobalLogger.log("[%s] Spawned peer '%s'." % [caller_id, peer_id])
-	players[peer_id].set("node", player_node)
-	players[peer_id].set("has_spawned", true)
+	# If this is our own player node being set, ensure we have authority
+	if peer_id == multiplayer.get_unique_id():
+		if node and node.has_method("set_multiplayer_authority"):
+			node.set_multiplayer_authority(peer_id)
 	return
-
 
 func kill_player() -> void:
 	GlobalLogger.log("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)

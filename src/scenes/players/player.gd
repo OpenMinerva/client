@@ -168,13 +168,7 @@ func _send_player_position() -> void:
 	if is_multiplayer_authority() == false:
 		return
 
-	var compressed_position = NetworkCompression.c_16_pos(position)
-	var compressed_rotation = NetworkCompression.c_16_vec3(rotation)
-
-	# HACK: We are just appending the rotation bits at the end here. It should probably be more efficient somewhere else.
-	compressed_position.append_array(compressed_rotation)
-
-	_app_scene_m.get_master_scene(_app_scene_m.active_session).get_node("NetworkManager").entity_position.rpc(int(name), compressed_position)
+	_session_spawnable_m.set_transform(int(name), transform)
 
 	return
 

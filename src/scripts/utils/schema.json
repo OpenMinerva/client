@@ -7,6 +7,30 @@
 		"hidden": true,
 		"deep_delete": false
 	},
+	"OM_PlayerController": {
+		"requires_setup": true,
+		"pretty_name": "Player",
+		"node": null,
+		"icon": "godot/CharacterController3D.svg",
+		"hidden": true,
+		"deep_delete": false
+	},
+	"CollisionShape3D": {
+		"requires_setup": false,
+		"pretty_name": "CollisionShape3D",
+		"node": "CollisionShape3D",
+		"icon": "godot/CollisionShape3D.svg",
+		"hidden": false,
+		"deep_delete": false
+	},
+	"RayCast3D": {
+		"requires_setup": false,
+		"pretty_name": "RayCast3D",
+		"node": "RayCast3D",
+		"icon": "godot/RayCast3D.svg",
+		"hidden": false,
+		"deep_delete": false
+	},
 	"Camera3D": {
 		"requires_setup": true,
 		"pretty_name": "Camera3D",

@@ -132,6 +132,8 @@ func stop_master_scene(id: String):
 func set_active_session(session_id: String):
 	GlobalLogger.log("Setting session '%s' active." % session_id)
 
+	active_session = session_id
+
 	for _scene in network_m.get_connected_sessions():
 		# Each session gets disabled
 		scene_container.get_node(_scene.id).visible = false
@@ -141,7 +143,6 @@ func set_active_session(session_id: String):
 
 	# session_id gets enabled.
 	scene_container.get_node(session_id).process_mode = Node.PROCESS_MODE_INHERIT
-	active_session = session_id
 	_set_camera_active_state(session_id, true)
 	scene_container.get_node(session_id).visible = true
 	_set_player_authority_state(session_id, true)
@@ -176,9 +177,13 @@ func _set_camera_active_state(session_id, state: bool = false) -> void:
 	var player_manager: Node = master_scene.get_node("PlayerManager")
 	var player_database = player_manager.players
 	var my_database_entry = player_database.get(my_id)
-	var camera = my_database_entry.get("node").get_node("Head/Camera3D")
+	if my_database_entry != null:
+		if my_database_entry.node == null:
+			# FIXME: This error should not be necessary, there is a bigger problem somewhere else.
+			return
 
-	camera.current = state
+		var camera = my_database_entry.node.get_node("Head/Camera3D")
+		camera.current = state
 	return
 
 
@@ -192,11 +197,17 @@ func _set_player_authority_state(session_id, is_active: bool = false) -> void:
 	var player_manager: Node = master_scene.get_node("PlayerManager")
 	var player_database = player_manager.players
 	var my_database_entry = player_database.get(my_id)
-	var player = my_database_entry.get("node")
 
-	if is_active:
-		player.set_multiplayer_authority(int(my_id))
-		return
+	if my_database_entry != null:
+		var player = my_database_entry.node
 
-	player.set_multiplayer_authority(0)
+		if player == null:
+			# FIXME: This error should not be necessary, there is a bigger problem somewhere else.
+			return
+
+		if is_active:
+			player.set_multiplayer_authority(int(my_id))
+			return
+
+		player.set_multiplayer_authority(0)
 	return
