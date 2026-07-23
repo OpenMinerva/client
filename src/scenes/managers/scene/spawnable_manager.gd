@@ -19,7 +19,7 @@ const SPAWNABLE_TEMPLATE: Dictionary = {
 	"type": -1,
 	"spawner": -1,
 	"physics_owner": 1,
-	"node": "",
+	"node": null,
 	"id": -1,
 	"pretty_name": "ERROR",
 }
@@ -34,6 +34,7 @@ var _database := []
 @onready var instance_root = get_parent().get_node("root")
 @onready var rpcawaiter = get_parent().get_node("RpcAwaiter")
 @onready var session_signalbus: Node = get_node("../SignalBus")
+@onready var player_m = get_node("../PlayerManager")
 
 
 # TODO: Handle physics for our items, and
@@ -63,29 +64,38 @@ func sync_all() -> void:
 	if !is_multiplayer_authority():
 		return
 	for spawnable in _database:
+		if spawnable.node == null:
+			GlobalLogger.log("Node does not exist.", Enum.LogLevel.WARNING)
+			return
 		set_transform.rpc(spawnable.id, spawnable.node.transform)
 	return
-
 
 @rpc("any_peer", "reliable")
 func create(node_type: String, node_parent: int = 0, model_path: String = "") -> Variant:
 	var my_id: int = app_network_m._database.sessions_api[app_scene_m.active_session].get_unique_id()
 	var caller_id: int = multiplayer.get_remote_sender_id()
+	GlobalLogger.log("[%s] Spawning '%s'." % [my_id, node_type])
 
 	if my_id == 1:
-		var entity = spawn_spawnable(node_type, "", model_path, node_parent)
-		spawn_spawnable.rpc(node_type, "", model_path, node_parent)
+		var _target_id: String = str(_database_id)
+
+		var entity = spawn_spawnable(node_type, _target_id, model_path, node_parent)
+		spawn_spawnable.rpc(node_type, _target_id, model_path, node_parent)
 
 		var database_index: int = _database.find_custom(func(entry): return entry.id == entity)
 		if caller_id != 0 && caller_id != my_id:
-			# This is a client request to spawn
+			# This is a client request to spawn.
+			# We return the synced node name here so we can get the client-side node later.
 			return int(_database[database_index].node.name)
 
 		return _database[database_index].node
 	else:
-		# TODO: Graceful error for when RPC target is not found?
 		var entity = await rpcawaiter.send_rpc(1, create.bind(node_type, node_parent, model_path))
+
+		# Since we are given the node name, we will need to find the node in our database.
 		var database_index: int = _database.find_custom(func(entry): return entry.id == entity)
+
+		# Database index was found, get the node at that index.
 		return _database[database_index].node
 
 @rpc("any_peer", "reliable")
@@ -109,15 +119,15 @@ func destroy(node_id: int) -> Variant:
 		return
 
 @rpc("any_peer", "reliable")
-func set_transform(node_id: int, transform: Transform3D) -> void:
+func set_transform(node_id: int, p_transform: Transform3D) -> void:
 	var _my_id: int = app_network_m._database.sessions_api[app_scene_m.active_session].get_unique_id()
 	var _caller_id: int = multiplayer.get_remote_sender_id()
 
 	if _my_id == 1:
 		# TODO: Compress for network?
-		transform_spawnable.rpc(node_id, transform)
+		transform_spawnable.rpc(node_id, p_transform)
 	else:
-		await rpcawaiter.send_rpc(1, set_transform.bind(node_id, transform))
+		await rpcawaiter.send_rpc(1, set_transform.bind(node_id, p_transform))
 		return
 	return
 
@@ -133,10 +143,21 @@ func set_property(node_id: int, property_name: String, property_value: Variant) 
 		return
 	return
 
+@rpc("any_peer", "reliable")
+func set_authority(node_id: int, peer_id: int) -> void:
+	# TODO: Only allow the host to call this function.
+	var _my_id: int = app_network_m._database.sessions_api[app_scene_m.active_session].get_unique_id()
+	var _caller_id: int = multiplayer.get_remote_sender_id()
+
+	if _my_id == 1:
+		set_authority_on_spawnable.rpc(node_id, peer_id)
+	else:
+		await rpcawaiter.send_rpc(1, set_authority.bind(node_id, peer_id))
+	return
+
 # TODO: How would large assets work?
 @rpc("authority", "reliable")
 func spawn_spawnable(p_type: String, p_name: String = "", p_path: String = "", parent_id: int = 0) -> int:
-	var _spawnable_id = p_name if p_name != "" else str(_database_id)
 	var _spawned_entity
 	var parent_node = get_parent().get_node("root")
 
@@ -145,7 +166,7 @@ func spawn_spawnable(p_type: String, p_name: String = "", p_path: String = "", p
 		var database_index = _database.find_custom(func(entry): return entry.id == parent_id)
 		parent_node = _database[database_index].node
 
-	_spawned_entity = _spawn_node(p_type, 1, parent_node, p_path)
+	_spawned_entity = _spawn_node(p_type, 1, parent_node, p_path, p_name)
 	_spawned_entity.owner = parent_node
 
 	session_signalbus.node_created.emit(_spawned_entity)
@@ -171,6 +192,14 @@ func delete_spawnable(node_name: String) -> void:
 @rpc("call_local", "authority", "reliable")
 func transform_spawnable(node_id: int, transform: Transform3D) -> void:
 	var _entity_db = get_by_id(node_id)
+	if _entity_db == null:
+		GlobalLogger.log("Could not locate node id '%s'" % node_id, Enum.LogLevel.WARNING)
+		return
+
+	if _entity_db.node == null:
+		GlobalLogger.log("Could not locate node '%s'" % node_id, Enum.LogLevel.WARNING)
+		return
+
 	_entity_db.node.transform = transform
 	return
 
@@ -178,7 +207,22 @@ func transform_spawnable(node_id: int, transform: Transform3D) -> void:
 func set_property_on_spawnable(node_id: int, property_name: String, property_value: Variant):
 	var _entity_db = get_by_id(node_id)
 
+	if _entity_db == {}:
+		return
+
 	_entity_db.node.set_indexed(property_name, property_value)
+	return
+
+@rpc("call_local", "authority", "reliable")
+func set_authority_on_spawnable(node_id: int, peer_id: int) -> void:
+	# TODO: Only allow the host to call this function.
+	var _entity_db = get_by_id(node_id)
+
+	# TODO: Error Check
+
+	_entity_db.node.set_multiplayer_authority(peer_id)
+
+	GlobalLogger.log("Giving peer '%s' authority for node '%s'." % [peer_id, node_id])
 	return
 
 func _get_deletion_queue(node_name: String) -> Array:
@@ -202,10 +246,32 @@ func _add_to_deletion_queue(node: Node, list: Array[Node] = []) -> Array[Node]:
 
 
 @rpc("authority", "reliable")
-func receive_database(database: Array, id: int) -> void:
+func receive_database(database: Array, id: int, players: Dictionary) -> void:
+	var _my_id: int = app_network_m._database.sessions_api[app_scene_m.active_session].get_unique_id()
+
+	# FIXME: I don't think this is required since we won't have this be called multiple times.
+	# Clear existing database to prevent ID conflicts.
+	for entry in _database:
+		entry.node.queue_free()
+	_database.clear()
+
+
+	GlobalLogger.log("[%s] Receiving spawnable database with %d entries" % [_my_id, database.size()])
+
 	for spawnable in database:
+		GlobalLogger.log("Spawning '%s' as '%s'." % [spawnable.id, spawnable.type])
 		spawn_spawnable(spawnable.type, str(spawnable.id))
-	network_m.rpc_id(1, "dev_request_sync")
+
+	# FIXME: We don't worry about the database index on the client, the server tells us the node id.
+	# Set the database id
+	_database_id = id
+
+	GlobalLogger.log("[%s] Database sync complete." % _my_id)
+
+	# Update the player database.
+	player_m.set_player_database(players)
+
+	network_m.dev_request_sync.rpc_id(1)
 	return
 
 func set_node_visible_to_inspector(node: Node) -> void:
@@ -241,7 +307,7 @@ func get_by_id(spawnable_id: int) -> Dictionary:
 	return _database[target_entry]
 
 
-func _spawn_node(node_type: String, node_owner: int, parent: Node = instance_root, model_path = "") -> Node:
+func _spawn_node(node_type: String, node_owner: int, parent: Node = instance_root, model_path = "", node_name: String = str(_database_id)) -> Node:
 	var _node: Node
 	var _node_name = node_type
 	var _node_schema = NSB.get_entry(_node_name)
@@ -254,7 +320,7 @@ func _spawn_node(node_type: String, node_owner: int, parent: Node = instance_roo
 		_node = NSB.build(_node_name, model_path)
 
 	# Add to database
-	var _db_id = _add_to_database(_node, node_type, node_owner)
+	var _db_id = _add_to_database(_node, node_type, node_owner, int(node_name))
 
 	if model_path != "":
 		_pretty_name = model_path.get_file()
@@ -274,9 +340,18 @@ func _spawn_node(node_type: String, node_owner: int, parent: Node = instance_roo
 	return _node
 
 
-func _add_to_database(node: Node, type: String, node_owner: int) -> int:
+func _add_to_database(node: Node, type: String, node_owner: int, node_id: int = 0) -> int:
+	# If we are a client, we ignore _database_id entirely.
 	var _db_entry = SPAWNABLE_TEMPLATE.duplicate()
-	_db_entry.id = int(_database_id)
+
+	if node_id == 0:
+		GlobalLogger.log("No node_id supplied.", Enum.LogLevel.ERROR)
+		return 0
+
+		_db_entry.id = int(_database_id)
+	else:
+		_db_entry.id = node_id
+
 	_db_entry.node = node
 	_db_entry.type = type
 	_db_entry.spawner = node_owner

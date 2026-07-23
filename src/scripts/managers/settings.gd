@@ -85,7 +85,6 @@ func _load_settings() -> void:
 		var _content = _file.get_as_text()
 		var _parsed = JSON.parse_string(_content)
 		_settings = _parsed
-		print(_content)
 		GlobalLogger.log("Settings have been loaded.", Enum.LogLevel.INFO)
 		return
 

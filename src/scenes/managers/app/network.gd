@@ -98,10 +98,12 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 		scene_m.set_master_root_from_program(_scene, Enum.BaseLevel.GRID)
 
 	scene_m.start_master_scene(_scene)
+	scene_m.set_active_session(_scene)
 
 	# DEV: Force spawn the host.
-	scene_m.get_master_scene(_scene).get_node("PlayerManager").add_player(1)
-	scene_m.set_active_session(_scene)
+	# FIXME: This is probably bad design.
+	scene_m.get_master_scene(_scene).get_node("NetworkManager")._on_peer_connected(1)
+
 	Events.dash_session_changed.emit(_scene)
 
 	return response_dict
