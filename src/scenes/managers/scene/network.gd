@@ -120,7 +120,7 @@ func _on_peer_connected(peer_id: int):
 	player_m.set_player_node(peer_id, _entity)
 
 	# The host adds a listener for the on_delete, then spawns the player back in.
-	_entity.connect("tree_exiting", _on_peer_player_node_destroyed.bind(peer_id))
+	_entity.connect("tree_exiting", _on_peer_player_node_destroyed.bind(peer_id, int(_entity.name)))
 
 	GlobalLogger.log("[%s] Peer '%s' connected to our server." % [_my_id, peer_id])
 
@@ -140,8 +140,11 @@ func _on_peer_disconnected(peer_id: int) -> void:
 	GlobalLogger.log("[%s] Peer '%s' disconnected to our server." % [_my_id, peer_id])
 	return
 
-func _on_peer_player_node_destroyed(peer_id: int) -> void:
+func _on_peer_player_node_destroyed(peer_id: int, node_id: int) -> void:
 	GlobalLogger.log("Peer '%s' was destroyed! Queued a player controller respawn." % [peer_id])
+	spawnable_m.destroy(node_id)
+	spawnable_m.destroy.rpc(node_id)
+
 	var _timer = get_tree().create_timer(1)
 
 	_timer.timeout.connect(func () -> void:

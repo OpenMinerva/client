@@ -64,6 +64,9 @@ func sync_all() -> void:
 	if !is_multiplayer_authority():
 		return
 	for spawnable in _database:
+		if spawnable.node == null:
+			GlobalLogger.log("Node does not exist.", Enum.LogLevel.WARNING)
+			return
 		set_transform.rpc(spawnable.id, spawnable.node.transform)
 	return
 
@@ -74,8 +77,10 @@ func create(node_type: String, node_parent: int = 0, model_path: String = "") ->
 	GlobalLogger.log("[%s] Spawning '%s'." % [my_id, node_type])
 
 	if my_id == 1:
-		var entity = spawn_spawnable(node_type, "", model_path, node_parent)
-		spawn_spawnable.rpc(node_type, "", model_path, node_parent)
+		var _target_id: String = str(_database_id)
+
+		var entity = spawn_spawnable(node_type, _target_id, model_path, node_parent)
+		spawn_spawnable.rpc(node_type, _target_id, model_path, node_parent)
 
 		var database_index: int = _database.find_custom(func(entry): return entry.id == entity)
 		if caller_id != 0 && caller_id != my_id:
@@ -153,7 +158,6 @@ func set_authority(node_id: int, peer_id: int) -> void:
 # TODO: How would large assets work?
 @rpc("authority", "reliable")
 func spawn_spawnable(p_type: String, p_name: String = "", p_path: String = "", parent_id: int = 0) -> int:
-	var _spawnable_id = p_name if p_name != "" else str(_database_id)
 	var _spawned_entity
 	var parent_node = get_parent().get_node("root")
 
@@ -162,7 +166,7 @@ func spawn_spawnable(p_type: String, p_name: String = "", p_path: String = "", p
 		var database_index = _database.find_custom(func(entry): return entry.id == parent_id)
 		parent_node = _database[database_index].node
 
-	_spawned_entity = _spawn_node(p_type, 1, parent_node, p_path, _spawnable_id)
+	_spawned_entity = _spawn_node(p_type, 1, parent_node, p_path, p_name)
 	_spawned_entity.owner = parent_node
 
 	session_signalbus.node_created.emit(_spawned_entity)
@@ -242,7 +246,7 @@ func _add_to_deletion_queue(node: Node, list: Array[Node] = []) -> Array[Node]:
 
 
 @rpc("authority", "reliable")
-func receive_database(database: Array, _id: int, players: Dictionary) -> void:
+func receive_database(database: Array, id: int, players: Dictionary) -> void:
 	var _my_id: int = app_network_m._database.sessions_api[app_scene_m.active_session].get_unique_id()
 
 	# FIXME: I don't think this is required since we won't have this be called multiple times.
@@ -251,11 +255,16 @@ func receive_database(database: Array, _id: int, players: Dictionary) -> void:
 		entry.node.queue_free()
 	_database.clear()
 
+
 	GlobalLogger.log("[%s] Receiving spawnable database with %d entries" % [_my_id, database.size()])
 
 	for spawnable in database:
 		GlobalLogger.log("Spawning '%s' as '%s'." % [spawnable.id, spawnable.type])
 		spawn_spawnable(spawnable.type, str(spawnable.id))
+
+	# FIXME: We don't worry about the database index on the client, the server tells us the node id.
+	# Set the database id
+	_database_id = id
 
 	GlobalLogger.log("[%s] Database sync complete." % _my_id)
 
@@ -298,7 +307,7 @@ func get_by_id(spawnable_id: int) -> Dictionary:
 	return _database[target_entry]
 
 
-func _spawn_node(node_type: String, node_owner: int, parent: Node = instance_root, model_path = "", node_name: String = _database_id) -> Node:
+func _spawn_node(node_type: String, node_owner: int, parent: Node = instance_root, model_path = "", node_name: String = str(_database_id)) -> Node:
 	var _node: Node
 	var _node_name = node_type
 	var _node_schema = NSB.get_entry(_node_name)
@@ -332,8 +341,17 @@ func _spawn_node(node_type: String, node_owner: int, parent: Node = instance_roo
 
 
 func _add_to_database(node: Node, type: String, node_owner: int, node_id: int = 0) -> int:
+	# If we are a client, we ignore _database_id entirely.
 	var _db_entry = SPAWNABLE_TEMPLATE.duplicate()
-	_db_entry.id = int(_database_id) if node_id == 0 else node_id
+
+	if node_id == 0:
+		GlobalLogger.log("No node_id supplied.", Enum.LogLevel.ERROR)
+		return 0
+
+		_db_entry.id = int(_database_id)
+	else:
+		_db_entry.id = node_id
+
 	_db_entry.node = node
 	_db_entry.type = type
 	_db_entry.spawner = node_owner
