@@ -57,17 +57,6 @@ func add_players(players: Dictionary):
 		player_m.add_player(int(_player))
 
 
-@rpc("any_peer", "unreliable")
-func entity_position(entity_id: int, position):
-	var caller_id = multiplayer.get_remote_sender_id()
-	if caller_id != entity_id:
-		return
-	var target_node = get_parent().get_node("root").get_node_or_null(str(entity_id))
-	if target_node:
-		target_node.position = NetworkCompression.d_16_pos(position)
-		target_node.rotation = NetworkCompression.d_16_vec3(position.slice(12))
-
-
 @rpc("any_peer", "reliable")
 func dev_request_spawnables_database() -> void:
 	var caller_id = multiplayer.get_remote_sender_id()
