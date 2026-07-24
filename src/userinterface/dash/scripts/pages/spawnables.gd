@@ -22,7 +22,6 @@ var _selected_folder: Node
 @onready var _file_container = $"HBox/Right/Local/Files"
 
 @onready var _create_folder_btn = $"HBox/Right/Local/Actions/NewFolder/Button"
-@onready var _delete_folder_btn = $"HBox/Right/Local/Actions/DeleteFolder/Button"
 @onready var _delete_selected_btn = $"HBox/Right/Local/Actions/DeleteSelected/Button"
 
 @onready var _folder_creation_dialog = $"FolderCreation"

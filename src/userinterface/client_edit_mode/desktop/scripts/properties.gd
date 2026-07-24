@@ -135,6 +135,6 @@ func _get_partial(type: String) -> Node:
 	partials[type] = _new_partial
 	return partials[type].instantiate()
 
-func _on_session_changed() -> void:
+func _on_session_changed(session_id: String) -> void:
 	session_spawnable_m = app_scene_m.get_master_scene(app_scene_m.active_session).get_node("SpawnableManager")
 	return

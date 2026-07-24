@@ -280,7 +280,7 @@ func set_active_session(id: String):
 	scene_m.get_master_root(id).get_node("PlayerManager").players.get(my_id).get("node").camera.current = true
 	_database.sessions[id].active = true
 	scene_m.set_active_session(id)
-	Events.dash_session_changed.emit({ "id": id })
+	Events.dash_session_changed.emit(id)
 	return
 
 

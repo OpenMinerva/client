@@ -244,7 +244,7 @@ func _on_node_destroyed(node_entry: Dictionary) -> void:
 	_inspector_build()
 	return
 
-func _on_session_changed() -> void:
+func _on_session_changed(session_id: String) -> void:
 	session_signalbus = app_scene_m.get_master_scene(app_scene_m.active_session).get_node("SignalBus")
 	session_spawnable_m = app_scene_m.get_master_scene(app_scene_m.active_session).get_node("SpawnableManager")
 	session_players_m = app_scene_m.get_master_scene(app_scene_m.active_session).get_node("PlayerManager")

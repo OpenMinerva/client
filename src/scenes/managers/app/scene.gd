@@ -105,7 +105,6 @@ func start_master_scene(id: String):
 	for node_name in MANAGERS:
 		var _scene_manager = _scene.get_node_or_null(node_name)
 		if _scene_manager:
-			_scene_manager.module_active = true
 			GlobalLogger.log("'%s' started in server '%s'" % [node_name, id])
 			continue
 
@@ -121,7 +120,6 @@ func stop_master_scene(id: String):
 	for node_name in MANAGERS:
 		var _scene_manager = _scene.get_node_or_null(node_name)
 		if _scene_manager:
-			_scene_manager.module_active = true
 			GlobalLogger.log("'%s' stopped in server '%s'" % [node_name, id])
 			continue
 
@@ -146,7 +144,7 @@ func set_active_session(session_id: String):
 	_set_camera_active_state(session_id, true)
 	scene_container.get_node(session_id).visible = true
 	_set_player_authority_state(session_id, true)
-	Events.dash_session_changed.emit()
+	Events.dash_session_changed.emit(session_id)
 	return
 
 

@@ -16,9 +16,7 @@ const PLAYER_TEMPLATE = {
 	"node": null,
 }
 
-var module_active: bool = false
 var players = { }
-
 
 @rpc("call_local", "authority", "reliable")
 func add_player(peer_id: int) -> void:
