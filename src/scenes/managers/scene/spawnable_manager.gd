@@ -25,16 +25,16 @@ const SPAWNABLE_TEMPLATE: Dictionary = {
 }
 
 var _spawnable_network_batches: int = 4
-var _database_id = 10
-var _database := []
+var _database_id: int = 10
+var _database: Array[Dictionary] = []
 
 @onready var app_scene_m: Node = get_tree().current_scene.get_node("SceneManager")
 @onready var app_network_m: Node = get_tree().current_scene.get_node("NetworkManager")
-@onready var network_m = get_node("../NetworkManager")
-@onready var instance_root = get_parent().get_node("root")
-@onready var rpcawaiter = get_parent().get_node("RpcAwaiter")
+@onready var network_m: Node = get_node("../NetworkManager")
+@onready var instance_root: Node = get_parent().get_node("root")
+@onready var rpcawaiter: Node = get_parent().get_node("RpcAwaiter")
 @onready var session_signalbus: Node = get_node("../SignalBus")
-@onready var player_m = get_node("../PlayerManager")
+@onready var player_m: Node = get_node("../PlayerManager")
 
 
 # TODO: Handle physics for our items, and
@@ -43,7 +43,7 @@ func _physics_process(_delta):
 	# There was no reason in me doing this, but I think I was trying to make it so that you do not have to network so many things in a given instant.
 	# As far as I know there was not an existing problem I was trying to solve and I have no idea what I was thinking.
 	# However, it's not breaking anything in the current instant so I will leave it in until it proves to be a problem or if I think of a better way of doing this.
-	var current_batch = Engine.get_physics_frames() % _spawnable_network_batches
+	var current_batch: int = Engine.get_physics_frames() % _spawnable_network_batches
 
 	if !is_multiplayer_authority():
 		return
@@ -58,11 +58,11 @@ func _physics_process(_delta):
 		transform_spawnable.rpc(spawnable.id, spawnable.node.transform)
 	return
 
-
-# FIXME: This is a test of syncing all positions of all spawnables. This probably is not going to be robust enough.
+@rpc("any_peer", "reliable")
 func sync_all() -> void:
 	if !is_multiplayer_authority():
 		return
+
 	for spawnable in _database:
 		if spawnable.node == null:
 			GlobalLogger.log("Node does not exist.", Enum.LogLevel.WARNING)
@@ -79,7 +79,7 @@ func create(node_type: String, node_parent: int = 0, model_path: String = "") ->
 	if my_id == 1:
 		var _target_id: String = str(_database_id)
 
-		var entity = spawn_spawnable(node_type, _target_id, model_path, node_parent)
+		var entity: int = spawn_spawnable(node_type, _target_id, model_path, node_parent)
 		spawn_spawnable.rpc(node_type, _target_id, model_path, node_parent)
 
 		var database_index: int = _database.find_custom(func(entry): return entry.id == entity)
@@ -90,7 +90,7 @@ func create(node_type: String, node_parent: int = 0, model_path: String = "") ->
 
 		return _database[database_index].node
 	else:
-		var entity = await rpcawaiter.send_rpc(1, create.bind(node_type, node_parent, model_path))
+		var entity: int = await rpcawaiter.send_rpc(1, create.bind(node_type, node_parent, model_path))
 
 		# Since we are given the node name, we will need to find the node in our database.
 		var database_index: int = _database.find_custom(func(entry): return entry.id == entity)
@@ -193,6 +193,7 @@ func delete_spawnable(node_name: String) -> void:
 @rpc("call_local", "authority", "reliable")
 func transform_spawnable(node_id: int, transform: Transform3D) -> void:
 	var _entity_db = get_by_id(node_id)
+
 	if _entity_db == null:
 		GlobalLogger.log("Could not locate node id '%s'" % node_id, Enum.LogLevel.WARNING)
 		return
@@ -245,9 +246,7 @@ func _add_to_deletion_queue(node: Node, list: Array[Node] = []) -> Array[Node]:
 
 	return list
 
-
-@rpc("authority", "reliable")
-func receive_database(database: Array, id: int, players: Dictionary) -> void:
+func receive_database(database: Array, players: Dictionary) -> void:
 	var _my_id: int = app_network_m._database.sessions_api[app_scene_m.active_session].get_unique_id()
 
 	# FIXME: I don't think this is required since we won't have this be called multiple times.
@@ -256,23 +255,17 @@ func receive_database(database: Array, id: int, players: Dictionary) -> void:
 		entry.node.queue_free()
 	_database.clear()
 
-
 	GlobalLogger.log("[%s] Receiving spawnable database with %d entries" % [_my_id, database.size()])
 
 	for spawnable in database:
 		GlobalLogger.log("Spawning '%s' as '%s'." % [spawnable.id, spawnable.type])
 		spawn_spawnable(spawnable.type, str(spawnable.id))
 
-	# FIXME: We don't worry about the database index on the client, the server tells us the node id.
-	# Set the database id
-	_database_id = id
-
 	GlobalLogger.log("[%s] Database sync complete." % _my_id)
 
 	# Update the player database.
 	player_m.set_player_database(players)
 
-	network_m.dev_request_sync.rpc_id(1)
 	return
 
 func set_node_visible_to_inspector(node: Node) -> void:
