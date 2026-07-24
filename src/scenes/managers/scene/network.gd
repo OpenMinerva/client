@@ -43,12 +43,6 @@ func set_root(scene_type: Enum.BaseLevel):
 	GlobalLogger.log("[%s] Received root base scene." % [_my_id])
 	scene_m.set_master_root_from_program(_server_id, scene_type)
 
-@rpc("authority", "reliable")
-func add_players(players: Dictionary):
-	GlobalLogger.log("[%s] Playerlist received." % [_my_id])
-	for _player in players.keys():
-		player_m.add_player(int(_player))
-
 @rpc("any_peer", "reliable")
 func req_spawnable_db() -> void:
 	# A peer wants the server database.
@@ -71,9 +65,6 @@ func rec_spawnable_db(db: Array, players: Dictionary) -> void:
 
 	return
 
-func gizmo_selection(node_id: int, to_select: bool) -> void:
-	return
-
 func _on_connected_to_server():
 	# When the client is connected to the server, request the database from the server.
 	GlobalLogger.log("[%s] Connected to a server." % _my_id)
@@ -92,7 +83,6 @@ func _on_peer_connected(peer_id: int):
 	GlobalLogger.log("Peer '%s' is connected! Creating a player controller." % [peer_id])
 
 	# Add player to the database.
-	player_m.add_player(peer_id)
 	player_m.add_player.rpc(peer_id)
 
 	# Spawn the player controller.
@@ -106,9 +96,7 @@ func _on_peer_connected(peer_id: int):
 
 	GlobalLogger.log("[%s] Peer '%s' connected to our server." % [_my_id, peer_id])
 
-	rpc_id(peer_id, "set_root", Enum.BaseLevel.GRID)
-	# FIXME: There are now two functions that do this. Refactor one of them out. The newer one has better player node syncing.
-	rpc_id(peer_id, "add_players", player_m.players)
+	set_root.rpc_id(peer_id, Enum.BaseLevel.GRID)
 	return
 
 func _on_peer_disconnected(peer_id: int) -> void:
