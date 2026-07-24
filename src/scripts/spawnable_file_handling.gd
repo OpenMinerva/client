@@ -17,6 +17,8 @@ func _ready() -> void:
 func save_spawnable(root: Node) -> void:
 	# Take a node path from the scene, and save that node to the file
 	# In order to save nodes using the ResourceSaver, we need to make all nodes that are a child of the root have the owner of the root.
+	# FIXME: When saving the node scene, The FileManager should be used entirely.
+		# ResourceLoader / ResourceSaver should not be called from here.
 	var original_owners = _get_node_ownership(root)
 	_set_temporary_ownership_recursive(root, root)
 

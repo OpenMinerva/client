@@ -9,7 +9,6 @@
 
 extends Node
 
-
 const BASE_SPAWNABLE_DIR = "user://spawnables/"
 var spawnables_dir: Array[String] = []
 
@@ -17,7 +16,8 @@ func _ready() -> void:
 	_initialize_spawnable_folder()
 	return
 
-## Creates a log file following the internal format.
+# Creates a log file following the internal format.
+# FIXME: Logger library should handle this.
 func create_log_file() -> String:
 	GlobalLogger.log("Creating a log file for this session.")
 	_maybe_make_directory("user://logs/")
@@ -31,7 +31,6 @@ func create_log_file() -> String:
 	GlobalLogger.log("Log file '%s' created." % log_file_path)
 	return log_file_path
 
-
 func create_file(dir: String, file_name: String) -> void:
 	_maybe_make_directory(dir)
 	# TODO: Sanitize name
@@ -39,11 +38,9 @@ func create_file(dir: String, file_name: String) -> void:
 	GlobalLogger.log("File '%s' created at '%s'." % [file_name, dir])
 	file.close()
 
-
 func _maybe_make_directory(dir: String):
 	var dir_access = DirAccess.open("user://")
 	dir_access.make_dir_recursive(dir)
-
 
 func _parse_log_file_name(file_name: String) -> Dictionary:
 	var date = file_name.split(".")[1].split("-")
@@ -56,13 +53,12 @@ func _parse_log_file_name(file_name: String) -> Dictionary:
 	var time_dictionary = Time.get_datetime_dict_from_datetime_string("%s-%s-%sT%s:%s:%s" % [year, month, day, hour, minute, second], true)
 	return time_dictionary
 
-
 func _get_today_log_file_name() -> String:
 	var current_timestring = Time.get_datetime_string_from_system()
 	var file_name = current_timestring.replace("-", "_").replace("T", "-").replace(":", "_")
 	return file_name
 
-
+# TODO: Initialization section to make sure all folders exist.
 # Spawnables local file management
 func _initialize_spawnable_folder() -> void:
 	# Check if the folder exists
@@ -80,21 +76,6 @@ func get_inv_filelist() -> Dictionary:
 
 func _current_path() -> String:
 	return BASE_SPAWNABLE_DIR + "/".join(spawnables_dir)
-
-
-func create_inv_file(name: String = "", data: Variant = null) -> void:
-	# Get current inventory dir
-	# Create file
-	# Write data
-	# Close File
-	return
-
-
-func delete_inv_file(name: String = "") -> void:
-	# Get current inventory dir
-	# Validate file exists
-	# Delete file
-	return
 
 func move_inv_deeper(folder: String) -> void:
 	# Move to a new folder from the current _maybe_make_directory
