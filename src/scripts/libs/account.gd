@@ -27,8 +27,6 @@ const ACCOUNT_DATABASE_OAUTH_TEMPLATE: Dictionary = {
 	"refresh_token": "",
 }
 
-var random_lib = preload("res://scripts/utils/random.gd").new()
-
 var stop_connection_timer = false
 var active_account: String = ""
 var _database: Dictionary = { }
@@ -181,7 +179,7 @@ func authenticate_oauth(id: String, _remember_me: bool = false) -> void:
 func _create_oauth(account) -> Dictionary:
 	var _account_authentication: Dictionary = { }
 	var _account = ACCOUNT_DATABASE_TEMPLATE.duplicate()
-	_account.set("id", random_lib.random_string(6, true))
+	_account.set("id", Random.string(6))
 	_account.set("display_name", account.get("display_name", null))
 	_account.set("account_server", account.get("account_server", null))
 

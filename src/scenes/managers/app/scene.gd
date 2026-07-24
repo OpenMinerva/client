@@ -21,7 +21,7 @@ func _ready():
 
 
 func create_master_scene():
-	var _scene_id = Random.random_string()
+	var _scene_id = Random.string(6)
 	var _base_scene = preload("res://scenes/levels/base.tscn")
 
 	_base_scene = _base_scene.instantiate()
