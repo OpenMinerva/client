@@ -8,6 +8,8 @@
 # --- License
 extends Control
 
+var _session_query = preload("res://userinterface/session_query.gd").new()
+
 @onready var template_world_listing: PackedScene = preload("res://userinterface/dash/partials/session_listing.tscn")
 @onready var world_listing_grid: GridContainer = get_node("HBox/Right/VBoxContainer/ScrollContainer/GridContainer")
 @onready var tag_nodes: Array[Node] = get_node("HBox/Left").get_children()
@@ -31,10 +33,10 @@ func _handle_switch_tab(tab_name) -> void:
 
 	# TODO: Check if we need to authenticate, if so
 	for _session_server in SettingsManager.get_session_servers():
-		await SessionQuery.authenticate(_session_server.url)
+		await _session_query.authenticate(_session_server.url)
 
 	# Get a list of all sessions from our saved sessions_list
-	var session_list = await SessionQuery.get_sessions()
+	var session_list = await _session_query.get_sessions()
 
 	# Remove all entries in the list
 	_remove_all_listings()
