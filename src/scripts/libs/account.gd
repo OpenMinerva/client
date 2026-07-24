@@ -29,8 +29,7 @@ const ACCOUNT_DATABASE_OAUTH_TEMPLATE: Dictionary = {
 
 var time_lib = preload("res://scripts/libs/time.gd").new()
 var random_lib = preload("res://scripts/utils/random.gd").new()
-# TODO: Create proper encryption of the account database
-# https://github.com/OpenMinerva/client/issues/59
+
 var stop_connection_timer = false
 var active_account: String = ""
 var _database: Dictionary = { }
