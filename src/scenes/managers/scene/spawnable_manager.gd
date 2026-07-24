@@ -341,8 +341,6 @@ func _add_to_database(node: Node, type: String, node_owner: int, node_id: int = 
 	if node_id == 0:
 		GlobalLogger.log("No node_id supplied.", Enum.LogLevel.ERROR)
 		return 0
-
-		_db_entry.id = int(_database_id)
 	else:
 		_db_entry.id = node_id
 

@@ -26,8 +26,8 @@ static func string(length: int = 6) -> String:
 	# Returns the PackedByteArray as a string.
 	return bytes.get_string_from_ascii()
 
-static func int(min: int = 0, max: int = 10) -> int:
-	return rng.randi_range(min, max)
+static func int(min_num: int = 0, max_num: int = 10) -> int:
+	return rng.randi_range(min_num, max_num)
 
-static func float(min: int = 0, max: int = 10) -> int:
-	return rng.randf_range(min, max)
+static func float(min_num: float = 0, max_num: float = 10) -> float:
+	return rng.randf_range(min_num, max_num)

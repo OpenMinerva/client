@@ -66,10 +66,8 @@ func get_node_properties(node: Node) -> void:
 	return
 
 func _get_property_tree(node: Node) -> Dictionary:
-	var tree := {}
-	var current_category := ""
-	var group := ""
-	var sub_group := ""
+	var tree: Dictionary = {}
+	var current_category: String = ""
 
 	for _property in node.get_property_list():
 		var _usage: int = _property["usage"]
@@ -135,6 +133,6 @@ func _get_partial(type: String) -> Node:
 	partials[type] = _new_partial
 	return partials[type].instantiate()
 
-func _on_session_changed(session_id: String) -> void:
+func _on_session_changed(_session_id: String) -> void:
 	session_spawnable_m = app_scene_m.get_master_scene(app_scene_m.active_session).get_node("SpawnableManager")
 	return

@@ -49,7 +49,8 @@ static func init() -> void:
 		_schema[_item] = _entry
 	return
 
-static func is_valid(search_key: Variant) -> bool:
+static func is_valid(_search_key: Variant) -> bool:
+	GlobalLogger.log("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	return false
 
 static func get_schema() -> Dictionary:
