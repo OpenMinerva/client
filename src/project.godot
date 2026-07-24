@@ -42,6 +42,10 @@ StateManager="*uid://b5vvw77bmn4yc"
 OAuth2Client="*uid://c4b880pwgfrty"
 UrlParser="*uid://budprjmmpally"
 
+[debug]
+
+gdscript/warnings/unused_signal=0
+
 [display]
 
 window/size/viewport_width=1920
