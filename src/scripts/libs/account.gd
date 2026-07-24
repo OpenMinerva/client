@@ -27,7 +27,6 @@ const ACCOUNT_DATABASE_OAUTH_TEMPLATE: Dictionary = {
 	"refresh_token": "",
 }
 
-var time_lib = preload("res://scripts/libs/time.gd").new()
 var random_lib = preload("res://scripts/utils/random.gd").new()
 
 var stop_connection_timer = false
