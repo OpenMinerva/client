@@ -9,12 +9,12 @@
 
 class_name Random
 
-static var char_bytes := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".to_ascii_buffer()
+static var char_bytes: PackedByteArray= "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".to_ascii_buffer()
 static var rng = RandomNumberGenerator.new()
 
 static func string(length: int = 6) -> String:
 	# New array.
-	var bytes := PackedByteArray()
+	var bytes: PackedByteArray = PackedByteArray()
 
 	# Reside the array, avoids performance of increasing the size of the array.
 	bytes.resize(length)
