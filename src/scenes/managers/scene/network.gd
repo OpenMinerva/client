@@ -78,6 +78,7 @@ func _on_server_disconnected():
 
 func _on_peer_connected(peer_id: int):
 	if is_multiplayer_authority() == false:
+		# Only the host runs the function.
 		return
 
 	GlobalLogger.log("Peer '%s' is connected! Creating a player controller." % [peer_id])
@@ -96,7 +97,10 @@ func _on_peer_connected(peer_id: int):
 
 	GlobalLogger.log("[%s] Peer '%s' connected to our server." % [_my_id, peer_id])
 
-	set_root.rpc_id(peer_id, Enum.BaseLevel.GRID)
+	if peer_id != 1:
+		# Everybody but the host needs this?
+		set_root.rpc_id(peer_id, Enum.BaseLevel.GRID)
+
 	return
 
 func _on_peer_disconnected(peer_id: int) -> void:
