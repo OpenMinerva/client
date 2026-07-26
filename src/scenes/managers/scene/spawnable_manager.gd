@@ -72,7 +72,7 @@ func sync_all() -> void:
 
 @rpc("any_peer", "reliable")
 func create(node_type: String, node_parent: int = 0, model_path: String = "") -> Variant:
-	var my_id: int = app_network_m._database.sessions_api[app_scene_m.active_session].get_unique_id()
+	var my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
 	var caller_id: int = multiplayer.get_remote_sender_id()
 	GlobalLogger.log("[%s] Spawning '%s'." % [my_id, node_type])
 
@@ -101,7 +101,7 @@ func create(node_type: String, node_parent: int = 0, model_path: String = "") ->
 @rpc("any_peer", "reliable")
 func destroy(node_id: int) -> Variant:
 	# FIXME: When Alt+F4-ing, my_id causes a crash.
-	var my_id: int = app_network_m._database.sessions_api[app_scene_m.active_session].get_unique_id()
+	var my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
 	var caller_id: int = multiplayer.get_remote_sender_id()
 
 	if my_id == 1:
@@ -121,7 +121,7 @@ func destroy(node_id: int) -> Variant:
 
 @rpc("any_peer", "reliable")
 func set_transform(node_id: int, p_transform: Transform3D) -> void:
-	var _my_id: int = app_network_m._database.sessions_api[app_scene_m.active_session].get_unique_id()
+	var _my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
 	var _caller_id: int = multiplayer.get_remote_sender_id()
 
 	if _my_id == 1:
@@ -134,7 +134,7 @@ func set_transform(node_id: int, p_transform: Transform3D) -> void:
 
 @rpc("any_peer", "reliable")
 func set_property(node_id: int, property_name: String, property_value: Variant) -> void:
-	var _my_id: int = app_network_m._database.sessions_api[app_scene_m.active_session].get_unique_id()
+	var _my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
 	var _caller_id: int = multiplayer.get_remote_sender_id()
 
 	if _my_id == 1:
@@ -147,7 +147,7 @@ func set_property(node_id: int, property_name: String, property_value: Variant) 
 @rpc("any_peer", "reliable")
 func set_authority(node_id: int, peer_id: int) -> void:
 	# TODO: Only allow the host to call this function.
-	var _my_id: int = app_network_m._database.sessions_api[app_scene_m.active_session].get_unique_id()
+	var _my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
 	var _caller_id: int = multiplayer.get_remote_sender_id()
 
 	if _my_id == 1:
@@ -247,7 +247,7 @@ func _add_to_deletion_queue(node: Node, list: Array[Node] = []) -> Array[Node]:
 	return list
 
 func receive_database(database: Array, players: Dictionary) -> void:
-	var _my_id: int = app_network_m._database.sessions_api[app_scene_m.active_session].get_unique_id()
+	var _my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
 
 	# FIXME: I don't think this is required since we won't have this be called multiple times.
 	# Clear existing database to prevent ID conflicts.

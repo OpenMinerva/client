@@ -166,7 +166,7 @@ func _get_scene_by_type(scene_type: Enum.BaseLevel) -> PackedScene:
 
 func _set_camera_active_state(session_id, state: bool = false) -> void:
 	# TODO: check if session exists.
-	var my_id: String = str(network_m._database.sessions_api[session_id].get_unique_id())
+	var my_id: String = str(network_m._session_db[session_id].api.get_unique_id())
 	var master_scene: Node3D = get_master_scene(session_id)
 	# HACK: If my_id = 0, we get the desired result. This is not safe though.
 	if my_id == "0":
@@ -186,7 +186,7 @@ func _set_camera_active_state(session_id, state: bool = false) -> void:
 
 
 func _set_player_authority_state(session_id, is_active: bool = false) -> void:
-	var my_id: String = str(network_m._database.sessions_api[session_id].get_unique_id())
+	var my_id: String = str(network_m._session_db[session_id].api.get_unique_id())
 	var master_scene: Node3D = get_master_scene(session_id)
 	# HACK: If my_id = 0, we get the desired result. This is not safe though.
 	if my_id == "0":
