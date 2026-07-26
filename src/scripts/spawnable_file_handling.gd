@@ -17,6 +17,8 @@ func _ready() -> void:
 func save_spawnable(root: Node) -> void:
 	# Take a node path from the scene, and save that node to the file
 	# In order to save nodes using the ResourceSaver, we need to make all nodes that are a child of the root have the owner of the root.
+	# FIXME: When saving the node scene, The FileManager should be used entirely.
+		# ResourceLoader / ResourceSaver should not be called from here.
 	var original_owners = _get_node_ownership(root)
 	_set_temporary_ownership_recursive(root, root)
 
@@ -56,7 +58,6 @@ func load_spawnable(path: String) -> void:
 	var session_spawnable_manager = scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager")
 	var loaded_scene = ResourceLoader.load(path)
 
-	var parent_session_root = scene_m.get_master_root(scene_m.active_session)
 	var spawn_tasks: Array[Dictionary] = []
 	var spawn_tasks_base_path_table: Dictionary = { }
 
@@ -64,7 +65,6 @@ func load_spawnable(path: String) -> void:
 	var node_count = state.get_node_count()
 
 	for node_id in range(node_count):
-		var node_name = state.get_node_name(node_id)
 		var node_path = state.get_node_path(node_id)
 
 		# Spn = "Spawnable" shorthand.
@@ -204,15 +204,13 @@ func _get_node_ownership_recursive(node: Node, ownership: Dictionary) -> Diction
 		_get_node_ownership_recursive(child, ownership)
 	return ownership
 
-func _set_temporary_ownership(root: Node) -> void:
-	return
-
 func _set_temporary_ownership_recursive(new_owner: Node, node: Node) -> void:
 	node.owner = new_owner
 	for child in node.get_children():
 		_set_temporary_ownership_recursive(new_owner, child)
 
-func _restore_ownership(root: Node, ownership_dict: Dictionary) -> void:
+func _restore_ownership(_root: Node, _ownership_dict: Dictionary) -> void:
+	GlobalLogger.log("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	return
 
 func _create_packed_scene(root: Node) -> PackedScene:

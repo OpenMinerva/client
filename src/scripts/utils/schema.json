@@ -3,7 +3,7 @@
 		"requires_setup": true,
 		"pretty_name": "Gizmo",
 		"node": null,
-		"icon": "godot/Gizmo.svg",
+		"icon": "Gizmo.svg",
 		"hidden": true,
 		"deep_delete": false
 	},
@@ -11,7 +11,7 @@
 		"requires_setup": true,
 		"pretty_name": "Player",
 		"node": null,
-		"icon": "godot/CharacterController3D.svg",
+		"icon": "godot/CharacterBody3D.svg",
 		"hidden": true,
 		"deep_delete": false
 	},

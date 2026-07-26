@@ -16,11 +16,9 @@ const PLAYER_TEMPLATE = {
 	"node": null,
 }
 
-var module_active: bool = false
 var players = { }
 
-
-@rpc("authority", "reliable")
+@rpc("call_local", "authority", "reliable")
 func add_player(peer_id: int) -> void:
 	var caller_id = multiplayer.get_remote_sender_id()
 	var database_template = PLAYER_TEMPLATE.duplicate()

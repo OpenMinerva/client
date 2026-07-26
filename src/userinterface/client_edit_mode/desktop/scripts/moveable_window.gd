@@ -61,6 +61,3 @@ func _mouse_click(event) -> void:
 	else:
 		_is_dragging = false
 	return
-
-func _on_item_activated(index: int) -> void:
-	return

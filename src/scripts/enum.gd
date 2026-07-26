@@ -6,7 +6,7 @@
 # License: MIT License
 # Authors: Armored Dragon
 # --- License
-extends Node
+class_name Enum
 
 enum AccountLoginType {
 	NULL = 0,

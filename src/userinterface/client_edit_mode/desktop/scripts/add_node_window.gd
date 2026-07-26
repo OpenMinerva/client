@@ -21,7 +21,6 @@ func _ready() -> void:
 	_button_close.clicked.connect(_close)
 
 	gui_input.connect(_on_input)
-	gui_input.connect(_on_input)
 	return
 
 func _build_content() -> void:

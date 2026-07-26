@@ -21,7 +21,7 @@ func _ready():
 
 
 func create_master_scene():
-	var _scene_id = Random.random_string()
+	var _scene_id = Random.string(6)
 	var _base_scene = preload("res://scenes/levels/base.tscn")
 
 	_base_scene = _base_scene.instantiate()
@@ -105,7 +105,6 @@ func start_master_scene(id: String):
 	for node_name in MANAGERS:
 		var _scene_manager = _scene.get_node_or_null(node_name)
 		if _scene_manager:
-			_scene_manager.module_active = true
 			GlobalLogger.log("'%s' started in server '%s'" % [node_name, id])
 			continue
 
@@ -121,7 +120,6 @@ func stop_master_scene(id: String):
 	for node_name in MANAGERS:
 		var _scene_manager = _scene.get_node_or_null(node_name)
 		if _scene_manager:
-			_scene_manager.module_active = true
 			GlobalLogger.log("'%s' stopped in server '%s'" % [node_name, id])
 			continue
 
@@ -146,7 +144,7 @@ func set_active_session(session_id: String):
 	_set_camera_active_state(session_id, true)
 	scene_container.get_node(session_id).visible = true
 	_set_player_authority_state(session_id, true)
-	Events.dash_session_changed.emit()
+	Events.dash_session_changed.emit(session_id)
 	return
 
 
@@ -168,7 +166,7 @@ func _get_scene_by_type(scene_type: Enum.BaseLevel) -> PackedScene:
 
 func _set_camera_active_state(session_id, state: bool = false) -> void:
 	# TODO: check if session exists.
-	var my_id: String = str(network_m._database.sessions_api[session_id].get_unique_id())
+	var my_id: String = str(network_m._session_db[session_id].api.get_unique_id())
 	var master_scene: Node3D = get_master_scene(session_id)
 	# HACK: If my_id = 0, we get the desired result. This is not safe though.
 	if my_id == "0":
@@ -188,7 +186,7 @@ func _set_camera_active_state(session_id, state: bool = false) -> void:
 
 
 func _set_player_authority_state(session_id, is_active: bool = false) -> void:
-	var my_id: String = str(network_m._database.sessions_api[session_id].get_unique_id())
+	var my_id: String = str(network_m._session_db[session_id].api.get_unique_id())
 	var master_scene: Node3D = get_master_scene(session_id)
 	# HACK: If my_id = 0, we get the desired result. This is not safe though.
 	if my_id == "0":

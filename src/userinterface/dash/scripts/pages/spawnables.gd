@@ -22,7 +22,6 @@ var _selected_folder: Node
 @onready var _file_container = $"HBox/Right/Local/Files"
 
 @onready var _create_folder_btn = $"HBox/Right/Local/Actions/NewFolder/Button"
-@onready var _delete_folder_btn = $"HBox/Right/Local/Actions/DeleteFolder/Button"
 @onready var _delete_selected_btn = $"HBox/Right/Local/Actions/DeleteSelected/Button"
 
 @onready var _folder_creation_dialog = $"FolderCreation"
@@ -104,9 +103,9 @@ func _load_file(file_name: String) -> void:
 	_app_spawnable_file_handling_m.load_spawnable(_path)
 	return
 
-func _create_button(name: String, icon: String = "", double_click = null, min_size: Vector2 = Vector2(350, 50)) -> Node:
+func _create_button(btn_name: String, icon: String = "", double_click = null, min_size: Vector2 = Vector2(350, 50)) -> Node:
 	var _listing = _template_button.instantiate()
-	_listing.set_meta("label", name)
+	_listing.set_meta("label", btn_name)
 	_listing.selected_icon = icon
 	_listing.custom_minimum_size = min_size
 	_listing.toggle = true
@@ -122,7 +121,6 @@ func _create_button(name: String, icon: String = "", double_click = null, min_si
 
 func _button_selected(selected: Node) -> void:
 	var _button_name = selected.get_meta("label")
-
 
 	for button in _action_buttons:
 		button.get_node("Button").button_pressed = false

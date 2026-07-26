@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://5v8rbnp716b0"]
 
-[ext_resource type="Script" uid="uid://r51flk0bjypx" path="res://scenes/managers/app/network.gd" id="1_daels"]
+[ext_resource type="Script" uid="uid://bh55hvwwmnob1" path="res://scenes/managers/app/network.gd" id="1_daels"]
 
-[node name="NetworkManager" type="Node"]
+[node name="NetworkManager" type="Node" unique_id=823257785]
 script = ExtResource("1_daels")

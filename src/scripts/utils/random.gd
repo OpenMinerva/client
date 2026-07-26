@@ -1,10 +1,33 @@
-extends Node
+# --- License
+# File: /client/src/scripts/utils/random.gd
+# Project: OpenMinerva
+# Created Date: 13 January 2026
+# Copyright (c) 2026 OpenMinerva
+# License: MIT License
+# Authors: Armored Dragon
+# --- License
 
-func random_string(length: int = 6, hexa_encoding: bool = false):
-	var rng = RandomNumberGenerator.new()
-	rng.randomize()
-	var chars = "0123456789abcdef" if hexa_encoding else "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-	var out = ""
+class_name Random
+
+static var char_bytes: PackedByteArray= "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".to_ascii_buffer()
+static var rng = RandomNumberGenerator.new()
+
+static func string(length: int = 6) -> String:
+	# New array.
+	var bytes: PackedByteArray = PackedByteArray()
+
+	# Reside the array, avoids performance of increasing the size of the array.
+	bytes.resize(length)
+
 	for i in length:
-		out += chars[rng.randi_range(0, chars.length() - 1)]
-	return out
+		# Get a random character from the char_bytes array.
+		bytes[i] = char_bytes[randi() % char_bytes.size()]
+
+	# Returns the PackedByteArray as a string.
+	return bytes.get_string_from_ascii()
+
+static func int(min_num: int = 0, max_num: int = 10) -> int:
+	return rng.randi_range(min_num, max_num)
+
+static func float(min_num: float = 0, max_num: float = 10) -> float:
+	return rng.randf_range(min_num, max_num)

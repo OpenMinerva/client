@@ -18,7 +18,6 @@ extends CharacterBody3D
 @onready var _session_spawnable_m: Node
 
 # Nodes
-@onready var _node_head = get_node("Head")
 @onready var _node_body = get_node(".")
 @onready var _node_camera = get_node("Head/Camera3D")
 @onready var _node_cem_camera: Node3D = null
@@ -37,7 +36,6 @@ const _DEFAULT_SPEED: float = 3.0
 const _DEFAULT_CROUCH_SPEED: float = 1.5
 
 # States
-var _cem_state: bool = false
 var _cem_camera: bool = false
 var _dash_state: bool = false
 
@@ -48,7 +46,6 @@ var _scene_root: Node3D
 
 # Variables
 var _speed: float = 0
-var _mouse_captured: bool = false
 
 func _enter_tree() -> void:
 	set_multiplayer_authority(0)
@@ -67,12 +64,12 @@ func _physics_process(delta) -> void:
 	if is_multiplayer_authority() == false:
 		return
 
-	_phys_buildmode(delta)
+	_phys_buildmode()
 	_phys_normal(delta)
 
 	return
 
-func _phys_buildmode(delta) -> void:
+func _phys_buildmode() -> void:
 	if _cem_camera == false:
 		return
 
@@ -204,11 +201,11 @@ func _cem_camera_state(state: bool) -> void:
 	return
 
 func _cem_camera_build() -> Node3D:
-	var _node_root = await _session_spawnable_m.create("Node3D")
-	var _node_camera = await _session_spawnable_m.create("Camera3D", int(_node_root.name))
-	var _node_model = await _session_spawnable_m.create("Box", int(_node_root.name))
+	var _cem_root = await _session_spawnable_m.create("Node3D")
+	await _session_spawnable_m.create("Camera3D", int(_cem_root.name))
+	await _session_spawnable_m.create("Box", int(_cem_root.name))
 
-	return _node_root
+	return _cem_root
 
 func _cem_camera_lookat(node: Node) -> void:
 	_node_camera.look_at(node)

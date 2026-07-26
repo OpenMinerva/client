@@ -31,20 +31,19 @@ LaunchArguments="*uid://c45jrfmrjtnyn"
 GlobalLogger="*uid://dgmfafi41y1nk"
 FileManager="*uid://d2s50p717g3n"
 SettingsManager="*uid://cgvvntx8o26ds"
-AccountServers="*uid://bpysjoq7n0ytu"
-Random="*uid://1js68qt8w0mv"
 Accounts="*uid://sdrs0dnojnes"
-SessionQuery="*uid://dbrabs53sf0x5"
-Enum="*uid://dgpvcem71xdbn"
 DiscordRPCLoader="*uid://xq58uo0nw0gq"
 Bootstrap="*uid://cvj10vdw6hlqw"
-NetworkCompression="*uid://b2iq75uom64x2"
 HTTP="*uid://d3cnfdwjxopsx"
 FileDrop="*uid://btgqgfpx0av4m"
 Events="*uid://c656spc3ppdlw"
 StateManager="*uid://b5vvw77bmn4yc"
 OAuth2Client="*uid://c4b880pwgfrty"
 UrlParser="*uid://budprjmmpally"
+
+[debug]
+
+gdscript/warnings/unused_signal=0
 
 [display]
 

@@ -1,7 +1,7 @@
 extends Node
 
 var _specific_api: SceneMultiplayer = null
-var _my_id = 0
+var _my_id: int = 0
 var _server_id: String = ""
 
 @onready var player_m = get_node("../PlayerManager")
@@ -9,12 +9,10 @@ var _server_id: String = ""
 @onready var scene_m = get_tree().current_scene.get_node("SceneManager")
 @onready var network_m = get_tree().current_scene.get_node("NetworkManager")
 
-
 func _process(_delta):
 	if multiplayer:
 		multiplayer.poll()
 		return
-
 
 func setup_connection(api: SceneMultiplayer, id: String):
 	_specific_api = api
@@ -27,90 +25,65 @@ func setup_connection(api: SceneMultiplayer, id: String):
 
 	_my_id = multiplayer.get_unique_id()
 
-
 @rpc("authority", "unreliable")
 func ban_player():
 	GlobalLogger.log("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	return
 
-
 func on_kicked():
 	GlobalLogger.log("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	return
 
-
 func on_banned():
 	GlobalLogger.log("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	return
-
 
 @rpc("authority", "reliable")
 func set_root(scene_type: Enum.BaseLevel):
 	GlobalLogger.log("[%s] Received root base scene." % [_my_id])
 	scene_m.set_master_root_from_program(_server_id, scene_type)
 
+@rpc("any_peer", "reliable")
+func req_spawnable_db() -> void:
+	# A peer wants the server database.
+	var caller_id = multiplayer.get_remote_sender_id()
+
+	GlobalLogger.log("Sending spawnable database to peer %d: %d entries" % [caller_id, spawnable_m._database.size()])
+
+	# Send the spawnable and player database to the client.
+	rec_spawnable_db.rpc_id(caller_id, spawnable_m._database, player_m.players)
+
+	return
 
 @rpc("authority", "reliable")
-func add_players(players: Dictionary):
-	GlobalLogger.log("[%s] Playerlist received." % [_my_id])
-	for _player in players.keys():
-		player_m.add_player(int(_player))
+func rec_spawnable_db(db: Array, players: Dictionary) -> void:
+	# We have the database, set it.
+	await spawnable_m.receive_database(db, players)
 
+	# Tell the server we have finished spawning the nodes, tell the server to sync the transforms.
+	spawnable_m.sync_all.rpc_id(1)
 
-@rpc("any_peer", "unreliable")
-func entity_position(entity_id: int, position):
-	var caller_id = multiplayer.get_remote_sender_id()
-	if caller_id != entity_id:
-		return
-	var target_node = get_parent().get_node("root").get_node_or_null(str(entity_id))
-	if target_node:
-		target_node.position = NetworkCompression.d_16_pos(position)
-		target_node.rotation = NetworkCompression.d_16_vec3(position.slice(12))
-
-
-@rpc("any_peer", "reliable")
-func dev_request_spawnables_database() -> void:
-	var caller_id = multiplayer.get_remote_sender_id()
-
-	# FIXME: We should not need to send the database_id, the host should tell the client what the id of a node is!
-	GlobalLogger.log("Sending spawnable database to peer %d: %d entries, DB_ID: %d" % [caller_id, spawnable_m._database.size(), spawnable_m._database_id])
-	spawnable_m.receive_database.rpc_id(caller_id, spawnable_m._database, spawnable_m._database_id, player_m.players)
 	return
-
-# FIXME Old dev function. Should be refactored!
-@rpc("any_peer", "reliable")
-func dev_request_sync() -> void:
-	if is_multiplayer_authority() == false:
-		return
-	spawnable_m.sync_all()
-	return
-
-
-func gizmo_selection(node_id: int, to_select: bool) -> void:
-	return
-
 
 func _on_connected_to_server():
 	# When the client is connected to the server, request the database from the server.
-	GlobalLogger.log("[%s] I am connected to a server." % _my_id)
+	GlobalLogger.log("[%s] Connected to a server." % _my_id)
 
 	# Request the spawnable database from host
-	rpc_id(1, "dev_request_spawnables_database")
-
+	req_spawnable_db.rpc_id(1)
 
 func _on_server_disconnected():
 	network_m.leave_server(_server_id)
 	return
 
-
 func _on_peer_connected(peer_id: int):
 	if is_multiplayer_authority() == false:
+		# Only the host runs the function.
 		return
 
 	GlobalLogger.log("Peer '%s' is connected! Creating a player controller." % [peer_id])
 
 	# Add player to the database.
-	player_m.add_player(peer_id)
 	player_m.add_player.rpc(peer_id)
 
 	# Spawn the player controller.
@@ -124,11 +97,11 @@ func _on_peer_connected(peer_id: int):
 
 	GlobalLogger.log("[%s] Peer '%s' connected to our server." % [_my_id, peer_id])
 
-	rpc_id(peer_id, "set_root", Enum.BaseLevel.GRID)
-	# FIXME: There are now two functions that do this. Refactor one of them out. The newer one has better player node syncing.
-	rpc_id(peer_id, "add_players", player_m.players)
-	return
+	if peer_id != 1:
+		# Everybody but the host needs this?
+		set_root.rpc_id(peer_id, Enum.BaseLevel.GRID)
 
+	return
 
 func _on_peer_disconnected(peer_id: int) -> void:
 	if is_multiplayer_authority() == false:

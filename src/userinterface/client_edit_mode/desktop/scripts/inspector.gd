@@ -82,16 +82,16 @@ func _add_drag_events() -> void:
 	)
 	return
 
-func _get_drag_data(position: Vector2):
-	var _target_tree_item: TreeItem = _inspector_tree.get_item_at_position(position)
+func _get_drag_data(mouse_position: Vector2):
+	var _target_tree_item: TreeItem = _inspector_tree.get_item_at_position(mouse_position)
 
 	if _target_tree_item && _target_tree_item.get_parent():
 		return {"item": _target_tree_item, "node": _target_tree_item.get_metadata(0)}
 
 	return null
 
-func _can_drop_data(position: Vector2, data: Variant):
-	var _target_item: TreeItem = _inspector_tree.get_item_at_position(position)
+func _can_drop_data(mouse_position: Vector2, data: Variant):
+	var _target_item: TreeItem = _inspector_tree.get_item_at_position(mouse_position)
 	var _dragged_item: TreeItem = data["item"]
 
 	if _dragged_item == _target_item:
@@ -110,9 +110,9 @@ func _can_drop_data(position: Vector2, data: Variant):
 
 	return true
 
-func _drop_data(position: Vector2, data: Variant):
+func _drop_data(mouse_position: Vector2, data: Variant):
 	var _dragged_node: Node = data["node"]
-	var _target_tree_item: TreeItem = _inspector_tree.get_item_at_position(position)
+	var _target_tree_item: TreeItem = _inspector_tree.get_item_at_position(mouse_position)
 	var _target_node: Node
 
 	if _target_tree_item == null:
@@ -244,7 +244,7 @@ func _on_node_destroyed(node_entry: Dictionary) -> void:
 	_inspector_build()
 	return
 
-func _on_session_changed() -> void:
+func _on_session_changed(_session_id: String) -> void:
 	session_signalbus = app_scene_m.get_master_scene(app_scene_m.active_session).get_node("SignalBus")
 	session_spawnable_m = app_scene_m.get_master_scene(app_scene_m.active_session).get_node("SpawnableManager")
 	session_players_m = app_scene_m.get_master_scene(app_scene_m.active_session).get_node("PlayerManager")
@@ -463,7 +463,8 @@ func _select(target_node: int) -> void:
 
 	if _node_db_entry == {}:
 		GlobalLogger.log("Tried to select a node that should not exist!", Enum.LogLevel.ERROR)
-		_inspector_selected_node == null
+
+		_inspector_selected_node = null
 		_set_npe_state(false)
 		return
 
@@ -474,9 +475,9 @@ func _select(target_node: int) -> void:
 	my_gizmo.use_local_space = _gizmo_space_local
 
 	_node_property_editor.get_node_properties(_node_db_entry.node)
-	my_gizmo.transform_changed.connect(func(mode, value): session_spawnable_m.set_transform(target_node, _node_db_entry.node.transform))
+	my_gizmo.transform_changed.connect(func(): session_spawnable_m.set_transform(target_node, _node_db_entry.node.transform))
 	# HACK: Update ALL of the node properties after a transformation was done.
-	my_gizmo.transform_end.connect(func(mode): _node_property_editor.update_node_properties(_node_db_entry.node))
+	my_gizmo.transform_end.connect(func(): _node_property_editor.update_node_properties(_node_db_entry.node))
 
 func _gizmo_delete() -> void:
 	my_gizmo.clear_selection()
@@ -511,25 +512,25 @@ func _gizmo_set_mode() -> void:
 
 	return
 
-func _gizmo_visibility(visible: bool = false) -> void:
+func _gizmo_visibility(to_set_visible: bool = false) -> void:
 	var _gizmo_target_mode = 0
 
-	if visible == true:
+	if to_set_visible == true:
 		_gizmo_target_mode = _gizmo_mode
 
 	if my_gizmo:
-		my_gizmo.show_selection_box = visible
+		my_gizmo.show_selection_box = to_set_visible
 		my_gizmo.mode = _gizmo_target_mode
 
 	for gizmo in world_gizmos:
-		gizmo.show_selection_box = visible
+		gizmo.show_selection_box = to_set_visible
 		gizmo.mode = _gizmo_target_mode
 	return
 
 # CEM Camera
 func _cem_camera_state(state: bool) -> void:
 	var _active_session_id = app_scene_m.active_session
-	var _session_api = app_network_m._database.sessions_api[_active_session_id]
+	var _session_api = app_network_m._session_db[_active_session_id].api
 	var _player_id: int = _session_api.get_unique_id()
 	var _player_db = session_players_m.players[str(_player_id)]
 	var _player_node: Node3D
