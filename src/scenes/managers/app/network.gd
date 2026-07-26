@@ -111,7 +111,6 @@ func stop_server(id: String):
 	_session_db.erase(id)
 	return
 
-
 func update_server(id: String, server_info: Dictionary):
 	GlobalLogger.log("Updating server '%s'." % id)
 
@@ -140,7 +139,6 @@ func update_server(id: String, server_info: Dictionary):
 
 	Events.emit_signal("instance_updated")
 	return
-
 
 func join_server(ip: String = "", port: int = 0) -> bool:
 	GlobalLogger.log("Joining server at '%s:%s'" % [ip, port], Enum.LogLevel.INFO)
@@ -175,7 +173,6 @@ func join_server(ip: String = "", port: int = 0) -> bool:
 	Events.emit_signal("session_joined")
 	return true
 
-
 func leave_server(id: String):
 	GlobalLogger.log("Trying to leave server '%s'." % id)
 	var _is_valid: bool = _session_db.has(id)
@@ -201,7 +198,6 @@ func leave_server(id: String):
 	Events.emit_signal("session_left")
 	return
 
-
 func kick_player(server_id: String, peer_id: int, reason: String):
 	GlobalLogger.log("Kicking peer '%s' from '%s' for reason '%s'" % [peer_id, server_id, reason], Enum.LogLevel.DEBUG)
 	var _is_valid: bool = _session_db.has(server_id)
@@ -213,7 +209,6 @@ func kick_player(server_id: String, peer_id: int, reason: String):
 		mp_api.disconnect_peer(peer_id)
 	return
 
-
 func get_connected_sessions():
 	var result = []
 	# TODO: Is JSON required here?
@@ -221,7 +216,6 @@ func get_connected_sessions():
 		result.append(_session_db[session_id].merged({ "id": session_id }))
 
 	return result
-
 
 func set_active_session(id: String):
 	var _is_valid: bool = _session_db.has(id)
@@ -241,7 +235,6 @@ func set_active_session(id: String):
 	scene_m.set_active_session(id)
 	Events.dash_session_changed.emit(id)
 	return
-
 
 func _update_session_server_listing(session_info: Dictionary, session_server: String) -> Dictionary:
 	var response_dict = { "ok": false, "error": null, "data": null }
@@ -273,7 +266,6 @@ func _update_session_server_listing(session_info: Dictionary, session_server: St
 	)
 
 	return response_dict
-
 
 func _remove_session_from_server(server_id: String, session_server: String) -> Dictionary:
 	var response_dict = { "ok": false, "error": null, "data": { } }
@@ -310,7 +302,6 @@ func _remove_session_from_server(server_id: String, session_server: String) -> D
 	response_dict.error = _removal_response.error
 	return response_dict
 
-
 func _find_available_port(target_port: int = MINIMUM_INCREMENTAL_PORT) -> int:
 	GlobalLogger.log("Trying to find an available port starting at '%s'." % target_port)
 	var _found_port = null
@@ -328,7 +319,6 @@ func _find_available_port(target_port: int = MINIMUM_INCREMENTAL_PORT) -> int:
 
 	return _found_port
 
-
 func _is_port_in_use(port: int) -> bool:
 	var udp_server = UDPServer.new()
 	var err_udp = udp_server.listen(port, "*")
@@ -344,7 +334,6 @@ func _is_port_in_use(port: int) -> bool:
 	tcp_server.stop()
 	return true
 
-
 func _create_heartbeat_timer(session_id: String, session_server_url: String):
 	GlobalLogger.log("Creating a heartbeat timer for server '%s'" % session_id)
 	var timer = get_tree().create_timer(20)
@@ -353,7 +342,6 @@ func _create_heartbeat_timer(session_id: String, session_server_url: String):
 
 	timer.timeout.connect(_heartbeat_timer_timeout.bind(session_id, session_server_url))
 	return
-
 
 func _heartbeat_timer_timeout(session_id: String, session_server_url: String):
 	GlobalLogger.log("Sending a heartbeat for server '%s'" % session_id)
@@ -365,7 +353,6 @@ func _heartbeat_timer_timeout(session_id: String, session_server_url: String):
 
 	_create_heartbeat_timer(session_id, session_server_url)
 	return
-
 
 func _heartbeat_session(session_id: String, session_server_url: String) -> void:
 	var _full_url = "%s/api/v1/heartbeatSession" % session_server_url
@@ -391,7 +378,6 @@ func _heartbeat_session(session_id: String, session_server_url: String) -> void:
 	if response and response.get("ok"):
 		GlobalLogger.log("Heartbeat sent for session '%s'" % session_id)
 	return
-
 
 func _advertise_session(session_info: Dictionary, session_server: String) -> Dictionary:
 	var response_dict = { "ok": false, "error": null, "data": null }
