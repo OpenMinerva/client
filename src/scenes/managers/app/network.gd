@@ -36,9 +36,7 @@ var _database = {
 
 @onready var scene_m = get_node("../SceneManager")
 
-
-func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRID) -> Dictionary:
-	var response_dict = { "ok": false, "error": null, "data": null }
+func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRID) -> bool:
 	GlobalLogger.log("Starting a new server.")
 
 	# Get an available port. If port was defined, force that port or fail.
@@ -46,50 +44,31 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 		GlobalLogger.log("Forcing port '%s'" % port)
 		var port_available = !_is_port_in_use(port)
 		if !port_available:
-			response_dict.error = "Port is not available."
-			return response_dict
+			GlobalLogger.log("Could not open server on port '%s', unavailable." % port)
+			return false
 	else:
 		port = _find_available_port()
 
 	# Create server master scene.
 	var _scene: String = scene_m.create_master_scene()
-	var _instance = _instance_database_template.duplicate()
-	_instance.id = _scene
-	_instance.name = _scene
-	_instance.start_time = int(Time.get_unix_time_from_system())
-	_instance.privacy = Enum.PrivacyLevel.INVITE
-	_instance.port = port
-	_instance.type = "host"
+	var _instance_db: Dictionary = _create_instance_db_entry(_scene, _scene, Enum.PrivacyLevel.INVITE, port, "host")
 
-	# Create a new peer.
-	var _mp_api = SceneMultiplayer.new()
-	var _session_peer = ENetMultiplayerPeer.new()
-	var _create_server_response = _session_peer.create_server(port, MAX_CLIENTS)
-	_mp_api.multiplayer_peer = _session_peer
+	# Get a reference to the master scene from our scene ID.
+	var master_scene: Node3D = scene_m.get_master_scene(_scene)
 
-	var master_scene = scene_m.get_master_scene(_scene)
-	get_tree().set_multiplayer(_mp_api, master_scene.get_path())
-	_mp_api.set_root_path(master_scene.get_path())
+	# Create a new server and peer.
+	var _mp_api = ServerPeerHelper.create_server(port, MAX_CLIENTS, master_scene.get_path())
+
+	if _mp_api == null:
+		GlobalLogger.log("Failed to start server.", Enum.LogLevel.INFO)
+		scene_m.destroy_master_scene(_scene)
+		return false
+
 	var net_manager = master_scene.get_node("NetworkManager")
 	net_manager.setup_connection(_mp_api, _scene)
 
 	_database.sessions_api.set(_scene, _mp_api)
-	_database.sessions.set(_scene, _instance)
-
-	if _create_server_response != OK:
-		GlobalLogger.log("Failed to start server. Error: '%s'" % _create_server_response, Enum.LogLevel.INFO)
-		response_dict.error = str(_create_server_response)
-
-		_database.sessions_api.erase(_scene)
-		_database.sessions.erase(_scene)
-
-		scene_m.destroy_master_scene(_scene)
-		# HACK: Retry creating a server again.
-		if _create_server_response == 20:
-			# Port is in use
-			return start_server(0, root_scene)
-
-		return response_dict
+	_database.sessions.set(_scene, _instance_db)
 
 	# Create server root scene.
 	if root_scene:
@@ -100,14 +79,12 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 	scene_m.start_master_scene(_scene)
 	scene_m.set_active_session(_scene)
 
-	# DEV: Force spawn the host.
-	# FIXME: This is probably bad design.
+	# FIXME: Force spawn the host. This is probably bad design.
 	scene_m.get_master_scene(_scene).get_node("NetworkManager")._on_peer_connected(1)
 
 	Events.dash_session_changed.emit(_scene)
 
-	return response_dict
-
+	return true
 
 func stop_server(id: String):
 	var database_has_sessions: bool = _database.sessions.has(id)
@@ -172,49 +149,39 @@ func update_server(id: String, server_info: Dictionary):
 	return
 
 
-func join_server(ip: String, port: int):
-	var response_dict = { "ok": false, "error": null, "data": null }
-
+func join_server(ip: String = "", port: int = 0) -> bool:
 	GlobalLogger.log("Joining server at '%s:%s'" % [ip, port], Enum.LogLevel.INFO)
 	var _port_is_valid = port > 0 && port < 65535
 
 	if ip.is_empty() || !_port_is_valid:
 		GlobalLogger.log("Server information is invalid '%s:%s'." % [ip, port], Enum.LogLevel.INFO)
-		response_dict.error = "Server information is invalid."
-		return response_dict
+		return false
 
 	# Create server master scene.
 	var _scene: String = scene_m.create_master_scene()
-	var _instance = _instance_database_template.duplicate()
-	_instance.id = _scene
-	_instance.name = _scene
-	_instance.start_time = int(Time.get_unix_time_from_system())
-	_instance.privacy = Enum.PrivacyLevel.INVITE
-	_instance.port = port
-	_instance.type = "client"
 
-	var _mp_api = SceneMultiplayer.new()
-	var _session_peer = ENetMultiplayerPeer.new()
-	var connect_error = _session_peer.create_client(ip, port)
+	# TODO: Do we need such a heavy Database entry? Isn't it only used once?
+	var _instance_db: Dictionary = _create_instance_db_entry(_scene, _scene, Enum.PrivacyLevel.INVITE, port, "client")
 
-	if connect_error != OK:
-		GlobalLogger.log("Failed to join server. Error: '%s'" % connect_error, Enum.LogLevel.INFO)
-		response_dict.error = "Failed to join server. Error: '%s'" % connect_error
-		return response_dict
+	# Get a reference to the master scene from our scene ID.
+	var master_scene: Node3D = scene_m.get_master_scene(_scene)
 
-	_mp_api.multiplayer_peer = _session_peer
+	# Create a new client peer.
+	var _mp_api = ServerPeerHelper.create_client(ip, port, master_scene.get_path())
 
-	var master_scene = scene_m.get_master_scene(_scene)
-	get_tree().set_multiplayer(_mp_api, master_scene.get_path())
-	_mp_api.set_root_path(master_scene.get_path())
+	if _mp_api == null:
+		GlobalLogger.log("Failed to join server.", Enum.LogLevel.INFO)
+		scene_m.destroy_master_scene(_scene)
+		return false
+
 	var net_manager = master_scene.get_node("NetworkManager")
 	net_manager.setup_connection(_mp_api, _scene)
 
 	_database.sessions_api.set(_scene, _mp_api)
-	_database.sessions.set(_scene, _instance)
+	_database.sessions.set(_scene, _instance_db)
 
 	Events.emit_signal("session_joined")
-	return
+	return true
 
 
 func leave_server(id: String):
@@ -481,3 +448,15 @@ func _advertise_session(session_info: Dictionary, session_server: String) -> Dic
 	response_dict.ok = true
 	response_dict.data = advertise_response
 	return response_dict
+
+func _create_instance_db_entry(id: String, name: String, privacy: Enum.PrivacyLevel, port: int, type: String = "host") -> Dictionary:
+	var _instance = _instance_database_template.duplicate()
+
+	_instance.id = id
+	_instance.name = name
+	_instance.start_time = int(Time.get_unix_time_from_system())
+	_instance.privacy = privacy
+	_instance.port = port
+	_instance.type = type
+
+	return _instance
