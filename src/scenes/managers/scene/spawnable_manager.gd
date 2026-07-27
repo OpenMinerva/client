@@ -100,7 +100,10 @@ func create(node_type: String, node_parent: int = 0, model_path: String = "") ->
 
 @rpc("any_peer", "reliable")
 func destroy(node_id: int) -> Variant:
-	# FIXME: When Alt+F4-ing, my_id causes a crash.
+	if app_network_m._session_db.has(app_scene_m.active_session) == false:
+		GlobalLogger.log("Failed to destroy node '%s'." % node_id, Enum.LogLevel.ERROR)
+		return
+
 	var my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
 	var caller_id: int = multiplayer.get_remote_sender_id()
 
