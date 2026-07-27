@@ -8,16 +8,19 @@
 # --- License
 extends Control
 
-@onready var active_sessions_container = get_node("HBoxContainer/PanelContainer/MarginContainer/VBoxContainer")
+@onready var active_sessions_container = get_node("HBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer")
 @onready var template_account_session_listing = preload("res://userinterface/dash/partials/home_server_listing.tscn")
 @onready var network_m = get_tree().current_scene.get_node("NetworkManager")
 @onready var scene_m = get_tree().current_scene.get_node("SceneManager")
+@onready var dashboard = get_tree().current_scene.get_node("Dashboard")
 
 
 func _ready() -> void:
 	Events.connect("session_joined", _show_joined_sessions)
 	Events.connect("session_left", _show_joined_sessions)
 	_show_joined_sessions()
+
+	get_node("%CreateNewWorld").clicked.connect(_on_create_new_world_button_pressed)
 
 	return
 
@@ -39,4 +42,8 @@ func _show_joined_sessions() -> void:
 		_entry.pressed.connect(scene_m.set_active_session.bind(session.id))
 		_entry_close.pressed.connect(network_m.leave_server.bind(session.id))
 		active_sessions_container.add_child(_entry)
+	return
+
+func _on_create_new_world_button_pressed() -> void:
+	dashboard.get_node("NewWorld").visible = true
 	return
