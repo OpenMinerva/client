@@ -79,6 +79,7 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 	scene_m.get_master_scene(_scene).get_node("NetworkManager")._on_peer_connected(1)
 
 	Events.dash_session_changed.emit(_scene)
+	Events.session_joined.emit()
 
 	return true
 
@@ -141,6 +142,7 @@ func update_server(id: String, server_info: Dictionary):
 
 	Events.emit_signal("instance_updated")
 	return
+
 
 func join_server(ip: String = "", port: int = 0) -> bool:
 	GlobalLogger.log("Joining server at '%s:%s'" % [ip, port], Enum.LogLevel.INFO)

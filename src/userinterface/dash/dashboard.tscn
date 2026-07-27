@@ -877,7 +877,7 @@ size_flags_vertical = 3
 layout_mode = 2
 text = "World Name"
 
-[node name="LineEdit" type="LineEdit" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer" unique_id=2124841622]
+[node name="WorldNameVal" type="LineEdit" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer" unique_id=2124841622]
 layout_mode = 2
 placeholder_text = "My New World"
 alignment = 1
@@ -886,50 +886,58 @@ alignment = 1
 layout_mode = 2
 text = "Base"
 
-[node name="OptionButton" type="OptionButton" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer" unique_id=2057051427]
+[node name="BaseVal" type="OptionButton" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer" unique_id=2057051427]
 layout_mode = 2
-selected = 0
-item_count = 3
-popup/item_0/text = "Grid"
+selected = 3
+item_count = 4
+popup/item_0/text = "Debug"
 popup/item_0/id = 0
-popup/item_1/text = "Platform"
+popup/item_0/disabled = true
+popup/item_1/text = "Home"
 popup/item_1/id = 1
+popup/item_1/disabled = true
 popup/item_2/text = "Empty"
 popup/item_2/id = 2
+popup/item_2/disabled = true
+popup/item_3/text = "Grid"
+popup/item_3/id = 3
 
 [node name="Privacy" type="Label" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer" unique_id=1738386897]
 layout_mode = 2
 text = "Privacy"
 
-[node name="OptionButton2" type="OptionButton" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer" unique_id=1867545901]
+[node name="PrivacyVal" type="OptionButton" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer" unique_id=1867545901]
 layout_mode = 2
 selected = 0
-item_count = 5
+item_count = 6
 popup/item_0/text = "Private"
 popup/item_0/id = 0
 popup/item_1/text = "Friends"
 popup/item_1/id = 1
-popup/item_2/text = "Contacts"
+popup/item_2/text = "Friends+"
 popup/item_2/id = 2
-popup/item_3/text = "Contacts+"
+popup/item_3/text = "Contacts"
 popup/item_3/id = 3
-popup/item_4/text = "Public"
+popup/item_4/text = "Contacts+"
 popup/item_4/id = 4
+popup/item_5/text = "Public"
+popup/item_5/id = 5
 
 [node name="Spacer" type="Control" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer" unique_id=2006504238]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="GenericButton" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer" unique_id=1897979315 instance=ExtResource("8_0mns2")]
+[node name="Create" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer" unique_id=1897979315 instance=ExtResource("8_0mns2")]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 label = "Start"
 icon = ExtResource("33_h0jai")
 
-[node name="TextureRect" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer/GenericButton/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(1897979315, 86696220) index="0" unique_id=1429445374]
+[node name="TextureRect" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer/Create/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(1897979315, 86696220) index="0" unique_id=1429445374]
 self_modulate = Color(0.5568628, 0.9372549, 0.5921569, 1)
 
-[node name="Label" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer/GenericButton/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(1897979315, 86696220) index="1" unique_id=1807295119]
+[node name="Label" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer/Create/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(1897979315, 86696220) index="1" unique_id=1807295119]
 horizontal_alignment = 1
 
 [editable path="MarginContainer/VBoxContainer/Content/Container/Home/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/Listing"]
@@ -944,4 +952,4 @@ horizontal_alignment = 1
 [editable path="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/NavButton"]
 [editable path="MarginContainer/VBoxContainer/Content/Container/_AccountCreation/HBoxContainer/VBoxContainer/Accept"]
 [editable path="NewWorld"]
-[editable path="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer/GenericButton"]
+[editable path="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer/Create"]

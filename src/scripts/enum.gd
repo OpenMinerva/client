@@ -16,8 +16,9 @@ enum AccountLoginType {
 }
 enum BaseLevel {
 	DEBUG = 0,
-	EMPTY = 1,
-	GRID = 2,
+	HOME = 1,
+	EMPTY = 2,
+	GRID = 3,
 }
 enum PrivacyLevel {
 	INVITE = 0,

@@ -21,6 +21,7 @@ func _ready() -> void:
 	_show_joined_sessions()
 
 	get_node("%CreateNewWorld").clicked.connect(_on_create_new_world_button_pressed)
+	dashboard.get_node("NewWorld").get_node("%Create").clicked.connect(_on_start_world)
 
 	return
 
@@ -46,4 +47,18 @@ func _show_joined_sessions() -> void:
 
 func _on_create_new_world_button_pressed() -> void:
 	dashboard.get_node("NewWorld").visible = true
+	return
+
+
+func _on_start_world() -> void:
+	var _world_name: String = dashboard.get_node("NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer/WorldNameVal").text
+	var _world_base: Enum.BaseLevel = dashboard.get_node("NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer/BaseVal").selected
+	var _world_privacy: Enum.PrivacyLevel = dashboard.get_node("NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer/PrivacyVal").selected
+
+	network_m.start_server(0, _world_base)
+	_show_joined_sessions()
+
+	# HACK: For some reason, the active session does not properly get updated normally.
+	var _sessions: Array = network_m.get_connected_sessions()
+	scene_m.set_active_session(_sessions.back().name)
 	return

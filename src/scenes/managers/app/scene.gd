@@ -16,7 +16,7 @@ var active_session: String = ""
 
 
 func _ready():
-	network_m.start_server()
+	network_m.start_server(0, Enum.BaseLevel.HOME)
 	return
 
 
@@ -158,6 +158,8 @@ func _get_scene_by_type(scene_type: Enum.BaseLevel) -> PackedScene:
 			_scene_dir = "res://scenes/levels/empty.tscn"
 		Enum.BaseLevel.GRID:
 			_scene_dir = "res://scenes/levels/grid.tscn"
+		Enum.BaseLevel.HOME:
+			_scene_dir = "res://scenes/levels/home.tscn"
 		_:
 			_scene_dir = "res://scenes/levels/debug.tscn"
 
