@@ -9,12 +9,11 @@
 extends Node
 
 # TODO: Network:
-	# Node renaming.
-	# Node reparenting.
-	# Node position updating.
+# Node renaming.
+# Node reparenting.
+# Node position updating.
 # TODO: Database:
-	# Sane _database_id. Don't hardcode 10.
-
+# Sane _database_id. Don't hardcode 10.
 const SPAWNABLE_TEMPLATE: Dictionary = {
 	"type": -1,
 	"spawner": -1,
@@ -58,6 +57,7 @@ func _physics_process(_delta):
 		transform_spawnable.rpc(spawnable.id, spawnable.node.transform)
 	return
 
+
 @rpc("any_peer", "reliable")
 func sync_all() -> void:
 	if !is_multiplayer_authority():
@@ -69,6 +69,7 @@ func sync_all() -> void:
 			return
 		set_transform.rpc(spawnable.id, spawnable.node.transform)
 	return
+
 
 @rpc("any_peer", "reliable")
 func create(node_type: String, node_parent: int = 0, model_path: String = "") -> Variant:
@@ -98,6 +99,7 @@ func create(node_type: String, node_parent: int = 0, model_path: String = "") ->
 		# Database index was found, get the node at that index.
 		return _database[database_index].node
 
+
 @rpc("any_peer", "reliable")
 func destroy(node_id: int) -> Variant:
 	if app_network_m._session_db.has(app_scene_m.active_session) == false:
@@ -122,6 +124,7 @@ func destroy(node_id: int) -> Variant:
 		await rpcawaiter.send_rpc(1, destroy.bind(node_id))
 		return
 
+
 @rpc("any_peer", "reliable")
 func set_transform(node_id: int, p_transform: Transform3D) -> void:
 	var _my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
@@ -135,6 +138,7 @@ func set_transform(node_id: int, p_transform: Transform3D) -> void:
 		return
 	return
 
+
 @rpc("any_peer", "reliable")
 func set_property(node_id: int, property_name: String, property_value: Variant) -> void:
 	var _my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
@@ -146,6 +150,7 @@ func set_property(node_id: int, property_name: String, property_value: Variant) 
 		await rpcawaiter.send_rpc(1, set_property.bind(node_id, property_name, property_value))
 		return
 	return
+
 
 @rpc("any_peer", "reliable")
 func set_authority(node_id: int, peer_id: int) -> void:
@@ -159,6 +164,7 @@ func set_authority(node_id: int, peer_id: int) -> void:
 		await rpcawaiter.send_rpc(1, set_authority.bind(node_id, peer_id))
 	return
 
+
 # TODO: How would large assets work?
 @rpc("authority", "reliable")
 func spawn_spawnable(p_type: String, p_name: String = "", p_path: String = "", parent_id: int = 0) -> int:
@@ -170,11 +176,17 @@ func spawn_spawnable(p_type: String, p_name: String = "", p_path: String = "", p
 		var database_index = _database.find_custom(func(entry): return entry.id == parent_id)
 		parent_node = _database[database_index].node
 
+	# HACK: When connecting to the server, the entity of the joining user is attempted to spawn twice. This null check will see if the node already exists on the server by name. 
 	_spawned_entity = _spawn_node(p_type, 1, parent_node, p_path, p_name)
+	if _spawned_entity == null:
+		GlobalLogger.log("Tried to spawn in something that already exists? Returning the reference to the existing node.")
+		return int(p_name)
+
 	_spawned_entity.owner = parent_node
 
 	session_signalbus.node_created.emit(_spawned_entity)
 	return int(_spawned_entity.name)
+
 
 # TODO: require actioning user
 @rpc("authority", "reliable")
@@ -193,6 +205,7 @@ func delete_spawnable(node_name: String) -> void:
 	_database.remove_at(_entry_index)
 	return
 
+
 @rpc("call_local", "authority", "reliable")
 func transform_spawnable(node_id: int, transform: Transform3D) -> void:
 	var _entity_db = get_by_id(node_id)
@@ -208,15 +221,17 @@ func transform_spawnable(node_id: int, transform: Transform3D) -> void:
 	_entity_db.node.transform = transform
 	return
 
+
 @rpc("call_local", "authority", "reliable")
 func set_property_on_spawnable(node_id: int, property_name: String, property_value: Variant):
 	var _entity_db = get_by_id(node_id)
 
-	if _entity_db == {}:
+	if _entity_db == { }:
 		return
 
 	_entity_db.node.set_indexed(property_name, property_value)
 	return
+
 
 @rpc("call_local", "authority", "reliable")
 func set_authority_on_spawnable(node_id: int, peer_id: int) -> void:
@@ -230,33 +245,9 @@ func set_authority_on_spawnable(node_id: int, peer_id: int) -> void:
 	GlobalLogger.log("Giving peer '%s' authority for node '%s'." % [peer_id, node_id])
 	return
 
-func _get_deletion_queue(node_name: String) -> Array:
-	var _entry_index = _database.find_custom(func(item): return item.id == int(node_name))
-	var _node = _database[_entry_index].node
-
-	var _queue = _add_to_deletion_queue(_node)
-	_queue.reverse()
-	return _queue
-
-func _add_to_deletion_queue(node: Node, list: Array[Node] = []) -> Array[Node]:
-	list.append(node)
-
-	if node.get_meta("deep_delete", true) == false:
-		return list
-
-	for child in node.get_children():
-		_add_to_deletion_queue(child, list)
-
-	return list
 
 func receive_database(database: Array, players: Dictionary) -> void:
 	var _my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
-
-	# FIXME: I don't think this is required since we won't have this be called multiple times.
-	# Clear existing database to prevent ID conflicts.
-	for entry in _database:
-		entry.node.queue_free()
-	_database.clear()
 
 	GlobalLogger.log("[%s] Receiving spawnable database with %d entries" % [_my_id, database.size()])
 
@@ -270,6 +261,7 @@ func receive_database(database: Array, players: Dictionary) -> void:
 	player_m.set_player_database(players)
 
 	return
+
 
 func set_node_visible_to_inspector(node: Node) -> void:
 	var nodes = get_all_node_children(node)
@@ -304,13 +296,40 @@ func get_by_id(spawnable_id: int) -> Dictionary:
 	return _database[target_entry]
 
 
+func _get_deletion_queue(node_name: String) -> Array:
+	var _entry_index = _database.find_custom(func(item): return item.id == int(node_name))
+	var _node = _database[_entry_index].node
+
+	var _queue = _add_to_deletion_queue(_node)
+	_queue.reverse()
+	return _queue
+
+
+func _add_to_deletion_queue(node: Node, list: Array[Node] = []) -> Array[Node]:
+	list.append(node)
+
+	if node.get_meta("deep_delete", true) == false:
+		return list
+
+	for child in node.get_children():
+		_add_to_deletion_queue(child, list)
+
+	return list
+
+
 func _spawn_node(node_type: String, node_owner: int, parent: Node = instance_root, model_path = "", node_name: String = str(_database_id)) -> Node:
 	var _node: Node
 	var _node_name = node_type
 	var _node_schema = NSB.get_entry(_node_name)
 	var _pretty_name: String
 
-	# FIXME: Hack for importing skeletons?
+	# FIXME: Not sure if this check is safe
+	var _database_index: int = _database.find_custom(func(entry): return entry.id == int(node_name))
+	if _database_index > -1:
+		GlobalLogger.log("Tried to spawn in a node that already exists.", Enum.LogLevel.ERROR)
+		return
+
+	# HACK: Fixes importing skeletons?
 	if _node_name == "Model" && model_path == "":
 		_node = NSB.build("Node3D")
 	else:

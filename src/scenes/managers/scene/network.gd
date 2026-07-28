@@ -9,6 +9,7 @@ var _server_id: String = ""
 @onready var scene_m = get_tree().current_scene.get_node("SceneManager")
 @onready var network_m = get_tree().current_scene.get_node("NetworkManager")
 
+
 func _process(_delta):
 	if multiplayer:
 		multiplayer.poll()
@@ -125,16 +126,17 @@ func _on_peer_player_node_destroyed(peer_id: int, node_id: int) -> void:
 
 	var _timer = get_tree().create_timer(1)
 
-	_timer.timeout.connect(func () -> void:
-		if player_m.players.keys().has(peer_id) == false:
-			# Check to see if player still exists in the database, don't spawn if they are gone.
-			GlobalLogger.log("Peer '%s' was disconnected, not respawning a player controller." % [peer_id])
-			return
+	_timer.timeout.connect(
+		func() -> void:
+			if player_m.players.keys().has(peer_id) == false:
+				# Check to see if player still exists in the database, don't spawn if they are gone.
+				GlobalLogger.log("Peer '%s' was disconnected, not respawning a player controller." % [peer_id])
+				return
 
-		var _entity = await spawnable_m.create("OM_PlayerController")
-		spawnable_m.set_authority.rpc(int(_entity.name), peer_id)
-		player_m.set_player_node(peer_id, _entity)
-		_entity.connect("tree_exiting", _on_peer_player_node_destroyed.bind(peer_id))
+			var _entity = await spawnable_m.create("OM_PlayerController")
+			spawnable_m.set_authority.rpc(int(_entity.name), peer_id)
+			player_m.set_player_node(peer_id, _entity)
+			_entity.connect("tree_exiting", _on_peer_player_node_destroyed.bind(peer_id))
 	)
 
 	return
