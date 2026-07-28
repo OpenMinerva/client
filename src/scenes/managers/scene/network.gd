@@ -14,6 +14,7 @@ func _process(_delta):
 		multiplayer.poll()
 		return
 
+
 func setup_connection(api: SceneMultiplayer, id: String):
 	_specific_api = api
 	_server_id = id
@@ -25,23 +26,22 @@ func setup_connection(api: SceneMultiplayer, id: String):
 
 	_my_id = multiplayer.get_unique_id()
 
+
 @rpc("authority", "unreliable")
 func ban_player():
 	GlobalLogger.log("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	return
 
+
 func on_kicked():
 	GlobalLogger.log("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	return
+
 
 func on_banned():
 	GlobalLogger.log("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	return
 
-@rpc("authority", "reliable")
-func set_root(scene_type: Enum.BaseLevel):
-	GlobalLogger.log("[%s] Received root base scene." % [_my_id])
-	scene_m.set_master_root_from_program(_server_id, scene_type)
 
 @rpc("any_peer", "reliable")
 func req_spawnable_db() -> void:
@@ -55,6 +55,7 @@ func req_spawnable_db() -> void:
 
 	return
 
+
 @rpc("authority", "reliable")
 func rec_spawnable_db(db: Array, players: Dictionary) -> void:
 	# We have the database, set it.
@@ -65,16 +66,22 @@ func rec_spawnable_db(db: Array, players: Dictionary) -> void:
 
 	return
 
+
 func _on_connected_to_server():
 	# When the client is connected to the server, request the database from the server.
 	GlobalLogger.log("[%s] Connected to a server." % _my_id)
 
+	# Set the scene root to empty.
+	scene_m.set_master_root_from_program(_server_id, Enum.BaseLevel.EMPTY)
+
 	# Request the spawnable database from host
 	req_spawnable_db.rpc_id(1)
+
 
 func _on_server_disconnected():
 	network_m.leave_server(_server_id)
 	return
+
 
 func _on_peer_connected(peer_id: int):
 	if is_multiplayer_authority() == false:
@@ -97,11 +104,8 @@ func _on_peer_connected(peer_id: int):
 
 	GlobalLogger.log("[%s] Peer '%s' connected to our server." % [_my_id, peer_id])
 
-	if peer_id != 1:
-		# Everybody but the host needs this?
-		set_root.rpc_id(peer_id, Enum.BaseLevel.GRID)
-
 	return
+
 
 func _on_peer_disconnected(peer_id: int) -> void:
 	if is_multiplayer_authority() == false:
@@ -112,6 +116,7 @@ func _on_peer_disconnected(peer_id: int) -> void:
 
 	GlobalLogger.log("[%s] Peer '%s' disconnected to our server." % [_my_id, peer_id])
 	return
+
 
 func _on_peer_player_node_destroyed(peer_id: int, node_id: int) -> void:
 	GlobalLogger.log("Peer '%s' was destroyed! Queued a player controller respawn." % [peer_id])

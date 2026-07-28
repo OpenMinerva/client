@@ -35,10 +35,13 @@ func _save_hosting_settings() -> void:
 
 func _post_update() -> void:
 	var _sessions = network_m.get_connected_sessions()
-	# var _current_session = scene_m.active_session
+	var _current_session_id = scene_m.active_session
 
-	_sessions[0].set("privacy", session_settings.privacy)
+	var _current_session_db_index = _sessions.find_custom(func(sess): return sess.name == _current_session_id)
+	var _current_session = _sessions[_current_session_db_index]
 
-	network_m.update_server(_sessions[0].id, _sessions[0])
+	_current_session.set("privacy", session_settings.privacy)
+
+	network_m.update_server(_current_session_id, _current_session)
 
 	return

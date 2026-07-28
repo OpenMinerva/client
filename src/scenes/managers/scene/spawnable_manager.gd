@@ -197,7 +197,7 @@ func delete_spawnable(node_name: String) -> void:
 func transform_spawnable(node_id: int, transform: Transform3D) -> void:
 	var _entity_db = get_by_id(node_id)
 
-	if _entity_db == null:
+	if _entity_db == { }:
 		GlobalLogger.log("Could not locate node id '%s'" % node_id, Enum.LogLevel.WARNING)
 		return
 

@@ -155,7 +155,6 @@ func join_server(ip: String = "", port: int = 0) -> bool:
 	# Create server master scene.
 	var _scene: String = scene_m.create_master_scene()
 
-
 	# Get a reference to the master scene from our scene ID.
 	var master_scene: Node3D = scene_m.get_master_scene(_scene)
 
@@ -275,6 +274,7 @@ func _update_session_server_listing(session_info: Dictionary, session_server: St
 	)
 
 	return response_dict
+
 
 func _remove_session_from_server(server_id: String, session_server: String) -> Dictionary:
 	var response_dict = { "ok": false, "error": null, "data": { } }
