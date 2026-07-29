@@ -13,6 +13,7 @@ var active_session: String = ""
 # Game managers
 @onready var network_m: Node = get_tree().current_scene.get_node("NetworkManager")
 @onready var scene_container: Node3D = get_tree().current_scene.get_node("Scenes")
+@onready var spawnable_file_handling: Node = get_tree().current_scene.get_node("SpawnableFileHandling")
 
 
 func _ready():
@@ -53,7 +54,7 @@ func destroy_master_scene(id: String):
 func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel) -> void:
 	var _scene = get_master_scene(id)
 
-	var _root_scene: PackedScene = _get_scene_by_type(scene_type)
+	var _root_scene: String = _get_scene_by_type(scene_type)
 	var _root_node = get_master_root(id)
 
 	# Stop everything
@@ -63,9 +64,15 @@ func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel) -> voi
 	_scene.remove_child(_root_node)
 	_root_node.queue_free()
 
-	# Get new scene
-	var _root_scene_node = _root_scene.instantiate()
+	# TODO: Use spawnable system to load this world.
+	var _root_scene_node: Node3D = Node3D.new()
 	_root_scene_node.name = "root"
+	_scene.add_child(_root_scene_node)
+
+	# HACK: Wait a frame for the active_session variable to populate
+	await get_tree().process_frame
+
+	spawnable_file_handling.load_spawnable(_root_scene)
 
 	# Allow scene to be visible in the inspector
 	_root_scene_node.set_meta("scene_node", true)
@@ -148,7 +155,7 @@ func set_active_session(session_id: String):
 	return
 
 
-func _get_scene_by_type(scene_type: Enum.BaseLevel) -> PackedScene:
+func _get_scene_by_type(scene_type: Enum.BaseLevel) -> String:
 	var _scene_dir: String = ""
 
 	match scene_type:
@@ -163,7 +170,7 @@ func _get_scene_by_type(scene_type: Enum.BaseLevel) -> PackedScene:
 		_:
 			_scene_dir = "res://scenes/levels/debug.tscn"
 
-	return load(_scene_dir)
+	return _scene_dir
 
 
 func _set_camera_active_state(session_id, state: bool = false) -> void:

@@ -9,16 +9,17 @@
 class_name NSB
 extends Node
 
-static var _schema: Dictionary = {}
+static var _schema: Dictionary = { }
+
 
 static func init() -> void:
 	# Clear the schema just in case
-	_schema = {}
+	_schema = { }
 
 	# Load the schema json file
 	var _fallback_icon: Texture2D = load("res:///resources/icons/godot/StatusError.svg")
 	var _schema_raw: Variant = load("res://scripts/utils/schema.json")
-	var _schema_data: Dictionary = {}
+	var _schema_data: Dictionary = { }
 
 	# TODO: This should be handled more gracefully instead of just closing the application.
 	# https://github.com/OpenMinerva/client/issues/148
@@ -49,21 +50,28 @@ static func init() -> void:
 		_schema[_item] = _entry
 	return
 
+
 static func is_valid(_search_key: Variant) -> bool:
 	GlobalLogger.log("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	return false
 
+
 static func get_schema() -> Dictionary:
 	return _schema
+
 
 static func get_entry(node_name: String) -> Dictionary:
 	if !_schema.keys().has(node_name):
 		# Invalid node_name
-		return {}
+		return { }
 
 	return _schema[node_name]
 
+
 static func build(node_name: String, model_path: String = "") -> Node:
+	if node_name == "":
+		return
+
 	var _entry = _schema[node_name]
 
 	if _entry.requires_setup == false:
@@ -122,6 +130,7 @@ static func build(node_name: String, model_path: String = "") -> Node:
 
 	# FIXME: This function should always return what the user wants. If it gets to this point then I made an error in the schema. Proper reporting to the user somehow?
 	return Node3D.new()
+
 
 static func _add_node_metadata(root: Node) -> void:
 	var _class = root.get_class()

@@ -28,10 +28,11 @@ const _instance_database_template = {
 }
 
 var url_regex: RegEx = RegEx.create_from_string("^(https?)://([^/:]+)(?::(\\d+))?(.*)$")
-var _session_db = {}
-var _heartbeats = {}
+var _session_db = { }
+var _heartbeats = { }
 
 @onready var scene_m = get_node("../SceneManager")
+
 
 func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRID) -> bool:
 	GlobalLogger.log("Starting a new server.")

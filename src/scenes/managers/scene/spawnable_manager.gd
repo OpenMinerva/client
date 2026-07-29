@@ -178,8 +178,9 @@ func spawn_spawnable(p_type: String, p_name: String = "", p_path: String = "", p
 
 	# HACK: When connecting to the server, the entity of the joining user is attempted to spawn twice. This null check will see if the node already exists on the server by name. 
 	_spawned_entity = _spawn_node(p_type, 1, parent_node, p_path, p_name)
+
 	if _spawned_entity == null:
-		GlobalLogger.log("Tried to spawn in something that already exists? Returning the reference to the existing node.")
+		GlobalLogger.log("Tried to spawn in something that already exists? Returning the reference to the existing node.", Enum.LogLevel.WARNING)
 		return int(p_name)
 
 	_spawned_entity.owner = parent_node
@@ -329,6 +330,11 @@ func _spawn_node(node_type: String, node_owner: int, parent: Node = instance_roo
 		GlobalLogger.log("Tried to spawn in a node that already exists.", Enum.LogLevel.ERROR)
 		return
 
+	if node_type == "":
+		GlobalLogger.log("Tried to spawn in a invalid node.", Enum.LogLevel.ERROR)
+		return
+
+	print(node_type)
 	# HACK: Fixes importing skeletons?
 	if _node_name == "Model" && model_path == "":
 		_node = NSB.build("Node3D")
@@ -349,7 +355,8 @@ func _spawn_node(node_type: String, node_owner: int, parent: Node = instance_roo
 	_node.set_meta("pretty_name", _pretty_name)
 	_node.set_meta("spawnable_type", node_type)
 	_node.set_meta("icon", _node_schema.icon)
-	_node.position = Vector3(0, 0, 0)
+	if _node.get("position") != null:
+		_node.position = Vector3(0, 0, 0)
 
 	# Add to scene tree
 	parent.add_child(_node)

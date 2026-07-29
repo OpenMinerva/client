@@ -1,5 +1,15 @@
 [gd_scene format=3 uid="uid://j0e4j8yqq00s"]
 
+[sub_resource type="CylinderMesh" id="CylinderMesh_pagie"]
+top_radius = 5.0
+bottom_radius = 5.0
+height = 0.1
+radial_segments = 128
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_dbach"]
+height = 0.1
+radius = 5.0
+
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_q28r8"]
 sky_top_color = Color(0.297, 0.40241668, 0.55, 1)
 energy_multiplier = 1.25
@@ -15,31 +25,32 @@ ssr_enabled = true
 ssao_enabled = true
 glow_enabled = true
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_pagie"]
-top_radius = 5.0
-bottom_radius = 5.0
-height = 0.1
-radial_segments = 128
-
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_dbach"]
-height = 0.1
-radius = 5.0
-
 [node name="Home" type="Node3D" unique_id=1178951762]
+metadata/spawnable_type = "Node3D"
+metadata/pretty_name = "Home"
+
+[node name="Platform" type="MeshInstance3D" parent="." unique_id=2023447140]
+mesh = SubResource("CylinderMesh_pagie")
+metadata/spawnable_type = "MeshInstance3D"
+metadata/scene_node = true
+
+[node name="PlatformColider" type="StaticBody3D" parent="Platform" unique_id=1828996318]
+metadata/spawnable_type = "StaticBody3D"
+metadata/scene_node = true
+
+[node name="PlatformColider2" type="CollisionShape3D" parent="Platform/PlatformColider" unique_id=1448825716]
+shape = SubResource("CylinderShape3D_dbach")
+metadata/spawnable_type = "CollisionShape3D"
+metadata/scene_node = true
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1673060133]
 transform = Transform3D(1, 0, 0, 0, 0.995942, 0.08999716, 0, -0.08999716, 0.995942, 0, 0, 0)
 shadow_enabled = true
 metadata/scene_node = true
+metadata/spawnable_type = "DirectionalLight3D"
+metadata/pretty_name = "DirectionalLight3D"
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1956146366]
 environment = SubResource("Environment_2vl8h")
 metadata/scene_node = true
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=2023447140]
-mesh = SubResource("CylinderMesh_pagie")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D" unique_id=1828996318]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D" unique_id=1448825716]
-shape = SubResource("CylinderShape3D_dbach")
+metadata/spawnable_type = "WorldEnvironment"

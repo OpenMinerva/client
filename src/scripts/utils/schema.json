@@ -123,6 +123,15 @@
 		"deep_delete": true,
 		"tags": ["Light"]
 	},
+	"StaticBody3D": {
+		"requires_setup": false,
+		"pretty_name": "StaticBody3D",
+		"node": "StaticBody3D",
+		"icon": "godot/StaticBody3D.svg",
+		"hidden": false,
+		"deep_delete": true,
+		"tags": []
+	},
 	"CharacterBody3D": {
 		"requires_setup": false,
 		"pretty_name": "CharacterBody3D",
