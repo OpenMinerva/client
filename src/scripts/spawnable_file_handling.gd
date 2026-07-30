@@ -103,20 +103,19 @@ func load_spawnable(path: String) -> void:
 
 		_task.node = _node
 
+		if _task.has("transform") == true:
+			session_spawnable_manager.set_transform(int(_task.node.name), _task.transform)
+
 		for _prop in _task.properties:
 			var _prop_dict = _task[_prop]
 			# TODO: I need to have some kind of way to have a reference to a specific resource by name / id, create that resource, and associate that generated id with the generated resource.
-			# I don't  know how I can do that
 
 			# First we should create the asset on the server
 			var _asset: Resource = await session_spawnable_manager.create_asset(_prop_dict.class, _prop_dict.properties)
-
-			# _asset.get_name() # To get the name of the asset
+			# NOTE: _asset.get_name() # To get the name of the asset
 
 			# HACK: Set the property to equal the resource directly, this does not proeprty set the reference on multiplayer / connected clients.
-			await session_spawnable_manager.set_property(int(_task.node.name), _prop, _asset)
-
-			# TODO: Apply transform
+			session_spawnable_manager.set_property(int(_task.node.name), _prop, _asset)
 
 	return
 

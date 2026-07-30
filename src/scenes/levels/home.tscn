@@ -12,6 +12,9 @@ radius = 5.0
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_q28r8"]
 sky_top_color = Color(0.297, 0.40241668, 0.55, 1)
+ground_bottom_color = Color(0.089319594, 0.2460128, 0.5241066, 1)
+ground_curve = 0.0063728117
+ground_energy_multiplier = 1.2
 energy_multiplier = 1.25
 
 [sub_resource type="Sky" id="Sky_gbca3"]
@@ -19,7 +22,9 @@ sky_material = SubResource("ProceduralSkyMaterial_q28r8")
 
 [sub_resource type="Environment" id="Environment_2vl8h"]
 background_mode = 2
+background_energy_multiplier = 1.5
 sky = SubResource("Sky_gbca3")
+ambient_light_source = 3
 tonemap_mode = 2
 ssr_enabled = true
 ssao_enabled = true
@@ -31,8 +36,8 @@ metadata/pretty_name = "Home"
 
 [node name="Platform" type="MeshInstance3D" parent="." unique_id=2023447140]
 mesh = SubResource("CylinderMesh_pagie")
-metadata/spawnable_type = "MeshInstance3D"
 metadata/scene_node = true
+metadata/spawnable_type = "MeshInstance3D"
 
 [node name="PlatformColider" type="StaticBody3D" parent="Platform" unique_id=1828996318]
 metadata/spawnable_type = "StaticBody3D"
