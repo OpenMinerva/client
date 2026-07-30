@@ -26,6 +26,7 @@ const SPAWNABLE_TEMPLATE: Dictionary = {
 var _spawnable_network_batches: int = 4
 var _database_id: int = 10
 var _database: Array[Dictionary] = []
+var _asset_database: Array[Dictionary] = []
 
 @onready var app_scene_m: Node = get_tree().current_scene.get_node("SceneManager")
 @onready var app_network_m: Node = get_tree().current_scene.get_node("NetworkManager")
@@ -165,6 +166,39 @@ func set_authority(node_id: int, peer_id: int) -> void:
 	return
 
 
+@rpc("call_local", "any_peer", "reliable")
+func create_asset(asset_type: String, properties: Array) -> Variant:
+	var my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
+	var caller_id: int = multiplayer.get_remote_sender_id()
+	GlobalLogger.log("[%s] Creating Asset '%s'." % [my_id, asset_type])
+
+	if my_id == 1:
+		# This was a host calling this function.
+		var _target_id: String = str(_database_id)
+
+		# Actually spawn in the asset for us, and all clients.
+		var _asset = spawn_asset(asset_type, properties)
+		spawn_asset.rpc(asset_type, properties)
+
+
+		var _asset_db_index: int = _asset_database.find_custom(func(entry): return entry.id == _asset)
+
+		if caller_id != 0 && caller_id != my_id:
+			# This call originated from a client, we need to return a reference to the spawned asset, and not the asset itself.
+			return int(_asset_database[_asset_db_index].resource.name)
+
+		return _asset_database[_asset_db_index].resource
+	else:
+		# Call on the host to create (and sync) the resource.
+		var _asset: int = await rpcawaiter.send_rpc(1, create_asset.bind(asset_type, properties))
+
+		# We have the asset name (id), we need to find it in the asset_database.
+		var _asset_db_index: int = _asset_database.find_custom(func(entry): return entry.id == _asset)
+
+		# Return the resource directly.
+		return _asset_database[_asset_db_index].resource
+
+
 # TODO: How would large assets work?
 @rpc("authority", "reliable")
 func spawn_spawnable(p_type: String, p_name: String = "", p_path: String = "", parent_id: int = 0) -> int:
@@ -176,7 +210,7 @@ func spawn_spawnable(p_type: String, p_name: String = "", p_path: String = "", p
 		var database_index = _database.find_custom(func(entry): return entry.id == parent_id)
 		parent_node = _database[database_index].node
 
-	# HACK: When connecting to the server, the entity of the joining user is attempted to spawn twice. This null check will see if the node already exists on the server by name. 
+	# HACK: When connecting to the server, the entity of the joining user is attempted to spawn twice. This null check will see if the node already exists on the server by name.
 	_spawned_entity = _spawn_node(p_type, 1, parent_node, p_path, p_name)
 
 	if _spawned_entity == null:
@@ -297,6 +331,59 @@ func get_by_id(spawnable_id: int) -> Dictionary:
 	return _database[target_entry]
 
 
+@rpc("authority", "reliable")
+func spawn_asset(asset_type, properties) -> int:
+	GlobalLogger.log("Spawning '%s'." % asset_type)
+
+	# Create the resource on our end, and include it in the database.
+	var _resource: Resource = _spawn_resource(asset_type, properties)
+
+	# Return the _asset_database id of the resource.
+	return int(_resource.get_name())
+
+
+func _spawn_resource(resource_class: String, properties, asset_id: String = str(_database_id)) -> Resource:
+	var _resource: Resource = null
+
+	# Create the resource
+	_resource = ClassDB.instantiate(resource_class)
+
+	# Set the resource properties
+	for _prop in properties:
+		_resource.set_indexed(_prop.name, _prop.value)
+
+	# Add the resource to the database
+	var _db_id: int = _add_asset_to_database(resource_class, _resource, properties, int(asset_id))
+
+	# Set the resource name
+	_resource.set_name(str(_db_id))
+
+	# Return the resource
+	return _resource
+
+func _add_asset_to_database(asset_class: String, resource: Resource, props: Array, asset_id: int = 0) -> int:
+	# If we are a client, we ignore the database completely, we are supplied the id by the server.
+	var _db_entry = {
+		"id": 0,
+		"asset_class": "",
+		"properties": { },
+	}
+
+	if asset_id == 0:
+		GlobalLogger.log("No asset_id supplied.", Enum.LogLevel.ERROR)
+		return 0
+	else:
+		_db_entry.id = asset_id
+
+	_db_entry.resource = resource
+	_db_entry.props = props
+	_db_entry.asset_class = asset_class
+
+	_asset_database.append(_db_entry)
+	_database_id = _database_id + 1
+	return _db_entry.id
+
+
 func _get_deletion_queue(node_name: String) -> Array:
 	var _entry_index = _database.find_custom(func(item): return item.id == int(node_name))
 	var _node = _database[_entry_index].node
@@ -334,7 +421,6 @@ func _spawn_node(node_type: String, node_owner: int, parent: Node = instance_roo
 		GlobalLogger.log("Tried to spawn in a invalid node.", Enum.LogLevel.ERROR)
 		return
 
-	print(node_type)
 	# HACK: Fixes importing skeletons?
 	if _node_name == "Model" && model_path == "":
 		_node = NSB.build("Node3D")

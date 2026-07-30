@@ -55,10 +55,15 @@ func load_spawnable(path: String) -> void:
 		_task.id = _node_id
 		_task.parent = -1
 		_task.path = _node_path
+		_task.properties = [] # An array listing the keys of property fields.
 
 		for _prop_id in range(_num_properties):
 			var _prop_name: String = _state.get_node_property_name(_node_id, _prop_id)
 			var _prop_value: Variant = _state.get_node_property_value(_node_id, _prop_id)
+
+			if _prop_value is Resource:
+				_task.properties.append(_prop_name)
+				_prop_value = _flatten_resource(_prop_value)
 
 			_task.set(_prop_name, _prop_value)
 
@@ -97,152 +102,37 @@ func load_spawnable(path: String) -> void:
 			_node = await session_spawnable_manager.create(_task["metadata/spawnable_type"], int(_parent_task.node.name))
 
 		_task.node = _node
-		# TODO: Apply transform
-		# TODO: Apply other properties
 
-	print(_tasks)
+		for _prop in _task.properties:
+			var _prop_dict = _task[_prop]
+			# TODO: I need to have some kind of way to have a reference to a specific resource by name / id, create that resource, and associate that generated id with the generated resource.
+			# I don't  know how I can do that
+
+			# First we should create the asset on the server
+			var _asset: Resource = await session_spawnable_manager.create_asset(_prop_dict.class, _prop_dict.properties)
+
+			# _asset.get_name() # To get the name of the asset
+
+			# HACK: Set the property to equal the resource directly, this does not proeprty set the reference on multiplayer / connected clients.
+			await session_spawnable_manager.set_property(int(_task.node.name), _prop, _asset)
+
+			# TODO: Apply transform
+
 	return
 
-	# func load_spawnable(path: String) -> void:
-	# TODO: Invalid nodes have a -1 value for the node_type
-	# For testing, just load it into the current active session
-	# var session_spawnable_manager = scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager")
-	# var loaded_scene = ResourceLoader.load(path)
-	#
-	# var spawn_tasks: Array[Dictionary] = []
-	# var spawn_tasks_base_path_table: Dictionary = { }
-	#
-	# var state = loaded_scene.get_state()
-	# var node_count = state.get_node_count()
-	#
-	# for node_id in range(node_count):
-	# 	var node_path = state.get_node_path(node_id)
-	#
-	# 	# Spn = "Spawnable" shorthand.
-	# 	var spn_type: String = ""
-	# 	var spn_transform: Transform3D
-	# 	var spn_pretty_name: String
-	#
-	# 	var dev_spn_mesh: Mesh
-	# 	var dev_spn_skin: Skin
-	# 	var dev_bones: Dictionary = { }
-	#
-	# 	var property_count = state.get_node_property_count(node_id)
-	#
-	# 	for property_id in range(property_count):
-	# 		var _name = state.get_node_property_name(node_id, property_id)
-	# 		var _value = state.get_node_property_value(node_id, property_id)
-	#
-	# 		if _name == "metadata/spawnable_type":
-	# 			spn_type = _value
-	# 			continue
-	#
-	# 		if _name == "transform":
-	# 			spn_transform = _value
-	# 			continue
-	#
-	# 		if _name == "mesh":
-	# 			dev_spn_mesh = _value
-	# 			continue
-	#
-	# 		if _name == "skin":
-	# 			dev_spn_skin = _value
-	# 			continue
-	#
-	# 		if _name == "metadata/pretty_name":
-	# 			spn_pretty_name = _value
-	# 			continue
-	#
-	# 		# HACK: Manually read the bones and add them to the work queue.
-	# 		if _name.contains("bones/"):
-	# 			var parts = _name.split("/")
-	# 			var _bone_name = parts[1]
-	# 			var _bone_property = parts[2]
-	#
-	# 			if dev_bones.has(_bone_name) == false:
-	# 				dev_bones[_bone_name] = { }
-	#
-	# 			dev_bones[_bone_name][_bone_property] = _value
-	#
-	# 	spawn_tasks.append({ "task_id": node_id, "spawnable_type": spn_type, "transform": spn_transform, "path": str(node_path), "mesh": dev_spn_mesh, "skin": dev_spn_skin, "bone_data": dev_bones, "pretty_name": spn_pretty_name, "parent_task": -1 })
-	#
-	# # Order the task list so that based upon the paths of the nodes, each sequential node is guaranteed to have its parent exist.
-	# spawn_tasks.sort_custom(
-	# 	func(a: Dictionary, b: Dictionary) -> bool:
-	# 		return a["path"] < b["path"]
-	# )
-	#
-	# # From here, we need to get a relationship between a spawn task, and the parent node that will have a given spawn task node as its child.
-	# for task_id in range(spawn_tasks.size()):
-	# 	var _task: Dictionary = spawn_tasks[task_id]
-	# 	var _base_dir: String = _task.path.get_base_dir()
-	# 	var _parent_task_id: int = -1
-	#
-	# 	if spawn_tasks_base_path_table.has(_task.path) == false:
-	# 		# Add the task id to the table to reference the base path of the node to spawn to this task ID.
-	# 		spawn_tasks_base_path_table[_task.path] = task_id
-	#
-	# 	if _base_dir == "":
-	# 		# Special case for the root of the saved spawnable
-	# 		# No action
-	# 		continue
-	# 	else:
-	# 		_parent_task_id = spawn_tasks_base_path_table[_task.path.get_base_dir()]
-	# 		var _parent_task_index = spawn_tasks.find_custom(func(entry): return entry.task_id == _parent_task_id)
-	# 		var _parent_task = spawn_tasks[_parent_task_index]
-	# 		spawn_tasks[task_id]["parent_task"] = _parent_task_id
-	# print(spawn_tasks_base_path_table)
-	#
-	# # Now, with our ordered and relational task queue, start spawning in the nodes.
-	# var _debug_skeleton_node: Node
-	# print(spawn_tasks)
-	# for task in spawn_tasks:
-	# 	print("\n\n")
-	# 	var _parent_task_index = spawn_tasks.find_custom(func(entry): return entry.task_id == task.parent_task)
-	# 	var _parent_task = spawn_tasks[_parent_task_index]
-	# 	var _node: Node
-	# 	print("Working on task: '%s' - '%s'" % [task.task_id, task.spawnable_type])
-	#
-	# 	if _parent_task_index == -1:
-	# 		_node = await session_spawnable_manager.create(task.spawnable_type)
-	# 	else:
-	# 		print(task)
-	# 		print(_parent_task)
-	# 		_node = await session_spawnable_manager.create(task.spawnable_type, int(_parent_task.node.name))
-	#
-	# 	task["node"] = _node
-	# 	_node.transform = task.transform
-	#
-	# 	if "mesh" in _node:
-	# 		_node.mesh = task.mesh
-	#
-	# 	if "skin" in _node:
-	# 		_node.skin = task.skin
-	#
-	# 	# FIXME: Hack to get the skeleton reinitialized and repositioned correctly
-	# 	if _node.get_class() == "Skeleton3D":
-	# 		_debug_skeleton_node = _node
-	# 		for bone_id in task.bone_data.keys():
-	# 			var _pack = task.bone_data[bone_id]
-	#
-	# 			var _name = _pack.name
-	# 			var _parent = _pack.parent
-	# 			var _transform = _pack.rest
-	#
-	# 			if _name.is_empty() == false:
-	# 				_debug_skeleton_node.add_bone(_name)
-	# 			else:
-	# 				_debug_skeleton_node.add_bone("Bone_%d" % bone_id)
-	#
-	# 			if _parent >= 0:
-	# 				_debug_skeleton_node.set_bone_parent(int(bone_id), _parent)
-	#
-	# 			_debug_skeleton_node.set_bone_pose(int(bone_id), _transform)
-	#
-	# 	_node.set_meta("pretty_name", task.pretty_name)
-	#
-	# GlobalLogger.log("Loading completed.")
-	# return
+
+func _flatten_resource(resource: Resource):
+	var _resource_props = resource.get_property_list()
+	var _response: Dictionary = { "properties": [], "class": "" }
+
+	_response.class = resource.get_class()
+	for resource_id in range(_resource_props.size()):
+		var _name = _resource_props[resource_id].name
+		var _value = resource.get(_name)
+
+		_response.properties.append({ "name": _name, "value": _value })
+
+	return _response
 
 
 func _externalize_assets(root: Node) -> Node:
