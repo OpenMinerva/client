@@ -68,6 +68,11 @@ func sync_all() -> void:
 		if spawnable.node == null:
 			GlobalLogger.log("Node does not exist.", Enum.LogLevel.WARNING)
 			return
+
+		if spawnable.node.has_method("transform") == false:
+			# We can't transform something without a transform field!
+			return
+
 		set_transform.rpc(spawnable.id, spawnable.node.transform)
 	return
 
@@ -152,6 +157,19 @@ func set_property(node_id: int, property_name: String, property_value: Variant) 
 		return
 	return
 
+@rpc("any_peer", "reliable")
+func set_resource(node_id: int, property_name: String, resource_id: int) -> void:
+	var _my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
+	var _caller_id: int = multiplayer.get_remote_sender_id()
+
+	if _my_id == 1:
+		var _resource: Dictionary = get_resource_by_id(resource_id)
+		# TODO: Error check.
+		set_property_on_spawnable.rpc(node_id, property_name, _resource.resource)
+	else:
+		await rpcawaiter.send_rpc(1, set_resource.bind(node_id, property_name, resource_id))
+		return
+	return
 
 @rpc("any_peer", "reliable")
 func set_authority(node_id: int, peer_id: int) -> void:
@@ -177,9 +195,9 @@ func create_asset(asset_type: String, properties: Array) -> Variant:
 		var _target_id: String = str(_database_id)
 
 		# Actually spawn in the asset for us, and all clients.
+		# TODO: We need to tell the clients what ID to use for the asset.
 		var _asset = spawn_asset(asset_type, properties)
 		spawn_asset.rpc(asset_type, properties)
-
 
 		var _asset_db_index: int = _asset_database.find_custom(func(entry): return entry.id == _asset)
 
@@ -281,7 +299,7 @@ func set_authority_on_spawnable(node_id: int, peer_id: int) -> void:
 	return
 
 
-func receive_database(database: Array, players: Dictionary) -> void:
+func receive_database(database: Array, players: Dictionary, assets: Array) -> void:
 	var _my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
 
 	GlobalLogger.log("[%s] Receiving spawnable database with %d entries" % [_my_id, database.size()])
@@ -289,6 +307,10 @@ func receive_database(database: Array, players: Dictionary) -> void:
 	for spawnable in database:
 		GlobalLogger.log("Spawning '%s' as '%s'." % [spawnable.id, spawnable.type])
 		spawn_spawnable(spawnable.type, str(spawnable.id))
+
+	for asset in assets:
+		GlobalLogger.log("Spawning asset '%s'." % [asset.id])
+		spawn_asset(asset.asset_class, asset.props, str(asset.id))
 
 	GlobalLogger.log("[%s] Database sync complete." % _my_id)
 
@@ -331,12 +353,21 @@ func get_by_id(spawnable_id: int) -> Dictionary:
 	return _database[target_entry]
 
 
+func get_resource_by_id(resource_id: int) -> Dictionary:
+	var target_entry = _asset_database.find_custom(func(entry): return entry.id == resource_id)
+
+	if target_entry == -1:
+		return { }
+
+	return _asset_database[target_entry]
+
+
 @rpc("authority", "reliable")
-func spawn_asset(asset_type, properties) -> int:
+func spawn_asset(asset_type, properties, id: String = str(_database_id)) -> int:
 	GlobalLogger.log("Spawning '%s'." % asset_type)
 
 	# Create the resource on our end, and include it in the database.
-	var _resource: Resource = _spawn_resource(asset_type, properties)
+	var _resource: Resource = _spawn_resource(asset_type, properties, id)
 
 	# Return the _asset_database id of the resource.
 	return int(_resource.get_name())
@@ -344,6 +375,7 @@ func spawn_asset(asset_type, properties) -> int:
 
 func _spawn_resource(resource_class: String, properties, asset_id: String = str(_database_id)) -> Resource:
 	var _resource: Resource = null
+	print(asset_id)
 
 	# Create the resource
 	_resource = ClassDB.instantiate(resource_class)

@@ -92,8 +92,13 @@ func load_spawnable(path: String) -> void:
 	# Finally, we spawn in the nodes.
 	for _task in _tasks:
 		var _node: Node
-
 		if _task.parent == -1:
+
+			if _task.has("metadata/spawnable_type") == false:
+				# HACK: Force unknown spawnable types to be Node3D (Empty).
+				GlobalLogger.log("Spawnable type not defined. Using Node3D.", Enum.LogLevel.WARNING)
+				_task["metadata/spawnable_type"] = "Node3D"
+
 			_node = await session_spawnable_manager.create(_task["metadata/spawnable_type"])
 		else:
 			# TODO: Is this correct form to parent the node to the correct node?
@@ -112,10 +117,8 @@ func load_spawnable(path: String) -> void:
 
 			# First we should create the asset on the server
 			var _asset: Resource = await session_spawnable_manager.create_asset(_prop_dict.class, _prop_dict.properties)
-			# NOTE: _asset.get_name() # To get the name of the asset
 
-			# HACK: Set the property to equal the resource directly, this does not proeprty set the reference on multiplayer / connected clients.
-			session_spawnable_manager.set_property(int(_task.node.name), _prop, _asset)
+			session_spawnable_manager.set_resource(int(_task.node.name), _prop, int(_asset.get_name()))
 
 	return
 

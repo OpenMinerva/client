@@ -52,15 +52,15 @@ func req_spawnable_db() -> void:
 	GlobalLogger.log("Sending spawnable database to peer %d: %d entries" % [caller_id, spawnable_m._database.size()])
 
 	# Send the spawnable and player database to the client.
-	rec_spawnable_db.rpc_id(caller_id, spawnable_m._database, player_m.players)
+	rec_spawnable_db.rpc_id(caller_id, spawnable_m._database, player_m.players, spawnable_m._asset_database)
 
 	return
 
 
 @rpc("authority", "reliable")
-func rec_spawnable_db(db: Array, players: Dictionary) -> void:
+func rec_spawnable_db(db: Array, players: Dictionary, assets: Array) -> void:
 	# We have the database, set it.
-	await spawnable_m.receive_database(db, players)
+	await spawnable_m.receive_database(db, players, assets)
 
 	# Tell the server we have finished spawning the nodes, tell the server to sync the transforms.
 	spawnable_m.sync_all.rpc_id(1)
