@@ -19,6 +19,7 @@ const SPAWNABLE_TEMPLATE: Dictionary = {
 	"spawner": -1,
 	"physics_owner": 1,
 	"node": null,
+	"parent": -1,
 	"id": -1,
 	"pretty_name": "ERROR",
 }
@@ -27,6 +28,7 @@ var _spawnable_network_batches: int = 4
 var _database_id: int = 10
 var _database: Array[Dictionary] = []
 var _asset_database: Array[Dictionary] = []
+var _asset_node_relation_database: Array[Dictionary] = []
 
 @onready var app_scene_m: Node = get_tree().current_scene.get_node("SceneManager")
 @onready var app_network_m: Node = get_tree().current_scene.get_node("NetworkManager")
@@ -88,6 +90,9 @@ func create(node_type: String, node_parent: int = 0, model_path: String = "") ->
 
 		var entity: int = spawn_spawnable(node_type, _target_id, model_path, node_parent)
 		spawn_spawnable.rpc(node_type, _target_id, model_path, node_parent)
+
+		# HACK: Reparent the node again so that it gets saved in the database.
+		set_parent(entity, node_parent)
 
 		var database_index: int = _database.find_custom(func(entry): return entry.id == entity)
 		if caller_id != 0 && caller_id != my_id:
@@ -157,19 +162,25 @@ func set_property(node_id: int, property_name: String, property_value: Variant) 
 		return
 	return
 
+
 @rpc("any_peer", "reliable")
 func set_resource(node_id: int, property_name: String, resource_id: int) -> void:
 	var _my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
 	var _caller_id: int = multiplayer.get_remote_sender_id()
 
 	if _my_id == 1:
-		var _resource: Dictionary = get_resource_by_id(resource_id)
 		# TODO: Error check.
+		var _resource: Dictionary = get_resource_by_id(resource_id)
 		set_property_on_spawnable.rpc(node_id, property_name, _resource.resource)
+
+		# TODO: Error check to see if resource exists.
+		# FIXME: When a node gets deleted, there is no cleanup for the database.
+		_asset_node_relation_database.append({"node_id": node_id, "node_property": property_name, "resource_id": resource_id})
 	else:
 		await rpcawaiter.send_rpc(1, set_resource.bind(node_id, property_name, resource_id))
 		return
 	return
+
 
 @rpc("any_peer", "reliable")
 func set_authority(node_id: int, peer_id: int) -> void:
@@ -215,6 +226,43 @@ func create_asset(asset_type: String, properties: Array) -> Variant:
 
 		# Return the resource directly.
 		return _asset_database[_asset_db_index].resource
+
+
+func set_parent(node_id: int, parent_node_id: int) -> void:
+	var my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
+	# var caller_id: int = multiplayer.get_remote_sender_id()
+
+	GlobalLogger.log("[%s] Setting parent of '%s' to '%s'." % [my_id, node_id, parent_node_id])
+
+	if my_id == 1:
+		# Get the node references.
+		var _node = get_by_id(node_id)
+		var _parent_node = get_by_id(parent_node_id)
+
+		if parent_node_id <= 0:
+			# Invalid state, reparent to root.
+			_parent_node = {"node": app_scene_m.get_master_root(app_scene_m.active_session)}
+
+		# Send the reparent signal to all clients.
+		_set_node_parent.rpc(_node.node, _parent_node.node)
+
+		# Update the database.
+		var _db_index: int = _database.find_custom(func(entry): return entry.id == node_id)
+		_database[_db_index].parent = parent_node_id
+		return
+	else:
+		# Call on the host to create (and sync) the resource.
+		var _asset: int = await rpcawaiter.send_rpc(1, set_parent.bind(node_id, parent_node_id))
+		return
+
+	return
+
+
+@rpc("call_local", "any_peer", "reliable")
+func _set_node_parent(node: Node, parent_node: Node) -> void:
+	# Change node parent.
+	node.reparent(parent_node)
+	return
 
 
 # TODO: How would large assets work?
@@ -299,18 +347,27 @@ func set_authority_on_spawnable(node_id: int, peer_id: int) -> void:
 	return
 
 
-func receive_database(database: Array, players: Dictionary, assets: Array) -> void:
+func receive_database(database: Array, players: Dictionary, assets: Array, asset_relations: Array) -> void:
 	var _my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
 
 	GlobalLogger.log("[%s] Receiving spawnable database with %d entries" % [_my_id, database.size()])
 
+	# Spawn in all of the nodes
 	for spawnable in database:
 		GlobalLogger.log("Spawning '%s' as '%s'." % [spawnable.id, spawnable.type])
-		spawn_spawnable(spawnable.type, str(spawnable.id))
+		spawn_spawnable(spawnable.type, str(spawnable.id), "", int(spawnable.parent))
 
+	# Spawn in all of the assets
 	for asset in assets:
 		GlobalLogger.log("Spawning asset '%s'." % [asset.id])
 		spawn_asset(asset.asset_class, asset.props, str(asset.id))
+
+	# Set the relations of the assets to the nodes.
+	for relation in asset_relations:
+		var _asset = get_resource_by_id(relation.resource_id)
+
+		set_property_on_spawnable(relation.node_id, relation.node_property,_asset.resource)
+		continue
 
 	GlobalLogger.log("[%s] Database sync complete." % _my_id)
 
@@ -375,7 +432,6 @@ func spawn_asset(asset_type, properties, id: String = str(_database_id)) -> int:
 
 func _spawn_resource(resource_class: String, properties, asset_id: String = str(_database_id)) -> Resource:
 	var _resource: Resource = null
-	print(asset_id)
 
 	# Create the resource
 	_resource = ClassDB.instantiate(resource_class)
@@ -392,6 +448,7 @@ func _spawn_resource(resource_class: String, properties, asset_id: String = str(
 
 	# Return the resource
 	return _resource
+
 
 func _add_asset_to_database(asset_class: String, resource: Resource, props: Array, asset_id: int = 0) -> int:
 	# If we are a client, we ignore the database completely, we are supplied the id by the server.

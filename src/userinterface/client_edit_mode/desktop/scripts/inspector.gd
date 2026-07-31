@@ -120,7 +120,9 @@ func _drop_data(mouse_position: Vector2, data: Variant):
 	else:
 		_target_node = _target_tree_item.get_metadata(0)
 
-	_dragged_node.reparent(_target_node)
+	# Send the reparent RPC request.
+	session_spawnable_m.set_parent(int(_dragged_node.name), int(_target_node.name))
+
 	_inspector_build()
 
 func _input(event: InputEvent):
@@ -475,9 +477,9 @@ func _select(target_node: int) -> void:
 	my_gizmo.use_local_space = _gizmo_space_local
 
 	_node_property_editor.get_node_properties(_node_db_entry.node)
-	my_gizmo.transform_changed.connect(func(): session_spawnable_m.set_transform(target_node, _node_db_entry.node.transform))
+	my_gizmo.transform_changed.connect(func(_mode, _value): session_spawnable_m.set_transform(target_node, _node_db_entry.node.transform))
 	# HACK: Update ALL of the node properties after a transformation was done.
-	my_gizmo.transform_end.connect(func(): _node_property_editor.update_node_properties(_node_db_entry.node))
+	my_gizmo.transform_end.connect(func(_mode): _node_property_editor.update_node_properties(_node_db_entry.node))
 
 func _gizmo_delete() -> void:
 	my_gizmo.clear_selection()

@@ -35,21 +35,27 @@ orientation = 1
 size = Vector3(1000, 0.001, 1000)
 
 [node name="Grid" type="Node3D" unique_id=53262658]
+metadata/spawnable_type = "Node3D"
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1916430820]
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
 shadow_enabled = true
 metadata/scene_node = true
+metadata/spawnable_type = "DirectionalLight3D"
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1457348223]
 environment = SubResource("Environment_q28r8")
 metadata/scene_node = true
+metadata/spawnable_type = "WorldEnvironment"
 
 [node name="Ground" type="MeshInstance3D" parent="." unique_id=1644270184]
 mesh = SubResource("QuadMesh_8gpll")
 metadata/scene_node = true
+metadata/spawnable_type = "MeshInstance3D"
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Ground" unique_id=1945745055]
+metadata/spawnable_type = "StaticBody3D"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/StaticBody3D" unique_id=1464818279]
 shape = SubResource("BoxShape3D_8gpll")
+metadata/spawnable_type = "CollisionShape3D"
