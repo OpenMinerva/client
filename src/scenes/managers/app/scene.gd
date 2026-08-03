@@ -76,14 +76,15 @@ func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel) -> voi
 
 	# Remove the "root" node of the world, and instead parent all nodes under the true instance root.
 	# HACK: Force reparent the children of the node to the world root.
-	var _target_node: Node3D = _root_scene_node.get_children()[1]
-	var _spawnable_manager: Node = _scene.get_node("SpawnableManager")
+	if _root_scene_node.get_children().size() > 0:
+		var _target_node: Node3D = _root_scene_node.get_children()[1]
+		var _spawnable_manager: Node = _scene.get_node("SpawnableManager")
 
-	for _world_node in _target_node.get_children():
-		_spawnable_manager.set_parent.rpc(int(_world_node.name), 0)
+		for _world_node in _target_node.get_children():
+			_spawnable_manager.set_parent.rpc(int(_world_node.name), 0)
 
-	# Delete the initial fake root from the loaded world.
-	_spawnable_manager.destroy.rpc(int(_target_node.name))
+		# Delete the initial fake root from the loaded world.
+		_spawnable_manager.destroy.rpc(int(_target_node.name))
 
 	# Allow scene to be visible in the inspector
 	_root_scene_node.set_meta("scene_node", true)
