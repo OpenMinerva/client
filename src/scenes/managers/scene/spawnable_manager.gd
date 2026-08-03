@@ -165,15 +165,20 @@ func set_property(node_id: int, property_name: String, property_value: Variant) 
 
 @rpc("any_peer", "reliable")
 func set_resource(node_id: int, property_name: String, resource_id: int) -> void:
+	# NOTE: This resource settter is very basic and only works as a way for initializing a joining peer on the server.
+	# There is not a complex nor complete lifecycle management for these assets.
 	var _my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
 	var _caller_id: int = multiplayer.get_remote_sender_id()
 
 	if _my_id == 1:
-		# TODO: Error check.
 		var _resource: Dictionary = get_resource_by_id(resource_id)
+
+		if _resource.has_property("resource") == false:
+			GlobalLogger.log("Resource '%s' is in invalid state.", Enum.LogLevel.ERROR)
+			return
+
 		set_property_on_spawnable.rpc(node_id, property_name, _resource.resource)
 
-		# TODO: Error check to see if resource exists.
 		# FIXME: When a node gets deleted, there is no cleanup for the database.
 		_asset_node_relation_database.append({"node_id": node_id, "node_property": property_name, "resource_id": resource_id})
 	else:
