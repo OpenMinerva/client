@@ -111,7 +111,7 @@ func create(node_type: String, node_parent: int = 0, model_path: String = "") ->
 		return _database[database_index].node
 
 
-@rpc("any_peer", "reliable")
+@rpc("call_local", "any_peer", "reliable")
 func destroy(node_id: int) -> Variant:
 	if app_network_m._session_db.has(app_scene_m.active_session) == false:
 		GlobalLogger.log("Failed to destroy node '%s'." % node_id, Enum.LogLevel.ERROR)
@@ -228,6 +228,7 @@ func create_asset(asset_type: String, properties: Array) -> Variant:
 		return _asset_database[_asset_db_index].resource
 
 
+@rpc("call_local", "any_peer", "reliable")
 func set_parent(node_id: int, parent_node_id: int) -> void:
 	var my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
 	# var caller_id: int = multiplayer.get_remote_sender_id()

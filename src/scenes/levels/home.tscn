@@ -1,6 +1,16 @@
 [gd_scene format=3 uid="uid://j0e4j8yqq00s"]
 
+[ext_resource type="Shader" uid="uid://bh250q6rfv615" path="res://resources/shaders/grid_shader.gdshader" id="1_ikf4c"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_q28r8"]
+render_priority = 0
+shader = ExtResource("1_ikf4c")
+shader_parameter/line_width = 0.005
+shader_parameter/fade_start = 5.0
+shader_parameter/fade_end = 20.0
+
 [sub_resource type="CylinderMesh" id="CylinderMesh_pagie"]
+material = SubResource("ShaderMaterial_q28r8")
 top_radius = 15.0
 bottom_radius = 15.0
 height = 0.1

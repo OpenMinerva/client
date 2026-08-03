@@ -64,7 +64,6 @@ func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel) -> voi
 	_scene.remove_child(_root_node)
 	_root_node.queue_free()
 
-	# TODO: Use spawnable system to load this world.
 	var _root_scene_node: Node3D = Node3D.new()
 	_root_scene_node.name = "root"
 	_scene.add_child(_root_scene_node)
@@ -72,7 +71,19 @@ func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel) -> voi
 	# HACK: Wait a frame for the active_session variable to populate
 	await get_tree().process_frame
 
-	spawnable_file_handling.load_spawnable(_root_scene)
+	# Use spawnable system to read the TSCN file, and instantiate it into the multiplayer instance.
+	await spawnable_file_handling.load_spawnable(_root_scene)
+
+	# Remove the "root" node of the world, and instead parent all nodes under the true instance root.
+	# HACK: Force reparent the children of the node to the world root.
+	var _target_node: Node3D = _root_scene_node.get_children()[1]
+	var _spawnable_manager: Node = _scene.get_node("SpawnableManager")
+
+	for _world_node in _target_node.get_children():
+		_spawnable_manager.set_parent.rpc(int(_world_node.name), 0)
+
+	# Delete the initial fake root from the loaded world.
+	_spawnable_manager.destroy.rpc(int(_target_node.name))
 
 	# Allow scene to be visible in the inspector
 	_root_scene_node.set_meta("scene_node", true)
