@@ -180,7 +180,7 @@ func set_resource(node_id: int, property_name: String, resource_id: int) -> void
 		set_property_on_spawnable.rpc(node_id, property_name, _resource.resource)
 
 		# FIXME: When a node gets deleted, there is no cleanup for the database.
-		_asset_node_relation_database.append({"node_id": node_id, "node_property": property_name, "resource_id": resource_id})
+		_asset_node_relation_database.append({ "node_id": node_id, "node_property": property_name, "resource_id": resource_id })
 	else:
 		await rpcawaiter.send_rpc(1, set_resource.bind(node_id, property_name, resource_id))
 		return
@@ -211,7 +211,6 @@ func create_asset(asset_type: String, properties: Array) -> Variant:
 		var _target_id: String = str(_database_id)
 
 		# Actually spawn in the asset for us, and all clients.
-		# TODO: We need to tell the clients what ID to use for the asset.
 		var _asset = spawn_asset(asset_type, properties)
 		spawn_asset.rpc(asset_type, properties)
 
@@ -247,7 +246,7 @@ func set_parent(node_id: int, parent_node_id: int) -> void:
 
 		if parent_node_id <= 0:
 			# Invalid state, reparent to root.
-			_parent_node = {"node": app_scene_m.get_master_root(app_scene_m.active_session)}
+			_parent_node = { "node": app_scene_m.get_master_root(app_scene_m.active_session) }
 
 		# Send the reparent signal to all clients.
 		_set_node_parent.rpc(_node.node, _parent_node.node)
@@ -264,20 +263,12 @@ func set_parent(node_id: int, parent_node_id: int) -> void:
 	return
 
 
-@rpc("call_local", "any_peer", "reliable")
-func _set_node_parent(node: Node, parent_node: Node) -> void:
-	# Change node parent.
-	node.reparent(parent_node)
-	return
-
-
 # TODO: How would large assets work?
 @rpc("authority", "reliable")
 func spawn_spawnable(p_type: String, p_name: String = "", p_path: String = "", parent_id: int = 0) -> int:
 	var _spawned_entity
 	var parent_node = get_parent().get_node("root")
 
-	# FIXME: This is silly! instance_root variable is in an invalid state here on clients?
 	if parent_id > 1:
 		var database_index = _database.find_custom(func(entry): return entry.id == parent_id)
 		parent_node = _database[database_index].node
@@ -372,7 +363,7 @@ func receive_database(database: Array, players: Dictionary, assets: Array, asset
 	for relation in asset_relations:
 		var _asset = get_resource_by_id(relation.resource_id)
 
-		set_property_on_spawnable(relation.node_id, relation.node_property,_asset.resource)
+		set_property_on_spawnable(relation.node_id, relation.node_property, _asset.resource)
 		continue
 
 	GlobalLogger.log("[%s] Database sync complete." % _my_id)
@@ -434,6 +425,13 @@ func spawn_asset(asset_type, properties, id: String = str(_database_id)) -> int:
 
 	# Return the _asset_database id of the resource.
 	return int(_resource.get_name())
+
+
+@rpc("call_local", "any_peer", "reliable")
+func _set_node_parent(node: Node, parent_node: Node) -> void:
+	# Change node parent.
+	node.reparent(parent_node)
+	return
 
 
 func _spawn_resource(resource_class: String, properties, asset_id: String = str(_database_id)) -> Resource:

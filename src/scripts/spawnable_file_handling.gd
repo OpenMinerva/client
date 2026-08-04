@@ -113,11 +113,11 @@ func load_spawnable(path: String) -> void:
 
 		for _prop in _task.properties:
 			var _prop_dict = _task[_prop]
-			# TODO: I need to have some kind of way to have a reference to a specific resource by name / id, create that resource, and associate that generated id with the generated resource.
 
 			# First we should create the asset on the server
 			var _asset: Resource = await session_spawnable_manager.create_asset(_prop_dict.class, _prop_dict.properties)
 
+			# Then we set that resource as the value of the resource property.
 			session_spawnable_manager.set_resource(int(_task.node.name), _prop, int(_asset.get_name()))
 
 	return
