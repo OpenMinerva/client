@@ -15,11 +15,19 @@ func _ready() -> void:
 	return
 
 
-func save_spawnable(root: Node) -> void:
+func save_spawnable(root: Node, name_override: String = "") -> void:
 	# Take a node path from the scene, and save that node to the file
 	# In order to save nodes using the ResourceSaver, we need to make all nodes that are a child of the root have the owner of the root.
 	# FIXME: When saving the node scene, The FileManager should be used entirely.
 	# ResourceLoader / ResourceSaver should not be called from here.
+	var _spawnable_name: String = ""
+
+	if name_override != "":
+		_spawnable_name = name_override
+	elif root.has_meta("pretty_name") == true:
+		_spawnable_name = root.get_meta("pretty_name")
+	else:
+		_spawnable_name = "Untitled"
 
 	# Duplicate the node, this is so we can make modifications to it (if required to)
 	# This duplicate does not touch the scene tree.
@@ -35,7 +43,7 @@ func save_spawnable(root: Node) -> void:
 	_remove_player_controllers(root)
 
 	var packed_scene = _create_packed_scene(root)
-	var file_path = FileManager._current_path() + "/" + root.get_meta("pretty_name", "NO_NAME") + ".tscn"
+	var file_path = FileManager._current_path() + "/" + _spawnable_name + ".tscn"
 	ResourceSaver.save(packed_scene, file_path)
 
 	# I have no idea what ownership is in terms of nodes are right now, so put it back as to not break anything

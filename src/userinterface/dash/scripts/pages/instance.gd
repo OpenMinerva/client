@@ -18,6 +18,7 @@ var session_settings: Dictionary = {
 @onready var privacy_settings: Control = get_node("HBox/Right/Hosting/ScrollContainer/VBoxContainer/VBoxContainer/Privacy/PanelContainer/MarginContainer/HBoxContainer/MarginContainer/OptionButton")
 @onready var save_hosting_button = get_node("HBox/Right/Hosting/ScrollContainer/VBoxContainer/Save/Button")
 @onready var _save_world_button = get_node("%SaveWorld")
+@onready var _instance_name: Control = get_node("%InstanceName")
 
 
 func _ready():
@@ -53,5 +54,7 @@ func _post_update() -> void:
 
 func _save_world() -> void:
 	var _root_node: Node3D = scene_m.get_master_root(scene_m.active_session)
-	_app_spawnable_file_handling.save_spawnable(_root_node)
+	var _name: String = _instance_name.get_value()
+
+	_app_spawnable_file_handling.save_spawnable(_root_node, _name)
 	return

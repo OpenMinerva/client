@@ -1,20 +1,7 @@
 [gd_scene format=3 uid="uid://crp73pbni8ils"]
 
 [ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="1_f3kam"]
-
-[sub_resource type="GDScript" id="GDScript_wtshq"]
-script/source = "extends Control
-
-@export var display_text: String = \"Default Text\"
-
-@onready var label_node = $PanelContainer/MarginContainer/HBoxContainer/Label
-@onready var lineedit_node = $PanelContainer/MarginContainer/HBoxContainer/MarginContainer/LineEdit
-#@export_enum(\"Danger\") var selected_theme_type: String
-
-func _ready():
-	label_node.text = display_text
-	lineedit_node.placeholder_text = display_text
-"
+[ext_resource type="Script" uid="uid://dvu7u3c20eyud" path="res://userinterface/dash/partials/input_boxstring.gd" id="1_j78te"]
 
 [node name="InputBoxString" type="Control" unique_id=1236567120]
 custom_minimum_size = Vector2(0, 100)
@@ -23,7 +10,7 @@ anchor_top = 0.4814815
 anchor_right = 1.0
 anchor_bottom = 0.5185185
 grow_horizontal = 2
-script = SubResource("GDScript_wtshq")
+script = ExtResource("1_j78te")
 metadata/_edit_use_anchors_ = true
 
 [node name="PanelContainer" type="PanelContainer" parent="." unique_id=382665771]
