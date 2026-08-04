@@ -45,6 +45,7 @@ func _post_update() -> void:
 	var _current_session_db_index = _sessions.find_custom(func(sess): return sess.name == _current_session_id)
 	var _current_session = _sessions[_current_session_db_index]
 
+	_current_session.set("name", _instance_name.get_value())
 	_current_session.set("privacy", session_settings.privacy)
 
 	network_m.update_server(_current_session_id, _current_session)
