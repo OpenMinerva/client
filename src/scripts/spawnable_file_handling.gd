@@ -40,7 +40,7 @@ func save_spawnable(root: Node, name_override: String = "") -> void:
 	_externalize_assets(root)
 
 	# Remove PlayerControllers.
-	_remove_player_controllers(root)
+	_remove_invalid_nodes(root)
 
 	var packed_scene = _create_packed_scene(root)
 	var file_path = FileManager._current_path() + "/" + _spawnable_name + ".tscn"
@@ -175,13 +175,22 @@ func _externalize_assets(root: Node) -> Node:
 	return root
 
 
-func _remove_player_controllers(root: Node) -> Node:
+func _remove_invalid_nodes(root: Node) -> Node:
 	for _node in root.get_children():
 		if _node.get_meta("spawnable_type") == "OM_PlayerController":
 			_node.free()
+			continue
 
-		if _node != null:
-			_remove_player_controllers(_node)
+		if _node.get_meta("spawnable_type") == "Gizmo":
+			_node.free()
+			continue
+
+		# TODO: Add "persistent" metadata.
+		if _node.has_meta("persistent") && _node.get_meta("persistent") == false:
+			_node.free()
+			continue
+
+		_remove_invalid_nodes(_node)
 	return
 
 
