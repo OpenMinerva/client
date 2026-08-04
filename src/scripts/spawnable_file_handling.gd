@@ -20,10 +20,19 @@ func save_spawnable(root: Node) -> void:
 	# In order to save nodes using the ResourceSaver, we need to make all nodes that are a child of the root have the owner of the root.
 	# FIXME: When saving the node scene, The FileManager should be used entirely.
 	# ResourceLoader / ResourceSaver should not be called from here.
+
+	# Duplicate the node, this is so we can make modifications to it (if required to)
+	# This duplicate does not touch the scene tree.
+	root = root.duplicate()
+
 	var original_owners = _get_node_ownership(root)
 	_set_temporary_ownership_recursive(root, root)
 
+	# Externalize assets makes it so that networking things are consistent.
 	_externalize_assets(root)
+
+	# Remove PlayerControllers.
+	_remove_player_controllers(root)
 
 	var packed_scene = _create_packed_scene(root)
 	var file_path = FileManager._current_path() + "/" + root.get_meta("pretty_name", "NO_NAME") + ".tscn"
@@ -156,6 +165,16 @@ func _externalize_assets(root: Node) -> Node:
 		_externalize_assets(child)
 
 	return root
+
+
+func _remove_player_controllers(root: Node) -> Node:
+	for _node in root.get_children():
+		if _node.get_meta("spawnable_type") == "OM_PlayerController":
+			_node.free()
+
+		if _node != null:
+			_remove_player_controllers(_node)
+	return
 
 
 func _get_node_ownership(root: Node) -> Dictionary:

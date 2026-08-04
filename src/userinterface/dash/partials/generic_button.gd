@@ -11,9 +11,8 @@ extends Control
 signal clicked
 signal double_clicked
 
-@onready var _node_button: Button = get_node("Button")
-@onready var _node_label: Label = get_node("Button/MarginContainer/VBoxContainer/Label")
-@onready var _node_icon: TextureRect = get_node("Button/MarginContainer/VBoxContainer/TextureRect")
+# Double clicking functionality
+const DOUBLE_CLICK_TIME: float = 0.25
 
 @export var toggle: bool = false
 @export var default_state: bool = false
@@ -21,10 +20,12 @@ signal double_clicked
 @export var icon: Texture2D = null
 @export var only_icon: bool = false
 
-# Double clicking functionality
-const DOUBLE_CLICK_TIME: float = 0.25
 var _click_count: int = 0
 var _last_click_time: float = 0
+
+@onready var _node_button: Button = get_node("Button")
+@onready var _node_label: Label = get_node("Button/MarginContainer/VBoxContainer/Label")
+@onready var _node_icon: TextureRect = get_node("Button/MarginContainer/VBoxContainer/TextureRect")
 
 
 func _ready() -> void:
@@ -41,6 +42,19 @@ func _ready() -> void:
 
 	return
 
+
+func set_label(new_label: String) -> void:
+	label = new_label
+	_node_label.text = new_label
+	return
+
+
+func set_icon(new_icon: Texture2D) -> void:
+	icon = new_icon
+	_node_icon.texture = new_icon
+	return
+
+
 func _on_single_click() -> void:
 	var now = Time.get_ticks_msec() / 1000.0
 
@@ -56,13 +70,3 @@ func _on_single_click() -> void:
 		clicked.emit()
 
 	_last_click_time = now
-
-func set_label(new_label: String) -> void:
-	label = new_label
-	_node_label.text = new_label
-	return
-
-func set_icon(new_icon: Texture2D) -> void:
-	icon = new_icon
-	_node_icon.texture = new_icon
-	return

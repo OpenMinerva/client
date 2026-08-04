@@ -24,6 +24,8 @@
 [ext_resource type="PackedScene" uid="uid://dg8ypxmuk8rv" path="res://userinterface/dash/partials/input_string.tscn" id="11_qutrk"]
 [ext_resource type="PackedScene" uid="uid://bqf6iew4kyf0b" path="res://userinterface/dash/partials/input_dropdown.tscn" id="12_86ms5"]
 [ext_resource type="Texture2D" uid="uid://c7ofnclcof0ud" path="res://resources/icons/world.svg" id="14_njqt8"]
+[ext_resource type="PackedScene" uid="uid://dtdvrvilw4fwr" path="res://userinterface/dash/partials/input_button.tscn" id="16_7lova"]
+[ext_resource type="Texture2D" uid="uid://blnd7x2qc6b7q" path="res://resources/icons/godot/Save.svg" id="17_xunij"]
 [ext_resource type="PackedScene" uid="uid://bgr4s3s31rfsi" path="res://userinterface/dash/partials/input_stringlist.tscn" id="18_njqt8"]
 [ext_resource type="PackedScene" uid="uid://c314yewjhuk8s" path="res://userinterface/dash/partials/input_stringconfirm.tscn" id="19_s6s1v"]
 [ext_resource type="PackedScene" uid="uid://gopciccm8xx5" path="res://userinterface/dash/partials/removable_string_listing.tscn" id="20_v67rh"]
@@ -141,6 +143,7 @@ theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
 [node name="Home" type="Control" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=154112638]
+visible = false
 layout_mode = 2
 script = ExtResource("6_bh4hj")
 
@@ -197,7 +200,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="Instance" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=17586745 instance=ExtResource("3_av8ee")]
-visible = false
 layout_mode = 2
 script = ExtResource("7_o4evp")
 
@@ -237,7 +239,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="World" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right" parent_id_path=PackedInt32Array(17586745, 892180341) index="2" unique_id=1519071951]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -250,7 +251,15 @@ display_text = "Name"
 layout_mode = 2
 display_text = "Description"
 
+[node name="SaveWorld" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/World" unique_id=1676692906 instance=ExtResource("16_7lova")]
+unique_name_in_owner = true
+layout_mode = 2
+display_text = "Save World"
+button_label = "Save"
+button_icon = ExtResource("17_xunij")
+
 [node name="Hosting" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right" parent_id_path=PackedInt32Array(17586745, 892180341) index="3" unique_id=1206037028]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3

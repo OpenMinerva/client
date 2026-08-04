@@ -14,13 +14,17 @@ var session_settings: Dictionary = {
 
 @onready var scene_m = get_tree().current_scene.get_node("SceneManager")
 @onready var network_m = get_tree().current_scene.get_node("NetworkManager")
+@onready var _app_spawnable_file_handling = get_tree().current_scene.get_node("SpawnableFileHandling")
 @onready var privacy_settings: Control = get_node("HBox/Right/Hosting/ScrollContainer/VBoxContainer/VBoxContainer/Privacy/PanelContainer/MarginContainer/HBoxContainer/MarginContainer/OptionButton")
 @onready var save_hosting_button = get_node("HBox/Right/Hosting/ScrollContainer/VBoxContainer/Save/Button")
+@onready var _save_world_button = get_node("%SaveWorld")
 
 
 func _ready():
 	super._ready()
 	save_hosting_button.pressed.connect(_save_hosting_settings)
+
+	_save_world_button.clicked.connect(_save_world)
 	return
 
 
@@ -44,4 +48,10 @@ func _post_update() -> void:
 
 	network_m.update_server(_current_session_id, _current_session)
 
+	return
+
+
+func _save_world() -> void:
+	var _root_node: Node3D = scene_m.get_master_root(scene_m.active_session)
+	_app_spawnable_file_handling.save_spawnable(_root_node)
 	return
