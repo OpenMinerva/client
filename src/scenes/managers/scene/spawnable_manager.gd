@@ -173,7 +173,7 @@ func set_resource(node_id: int, property_name: String, resource_id: int) -> void
 	if _my_id == 1:
 		var _resource: Dictionary = get_resource_by_id(resource_id)
 
-		if _resource.has_property("resource") == false:
+		if _resource.has("resource") == false:
 			GlobalLogger.log("Resource '%s' is in invalid state.", Enum.LogLevel.ERROR)
 			return
 
@@ -235,7 +235,6 @@ func create_asset(asset_type: String, properties: Array) -> Variant:
 @rpc("call_local", "any_peer", "reliable")
 func set_parent(node_id: int, parent_node_id: int) -> void:
 	var my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
-	# var caller_id: int = multiplayer.get_remote_sender_id()
 
 	GlobalLogger.log("[%s] Setting parent of '%s' to '%s'." % [my_id, node_id, parent_node_id])
 
