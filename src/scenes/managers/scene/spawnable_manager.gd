@@ -503,7 +503,6 @@ func _spawn_node(node_type: String, node_owner: int, parent: Node = instance_roo
 	var _node_schema = NSB.get_entry(_node_name)
 	var _pretty_name: String
 
-	# FIXME: Not sure if this check is safe
 	var _database_index: int = _database.find_custom(func(entry): return entry.id == int(node_name))
 	if _database_index > -1:
 		GlobalLogger.log("Tried to spawn in a node that already exists.", Enum.LogLevel.ERROR)

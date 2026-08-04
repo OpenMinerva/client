@@ -40,7 +40,10 @@ func load_spawnable(path: String) -> void:
 	var _tasks: Array[Dictionary] = []
 	var _path_parent_dictionary: Dictionary = { }
 
-	# TODO: Check to see if path exists.
+	# Check if file exists at the given path.
+	if FileAccess.file_exists(path) == false:
+		GlobalLogger.log("File '%s' does not exist." % path, Enum.LogLevel.INFO)
+		return
 
 	var _scene = ResourceLoader.load(path)
 	var _state = _scene.get_state()
@@ -93,7 +96,6 @@ func load_spawnable(path: String) -> void:
 	for _task in _tasks:
 		var _node: Node
 		if _task.parent == -1:
-
 			if _task.has("metadata/spawnable_type") == false:
 				# HACK: Force unknown spawnable types to be Node3D (Empty).
 				GlobalLogger.log("Spawnable type not defined. Using Node3D.", Enum.LogLevel.WARNING)
@@ -101,7 +103,6 @@ func load_spawnable(path: String) -> void:
 
 			_node = await session_spawnable_manager.create(_task["metadata/spawnable_type"])
 		else:
-			# TODO: Is this correct form to parent the node to the correct node?
 			var _parent_task_index_id: int = _tasks.find_custom(func(_entry): return _entry.id == _task.parent)
 			var _parent_task: Dictionary = _tasks[_parent_task_index_id]
 			_node = await session_spawnable_manager.create(_task["metadata/spawnable_type"], int(_parent_task.node.name))

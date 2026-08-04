@@ -45,6 +45,7 @@ func _show_joined_sessions() -> void:
 		active_sessions_container.add_child(_entry)
 	return
 
+
 func _on_create_new_world_button_pressed() -> void:
 	dashboard.get_node("NewWorld").visible = true
 	return
@@ -58,7 +59,7 @@ func _on_start_world() -> void:
 	network_m.start_server(0, _world_base)
 	_show_joined_sessions()
 
-	# HACK: For some reason, the active session does not properly get updated normally.
+	# HACK: For some reason, the active session does not get updated when I expect it to. This will force the active session to switch to the newly created session.
 	var _sessions: Array = network_m.get_connected_sessions()
 	scene_m.set_active_session(_sessions.back().name)
 	return
