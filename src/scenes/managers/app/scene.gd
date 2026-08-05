@@ -13,10 +13,11 @@ var active_session: String = ""
 # Game managers
 @onready var network_m: Node = get_tree().current_scene.get_node("NetworkManager")
 @onready var scene_container: Node3D = get_tree().current_scene.get_node("Scenes")
+@onready var spawnable_file_handling: Node = get_tree().current_scene.get_node("SpawnableFileHandling")
 
 
 func _ready():
-	network_m.start_server()
+	network_m.start_server(0, Enum.BaseLevel.HOME)
 	return
 
 
@@ -53,7 +54,7 @@ func destroy_master_scene(id: String):
 func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel) -> void:
 	var _scene = get_master_scene(id)
 
-	var _root_scene: PackedScene = _get_scene_by_type(scene_type)
+	var _root_scene: String = _get_scene_by_type(scene_type)
 	var _root_node = get_master_root(id)
 
 	# Stop everything
@@ -63,9 +64,27 @@ func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel) -> voi
 	_scene.remove_child(_root_node)
 	_root_node.queue_free()
 
-	# Get new scene
-	var _root_scene_node = _root_scene.instantiate()
+	var _root_scene_node: Node3D = Node3D.new()
 	_root_scene_node.name = "root"
+	_scene.add_child(_root_scene_node)
+
+	# HACK: Wait a frame for the active_session variable to populate
+	await get_tree().process_frame
+
+	# Use spawnable system to read the TSCN file, and instantiate it into the multiplayer instance.
+	await spawnable_file_handling.load_spawnable(_root_scene)
+
+	# Remove the "root" node of the world, and instead parent all nodes under the true instance root.
+	# HACK: Force reparent the children of the node to the world root.
+	if _root_scene_node.get_children().size() > 0:
+		var _target_node: Node3D = _root_scene_node.get_children()[1]
+		var _spawnable_manager: Node = _scene.get_node("SpawnableManager")
+
+		for _world_node in _target_node.get_children():
+			_spawnable_manager.set_parent.rpc(int(_world_node.name), 0)
+
+		# Delete the initial fake root from the loaded world.
+		_spawnable_manager.destroy.rpc(int(_target_node.name))
 
 	# Allow scene to be visible in the inspector
 	_root_scene_node.set_meta("scene_node", true)
@@ -148,7 +167,7 @@ func set_active_session(session_id: String):
 	return
 
 
-func _get_scene_by_type(scene_type: Enum.BaseLevel) -> PackedScene:
+func _get_scene_by_type(scene_type: Enum.BaseLevel) -> String:
 	var _scene_dir: String = ""
 
 	match scene_type:
@@ -158,10 +177,12 @@ func _get_scene_by_type(scene_type: Enum.BaseLevel) -> PackedScene:
 			_scene_dir = "res://scenes/levels/empty.tscn"
 		Enum.BaseLevel.GRID:
 			_scene_dir = "res://scenes/levels/grid.tscn"
+		Enum.BaseLevel.HOME:
+			_scene_dir = "res://scenes/levels/home.tscn"
 		_:
 			_scene_dir = "res://scenes/levels/debug.tscn"
 
-	return load(_scene_dir)
+	return _scene_dir
 
 
 func _set_camera_active_state(session_id, state: bool = false) -> void:

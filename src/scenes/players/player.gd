@@ -8,24 +8,6 @@
 # --- License
 extends CharacterBody3D
 
-# FIXME: Multiplayer CEM camera:
-	# When one player activates CEM camera, all players spawn the camera?
-	# Size not networked.
-	# Position not networked.
-
-# Libraries
-@onready var _app_scene_m: Node = get_tree().current_scene.get_node("SceneManager")
-@onready var _session_spawnable_m: Node
-
-# Nodes
-@onready var _node_body = get_node(".")
-@onready var _node_camera = get_node("Head/Camera3D")
-@onready var _node_cem_camera: Node3D = null
-
-@onready var _inspector_tree_node: Node = get_tree().current_scene.get_node("Inspector/VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer")
-@onready var _inspector_properties_node: Node = get_tree().current_scene.get_node("Inspector/VBoxContainer/HBoxContainer/HSplitContainer/Properties")
-@onready var _inspector_toolbar_node: Node = get_tree().current_scene.get_node("Inspector/VBoxContainer/Toolbar")
-
 # Constants
 const _DEFAULT_FOV: float = 90.0
 const _DEFAULT_JUMP_VELOCITY: float = 4.5
@@ -38,14 +20,27 @@ const _DEFAULT_CROUCH_SPEED: float = 1.5
 # States
 var _cem_camera: bool = false
 var _dash_state: bool = false
-
 var _cem_panning: bool = false
 var _cem_rotating: bool = false
-
 var _scene_root: Node3D
-
 # Variables
 var _speed: float = 0
+
+# FIXME: Multiplayer CEM camera:
+# When one player activates CEM camera, all players spawn the camera?
+# Size not networked.
+# Position not networked.
+# Libraries
+@onready var _app_scene_m: Node = get_tree().current_scene.get_node("SceneManager")
+@onready var _session_spawnable_m: Node
+# Nodes
+@onready var _node_body = get_node(".")
+@onready var _node_camera = get_node("Head/Camera3D")
+@onready var _node_cem_camera: Node3D = null
+@onready var _inspector_tree_node: Node = get_tree().current_scene.get_node("Inspector/VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer")
+@onready var _inspector_properties_node: Node = get_tree().current_scene.get_node("Inspector/VBoxContainer/HBoxContainer/HSplitContainer/Properties")
+@onready var _inspector_toolbar_node: Node = get_tree().current_scene.get_node("Inspector/VBoxContainer/Toolbar")
+
 
 func _enter_tree() -> void:
 	set_multiplayer_authority(0)
@@ -54,11 +49,13 @@ func _enter_tree() -> void:
 	_session_spawnable_m = get_parent().get_parent().get_node("SpawnableManager")
 	return
 
+
 func _ready() -> void:
 	_node_camera.fov = _DEFAULT_FOV
 
 	Events.connect("dash_set_state", _handle_dash_state)
 	return
+
 
 func _physics_process(delta) -> void:
 	if is_multiplayer_authority() == false:
@@ -68,6 +65,31 @@ func _physics_process(delta) -> void:
 	_phys_normal(delta)
 
 	return
+
+
+func _input(event) -> void:
+	if is_multiplayer_authority() == false:
+		return
+
+	if StateManager.is_mouse_captured() && event is InputEventMouseMotion:
+		if _cem_camera == false:
+			_node_body.rotate_y(-event.relative.x * _DEFAULT_SENSITIVITY * 0.001)
+			_node_camera.rotate_x(-event.relative.y * _DEFAULT_SENSITIVITY * 0.001)
+			_node_camera.rotation.x = clamp(_node_camera.rotation.x, deg_to_rad(-85), deg_to_rad(89))
+
+		if _cem_camera == true && _node_cem_camera != null:
+			if _cem_panning == true:
+				_node_cem_camera.translate(Vector3(event.relative.x * 0.01, -event.relative.y * 0.01, 0))
+
+				# Network position:
+				var _transform = _node_cem_camera.transform
+				_session_spawnable_m.set_transform(int(_node_cem_camera.name), _transform)
+
+			_node_cem_camera.rotation.y -= event.relative.x * _DEFAULT_SENSITIVITY * 0.001
+			_node_cem_camera.rotation.x = clampf(_node_cem_camera.rotation.x - event.relative.y * _DEFAULT_SENSITIVITY * 0.001, deg_to_rad(-89), deg_to_rad(89))
+
+	return
+
 
 func _phys_buildmode() -> void:
 	if _cem_camera == false:
@@ -88,7 +110,7 @@ func _phys_buildmode() -> void:
 		# Check if we are interacting with the inspector.
 		var _hovered_node = get_viewport().gui_get_hovered_control()
 		if _hovered_node:
-			if _inspector_tree_node.is_ancestor_of(_hovered_node) || _inspector_properties_node.is_ancestor_of(_hovered_node) || _inspector_toolbar_node.is_ancestor_of(_hovered_node) :
+			if _inspector_tree_node.is_ancestor_of(_hovered_node) || _inspector_properties_node.is_ancestor_of(_hovered_node) || _inspector_toolbar_node.is_ancestor_of(_hovered_node):
 				return
 
 		_cem_rotating = true
@@ -108,6 +130,7 @@ func _phys_buildmode() -> void:
 		var _transform = _node_cem_camera.transform
 		_session_spawnable_m.set_transform(int(_node_cem_camera.name), _transform)
 	return
+
 
 func _phys_normal(delta) -> void:
 	if is_on_floor() == false:
@@ -138,28 +161,6 @@ func _phys_normal(delta) -> void:
 	_send_player_position()
 	return
 
-func _input(event) -> void:
-	if is_multiplayer_authority() == false:
-		return
-
-	if StateManager.is_mouse_captured() && event is InputEventMouseMotion:
-		if _cem_camera == false:
-			_node_body.rotate_y(-event.relative.x * _DEFAULT_SENSITIVITY * 0.001)
-			_node_camera.rotate_x(-event.relative.y * _DEFAULT_SENSITIVITY * 0.001)
-			_node_camera.rotation.x = clamp(_node_camera.rotation.x, deg_to_rad(-85), deg_to_rad(89))
-
-		if _cem_camera == true && _node_cem_camera != null:
-			if _cem_panning == true:
-				_node_cem_camera.translate(Vector3(event.relative.x * 0.01, -event.relative.y * 0.01, 0))
-
-				# Network position:
-				var _transform = _node_cem_camera.transform
-				_session_spawnable_m.set_transform(int(_node_cem_camera.name), _transform)
-
-			_node_cem_camera.rotation.y -= event.relative.x * _DEFAULT_SENSITIVITY * 0.001
-			_node_cem_camera.rotation.x = clampf(_node_cem_camera.rotation.x - event.relative.y * _DEFAULT_SENSITIVITY * 0.001, deg_to_rad(-89), deg_to_rad(89))
-
-	return
 
 func _send_player_position() -> void:
 	if is_multiplayer_authority() == false:
@@ -169,9 +170,11 @@ func _send_player_position() -> void:
 
 	return
 
+
 func _handle_dash_state(state: bool) -> void:
 	_dash_state = state
 	return
+
 
 func _cem_camera_state(state: bool) -> void:
 	_scene_root = _app_scene_m.get_master_root(_app_scene_m.active_session)
@@ -191,21 +194,25 @@ func _cem_camera_state(state: bool) -> void:
 		_node_cem_camera.look_at(_node_body.global_position)
 		return
 
-	if _node_cem_camera != null:
 	# FIXME: Improper camera get.
 	# TODO: Add error if this code is ran without _node_cem_camera defined.
+	if _node_cem_camera != null:
 		_node_cem_camera.get_child(0).current = false
 		await _session_spawnable_m.destroy(int(_node_cem_camera.name))
 	_node_camera.current = true
 
 	return
 
+
 func _cem_camera_build() -> Node3D:
 	var _cem_root = await _session_spawnable_m.create("Node3D")
 	await _session_spawnable_m.create("Camera3D", int(_cem_root.name))
 	await _session_spawnable_m.create("Box", int(_cem_root.name))
 
+	_cem_root.set_meta("persistent", false)
+
 	return _cem_root
+
 
 func _cem_camera_lookat(node: Node) -> void:
 	_node_camera.look_at(node)

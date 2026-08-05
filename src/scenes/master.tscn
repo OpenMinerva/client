@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://cmknpdx5ba15o" path="res://scenes/managers/app/scene.tscn" id="2_h2qy3"]
 [ext_resource type="PackedScene" uid="uid://c4y1sb6lmdr0q" path="res://userinterface/dash/dashboard.tscn" id="4_h2qy3"]
 [ext_resource type="PackedScene" uid="uid://bqtqfooa7qncp" path="res://userinterface/client_edit_mode/desktop/inspector.tscn" id="5_q3f5g"]
-[ext_resource type="Script" uid="uid://be2ckahbhewms" path="res://scripts/spawnable_file_handling.gd" id="6_kjytq"]
+[ext_resource type="Script" uid="uid://4rhvu1oluj66" path="res://scripts/spawnable_file_handling.gd" id="6_kjytq"]
 
 [node name="Master" type="Node3D" unique_id=420526444]
 

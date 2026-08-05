@@ -9,10 +9,12 @@ var _server_id: String = ""
 @onready var scene_m = get_tree().current_scene.get_node("SceneManager")
 @onready var network_m = get_tree().current_scene.get_node("NetworkManager")
 
+
 func _process(_delta):
 	if multiplayer:
 		multiplayer.poll()
 		return
+
 
 func setup_connection(api: SceneMultiplayer, id: String):
 	_specific_api = api
@@ -25,23 +27,22 @@ func setup_connection(api: SceneMultiplayer, id: String):
 
 	_my_id = multiplayer.get_unique_id()
 
+
 @rpc("authority", "unreliable")
 func ban_player():
 	GlobalLogger.log("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	return
 
+
 func on_kicked():
 	GlobalLogger.log("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	return
+
 
 func on_banned():
 	GlobalLogger.log("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	return
 
-@rpc("authority", "reliable")
-func set_root(scene_type: Enum.BaseLevel):
-	GlobalLogger.log("[%s] Received root base scene." % [_my_id])
-	scene_m.set_master_root_from_program(_server_id, scene_type)
 
 @rpc("any_peer", "reliable")
 func req_spawnable_db() -> void:
@@ -51,30 +52,37 @@ func req_spawnable_db() -> void:
 	GlobalLogger.log("Sending spawnable database to peer %d: %d entries" % [caller_id, spawnable_m._database.size()])
 
 	# Send the spawnable and player database to the client.
-	rec_spawnable_db.rpc_id(caller_id, spawnable_m._database, player_m.players)
+	rec_spawnable_db.rpc_id(caller_id, spawnable_m._database, player_m.players, spawnable_m._asset_database, spawnable_m._asset_node_relation_database)
 
 	return
 
+
 @rpc("authority", "reliable")
-func rec_spawnable_db(db: Array, players: Dictionary) -> void:
+func rec_spawnable_db(db: Array, players: Dictionary, assets: Array, asset_relations: Array) -> void:
 	# We have the database, set it.
-	await spawnable_m.receive_database(db, players)
+	await spawnable_m.receive_database(db, players, assets, asset_relations)
 
 	# Tell the server we have finished spawning the nodes, tell the server to sync the transforms.
 	spawnable_m.sync_all.rpc_id(1)
 
 	return
 
+
 func _on_connected_to_server():
 	# When the client is connected to the server, request the database from the server.
 	GlobalLogger.log("[%s] Connected to a server." % _my_id)
 
+	# Set the scene root to empty.
+	scene_m.set_master_root_from_program(_server_id, Enum.BaseLevel.EMPTY)
+
 	# Request the spawnable database from host
 	req_spawnable_db.rpc_id(1)
+
 
 func _on_server_disconnected():
 	network_m.leave_server(_server_id)
 	return
+
 
 func _on_peer_connected(peer_id: int):
 	if is_multiplayer_authority() == false:
@@ -97,11 +105,8 @@ func _on_peer_connected(peer_id: int):
 
 	GlobalLogger.log("[%s] Peer '%s' connected to our server." % [_my_id, peer_id])
 
-	if peer_id != 1:
-		# Everybody but the host needs this?
-		set_root.rpc_id(peer_id, Enum.BaseLevel.GRID)
-
 	return
+
 
 func _on_peer_disconnected(peer_id: int) -> void:
 	if is_multiplayer_authority() == false:
@@ -113,6 +118,7 @@ func _on_peer_disconnected(peer_id: int) -> void:
 	GlobalLogger.log("[%s] Peer '%s' disconnected to our server." % [_my_id, peer_id])
 	return
 
+
 func _on_peer_player_node_destroyed(peer_id: int, node_id: int) -> void:
 	GlobalLogger.log("Peer '%s' was destroyed! Queued a player controller respawn." % [peer_id])
 	spawnable_m.destroy(node_id)
@@ -120,16 +126,17 @@ func _on_peer_player_node_destroyed(peer_id: int, node_id: int) -> void:
 
 	var _timer = get_tree().create_timer(1)
 
-	_timer.timeout.connect(func () -> void:
-		if player_m.players.keys().has(peer_id) == false:
-			# Check to see if player still exists in the database, don't spawn if they are gone.
-			GlobalLogger.log("Peer '%s' was disconnected, not respawning a player controller." % [peer_id])
-			return
+	_timer.timeout.connect(
+		func() -> void:
+			if player_m.players.keys().has(peer_id) == false:
+				# Check to see if player still exists in the database, don't spawn if they are gone.
+				GlobalLogger.log("Peer '%s' was disconnected, not respawning a player controller." % [peer_id])
+				return
 
-		var _entity = await spawnable_m.create("OM_PlayerController")
-		spawnable_m.set_authority.rpc(int(_entity.name), peer_id)
-		player_m.set_player_node(peer_id, _entity)
-		_entity.connect("tree_exiting", _on_peer_player_node_destroyed.bind(peer_id))
+			var _entity = await spawnable_m.create("OM_PlayerController")
+			spawnable_m.set_authority.rpc(int(_entity.name), peer_id)
+			player_m.set_player_node(peer_id, _entity)
+			_entity.connect("tree_exiting", _on_peer_player_node_destroyed.bind(peer_id))
 	)
 
 	return

@@ -28,10 +28,11 @@ const _instance_database_template = {
 }
 
 var url_regex: RegEx = RegEx.create_from_string("^(https?)://([^/:]+)(?::(\\d+))?(.*)$")
-var _session_db = {}
-var _heartbeats = {}
+var _session_db = { }
+var _heartbeats = { }
 
 @onready var scene_m = get_node("../SceneManager")
+
 
 func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRID) -> bool:
 	GlobalLogger.log("Starting a new server.")
@@ -79,6 +80,7 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 	scene_m.get_master_scene(_scene).get_node("NetworkManager")._on_peer_connected(1)
 
 	Events.dash_session_changed.emit(_scene)
+	Events.session_joined.emit()
 
 	return true
 
@@ -142,6 +144,7 @@ func update_server(id: String, server_info: Dictionary):
 	Events.emit_signal("instance_updated")
 	return
 
+
 func join_server(ip: String = "", port: int = 0) -> bool:
 	GlobalLogger.log("Joining server at '%s:%s'" % [ip, port], Enum.LogLevel.INFO)
 	var _port_is_valid = port > 0 && port < 65535
@@ -152,7 +155,6 @@ func join_server(ip: String = "", port: int = 0) -> bool:
 
 	# Create server master scene.
 	var _scene: String = scene_m.create_master_scene()
-
 
 	# Get a reference to the master scene from our scene ID.
 	var master_scene: Node3D = scene_m.get_master_scene(_scene)
@@ -273,6 +275,7 @@ func _update_session_server_listing(session_info: Dictionary, session_server: St
 	)
 
 	return response_dict
+
 
 func _remove_session_from_server(server_id: String, session_server: String) -> Dictionary:
 	var response_dict = { "ok": false, "error": null, "data": { } }
