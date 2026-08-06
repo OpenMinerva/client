@@ -57,6 +57,14 @@ func get_asset(hash: String) -> Dictionary:
 	return _db.query_result[0]
 
 
+func get_spawnables_by_directory(directory: String) -> Array:
+	var _query: String = "SELECT * FROM spawnable WHERE directory LIKE ? AND directory NOT LIKE ?"
+
+	_db.query_with_bindings(_query, [directory + "%", directory + "%/%"])
+
+	return _db.query_result
+
+
 func set_asset(item_hash: String, new_data: Dictionary) -> bool:
 	# TODO: Validation before inserting into the database.
 	GlobalLogger.log("[ Database ] Updating asset '%s'." % item_hash, Enum.LogLevel.DEBUG)
@@ -79,6 +87,7 @@ func _build_database_schema() -> void:
 		_spawnable_table = {
 			"hash": { "data_type": "text", "primary_key": true, "unique": true },
 			"name": { "data_type": "text", "not_null": true },
+			"thumbnail": { "data_type": "text" },
 			"directory": { "data_type": "text", "not_null": true },
 			"original_owner": { "data_type": "text" },
 			"creation_date": { "data_type": "int", "default": -1 },

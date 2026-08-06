@@ -53,9 +53,7 @@ func save_spawnable(root: Node, type: Enum.SpawnableType = Enum.SpawnableType.IT
 		"hash": _data_hash,
 		"name": _spawnable_name,
 		"directory": file_path,
-		"original_owner": "",
-		"creation_date": -1,
-		"modified_date": -1,
+		"creation_date": int(Time.get_unix_time_from_system()),
 		"type": type,
 	}
 	Database.set_spawnable(_data_hash, _database_row)
