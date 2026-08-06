@@ -47,7 +47,7 @@ func get_inv_filelist() -> Dictionary:
 
 	var _files = Database.get_spawnables_by_directory(_current_path())
 
-	response.files = _files.map(func(entry): return entry.name)
+	response.files = _files
 	response.directories = DirAccess.get_directories_at(_current_path())
 
 	return response

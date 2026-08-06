@@ -6,7 +6,6 @@
 # License: MIT License
 # Authors: Armored Dragon
 # --- License
-
 extends "res://userinterface/dash/scripts/pages/left_nav_container.gd"
 
 const BASE_DIR = "user://inventory/"
@@ -20,12 +19,11 @@ var _selected_folder: Node
 @onready var _path_container = $"HBox/Right/Local/Path"
 @onready var _folder_container = $"HBox/Right/Local/Folders"
 @onready var _file_container = $"HBox/Right/Local/Files"
-
 @onready var _create_folder_btn = $"HBox/Right/Local/Actions/NewFolder/Button"
 @onready var _delete_selected_btn = $"HBox/Right/Local/Actions/DeleteSelected/Button"
-
 @onready var _folder_creation_dialog = $"FolderCreation"
 @onready var _deletion_dialog = $"DeleteConfirmation"
+
 
 func _ready():
 	super._ready()
@@ -41,11 +39,13 @@ func _ready():
 	_build_view()
 	return
 
+
 func _handle_page_opened(page_name) -> void:
 	if page_name != "Spawnables":
 		return
 
 	return
+
 
 func _build_view() -> void:
 	var _filelist = FileManager.get_inv_filelist()
@@ -55,8 +55,9 @@ func _build_view() -> void:
 	await _clear_view()
 
 	for file in _files:
-		var _file_name = file.get_basename()
-		var _listing = _create_button(_file_name, "", _load_file.bind(file))
+		var _file_pretty_name = file.name
+		var _file_name: String = file.hash
+		var _listing = _create_button(_file_pretty_name, "", _load_file.bind(_file_name + ".tscn"))
 		_file_container.add_child(_listing)
 		continue
 
@@ -88,20 +89,24 @@ func _build_view() -> void:
 		continue
 	return
 
+
 func _dir_deeper(path: String) -> void:
 	FileManager.move_inv_deeper(path)
 	_build_view()
 	return
+
 
 func _dir_relocate(index: int) -> void:
 	FileManager.move_inv_relocate(index + 1)
 	_build_view()
 	return
 
+
 func _load_file(file_name: String) -> void:
-	var _path = FileManager._current_path() + "/" + file_name
+	var _path = FileManager._current_path() + file_name
 	_app_spawnable_file_handling_m.load_spawnable(_path)
 	return
+
 
 func _create_button(btn_name: String, icon: String = "", double_click = null, min_size: Vector2 = Vector2(350, 50)) -> Node:
 	var _listing = _template_button.instantiate()
@@ -119,6 +124,7 @@ func _create_button(btn_name: String, icon: String = "", double_click = null, mi
 	_action_buttons.append(_listing)
 	return _listing
 
+
 func _button_selected(selected: Node) -> void:
 	var _button_name = selected.get_meta("label")
 
@@ -129,6 +135,7 @@ func _button_selected(selected: Node) -> void:
 
 	_selected_folder = selected
 	return
+
 
 func _clear_view() -> void:
 	_action_buttons = []
@@ -147,9 +154,11 @@ func _clear_view() -> void:
 
 	return
 
+
 func _open_file_dialog() -> void:
 	_folder_creation_dialog.show()
 	return
+
 
 func _create_folder() -> void:
 	var _folder_name = _folder_creation_dialog.get_node("LineEdit").text
@@ -158,6 +167,7 @@ func _create_folder() -> void:
 	_folder_creation_dialog.get_node("LineEdit").text = ""
 	_build_view()
 	return
+
 
 func _open_delete_dialog() -> void:
 	if _selected_folder == null:
@@ -171,6 +181,7 @@ func _open_delete_dialog() -> void:
 
 	_deletion_dialog.show()
 	return
+
 
 func _delete_selected() -> void:
 	var _folder_name = _selected_folder.get_meta("label")
