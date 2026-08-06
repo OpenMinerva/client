@@ -35,11 +35,8 @@ enum LogLevel {
 	ERROR = 3,
 }
 enum SpawnableType {
-	EMPTY = 0,
-	BOX = 1,
-	RIGIDBODY = 2,
-	CAPSULE = 3,
-	MODEL = 10,
+	ITEM = 0,
+	WORLD = 1,
 }
 
 const Settings = {

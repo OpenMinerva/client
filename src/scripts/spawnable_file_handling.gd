@@ -15,13 +15,14 @@ func _ready() -> void:
 	return
 
 
-func save_spawnable(root: Node, name_override: String = "") -> void:
+func save_spawnable(root: Node, type: Enum.SpawnableType = Enum.SpawnableType.ITEM, name_override: String = "") -> void:
 	# Take a node path from the scene, and save that node to the file
 	# In order to save nodes using the ResourceSaver, we need to make all nodes that are a child of the root have the owner of the root.
 	# FIXME: When saving the node scene, The FileManager should be used entirely.
 	# ResourceLoader / ResourceSaver should not be called from here.
 	var _spawnable_name: String = ""
 
+	# TODO: Get hash of file, and use that hash for filename on disk.
 	if name_override != "":
 		_spawnable_name = name_override
 	elif root.has_meta("pretty_name") == true:
@@ -39,12 +40,25 @@ func save_spawnable(root: Node, name_override: String = "") -> void:
 	# Externalize assets makes it so that networking things are consistent.
 	_externalize_assets(root)
 
-	# Remove PlayerControllers.
+	# Remove nodes that should not be saved.
 	_remove_invalid_nodes(root)
 
 	var packed_scene = _create_packed_scene(root)
-	var file_path = FileManager._current_path() + "/" + _spawnable_name + ".tscn"
+	var _data_hash: String = var_to_str(packed_scene).sha256_text()
+	var file_path = FileManager._current_path() + _data_hash + ".tscn"
 	ResourceSaver.save(packed_scene, file_path)
+
+	# Add spawnable to the database.
+	var _database_row: Dictionary = {
+		"hash": _data_hash,
+		"name": _spawnable_name,
+		"directory": file_path,
+		"original_owner": "",
+		"creation_date": -1,
+		"modified_date": -1,
+		"type": type,
+	}
+	Database.set_spawnable(_data_hash, _database_row)
 
 	# I have no idea what ownership is in terms of nodes are right now, so put it back as to not break anything
 	_restore_ownership(root, original_owners)

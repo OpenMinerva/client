@@ -39,8 +39,10 @@ func get_spawnable(id: int) -> Dictionary:
 	return { }
 
 
-func set_spawnable(id: int, new_data: Dictionary) -> Dictionary:
-	return { }
+func set_spawnable(item_hash: String, new_data: Dictionary) -> bool:
+	GlobalLogger.log("[ Database ] Updating spawnable '%s'." % item_hash, Enum.LogLevel.DEBUG)
+	var _success: bool = _db.insert_row("spawnable", new_data)
+	return _success
 
 
 func get_asset(hash: String) -> Dictionary:
@@ -55,9 +57,9 @@ func get_asset(hash: String) -> Dictionary:
 	return _db.query_result[0]
 
 
-func set_asset(hash: String, new_data: Dictionary) -> bool:
+func set_asset(item_hash: String, new_data: Dictionary) -> bool:
 	# TODO: Validation before inserting into the database.
-	GlobalLogger.log("[ Database ] Updating asset '%s'." % hash, Enum.LogLevel.DEBUG)
+	GlobalLogger.log("[ Database ] Updating asset '%s'." % item_hash, Enum.LogLevel.DEBUG)
 	var _success: bool = _db.insert_row("asset", new_data)
 	return _success
 
@@ -75,7 +77,7 @@ func _build_database_schema() -> void:
 
 		var _spawnable_table: Dictionary = Dictionary()
 		_spawnable_table = {
-			"id": { "data_type": "int", "primary_key": true, "unique": true },
+			"hash": { "data_type": "text", "primary_key": true, "unique": true },
 			"name": { "data_type": "text", "not_null": true },
 			"directory": { "data_type": "text", "not_null": true },
 			"original_owner": { "data_type": "text" },

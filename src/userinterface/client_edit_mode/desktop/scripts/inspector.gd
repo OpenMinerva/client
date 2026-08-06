@@ -8,9 +8,24 @@
 # --- License
 extends Control
 
+# Gizmos
+var world_gizmos: Array[Dictionary] = []
+var my_gizmo: Node
+var _gizmo_mode: int = 0
+var _gizmo_space_local: bool = true
+# Inspector data
+var _inspector_selected: TreeItem = null
+var _inspector_editing: TreeItem = null
+var _inspector_focused: TreeItem = null
+var _inspector_opened_tree_nodes: Array[Node] = []
+var _inspector_selected_node: Node = null
+var _inspector_tree_filters: Array[String] = []
+var _inspector_tree_search: String = ""
+var _cem_state: bool = false
+var _cem_camera: bool = false
+
 # FIXME: Selecting Gizmo crashes
 # FIXME: You can select the selected spawnable. (Safe but probably should be changed)
-
 # External Libraries / scripts
 # FIXME: DevSpawnableManager node
 @onready var _app_spawnable_file_handling_m: Node = get_tree().current_scene.get_node("SpawnableFileHandling")
@@ -20,13 +35,6 @@ extends Control
 @onready var session_signalbus: Node
 @onready var session_players_m: Node
 @onready var session_root: Node3D
-
-# Gizmos
-var world_gizmos: Array[Dictionary] = []
-var my_gizmo: Node
-var _gizmo_mode: int = 0
-var _gizmo_space_local: bool = true
-
 # UI Elements
 @onready var _node_toolbar: Control = get_node("VBoxContainer/Toolbar")
 @onready var _node_toolbar_gizmo_control_container: Control = _node_toolbar.get_node("MarginContainer/HBoxContainer/GizmoControl")
@@ -38,23 +46,10 @@ var _gizmo_space_local: bool = true
 @onready var _inspector_add_node_window: Node = get_node("AddNodeWindow")
 @onready var _inspector_filter_search: LineEdit = get_node("VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/InputString/MarginContainer/HBoxContainer/MarginContainer/LineEdit")
 @onready var _inspector_filters: Node = get_node("VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer")
-
 @onready var _node_property_editor: Node = get_node("VBoxContainer/HBoxContainer/HSplitContainer/Properties")
-
 # UI Inspector
 @onready var _inspector_tree: Tree = get_node("VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer/Tree")
 
-# Inspector data
-var _inspector_selected: TreeItem = null
-var _inspector_editing: TreeItem = null
-var _inspector_focused: TreeItem = null
-var _inspector_opened_tree_nodes: Array[Node] = []
-var _inspector_selected_node: Node = null
-var _inspector_tree_filters: Array[String] = []
-var _inspector_tree_search: String = ""
-
-var _cem_state: bool = false
-var _cem_camera: bool = false
 
 func _ready() -> void:
 	_set_state(false)
@@ -74,21 +69,36 @@ func _ready() -> void:
 	_gizmo_set_mode()
 	return
 
-func _add_drag_events() -> void:
-	_inspector_tree.set_drag_forwarding(
-		self._get_drag_data,
-		self._can_drop_data,
-		self._drop_data
-	)
+
+func _input(event: InputEvent):
+	# Used to remove focus of the search area when clicking inside of the scene.
+	if event is InputEventMouseButton && event.pressed:
+		var focused = get_viewport().gui_get_focus_owner()
+		if focused:
+			focused.release_focus()
+
+		# Close the inspector popup
+		if _inspector_popup.visible == true:
+			var _rect = _inspector_popup.get_global_rect()
+			var _mouse_pos = event.position
+
+			if _rect.has_point(_mouse_pos) == false:
+				_inspector_popup.visible = false
+
+	if event.is_action_pressed("cem_activate"):
+		_cem_state = !_cem_state
+		Events.emit_signal("cem_set_state", _cem_state)
+
+		StateManager.update_mouse_state()
+
+		get_viewport().set_input_as_handled()
+
+	if event.is_action_pressed("cem_camera"):
+		_cem_camera = !_cem_camera
+		_cem_camera_state(_cem_camera)
+
 	return
 
-func _get_drag_data(mouse_position: Vector2):
-	var _target_tree_item: TreeItem = _inspector_tree.get_item_at_position(mouse_position)
-
-	if _target_tree_item && _target_tree_item.get_parent():
-		return {"item": _target_tree_item, "node": _target_tree_item.get_metadata(0)}
-
-	return null
 
 func _can_drop_data(mouse_position: Vector2, data: Variant):
 	var _target_item: TreeItem = _inspector_tree.get_item_at_position(mouse_position)
@@ -110,6 +120,7 @@ func _can_drop_data(mouse_position: Vector2, data: Variant):
 
 	return true
 
+
 func _drop_data(mouse_position: Vector2, data: Variant):
 	var _dragged_node: Node = data["node"]
 	var _target_tree_item: TreeItem = _inspector_tree.get_item_at_position(mouse_position)
@@ -125,35 +136,24 @@ func _drop_data(mouse_position: Vector2, data: Variant):
 
 	_inspector_build()
 
-func _input(event: InputEvent):
-	# Used to remove focus of the search area when clicking inside of the scene.
-	if event is InputEventMouseButton && event.pressed:
-		var focused = get_viewport().gui_get_focus_owner()
-		if focused:
-			focused.release_focus()
 
-		# Close the inspector popup
-		if _inspector_popup.visible == true:
-			var _rect = _inspector_popup.get_global_rect()
-			var _mouse_pos = event.position
+func _get_drag_data(mouse_position: Vector2):
+	var _target_tree_item: TreeItem = _inspector_tree.get_item_at_position(mouse_position)
 
-			if _rect.has_point(_mouse_pos) == false:
-				_inspector_popup.visible = false
+	if _target_tree_item && _target_tree_item.get_parent():
+		return { "item": _target_tree_item, "node": _target_tree_item.get_metadata(0) }
+
+	return null
 
 
-	if event.is_action_pressed("cem_activate"):
-		_cem_state = !_cem_state
-		Events.emit_signal("cem_set_state", _cem_state)
-
-		StateManager.update_mouse_state()
-
-		get_viewport().set_input_as_handled()
-
-	if event.is_action_pressed("cem_camera"):
-		_cem_camera = !_cem_camera
-		_cem_camera_state(_cem_camera)
-
+func _add_drag_events() -> void:
+	_inspector_tree.set_drag_forwarding(
+		self._get_drag_data,
+		self._can_drop_data,
+		self._drop_data,
+	)
 	return
+
 
 # Signals and other event listeners
 func _add_signalbus_event_listeners() -> void:
@@ -162,6 +162,7 @@ func _add_signalbus_event_listeners() -> void:
 	Events.dash_session_changed.connect(_on_session_changed)
 	# TODO: Events.cem_set_gizmo_state.connect(_toggle_gizmos)
 	return
+
 
 func _add_gizmo_event_listeners() -> void:
 	var _node_children: Array[Node] = _node_toolbar_gizmo_control_container.get_children()
@@ -174,6 +175,7 @@ func _add_gizmo_event_listeners() -> void:
 	_misc_node_children[0].get_node("Button").pressed.connect(_gizmo_set_mode)
 	return
 
+
 func _add_button_event_listeners() -> void:
 	_inspector_popup.entry_clicked.connect(_inspector_popup_button_pressed)
 	_inspector_tree.item_mouse_selected.connect(_inspector_tree_item_mouse_selected)
@@ -183,17 +185,19 @@ func _add_button_event_listeners() -> void:
 	# When clicking on a filter button, apply the filter immediately.
 	for _filter_button in _inspector_filters.get_children():
 		_filter_button.get_node("Button").pressed.connect(
-			func ():
+			func():
 				_inspector_get_filters()
 				_inspector_build()
 		)
 
 	return
 
+
 func _add_misc_event_listeners() -> void:
 	_inspector_add_node_window.selection.connect(_inspector_spawn_node)
 	_inspector_tree.item_edited.connect(_inspector_item_edited)
 	return
+
 
 func _inspector_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_index: int) -> void:
 	if mouse_button_index == MOUSE_BUTTON_LEFT:
@@ -222,6 +226,7 @@ func _inspector_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_i
 		_inspector_popup.visible = true
 	return
 
+
 func _set_state(state: bool) -> void:
 	GlobalLogger.log("Inspector state is being set to '%s'." % state)
 	_gizmo_visibility(state)
@@ -229,11 +234,13 @@ func _set_state(state: bool) -> void:
 	_node_crosshair.visible = !state
 	return
 
+
 func _on_node_created(_node: Node) -> void:
 	# TODO: Instead of rebuilding the entire tree, just update the respective entry.
 	GlobalLogger.log("Inspector: Node created.")
 	_inspector_build()
 	return
+
 
 func _on_node_destroyed(node_entry: Dictionary) -> void:
 	# TODO: Instead of rebuilding the entire tree, just update the respective entry.
@@ -245,6 +252,7 @@ func _on_node_destroyed(node_entry: Dictionary) -> void:
 
 	_inspector_build()
 	return
+
 
 func _on_session_changed(_session_id: String) -> void:
 	session_signalbus = app_scene_m.get_master_scene(app_scene_m.active_session).get_node("SignalBus")
@@ -260,6 +268,7 @@ func _on_session_changed(_session_id: String) -> void:
 		session_signalbus.node_created.connect(_on_node_created)
 		session_signalbus.node_destroyed.connect(_on_node_destroyed)
 	return
+
 
 # User Interface
 func _inspector_build(root_node: Node = session_root) -> void:
@@ -284,6 +293,7 @@ func _inspector_build(root_node: Node = session_root) -> void:
 
 	return
 
+
 func _inspector_save_openness() -> void:
 	# Parse the entire tree, and save node values that are open
 	_inspector_opened_tree_nodes = []
@@ -303,6 +313,7 @@ func _inspector_save_openness() -> void:
 		_item = _item.get_next_in_tree()
 
 	return
+
 
 func _inspector_add_node(node: Node, parent: TreeItem) -> void:
 	if node.get_meta("scene_node", false) == false:
@@ -324,6 +335,7 @@ func _inspector_add_node(node: Node, parent: TreeItem) -> void:
 	for child in node.get_children():
 		_inspector_add_node(child, _tree_node)
 	return
+
 
 # Inspector filters
 func _inspector_apply_filters():
@@ -373,6 +385,7 @@ func _inspector_apply_filters():
 		_tree_item.set_visible(_is_visible)
 	return
 
+
 func _inspector_get_filters():
 	_inspector_tree_filters = []
 
@@ -382,10 +395,12 @@ func _inspector_get_filters():
 
 	return
 
+
 func _inspector_search_changed(text) -> void:
 	_inspector_tree_search = text
 	_inspector_build()
 	return
+
 
 func _inspector_get_all_tree_entries(tree: Tree) -> Array[TreeItem]:
 	var _tree_items: Array[TreeItem] = []
@@ -397,6 +412,7 @@ func _inspector_get_all_tree_entries(tree: Tree) -> Array[TreeItem]:
 		_tree_current = _tree_current.get_next_in_tree()
 
 	return _tree_items
+
 
 func _inspector_get_all_tree_ancestors(starting_item: TreeItem) -> Array[TreeItem]:
 	var _tree_ancestors: Array[TreeItem] = []
@@ -413,15 +429,18 @@ func _inspector_get_all_tree_ancestors(starting_item: TreeItem) -> Array[TreeIte
 
 	return _tree_ancestors
 
+
 # Inspector events
 func _inspector_item_edited() -> void:
 	_inspector_editing.set_editable(0, false)
 	_inspector_editing.get_metadata(0).set_meta("pretty_name", _inspector_editing.get_text(0))
 
+
 func _inspector_clear() -> void:
 	GlobalLogger.log("Clearing the inspector.")
 	_inspector_tree.clear()
 	return
+
 
 func _inspector_popup_button_pressed(label: String) -> void:
 	GlobalLogger.log("Pressed button: '%s' on '%s'" % [label, _inspector_selected.get_text(0)])
@@ -445,10 +464,11 @@ func _inspector_popup_button_pressed(label: String) -> void:
 			_inspector_editing = _inspector_selected
 		"Save":
 			GlobalLogger.log("Saving spawnable.")
-			_app_spawnable_file_handling_m.save_spawnable(_node)
+			_app_spawnable_file_handling_m.save_spawnable(_node, Enum.SpawnableType.ITEM)
 		_:
 			GlobalLogger.log("Unhandled inspector popup selection", Enum.LogLevel.WARNING)
 	return
+
 
 func _inspector_spawn_node(type: String, parent: int) -> void:
 	GlobalLogger.log("Spawning node type '%s' with parent '%s'" % [type, parent])
@@ -457,13 +477,14 @@ func _inspector_spawn_node(type: String, parent: int) -> void:
 	# TODO: Gizmo select the new entity
 	return
 
+
 func _select(target_node: int) -> void:
 	var _node_db_entry = session_spawnable_m.get_by_id(target_node)
 
 	if my_gizmo != null:
 		_gizmo_delete()
 
-	if _node_db_entry == {}:
+	if _node_db_entry == { }:
 		GlobalLogger.log("Tried to select a node that should not exist!", Enum.LogLevel.ERROR)
 
 		_inspector_selected_node = null
@@ -481,10 +502,12 @@ func _select(target_node: int) -> void:
 	# HACK: Update ALL of the node properties after a transformation was done.
 	my_gizmo.transform_end.connect(func(_mode): _node_property_editor.update_node_properties(_node_db_entry.node))
 
+
 func _gizmo_delete() -> void:
 	my_gizmo.clear_selection()
 	await session_spawnable_m.destroy(int(my_gizmo.name))
 	return
+
 
 func _gizmo_set_mode() -> void:
 	var _gizmo_modes: Dictionary
@@ -514,6 +537,7 @@ func _gizmo_set_mode() -> void:
 
 	return
 
+
 func _gizmo_visibility(to_set_visible: bool = false) -> void:
 	var _gizmo_target_mode = 0
 
@@ -528,6 +552,7 @@ func _gizmo_visibility(to_set_visible: bool = false) -> void:
 		gizmo.show_selection_box = to_set_visible
 		gizmo.mode = _gizmo_target_mode
 	return
+
 
 # CEM Camera
 func _cem_camera_state(state: bool) -> void:
@@ -547,6 +572,7 @@ func _cem_camera_state(state: bool) -> void:
 	_player_node._cem_camera_state(state)
 	Events.emit_signal("cem_camera_state", state)
 	return
+
 
 # Node Property Editor
 func _set_npe_state(state: bool) -> void:
