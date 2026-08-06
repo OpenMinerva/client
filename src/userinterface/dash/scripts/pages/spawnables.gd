@@ -23,6 +23,7 @@ var _selected_folder: Node
 @onready var _delete_selected_btn = $"HBox/Right/Local/Actions/DeleteSelected/Button"
 @onready var _folder_creation_dialog = $"FolderCreation"
 @onready var _deletion_dialog = $"DeleteConfirmation"
+@onready var dashboard = get_tree().current_scene.get_node("Dashboard")
 
 
 func _ready():
@@ -57,7 +58,12 @@ func _build_view() -> void:
 	for file in _files:
 		var _file_pretty_name = file.name
 		var _file_name: String = file.hash
-		var _listing = _create_button(_file_pretty_name, "", _load_file.bind(_file_name + ".tscn"))
+		var _listing
+		if file.type == Enum.SpawnableType.WORLD:
+			_listing = _create_button(_file_pretty_name, "", _create_world.bind(_file_name + ".tscn"))
+		else:
+			_listing = _create_button(_file_pretty_name, "", _load_file.bind(_file_name + ".tscn"))
+
 		_file_container.add_child(_listing)
 		continue
 
@@ -105,6 +111,14 @@ func _dir_relocate(index: int) -> void:
 func _load_file(file_name: String) -> void:
 	var _path = FileManager._current_path() + file_name
 	_app_spawnable_file_handling_m.load_spawnable(_path)
+	return
+
+
+func _create_world(file_name: String) -> void:
+	var _world_load_dir = dashboard.get_node("NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer/WorldLoadDirVal")
+	var _file_path = FileManager._current_path() + file_name
+	_world_load_dir.text = _file_path
+	dashboard.get_node("NewWorld").visible = true
 	return
 
 

@@ -51,7 +51,7 @@ func destroy_master_scene(id: String):
 	return
 
 
-func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel) -> void:
+func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel, scene_dir: String = "") -> void:
 	var _scene = get_master_scene(id)
 
 	var _root_scene: String = _get_scene_by_type(scene_type)
@@ -72,7 +72,10 @@ func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel) -> voi
 	await get_tree().process_frame
 
 	# Use spawnable system to read the TSCN file, and instantiate it into the multiplayer instance.
-	await spawnable_file_handling.load_spawnable(_root_scene)
+	if scene_dir != "":
+		await spawnable_file_handling.load_spawnable(scene_dir)
+	else:
+		await spawnable_file_handling.load_spawnable(_root_scene)
 
 	# Remove the "root" node of the world, and instead parent all nodes under the true instance root.
 	# HACK: Force reparent the children of the node to the world root.

@@ -893,6 +893,16 @@ layout_mode = 2
 placeholder_text = "My New World"
 alignment = 1
 
+[node name="WorldLoadDir" type="Label" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer" unique_id=166016776]
+layout_mode = 2
+text = "Base World Directory"
+
+[node name="WorldLoadDirVal" type="LineEdit" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer" unique_id=863656716]
+layout_mode = 2
+placeholder_text = "user://spawnables/..."
+alignment = 1
+editable = false
+
 [node name="Base" type="Label" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer" unique_id=413752113]
 layout_mode = 2
 text = "Base"

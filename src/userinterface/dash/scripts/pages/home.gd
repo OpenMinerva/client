@@ -55,8 +55,8 @@ func _on_start_world() -> void:
 	var _world_name: String = dashboard.get_node("NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer/WorldNameVal").text
 	var _world_base: Enum.BaseLevel = dashboard.get_node("NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer/BaseVal").selected
 	var _world_privacy: Enum.PrivacyLevel = dashboard.get_node("NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer/PrivacyVal").selected
-
-	network_m.start_server(0, _world_base)
+	var _world_load_dir: String = dashboard.get_node("NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer/WorldLoadDirVal").text
+	network_m.start_server(0, _world_base, _world_load_dir)
 	_show_joined_sessions()
 
 	# HACK: For some reason, the active session does not get updated when I expect it to. This will force the active session to switch to the newly created session.
