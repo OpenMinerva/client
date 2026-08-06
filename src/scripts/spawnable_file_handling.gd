@@ -156,18 +156,37 @@ func _flatten_resource(resource: Resource):
 
 
 func _externalize_assets(root: Node) -> Node:
+	# TODO: This way of externalizing assets functions, but is not what is intended. I need to create a thorough walk-through of a node hierarchy and individually get all resources of that node. Right now this seems to just do a surface level extraction.
 	for property in root.get_property_list():
 		var value = root.get(property.name)
 
 		if value is Resource and value.resource_path.is_empty():
-			# TODO: Hash the files to use as names?
-			var external_path = "user://spawnables_assets/%d.res" % randi()
-			ResourceSaver.save(value, external_path)
+			# TODO: Throw this onto a separate thread.
+			var _data_hash: String = var_to_str(value).sha256_text()
+			var _data_size: int
+			var _external_path = "user://spawnables_assets/%s.res" % _data_hash
 
-			var external_resource = load(external_path)
-			external_resource.take_over_path(external_path)
+			ResourceSaver.save(value, _external_path)
+
+			var external_resource = load(_external_path)
+			external_resource.take_over_path(_external_path)
 
 			root.set(property.name, external_resource)
+
+			if Database.get_asset(_data_hash) == { }:
+				# Add to the database if we do not already have the asset in the database.
+
+				# Get the file size of the asset
+				var _file = FileAccess.open(_external_path, FileAccess.READ)
+				_data_size = _file.get_length()
+				_file.close()
+
+				var _database_row: Dictionary = {
+					"hash": _data_hash,
+					"directory": _external_path,
+					"size": _data_size,
+				}
+				Database.set_asset(_data_hash, _database_row)
 
 	for child in root.get_children():
 		_externalize_assets(child)
