@@ -72,8 +72,13 @@ func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel, scene_
 	await get_tree().process_frame
 
 	# Use spawnable system to read the TSCN file, and instantiate it into the multiplayer instance.
-	if scene_dir != "":
-		await spawnable_file_handling.load_spawnable(scene_dir)
+	if scene_type == Enum.BaseLevel.CUSTOM:
+		if scene_dir == "":
+			GlobalLogger.log("Tried to load a custom scene, but there was not a directiory!", Enum.LogLevel.WARNING)
+			_root_scene = _get_scene_by_type(Enum.BaseLevel.GRID)
+			await spawnable_file_handling.load_spawnable(_root_scene)
+		else:
+			await spawnable_file_handling.load_spawnable(scene_dir)
 	else:
 		await spawnable_file_handling.load_spawnable(_root_scene)
 

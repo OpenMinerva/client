@@ -19,6 +19,7 @@ enum BaseLevel {
 	HOME = 1,
 	EMPTY = 2,
 	GRID = 3,
+	CUSTOM = 4,
 }
 enum PrivacyLevel {
 	INVITE = 0,

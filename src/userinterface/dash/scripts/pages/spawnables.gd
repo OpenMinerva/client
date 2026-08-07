@@ -115,10 +115,15 @@ func _load_file(file_name: String) -> void:
 
 
 func _create_world(file_name: String) -> void:
-	var _world_load_dir = dashboard.get_node("NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer/WorldLoadDirVal")
+	var _dialog: Control = dashboard.get_node("NewWorld")
+	var _world_load_dir_val: Control = _dialog.get_node("%WorldLoadDirVal")
+	var _base_val: Control = _dialog.get_node("%BaseVal")
 	var _file_path = FileManager._current_path() + file_name
-	_world_load_dir.text = _file_path
-	dashboard.get_node("NewWorld").visible = true
+
+	_world_load_dir_val.text = _file_path
+	_base_val.selected = Enum.BaseLevel.CUSTOM
+
+	_dialog.show_window()
 	return
 
 
