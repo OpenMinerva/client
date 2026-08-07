@@ -79,6 +79,12 @@ func delete_folder(folder_name: String) -> void:
 	return
 
 
+func delete_file(file_path: String) -> void:
+	# TODO: Validate that we have a file path and not a directory.
+	DirAccess.remove_absolute(file_path)
+	return
+
+
 func _maybe_make_directory(dir: String):
 	var dir_access = DirAccess.open("user://")
 	dir_access.make_dir_recursive(dir)

@@ -64,11 +64,16 @@ func _build_view() -> void:
 		else:
 			_listing = _create_button(_file_pretty_name, "", _load_file.bind(_file_name + ".tscn"))
 
+		_listing.set_meta("type", "spawnable")
+		_listing.set_meta("file_name", _file_name)
 		_file_container.add_child(_listing)
 		continue
 
 	for folder in _dirs:
 		var _listing = _create_button(folder, "Folder", _dir_deeper.bind(folder))
+
+		_listing.set_meta("type", "folder")
+
 		_folder_container.add_child(_listing)
 		continue
 
@@ -204,7 +209,22 @@ func _open_delete_dialog() -> void:
 
 func _delete_selected() -> void:
 	var _folder_name = _selected_folder.get_meta("label")
+	var _type: String = _selected_folder.get_meta("type")
 	GlobalLogger.log("Deleting Item '%s'" % _folder_name)
-	FileManager.delete_folder(_folder_name)
+
+	if _type == "spawnable":
+		var _file_name: String = _selected_folder.get_meta("file_name")
+		var _db_entry: Dictionary = Database.get_spawnable(_file_name)
+
+		if _db_entry.has("directory") == false:
+			GlobalLogger.log("Tried to delete file '%s' but the directory could not be found!" % _file_name, Enum.LogLevel.WARNING)
+			return
+
+		FileManager.delete_file(_db_entry.directory)
+		Database.delete_spawnable(_db_entry.hash)
+
+	if _type == "folder":
+		FileManager.delete_folder(_folder_name)
+
 	_build_view()
 	return

@@ -35,13 +35,34 @@ func _exit_tree() -> void:
 	return
 
 
-func get_spawnable(id: int) -> Dictionary:
-	return { }
+func get_spawnable(item_hash: String) -> Dictionary:
+	_db.query("SELECT * FROM spawnable WHERE hash = '%s'" % item_hash)
+
+	if _db.query_result.is_empty():
+		GlobalLogger.log("[ Database ] Spawnable '%s' does not exist." % item_hash, Enum.LogLevel.DEBUG)
+		return { }
+
+	return _db.query_result[0]
+
+
+func get_spawnables_by_directory(directory: String) -> Array:
+	var _query: String = "SELECT * FROM spawnable WHERE directory LIKE ? AND directory NOT LIKE ?"
+
+	_db.query_with_bindings(_query, [directory + "%", directory + "%/%"])
+
+	return _db.query_result
 
 
 func set_spawnable(item_hash: String, new_data: Dictionary) -> bool:
 	GlobalLogger.log("[ Database ] Updating spawnable '%s'." % item_hash, Enum.LogLevel.DEBUG)
 	var _success: bool = _db.insert_row("spawnable", new_data)
+	return _success
+
+
+func delete_spawnable(item_hash: String) -> bool:
+	# TODO: Find associated assets and delete them if they are not used elsewhere.
+	var _success: bool = _db.delete_rows("spawnable", "hash = '%s'" % item_hash)
+
 	return _success
 
 
@@ -55,14 +76,6 @@ func get_asset(hash: String) -> Dictionary:
 		return { }
 
 	return _db.query_result[0]
-
-
-func get_spawnables_by_directory(directory: String) -> Array:
-	var _query: String = "SELECT * FROM spawnable WHERE directory LIKE ? AND directory NOT LIKE ?"
-
-	_db.query_with_bindings(_query, [directory + "%", directory + "%/%"])
-
-	return _db.query_result
 
 
 func set_asset(item_hash: String, new_data: Dictionary) -> bool:
