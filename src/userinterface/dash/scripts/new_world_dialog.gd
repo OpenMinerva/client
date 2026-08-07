@@ -31,6 +31,7 @@ func _ready() -> void:
 
 func show_window() -> void:
 	update_ui()
+	super._open()
 	visible = true
 	return
 

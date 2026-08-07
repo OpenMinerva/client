@@ -34,6 +34,14 @@ func _close() -> void:
 	return
 
 
+func _open() -> void:
+	var _half_window_size: Vector2 = DisplayServer.window_get_size() / 2
+	var _target_pos: Vector2 = _half_window_size - (size / 2)
+
+	global_position = _target_pos
+	return
+
+
 func _on_input(event) -> void:
 	if event is InputEventMouseButton:
 		_mouse_click(event)
