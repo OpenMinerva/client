@@ -60,8 +60,19 @@ func set_spawnable(item_hash: String, new_data: Dictionary) -> bool:
 
 
 func delete_spawnable(item_hash: String) -> bool:
-	# TODO: Find associated assets and delete them if they are not used elsewhere.
+	var _asset_deletion_queue: Array = []
+	var _assets: Array = get_spawnable_assets(item_hash)
+
+	for _single_asset in _assets:
+		if is_asset_used_by_one_spawnable(_single_asset) == true:
+			_asset_deletion_queue.append(_single_asset)
+
+	for _orphan_asset in _asset_deletion_queue:
+		FileManager.delete_file("user://spawnables_assets/%s.res" % _orphan_asset)
+		delete_asset(_orphan_asset)
+
 	var _success: bool = _db.delete_rows("spawnable", "hash = '%s'" % item_hash)
+	_db.delete_rows("spawnable_asset_rel", "spawnable = '%s'" % item_hash)
 
 	return _success
 
@@ -83,6 +94,34 @@ func set_asset(item_hash: String, new_data: Dictionary) -> bool:
 	GlobalLogger.log("[ Database ] Updating asset '%s'." % item_hash, Enum.LogLevel.DEBUG)
 	var _success: bool = _db.insert_row("asset", new_data)
 	return _success
+
+
+func delete_asset(asset_hash: String) -> bool:
+	var _success: bool = _db.delete_rows("asset", "hash = '%s'" % asset_hash)
+
+	return _success
+
+
+func set_spawnable_asset_rel(item_hash: String, asset_hash: String) -> bool:
+	GlobalLogger.log("[ Database ] Adding item relationship '%s' to '%s'." % [item_hash, asset_hash], Enum.LogLevel.DEBUG)
+
+	var new_data: Dictionary = { "spawnable": item_hash, "asset": asset_hash }
+	var _success: bool = _db.insert_row("spawnable_asset_rel", new_data)
+
+	return _success
+
+
+func get_spawnable_assets(item_hash: String) -> Array:
+	var _query_success = _db.query("SELECT * FROM spawnable_asset_rel WHERE spawnable = '%s'" % item_hash)
+	var _assets = _db.query_result
+	return _assets.map(func(entry): return entry.asset)
+
+
+func is_asset_used_by_one_spawnable(asset_hash: String) -> bool:
+	var _query_success = _db.query("SELECT * FROM spawnable_asset_rel WHERE asset = '%s'" % asset_hash)
+
+	var _spawnables = _db.query_result
+	return _spawnables.size() == 1
 
 
 func _database_exists() -> bool:
@@ -116,8 +155,15 @@ func _build_database_schema() -> void:
 			"type": { "data_type": "int", "default": -1 },
 		}
 
+		var _spawnable_asset_rel_table: Dictionary = Dictionary()
+		_spawnable_asset_rel_table = {
+			"spawnable": { "data_type": "text" },
+			"asset": { "data_type": "text" },
+		}
+
 		_db.create_table("spawnable", _spawnable_table)
 		_db.create_table("asset", _asset_table)
+		_db.create_table("spawnable_asset_rel", _spawnable_asset_rel_table)
 
 		return
 

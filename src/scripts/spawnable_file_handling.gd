@@ -30,21 +30,19 @@ func save_spawnable(root: Node, type: Enum.SpawnableType = Enum.SpawnableType.IT
 	else:
 		_spawnable_name = "Untitled"
 
-	# Duplicate the node, this is so we can make modifications to it (if required to)
 	# This duplicate does not touch the scene tree.
 	root = root.duplicate()
 
 	var original_owners = _get_node_ownership(root)
 	_set_temporary_ownership_recursive(root, root)
 
-	# Externalize assets makes it so that networking things are consistent.
-	_externalize_assets(root)
-
-	# Remove nodes that should not be saved.
 	_remove_invalid_nodes(root)
 
 	var packed_scene = _create_packed_scene(root)
 	var _data_hash: String = var_to_str(packed_scene).sha256_text()
+
+	_externalize_assets(root, _data_hash)
+
 	var file_path = FileManager._current_path() + _data_hash + ".tscn"
 	ResourceSaver.save(packed_scene, file_path)
 
@@ -153,6 +151,11 @@ func load_spawnable(path: String) -> void:
 	return
 
 
+func _add_spawnable_asset_relation(spawnable_hash: String, asset_hash: String) -> void:
+	Database.set_spawnable_asset_rel(spawnable_hash, asset_hash)
+	return
+
+
 func _flatten_resource(resource: Resource):
 	var _resource_props = resource.get_property_list()
 	var _response: Dictionary = { "properties": [], "class": "" }
@@ -167,7 +170,7 @@ func _flatten_resource(resource: Resource):
 	return _response
 
 
-func _externalize_assets(root: Node) -> Node:
+func _externalize_assets(root: Node, spawnable_hash: String) -> Node:
 	# TODO: This way of externalizing assets functions, but is not what is intended. I need to create a thorough walk-through of a node hierarchy and individually get all resources of that node. Right now this seems to just do a surface level extraction.
 	for property in root.get_property_list():
 		var value = root.get(property.name)
@@ -200,8 +203,10 @@ func _externalize_assets(root: Node) -> Node:
 				}
 				Database.set_asset(_data_hash, _database_row)
 
+			_add_spawnable_asset_relation(spawnable_hash, _data_hash)
+
 	for child in root.get_children():
-		_externalize_assets(child)
+		_externalize_assets(child, spawnable_hash)
 
 	return root
 
