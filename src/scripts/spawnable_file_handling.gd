@@ -15,13 +15,14 @@ func _ready() -> void:
 	return
 
 
-func save_spawnable(root: Node, name_override: String = "") -> void:
+func save_spawnable(root: Node, type: Enum.SpawnableType = Enum.SpawnableType.ITEM, name_override: String = "") -> void:
 	# Take a node path from the scene, and save that node to the file
 	# In order to save nodes using the ResourceSaver, we need to make all nodes that are a child of the root have the owner of the root.
 	# FIXME: When saving the node scene, The FileManager should be used entirely.
 	# ResourceLoader / ResourceSaver should not be called from here.
 	var _spawnable_name: String = ""
 
+	# TODO: Get hash of file, and use that hash for filename on disk.
 	if name_override != "":
 		_spawnable_name = name_override
 	elif root.has_meta("pretty_name") == true:
@@ -29,22 +30,31 @@ func save_spawnable(root: Node, name_override: String = "") -> void:
 	else:
 		_spawnable_name = "Untitled"
 
-	# Duplicate the node, this is so we can make modifications to it (if required to)
 	# This duplicate does not touch the scene tree.
 	root = root.duplicate()
 
 	var original_owners = _get_node_ownership(root)
 	_set_temporary_ownership_recursive(root, root)
 
-	# Externalize assets makes it so that networking things are consistent.
-	_externalize_assets(root)
-
-	# Remove PlayerControllers.
 	_remove_invalid_nodes(root)
 
 	var packed_scene = _create_packed_scene(root)
-	var file_path = FileManager._current_path() + "/" + _spawnable_name + ".tscn"
+	var _data_hash: String = var_to_str(packed_scene).sha256_text()
+
+	_externalize_assets(root, _data_hash)
+
+	var file_path = FileManager._current_path() + _data_hash + ".tscn"
 	ResourceSaver.save(packed_scene, file_path)
+
+	# Add spawnable to the database.
+	var _database_row: Dictionary = {
+		"hash": _data_hash,
+		"name": _spawnable_name,
+		"directory": file_path,
+		"creation_date": int(Time.get_unix_time_from_system()),
+		"type": type,
+	}
+	Database.set_spawnable(_data_hash, _database_row)
 
 	# I have no idea what ownership is in terms of nodes are right now, so put it back as to not break anything
 	_restore_ownership(root, original_owners)
@@ -141,6 +151,11 @@ func load_spawnable(path: String) -> void:
 	return
 
 
+func _add_spawnable_asset_relation(spawnable_hash: String, asset_hash: String) -> void:
+	Database.set_spawnable_asset_rel(spawnable_hash, asset_hash)
+	return
+
+
 func _flatten_resource(resource: Resource):
 	var _resource_props = resource.get_property_list()
 	var _response: Dictionary = { "properties": [], "class": "" }
@@ -155,22 +170,43 @@ func _flatten_resource(resource: Resource):
 	return _response
 
 
-func _externalize_assets(root: Node) -> Node:
+func _externalize_assets(root: Node, spawnable_hash: String) -> Node:
+	# TODO: This way of externalizing assets functions, but is not what is intended. I need to create a thorough walk-through of a node hierarchy and individually get all resources of that node. Right now this seems to just do a surface level extraction.
 	for property in root.get_property_list():
 		var value = root.get(property.name)
 
 		if value is Resource and value.resource_path.is_empty():
-			# TODO: Hash the files to use as names?
-			var external_path = "user://spawnables_assets/%d.res" % randi()
-			ResourceSaver.save(value, external_path)
+			# TODO: Throw this onto a separate thread.
+			var _data_hash: String = var_to_str(value).sha256_text()
+			var _data_size: int
+			var _external_path = "user://spawnables_assets/%s.res" % _data_hash
 
-			var external_resource = load(external_path)
-			external_resource.take_over_path(external_path)
+			ResourceSaver.save(value, _external_path)
+
+			var external_resource = load(_external_path)
+			external_resource.take_over_path(_external_path)
 
 			root.set(property.name, external_resource)
 
+			if Database.get_asset(_data_hash) == { }:
+				# Add to the database if we do not already have the asset in the database.
+
+				# Get the file size of the asset
+				var _file = FileAccess.open(_external_path, FileAccess.READ)
+				_data_size = _file.get_length()
+				_file.close()
+
+				var _database_row: Dictionary = {
+					"hash": _data_hash,
+					"directory": _external_path,
+					"size": _data_size,
+				}
+				Database.set_asset(_data_hash, _database_row)
+
+			_add_spawnable_asset_relation(spawnable_hash, _data_hash)
+
 	for child in root.get_children():
-		_externalize_assets(child)
+		_externalize_assets(child, spawnable_hash)
 
 	return root
 

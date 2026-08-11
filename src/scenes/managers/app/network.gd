@@ -34,7 +34,7 @@ var _heartbeats = { }
 @onready var scene_m = get_node("../SceneManager")
 
 
-func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRID) -> bool:
+func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRID, scene_dir: String = "") -> bool:
 	GlobalLogger.log("Starting a new server.")
 
 	# Get an available port. If port was defined, force that port or fail.
@@ -68,10 +68,7 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 	_session_db.set(_scene, _create_instance_db_entry(_mp_api, _scene, Enum.PrivacyLevel.INVITE, port, "host"))
 
 	# Create server root scene.
-	if root_scene:
-		scene_m.set_master_root_from_program(_scene, root_scene)
-	else:
-		scene_m.set_master_root_from_program(_scene, Enum.BaseLevel.GRID)
+	scene_m.set_master_root_from_program(_scene, root_scene, scene_dir)
 
 	scene_m.start_master_scene(_scene)
 	scene_m.set_active_session(_scene)

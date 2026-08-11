@@ -38,6 +38,7 @@ HTTP="*uid://d3cnfdwjxopsx"
 FileDrop="*uid://btgqgfpx0av4m"
 Events="*uid://c656spc3ppdlw"
 StateManager="*uid://b5vvw77bmn4yc"
+Database="*uid://cbm5uyffux8ca"
 OAuth2Client="*uid://c4b880pwgfrty"
 UrlParser="*uid://budprjmmpally"
 
@@ -54,7 +55,7 @@ window/stretch/aspect="expand"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/Gizmo3DScript/plugin.cfg", "res://addons/discord-rpc-gd/plugin.cfg", "res://addons/godot-oauth2client/plugin.cfg", "res://addons/godot-urlparser/plugin.cfg", "res://addons/rpc-await/plugin.cfg")
+enabled=PackedStringArray("res://addons/Gizmo3DScript/plugin.cfg", "res://addons/discord-rpc-gd/plugin.cfg", "res://addons/godot-oauth2client/plugin.cfg", "res://addons/godot-sqlite/plugin.cfg", "res://addons/godot-urlparser/plugin.cfg", "res://addons/rpc-await/plugin.cfg")
 
 [gui]
 

@@ -19,6 +19,7 @@ enum BaseLevel {
 	HOME = 1,
 	EMPTY = 2,
 	GRID = 3,
+	CUSTOM = 4,
 }
 enum PrivacyLevel {
 	INVITE = 0,
@@ -35,11 +36,8 @@ enum LogLevel {
 	ERROR = 3,
 }
 enum SpawnableType {
-	EMPTY = 0,
-	BOX = 1,
-	RIGIDBODY = 2,
-	CAPSULE = 3,
-	MODEL = 10,
+	ITEM = 0,
+	WORLD = 1,
 }
 
 const Settings = {

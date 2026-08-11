@@ -57,5 +57,5 @@ func _save_world() -> void:
 	var _root_node: Node3D = scene_m.get_master_root(scene_m.active_session)
 	var _name: String = _instance_name.get_value()
 
-	_app_spawnable_file_handling.save_spawnable(_root_node, _name)
+	_app_spawnable_file_handling.save_spawnable(_root_node, Enum.SpawnableType.WORLD, _name)
 	return
