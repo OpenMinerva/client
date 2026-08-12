@@ -136,6 +136,11 @@ func _phys_normal(delta) -> void:
 	if is_on_floor() == false:
 		velocity.y -= _DEFAULT_GRAVITY * delta
 
+	if Input.is_action_just_pressed("escape_mouse"):
+		var _should_escape_mouse: bool = StateManager.is_mouse_captured()
+		Events.escape_mouse.emit(_should_escape_mouse)
+		StateManager.update_mouse_state()
+
 	if StateManager.is_mouse_captured() == false:
 		velocity.x = 0
 		velocity.z = 0
