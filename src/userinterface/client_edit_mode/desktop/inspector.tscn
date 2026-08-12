@@ -1,10 +1,9 @@
 [gd_scene format=3 uid="uid://bqtqfooa7qncp"]
 
-[ext_resource type="Script" uid="uid://dlituslp07gvw" path="res://userinterface/client_edit_mode/desktop/scripts/inspector.gd" id="1_7pj7g"]
+[ext_resource type="Script" uid="uid://wwky3vsyqilq" path="res://userinterface/client_edit_mode/desktop/scripts/inspector.gd" id="1_7pj7g"]
 [ext_resource type="Shader" uid="uid://bwr4b0mhgi4w6" path="res://userinterface/dash/shaders/blur.gdshader" id="2_lsah3"]
 [ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="2_plsgj"]
 [ext_resource type="PackedScene" uid="uid://clxgcncfyislv" path="res://userinterface/client_edit_mode/desktop/partial/toolbar_info_entry.tscn" id="4_840b7"]
-[ext_resource type="PackedScene" uid="uid://71vuc3qrtgi7" path="res://userinterface/dash/partials/category_button.tscn" id="4_xqsbl"]
 [ext_resource type="PackedScene" uid="uid://cyom30b1p54df" path="res://userinterface/dash/partials/search.tscn" id="4_yi8pr"]
 [ext_resource type="Texture2D" uid="uid://ddy2wff6euii8" path="res://resources/icons/godot/ToolTransform.svg" id="5_0debx"]
 [ext_resource type="Texture2D" uid="uid://fo1d37jtb6vk" path="res://resources/icons/godot/OmniLight3D.svg" id="6_3dh21"]
@@ -102,49 +101,45 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 4
 
-[node name="Transform" parent="VBoxContainer/Toolbar/MarginContainer/HBoxContainer/GizmoControl" unique_id=649942124 instance=ExtResource("4_xqsbl")]
+[node name="Transform" parent="VBoxContainer/Toolbar/MarginContainer/HBoxContainer/GizmoControl" unique_id=649942124 instance=ExtResource("16_j7nog")]
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
-size_flags_horizontal = 0
 size_flags_vertical = 1
 toggle = true
 default_state = true
-only_icon = true
 icon = ExtResource("5_0debx")
+only_icon = true
 
-[node name="Rotation" parent="VBoxContainer/Toolbar/MarginContainer/HBoxContainer/GizmoControl" unique_id=1920461512 instance=ExtResource("4_xqsbl")]
+[node name="Rotation" parent="VBoxContainer/Toolbar/MarginContainer/HBoxContainer/GizmoControl" unique_id=329407424 instance=ExtResource("16_j7nog")]
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
-size_flags_horizontal = 0
 size_flags_vertical = 1
 toggle = true
 default_state = true
-only_icon = true
 icon = ExtResource("6_840b7")
+only_icon = true
 
-[node name="Scale" parent="VBoxContainer/Toolbar/MarginContainer/HBoxContainer/GizmoControl" unique_id=1111454066 instance=ExtResource("4_xqsbl")]
+[node name="Scale" parent="VBoxContainer/Toolbar/MarginContainer/HBoxContainer/GizmoControl" unique_id=1590973396 instance=ExtResource("16_j7nog")]
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
-size_flags_horizontal = 0
 size_flags_vertical = 1
 toggle = true
 default_state = true
-only_icon = true
 icon = ExtResource("7_7pj7g")
+only_icon = true
 
 [node name="GizmoControlMisc" type="HBoxContainer" parent="VBoxContainer/Toolbar/MarginContainer/HBoxContainer" unique_id=2047894102]
 layout_mode = 2
 size_flags_horizontal = 4
 
-[node name="Space" parent="VBoxContainer/Toolbar/MarginContainer/HBoxContainer/GizmoControlMisc" unique_id=1555249008 instance=ExtResource("4_xqsbl")]
+[node name="Space" parent="VBoxContainer/Toolbar/MarginContainer/HBoxContainer/GizmoControlMisc" unique_id=1887816452 instance=ExtResource("16_j7nog")]
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
-size_flags_horizontal = 0
 size_flags_vertical = 1
 toggle = true
 default_state = true
-only_icon = true
 icon = ExtResource("8_7pj7g")
+only_icon = true
 
 [node name="Spacer" type="Control" parent="VBoxContainer/Toolbar/MarginContainer/HBoxContainer" unique_id=1030984806]
 layout_mode = 2
@@ -214,39 +209,24 @@ theme_override_constants/margin_left = 5
 theme_override_constants/margin_right = 5
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters" unique_id=831013929]
-layout_mode = 2
-
-[node name="Light" parent="VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer" unique_id=835715123 instance=ExtResource("4_xqsbl")]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
+
+[node name="Light" parent="VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer" unique_id=237296741 instance=ExtResource("16_j7nog")]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+size_flags_vertical = 1
 toggle = true
-default_state = false
-only_icon = true
 icon = ExtResource("6_3dh21")
-
-[node name="Button" parent="VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer/Light" index="0" unique_id=1422381468]
-toggle_mode = true
-
-[node name="TextureRect" parent="VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer/Light/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(835715123, 86696220) index="0" unique_id=1429445374]
-size_flags_horizontal = 3
-texture = ExtResource("6_3dh21")
-stretch_mode = 5
-
-[node name="Player" parent="VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer" unique_id=930128724 instance=ExtResource("4_xqsbl")]
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-toggle = true
-default_state = false
 only_icon = true
+
+[node name="Player" parent="VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer" unique_id=448936197 instance=ExtResource("16_j7nog")]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+size_flags_vertical = 1
+toggle = true
 icon = ExtResource("9_840b7")
-
-[node name="Button" parent="VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer/Player" index="0" unique_id=1422381468]
-toggle_mode = true
-
-[node name="TextureRect" parent="VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer/Player/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(930128724, 86696220) index="0" unique_id=1429445374]
-size_flags_horizontal = 3
-texture = ExtResource("9_840b7")
-stretch_mode = 5
+only_icon = true
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer" unique_id=1666616570]
 layout_mode = 2
@@ -385,9 +365,8 @@ icon = ExtResource("18_akq5y")
 [node name="AddNodeWindow" parent="." unique_id=524781090 instance=ExtResource("21_q5c3n")]
 visible = false
 layout_mode = 1
+window_name = "Window Name"
 
 [editable path="VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/InputString"]
-[editable path="VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer/Light"]
-[editable path="VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer/Player"]
 [editable path="VBoxContainer/HBoxContainer/HSplitContainer/Properties/VBoxContainer/Container/ScrollContainer/MarginContainer/VBoxContainer/FoldableContainer"]
 [editable path="InspectorPopup"]

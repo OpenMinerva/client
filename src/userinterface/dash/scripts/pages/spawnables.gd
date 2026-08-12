@@ -11,8 +11,11 @@ extends "res://userinterface/dash/scripts/pages/left_nav_container.gd"
 const BASE_DIR = "user://inventory/"
 
 var current_dir: Array[String] = []
+var _folder_icon = load("res://resources/icons/godot/Folder.svg")
+var _item_icon = load("res://resources/icons/godot/Node3D.svg")
+var _world_icon = load("res://resources/icons/godot/World3D.svg")
 var _action_buttons: Array[Node] = []
-var _template_button = preload("res://userinterface/dash/partials/category_button.tscn")
+var _template_button = preload("res://userinterface/dash/partials/generic_button.tscn")
 var _selected_folder: Node
 
 @onready var _app_spawnable_file_handling_m = get_tree().current_scene.get_node("SpawnableFileHandling")
@@ -60,21 +63,17 @@ func _build_view() -> void:
 		var _file_name: String = file.hash
 		var _listing
 		if file.type == Enum.SpawnableType.WORLD:
-			_listing = _create_button(_file_pretty_name, "", _create_world.bind(_file_name + ".tscn"))
+			_listing = _create_button(_file_container, _file_pretty_name, _world_icon, _create_world.bind(_file_name + ".tscn"))
 		else:
-			_listing = _create_button(_file_pretty_name, "", _load_file.bind(_file_name + ".tscn"))
+			_listing = _create_button(_file_container, _file_pretty_name, _item_icon, _load_file.bind(_file_name + ".tscn"))
 
 		_listing.set_meta("type", "spawnable")
 		_listing.set_meta("file_name", _file_name)
-		_file_container.add_child(_listing)
 		continue
 
 	for folder in _dirs:
-		var _listing = _create_button(folder, "Folder", _dir_deeper.bind(folder))
-
+		var _listing = _create_button(_folder_container, folder, _folder_icon, _dir_deeper.bind(folder))
 		_listing.set_meta("type", "folder")
-
-		_folder_container.add_child(_listing)
 		continue
 
 	# Path
@@ -84,19 +83,17 @@ func _build_view() -> void:
 	_path_container.add_child(_label_label)
 
 	# Root path
-	var _base_listing = _create_button("Base", "", _dir_relocate.bind(-1), Vector2(200, 35))
-	_path_container.add_child(_base_listing)
+	var _base_listing = _create_button(_path_container, "Base", null, _dir_relocate.bind(-1), Vector2(200, 35))
 
 	# Any lower path
 	for index in FileManager.spawnables_dir.size():
 		var _path = FileManager.spawnables_dir[index]
+
 		var _label = Label.new()
-		var _listing = _create_button(_path, "", _dir_relocate.bind(index), Vector2(200, 35))
-
 		_label.text = "/"
-
 		_path_container.add_child(_label)
-		_path_container.add_child(_listing)
+
+		var _listing = _create_button(_path_container, _path, null, _dir_relocate.bind(index), Vector2(200, 35))
 		continue
 	return
 
@@ -132,30 +129,33 @@ func _create_world(file_name: String) -> void:
 	return
 
 
-func _create_button(btn_name: String, icon: String = "", double_click = null, min_size: Vector2 = Vector2(350, 50)) -> Node:
-	var _listing = _template_button.instantiate()
-	_listing.set_meta("label", btn_name)
-	_listing.selected_icon = icon
+func _create_button(parent: Node, label: String = "invalid", icon: Texture2D = null, double_click_fn = null, min_size: Vector2 = Vector2(350, 50)) -> Node:
+	var _listing: Node = _template_button.instantiate()
+	parent.add_child(_listing)
+
+	if icon != null:
+		_listing.set_icon(icon)
+
+	_listing.set_label(label)
+	_listing.set_toggle(true)
+
 	_listing.custom_minimum_size = min_size
-	_listing.toggle = true
 
-	_listing.get_node("Button").pressed.connect(_button_selected.bind(_listing))
+	_listing.clicked.connect(func(): _button_selected(_listing))
 
-	if double_click != null:
+	if double_click_fn != null:
 		# TODO: Check if double_click param is a function
-		_listing.double_clicked.connect(double_click)
+		_listing.double_clicked.connect(double_click_fn)
 
 	_action_buttons.append(_listing)
 	return _listing
 
 
 func _button_selected(selected: Node) -> void:
-	var _button_name = selected.get_meta("label")
-
+	# HACK: Directly interfacing with the internal button on the generic button.
 	for button in _action_buttons:
-		button.get_node("Button").button_pressed = false
-
-	selected.get_node("Button").button_pressed = true
+		button._node_button.button_pressed = false
+	selected._node_button.button_pressed = true
 
 	_selected_folder = selected
 	return
@@ -198,7 +198,7 @@ func _open_delete_dialog() -> void:
 		GlobalLogger.log("Tried to open the delete dialog without anything selected.", Enum.LogLevel.WARNING)
 		return
 
-	var _folder_name = _selected_folder.get_meta("label")
+	var _folder_name = _selected_folder.label
 	var _text = "Are you sure you want to delete\n\"%s\"" % _folder_name
 
 	_deletion_dialog.dialog_text = _text
@@ -208,7 +208,7 @@ func _open_delete_dialog() -> void:
 
 
 func _delete_selected() -> void:
-	var _folder_name = _selected_folder.get_meta("label")
+	var _folder_name = _selected_folder.label
 	var _type: String = _selected_folder.get_meta("type")
 	GlobalLogger.log("Deleting Item '%s'" % _folder_name)
 
