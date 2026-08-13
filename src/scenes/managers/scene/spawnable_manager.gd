@@ -25,7 +25,7 @@ const SPAWNABLE_TEMPLATE: Dictionary = {
 }
 
 var _spawnable_network_batches: int = 4
-var _database_id: int = 10
+var _database_id: int = 1
 var _database: Array[Dictionary] = []
 var _asset_database: Array[Dictionary] = []
 var _asset_node_relation_database: Array[Dictionary] = []
