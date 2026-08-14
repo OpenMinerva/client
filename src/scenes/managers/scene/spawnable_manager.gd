@@ -27,6 +27,7 @@ const SPAWNABLE_TEMPLATE: Dictionary = {
 var _spawnable_network_batches: int = 4
 var _database_id: int = 1
 var _database: Array[Dictionary] = []
+var _gizmos: Array[Node] = []
 var _asset_database: Array[Dictionary] = []
 var _asset_node_relation_database: Array[Dictionary] = []
 
@@ -123,6 +124,11 @@ func destroy(node_id: int) -> Variant:
 	if my_id == 1:
 		var _queue = _get_deletion_queue(str(node_id))
 		for node in _queue:
+			for _gizmo in _gizmos:
+				if node.is_class("Node3D") == true:
+					if _gizmo.is_selected(node):
+						deselect.rpc(int(_gizmo.name))
+
 			delete_spawnable(node.name)
 			delete_spawnable.rpc(node.name)
 
@@ -134,6 +140,28 @@ func destroy(node_id: int) -> Variant:
 	else:
 		await rpcawaiter.send_rpc(1, destroy.bind(node_id))
 		return
+
+
+@rpc("call_local", "any_peer", "reliable")
+func select(node_id: int, gizmo_id: int) -> void:
+	var _node_db_index: int = _database.find_custom(func(entry): return entry.id == node_id)
+	var _node: Node = _database[_node_db_index].node
+	var _gizmo_db_index: int = _database.find_custom(func(entry): return entry.id == gizmo_id)
+	var _gizmo: Node = _database[_gizmo_db_index].node
+
+	if _node.is_class("Node3D"):
+		_gizmo.select(_node)
+		_gizmo.transform_changed.connect(func(_mode, _value): set_transform(node_id, _node.transform))
+	return
+
+
+@rpc("call_local", "any_peer", "reliable")
+func deselect(gizmo_id: int) -> void:
+	var _gizmo_db_index: int = _database.find_custom(func(entry): return entry.id == gizmo_id)
+	var _gizmo: Node = _database[_gizmo_db_index].node
+
+	_gizmo.clear_selection()
+	return
 
 
 @rpc("any_peer", "reliable")
@@ -296,6 +324,10 @@ func delete_spawnable(node_name: String) -> void:
 		return
 
 	var _entry = _database[_entry_index]
+
+	if _entry.type == "Gizmo":
+		var _gizmo_index: int = _gizmos.find(_entry.node)
+		_gizmos.remove_at(_gizmo_index)
 
 	session_signalbus.node_destroyed.emit(_entry)
 	_entry.node.queue_free()
@@ -537,6 +569,10 @@ func _spawn_node(node_type: String, node_owner: int, parent: Node = instance_roo
 
 	# Add to scene tree
 	parent.add_child(_node)
+
+	if _pretty_name == "Gizmo":
+		_gizmos.append(_node)
+
 	return _node
 
 

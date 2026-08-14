@@ -479,28 +479,31 @@ func _inspector_spawn_node(type: String, parent: int) -> void:
 
 
 func _select(target_node: int) -> void:
-	var _node_db_entry = session_spawnable_m.get_by_id(target_node)
-
-	if my_gizmo != null:
-		_gizmo_delete()
-
-	if _node_db_entry == { }:
-		GlobalLogger.log("Tried to select a node that should not exist!", Enum.LogLevel.ERROR)
-
-		_inspector_selected_node = null
-		_set_npe_state(false)
+	if target_node == 0:
+		GlobalLogger.log("Invalid node selected", Enum.LogLevel.WARNING)
 		return
 
+	if my_gizmo != null:
+		GlobalLogger.log("Gizmo exists, deleting")
+		_gizmo_delete()
+
+	# TODO: Validate that the gizmo was created and did not error.
 	my_gizmo = await session_spawnable_m.create("Gizmo")
-	# TODO: Add to array of Gizmos
-	my_gizmo.select(_node_db_entry.node)
+
+	var _node_db_entry = session_spawnable_m.get_by_id(target_node)
+	session_spawnable_m.select.rpc(target_node, int(my_gizmo.name))
+
 	my_gizmo.mode = _gizmo_mode
 	my_gizmo.use_local_space = _gizmo_space_local
 
 	_node_property_editor.get_node_properties(_node_db_entry.node)
-	my_gizmo.transform_changed.connect(func(_mode, _value): session_spawnable_m.set_transform(target_node, _node_db_entry.node.transform))
+	# my_gizmo.transform_changed.connect(func(_mode, _value): session_spawnable_m.set_transform(target_node, _node_db_entry.node.transform))
+
 	# HACK: Update ALL of the node properties after a transformation was done.
+	# This should be happening somewhere else that is more stable / live.
 	my_gizmo.transform_end.connect(func(_mode): _node_property_editor.update_node_properties(_node_db_entry.node))
+
+	return
 
 
 func _gizmo_delete() -> void:
