@@ -151,6 +151,7 @@ func select(node_id: int, gizmo_id: int) -> void:
 
 	if _node.is_class("Node3D"):
 		_gizmo.select(_node)
+		_gizmo._set_visibility(get_parent().visible)
 		_gizmo.transform_changed.connect(func(_mode, _value): set_transform(node_id, _node.transform))
 	return
 

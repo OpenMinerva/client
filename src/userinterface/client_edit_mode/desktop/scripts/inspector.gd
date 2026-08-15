@@ -497,7 +497,6 @@ func _select(target_node: int) -> void:
 	my_gizmo.use_local_space = _gizmo_space_local
 
 	_node_property_editor.get_node_properties(_node_db_entry.node)
-	# my_gizmo.transform_changed.connect(func(_mode, _value): session_spawnable_m.set_transform(target_node, _node_db_entry.node.transform))
 
 	# HACK: Update ALL of the node properties after a transformation was done.
 	# This should be happening somewhere else that is more stable / live.

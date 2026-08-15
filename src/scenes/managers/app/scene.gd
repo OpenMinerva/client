@@ -165,6 +165,8 @@ func set_active_session(session_id: String):
 		scene_container.get_node(_scene.id).process_mode = Node.PROCESS_MODE_DISABLED
 		_set_camera_active_state(_scene.id, false)
 		_set_player_authority_state(_scene.id, false)
+		for gizmo in scene_container.get_node(_scene.id).get_node("SpawnableManager")._gizmos:
+			gizmo._set_visibility(false)
 
 	# session_id gets enabled.
 	scene_container.get_node(session_id).process_mode = Node.PROCESS_MODE_INHERIT
@@ -172,6 +174,9 @@ func set_active_session(session_id: String):
 	scene_container.get_node(session_id).visible = true
 	_set_player_authority_state(session_id, true)
 	Events.dash_session_changed.emit(session_id)
+	for gizmo in scene_container.get_node(session_id).get_node("SpawnableManager")._gizmos:
+		gizmo._set_visibility(true)
+
 	return
 
 
