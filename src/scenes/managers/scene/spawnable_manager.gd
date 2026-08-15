@@ -67,6 +67,8 @@ func sync_all() -> void:
 	if !is_multiplayer_authority():
 		return
 
+	var caller_id: int = multiplayer.get_remote_sender_id()
+	GlobalLogger.log("Received a request to sync all nodes from '%s'" % caller_id, Enum.LogLevel.INFO)
 	for spawnable in _database:
 		if spawnable.node == null:
 			GlobalLogger.log("Node does not exist.", Enum.LogLevel.WARNING)
@@ -511,6 +513,9 @@ func _add_asset_to_database(asset_class: String, resource: Resource, props: Arra
 
 func _get_deletion_queue(node_name: String) -> Array:
 	var _entry_index = _database.find_custom(func(item): return item.id == int(node_name))
+	if _entry_index < 0:
+		GlobalLogger.log("Tried to add an invalid node to the deletion queue.", Enum.LogLevel.WARNING)
+		return []
 	var _node = _database[_entry_index].node
 
 	var _queue = _add_to_deletion_queue(_node)
