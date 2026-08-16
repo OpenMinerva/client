@@ -42,13 +42,14 @@ func set_player_database(database: Dictionary) -> void:
 	return
 
 
-@rpc("authority", "reliable")
+@rpc("call_local", "authority", "reliable")
 func remove_player(peer_id: int) -> void:
 	var caller_id = multiplayer.get_remote_sender_id()
+	var player_entry = players[str(peer_id)]
 
 	GlobalLogger.log("[%s] Removing peer '%s' from the player list" % [caller_id, peer_id])
-	players[str(peer_id)].get("node").queue_free()
 	players.erase(str(peer_id))
+	spawnable_m.destroy.rpc(int(player_entry.node.name))
 
 
 @rpc("call_local", "authority", "reliable")

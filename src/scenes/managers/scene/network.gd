@@ -17,6 +17,7 @@ func _process(_delta):
 
 
 func setup_connection(api: SceneMultiplayer, id: String):
+	GlobalLogger.log("Setting up connection to '%s'" % id)
 	_specific_api = api
 	_server_id = id
 
@@ -59,6 +60,7 @@ func req_spawnable_db() -> void:
 
 @rpc("authority", "reliable")
 func rec_spawnable_db(db: Array, players: Dictionary, assets: Array, asset_relations: Array) -> void:
+	GlobalLogger.log("Received the spawnable database.")
 	# We have the database, set it.
 	await spawnable_m.receive_database(db, players, assets, asset_relations)
 
@@ -80,6 +82,7 @@ func _on_connected_to_server():
 
 
 func _on_server_disconnected():
+	GlobalLogger.log("Disconnected from '%s'" % _server_id)
 	network_m.leave_server(_server_id)
 	return
 
@@ -112,10 +115,10 @@ func _on_peer_disconnected(peer_id: int) -> void:
 	if is_multiplayer_authority() == false:
 		return
 
-	player_m.remove_player(peer_id)
+	GlobalLogger.log("[%s] Peer '%s' disconnected to our server." % [_my_id, peer_id])
+
 	player_m.remove_player.rpc(peer_id)
 
-	GlobalLogger.log("[%s] Peer '%s' disconnected to our server." % [_my_id, peer_id])
 	return
 
 
