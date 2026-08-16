@@ -69,16 +69,19 @@ func sync_all() -> void:
 
 	var caller_id: int = multiplayer.get_remote_sender_id()
 	GlobalLogger.log("Received a request to sync all nodes from '%s'" % caller_id, Enum.LogLevel.INFO)
+	GlobalLogger.log("Database size: '%s'" % _database.size())
 	for spawnable in _database:
 		if spawnable.node == null:
 			GlobalLogger.log("Node does not exist.", Enum.LogLevel.WARNING)
-			return
+			continue
 
-		if spawnable.node.has_method("transform") == false:
+		if ("transform" in spawnable.node) == false:
 			# We can't transform something without a transform field!
-			return
+			GlobalLogger.log("'%s' does not have a transform. Not sending a transform." % spawnable.id)
+			continue
 
-		set_transform.rpc(spawnable.id, spawnable.node.transform)
+		GlobalLogger.log("Sending transform for '%s'" % spawnable.id)
+		transform_spawnable.rpc(spawnable.id, spawnable.node.transform)
 	return
 
 
