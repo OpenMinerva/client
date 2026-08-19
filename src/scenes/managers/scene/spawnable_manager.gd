@@ -339,9 +339,13 @@ func spawn_spawnable(p_type: String, p_name: String = "", p_path: String = "", p
 @rpc("authority", "reliable")
 func delete_spawnable(node_name: String) -> void:
 	GlobalLogger.log("Deleting node '%s'." % node_name)
+
+	if node_name.is_valid_int() == false:
+		GlobalLogger.log("Node '%s' is malformed." % node_name, Enum.LogLevel.ERROR)
+		return
+
 	var _entry_index = _database.find_custom(func(item): return item.id == int(node_name))
 	if _entry_index == -1:
-		# This should never happen! The node can never be removed from the scene tree then.
 		GlobalLogger.log("'%s' could not be located in the scene tree." % node_name, Enum.LogLevel.ERROR)
 		return
 
