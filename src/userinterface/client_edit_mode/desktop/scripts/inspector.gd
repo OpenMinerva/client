@@ -158,7 +158,6 @@ func _add_signalbus_event_listeners() -> void:
 	GlobalLogger.log("Adding signal bus event listeners to the inspector.")
 	Events.cem_set_state.connect(_set_state)
 	Events.dash_session_changed.connect(_on_session_changed)
-	# TODO: Events.cem_set_gizmo_state.connect(_toggle_gizmos)
 	return
 
 
@@ -228,6 +227,7 @@ func _inspector_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_i
 func _set_state(state: bool) -> void:
 	GlobalLogger.log("Inspector state is being set to '%s'." % state)
 	_gizmo_visibility(state)
+	_inspector_build()
 	visible = state
 	_node_crosshair.visible = !state
 	return
@@ -253,9 +253,13 @@ func _on_node_destroyed(node_entry: Dictionary) -> void:
 
 
 func _on_session_changed(_session_id: String) -> void:
-	session_signalbus = app_scene_m.get_master_scene(app_scene_m.active_session).get_node("SignalBus")
-	session_spawnable_m = app_scene_m.get_master_scene(app_scene_m.active_session).get_node("SpawnableManager")
-	session_players_m = app_scene_m.get_master_scene(app_scene_m.active_session).get_node("PlayerManager")
+	await get_tree().process_frame
+	await get_tree().process_frame
+
+	var _session_master: Node3D = app_scene_m.get_master_scene(_session_id)
+	session_signalbus = _session_master.get_node("SignalBus")
+	session_spawnable_m = _session_master.get_node("SpawnableManager")
+	session_players_m = _session_master.get_node("PlayerManager")
 	session_root = app_scene_m.get_master_root(app_scene_m.active_session)
 
 	_inspector_selected = null
@@ -265,6 +269,8 @@ func _on_session_changed(_session_id: String) -> void:
 	if session_signalbus.is_connected("node_created", _on_node_created) == false:
 		session_signalbus.node_created.connect(_on_node_created)
 		session_signalbus.node_destroyed.connect(_on_node_destroyed)
+
+	_inspector_build()
 	return
 
 
