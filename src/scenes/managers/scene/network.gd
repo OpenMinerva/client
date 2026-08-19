@@ -75,7 +75,7 @@ func _on_connected_to_server():
 	GlobalLogger.log("[%s] Connected to a server." % _my_id)
 
 	# Set the scene root to empty.
-	scene_m.set_master_root_from_program(_server_id, Enum.BaseLevel.EMPTY)
+	scene_m.set_master_root_from_program(_server_id, Enum.BaseLevel.EMPTY, "", false)
 
 	# Request the spawnable database from host
 	req_spawnable_db.rpc_id(1)

@@ -51,7 +51,7 @@ func destroy_master_scene(id: String):
 	return
 
 
-func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel, scene_dir: String = "") -> void:
+func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel, scene_dir: String = "", set_up_root: bool = true) -> void:
 	var _scene = get_master_scene(id)
 
 	var _root_scene: String = _get_scene_by_type(scene_type)
@@ -84,7 +84,7 @@ func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel, scene_
 
 	# Remove the "root" node of the world, and instead parent all nodes under the true instance root.
 	# HACK: Force reparent the children of the node to the world root.
-	if _root_scene_node.get_children().size() > 0:
+	if set_up_root && _root_scene_node.get_children().size() > 0:
 		var _target_node: Node3D = _root_scene_node.get_children()[1]
 		var _spawnable_manager: Node = _scene.get_node("SpawnableManager")
 
