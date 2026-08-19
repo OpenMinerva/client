@@ -277,6 +277,10 @@ func set_parent(node_id: int, parent_node_id: int) -> void:
 		var _node = get_by_id(node_id)
 		var _parent_node = get_by_id(parent_node_id)
 
+		if _node == { }:
+			GlobalLogger.log("Failed to find the node: '%s'" % node_id, Enum.LogLevel.WARNING)
+			return
+
 		if parent_node_id <= 0:
 			# Invalid state, reparent to root.
 			_parent_node = { "node": app_scene_m.get_master_root(app_scene_m.active_session) }
@@ -290,7 +294,7 @@ func set_parent(node_id: int, parent_node_id: int) -> void:
 		return
 	else:
 		# Call on the host to create (and sync) the resource.
-		var _asset: int = await rpcawaiter.send_rpc(1, set_parent.bind(node_id, parent_node_id))
+		await rpcawaiter.send_rpc(1, set_parent.bind(node_id, parent_node_id))
 		return
 
 	return

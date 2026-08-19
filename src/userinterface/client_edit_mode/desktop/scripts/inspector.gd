@@ -24,10 +24,8 @@ var _inspector_tree_search: String = ""
 var _cem_state: bool = false
 var _cem_camera: bool = false
 
-# FIXME: Selecting Gizmo crashes
 # FIXME: You can select the selected spawnable. (Safe but probably should be changed)
 # External Libraries / scripts
-# FIXME: DevSpawnableManager node
 @onready var _app_spawnable_file_handling_m: Node = get_tree().current_scene.get_node("SpawnableFileHandling")
 @onready var app_scene_m: Node = get_tree().current_scene.get_node("SceneManager")
 @onready var app_network_m: Node = get_tree().current_scene.get_node("NetworkManager")
@@ -274,6 +272,9 @@ func _on_session_changed(_session_id: String) -> void:
 func _inspector_build(root_node: Node = session_root) -> void:
 	# TODO: Proper wait until building the inspector.
 	await get_tree().process_frame
+	if root_node == null:
+		GlobalLogger.log("Invalid root node: '%s'" % root_node, Enum.LogLevel.WARNING)
+		return
 
 	var _total_spawnable_label: String = str(session_spawnable_m._database.size())
 	var _total_player_label: String = str(session_players_m.get_player_count())

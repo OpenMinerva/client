@@ -171,6 +171,8 @@ func join_server(ip: String = "", port: int = 0) -> bool:
 	# TODO: Do we need such a heavy Database entry? Isn't it only used once?
 	_session_db.set(_scene, _create_instance_db_entry(_mp_api, _scene, Enum.PrivacyLevel.INVITE, port, "client"))
 
+	scene_m.set_active_session(_scene)
+
 	Events.emit_signal("session_joined")
 	return true
 
