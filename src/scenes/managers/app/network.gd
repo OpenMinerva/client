@@ -408,6 +408,10 @@ func _advertise_session(session_info: Dictionary, session_server: String) -> Dic
 	url = url.data
 
 	var _api_key = Accounts.get_session_server_token(url.host)
+	if _api_key == "":
+		response_dict.error = "Could not get the account server token."
+		return response_dict
+
 	var _body = {
 		"session_name": session_info.name,
 		"session_description": session_info.description,
@@ -431,6 +435,7 @@ func _advertise_session(session_info: Dictionary, session_server: String) -> Dic
 
 	advertise_response = JSON.parse_string(advertise_response.body)
 	# FIXME: When logging in, immediately trying to host a session results in a fatal error here.
+	print(advertise_response)
 	if advertise_response.ok == false:
 		response_dict.error = advertise_response.error
 		return response_dict

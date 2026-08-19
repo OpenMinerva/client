@@ -145,7 +145,11 @@ func set_session_server_token(url: String, token: String) -> void:
 
 func get_session_server_token(url: String) -> String:
 	var _account = _database.get(active_account)
+	if _account == null:
+		return ""
+
 	var _token = _account.session_servers.get(url, "")
+
 	return _token
 
 
