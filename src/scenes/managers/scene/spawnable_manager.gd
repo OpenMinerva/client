@@ -171,15 +171,27 @@ func deselect(gizmo_id: int) -> void:
 
 
 @rpc("any_peer", "reliable")
-func set_transform(node_id: int, p_transform: Transform3D) -> void:
+func set_transform(node_id: int, p_transform: Transform3D, ignore_sender: bool = true) -> void:
 	var _my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
 	var _caller_id: int = multiplayer.get_remote_sender_id()
 
 	if _my_id == 1:
-		# TODO: Compress for network?
-		transform_spawnable.rpc(node_id, p_transform)
+		var _target_peers: PackedInt32Array = []
+
+		if ignore_sender == false:
+			transform_spawnable.rpc(node_id, p_transform)
+			return
+
+		transform_spawnable(node_id, p_transform)
+
+		for _peer_id in multiplayer.get_peers():
+			if _peer_id != _caller_id:
+				_target_peers.append(_peer_id)
+
+		for _target in _target_peers:
+			transform_spawnable.rpc_id(_target, node_id, p_transform)
 	else:
-		await rpcawaiter.send_rpc(1, set_transform.bind(node_id, p_transform))
+		await rpcawaiter.send_rpc(1, set_transform.bind(node_id, p_transform, ignore_sender))
 		return
 	return
 
