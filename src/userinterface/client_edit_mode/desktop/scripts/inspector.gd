@@ -323,6 +323,10 @@ func _inspector_add_node(node: Node, parent: TreeItem) -> void:
 		return
 
 	var _tree_node = _inspector_tree.create_item(parent)
+
+	if _tree_node == null:
+		return
+
 	var _tree_icon = NSB.get_entry(node.get_class()).icon
 	var _is_collapsed = !_inspector_opened_tree_nodes.has(node)
 
