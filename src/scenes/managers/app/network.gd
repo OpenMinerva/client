@@ -217,7 +217,7 @@ func kick_player(server_id: String, peer_id: int, reason: String):
 
 func get_connected_sessions():
 	var result = []
-	# TODO: Is JSON required here?
+
 	for session_id in _session_db.keys():
 		result.append(_session_db[session_id].merged({ "id": session_id }))
 

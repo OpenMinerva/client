@@ -10,22 +10,29 @@ extends Node
 
 @onready var network_m = get_tree().current_scene.get_node("NetworkManager")
 
+
 func _ready() -> void:
 	NSB.init()
 	Discord.set_enabled(true)
 	return
 
+
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
-		GlobalLogger.log("Shutting down")
+		GlobalLogger.log("Shutting down", Enum.LogLevel.INFO)
 
 		# Shutdown / leave all servers.
-		for server in network_m.get_connected_sessions():
+		var _connected_servers: Array = network_m.get_connected_sessions()
+		_connected_servers.reverse()
+
+		for server in _connected_servers:
 			if server.type == "host":
 				network_m.stop_server(server.id)
 				continue
 			if server.type == "client":
 				network_m.leave_server(server.id)
 				continue
+
+		await get_tree().process_frame
 
 		get_tree().quit()
