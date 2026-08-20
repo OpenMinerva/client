@@ -27,7 +27,6 @@ const _instance_database_template = {
 	},
 }
 
-var url_regex: RegEx = RegEx.create_from_string("^(https?)://([^/:]+)(?::(\\d+))?(.*)$")
 var _session_db = { }
 var _heartbeats = { }
 
