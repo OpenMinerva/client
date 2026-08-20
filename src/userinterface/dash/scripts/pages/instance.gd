@@ -16,14 +16,15 @@ var session_settings: Dictionary = {
 @onready var network_m = get_tree().current_scene.get_node("NetworkManager")
 @onready var _app_spawnable_file_handling = get_tree().current_scene.get_node("SpawnableFileHandling")
 @onready var privacy_settings: Control = get_node("HBox/Right/Hosting/ScrollContainer/VBoxContainer/VBoxContainer/Privacy/PanelContainer/MarginContainer/HBoxContainer/MarginContainer/OptionButton")
-@onready var save_hosting_button = get_node("HBox/Right/Hosting/ScrollContainer/VBoxContainer/Save/Button")
+@onready var save_hosting_button = get_node("%SaveSession")
 @onready var _save_world_button = get_node("%SaveWorld")
 @onready var _instance_name: Control = get_node("%InstanceName")
+@onready var _world_name: Control = get_node("%WorldName")
 
 
 func _ready():
 	super._ready()
-	save_hosting_button.pressed.connect(_save_hosting_settings)
+	save_hosting_button.clicked.connect(_save_hosting_settings)
 
 	_save_world_button.clicked.connect(_save_world)
 	return
@@ -45,7 +46,12 @@ func _post_update() -> void:
 	var _current_session_db_index = _sessions.find_custom(func(sess): return sess.name == _current_session_id)
 	var _current_session = _sessions[_current_session_db_index]
 
-	_current_session.set("name", _instance_name.get_value())
+	var _session_name: String = _instance_name.get_value()
+	if _session_name == "":
+		GlobalLogger.log("Session did not have a name, using world name.", Enum.LogLevel.INFO)
+		_session_name = _world_name.get_value()
+
+	_current_session.set("name", _session_name)
 	_current_session.set("privacy", session_settings.privacy)
 
 	network_m.update_server(_current_session_id, _current_session)
@@ -55,7 +61,7 @@ func _post_update() -> void:
 
 func _save_world() -> void:
 	var _root_node: Node3D = scene_m.get_master_root(scene_m.active_session)
-	var _name: String = _instance_name.get_value()
+	var _name: String = _world_name.get_value()
 
 	_app_spawnable_file_handling.save_spawnable(_root_node, Enum.SpawnableType.WORLD, _name)
 	return
