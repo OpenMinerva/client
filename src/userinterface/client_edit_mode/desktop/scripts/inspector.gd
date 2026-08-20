@@ -60,9 +60,6 @@ func _ready() -> void:
 
 	_inspector_popup.visible = false
 
-	# TODO: Proper wait until building the inspector.
-	await get_tree().process_frame
-
 	_inspector_build()
 	_gizmo_set_mode()
 	return
@@ -234,15 +231,19 @@ func _set_state(state: bool) -> void:
 
 
 func _on_node_created(_node: Node) -> void:
-	# TODO: Instead of rebuilding the entire tree, just update the respective entry.
-	GlobalLogger.log("Inspector: Node created.")
+	if session_root == null:
+		session_root = app_scene_m.get_master_root(app_scene_m.active_session)
+
+	GlobalLogger.log("Node created.")
 	_inspector_build()
 	return
 
 
 func _on_node_destroyed(node_entry: Dictionary) -> void:
-	# TODO: Instead of rebuilding the entire tree, just update the respective entry.
-	GlobalLogger.log("Inspector: Node destroyed.")
+	if session_root == null:
+		session_root = app_scene_m.get_master_root(app_scene_m.active_session)
+
+	GlobalLogger.log("Node destroyed.")
 
 	# Deselect the node if selected.
 	if my_gizmo:
@@ -253,9 +254,6 @@ func _on_node_destroyed(node_entry: Dictionary) -> void:
 
 
 func _on_session_changed(_session_id: String) -> void:
-	await get_tree().process_frame
-	await get_tree().process_frame
-
 	var _session_master: Node3D = app_scene_m.get_master_scene(_session_id)
 	session_signalbus = _session_master.get_node("SignalBus")
 	session_spawnable_m = _session_master.get_node("SpawnableManager")
@@ -276,8 +274,6 @@ func _on_session_changed(_session_id: String) -> void:
 
 # User Interface
 func _inspector_build(root_node: Node = session_root) -> void:
-	# TODO: Proper wait until building the inspector.
-	await get_tree().process_frame
 	if root_node == null:
 		GlobalLogger.log("Invalid root node: '%s'" % root_node, Enum.LogLevel.WARNING)
 		return
