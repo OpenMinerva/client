@@ -9,7 +9,6 @@
 extends Node
 
 const MAX_CLIENTS = 1000
-const MINIMUM_INCREMENTAL_PORT = 20205
 # TODO: This interal DB template assumes only a single session server is being advertised to.
 const _instance_database_template = {
 	"public_id": "",
@@ -30,6 +29,7 @@ const _instance_database_template = {
 var _session_db = { }
 var _heartbeats = { }
 
+@onready var port_scanner: Node = get_node("PortScanner")
 @onready var scene_m = get_node("../SceneManager")
 
 
@@ -39,12 +39,12 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 	# Get an available port. If port was defined, force that port or fail.
 	if port != 0:
 		GlobalLogger.log("Forcing port '%s'" % port)
-		var port_available = !_is_port_in_use(port)
+		var port_available = !port_scanner.is_port_in_use(port)
 		if !port_available:
 			GlobalLogger.log("Could not open server on port '%s', unavailable." % port)
 			return false
 	else:
-		port = _find_available_port()
+		port = port_scanner.find_available_port()
 
 	# Create server master scene.
 	var _scene: String = scene_m.create_master_scene()
@@ -309,40 +309,6 @@ func _remove_session_from_server(server_id: String, session_server: String) -> D
 
 	response_dict.error = _removal_response.error
 	return response_dict
-
-
-func _find_available_port(target_port: int = MINIMUM_INCREMENTAL_PORT) -> int:
-	GlobalLogger.log("Trying to find an available port starting at '%s'." % target_port)
-	var _found_port = null
-	var _is_found = false
-
-	while _is_found == false:
-		var port_available = !_is_port_in_use(target_port)
-		if port_available:
-			_found_port = target_port
-			_is_found = true
-			break
-		target_port = target_port + 1
-
-	GlobalLogger.log("Port found: '%s'" % target_port)
-
-	return _found_port
-
-
-func _is_port_in_use(port: int) -> bool:
-	var udp_server = UDPServer.new()
-	var err_udp = udp_server.listen(port, "*")
-	var tcp_server = TCPServer.new()
-	var err_tcp = tcp_server.listen(port, "*")
-
-	if err_udp == OK && err_tcp == OK:
-		udp_server.stop()
-		tcp_server.stop()
-		return false
-
-	udp_server.stop()
-	tcp_server.stop()
-	return true
 
 
 func _create_heartbeat_timer(session_id: String, session_server_url: String):
