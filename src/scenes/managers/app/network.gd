@@ -9,26 +9,11 @@
 extends Node
 
 const MAX_CLIENTS = 1000
-# TODO: This interal DB template assumes only a single session server is being advertised to.
-const _instance_database_template = {
-	"public_id": "",
-	"name": "",
-	"description": "",
-	"port": 0,
-	"max_connected_users": 1,
-	"privacy": null,
-	"active": false,
-	"connected_players": [],
-	"start_time": 0,
-	"networking": {
-		"use_steam": false,
-		"use_lan": false,
-	},
-}
 
-var _session_db = { }
+# TODO: This interal DB template assumes only a single session server is being advertised to.
 var _heartbeats = { }
 
+@onready var registry: Node = get_node("Registry")
 @onready var port_scanner: Node = get_node("PortScanner")
 @onready var scene_m = get_node("../SceneManager")
 
@@ -64,7 +49,7 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 	var net_manager = master_scene.get_node("NetworkManager")
 	net_manager.setup_connection(_mp_api, _scene)
 
-	_session_db.set(_scene, _create_instance_db_entry(_mp_api, _scene, Enum.PrivacyLevel.INVITE, port, "host"))
+	registry.add_session(_scene, "", registry.SessionConnectionType.HOST, port, 1, Enum.PrivacyLevel.INVITE, _mp_api)
 
 	# Create server root scene.
 	scene_m.set_master_root_from_program(_scene, root_scene, scene_dir)
@@ -82,7 +67,7 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 
 
 func stop_server(id: String):
-	var _is_valid: bool = _session_db.has(id)
+	var _is_valid: bool = registry.has_session(id)
 	GlobalLogger.log("Stopping server '%s'." % id)
 
 	# TODO: Disable join requests to server
@@ -91,7 +76,9 @@ func stop_server(id: String):
 		GlobalLogger.log("Session '%s' does not exist, cannot stop the server." % id, Enum.LogLevel.WARNING)
 		return
 
-	var mp_api: SceneMultiplayer = _session_db.get(id).api
+	var session: Dictionary = registry.get_session(id)
+
+	var mp_api: SceneMultiplayer = session.api
 	var all_peers = mp_api.get_peers()
 
 	# Kick all players
@@ -107,7 +94,7 @@ func stop_server(id: String):
 	scene_m.destroy_master_scene(id)
 
 	# Database cleanup
-	_session_db.erase(id)
+	registry.remove_session(id)
 	return
 
 
@@ -126,7 +113,7 @@ func update_server(id: String, server_info: Dictionary):
 				var advertise_response = await _advertise_session(server_info, _server.url)
 
 				if advertise_response.ok == true:
-					_session_db[id].public_id = advertise_response.data.id
+					registry.add_session_server_key(id, _server.url, advertise_response.data.id)
 					_create_heartbeat_timer(server_info.id, _server.url)
 
 	if server_info.privacy == Enum.PrivacyLevel.INVITE:
@@ -167,8 +154,7 @@ func join_server(ip: String = "", port: int = 0) -> bool:
 	var net_manager = master_scene.get_node("NetworkManager")
 	net_manager.setup_connection(_mp_api, _scene)
 
-	# TODO: Do we need such a heavy Database entry? Isn't it only used once?
-	_session_db.set(_scene, _create_instance_db_entry(_mp_api, _scene, Enum.PrivacyLevel.INVITE, port, "client"))
+	registry.add_session(_scene, "", registry.SessionConnectionType.CLIENT, port, 1, Enum.PrivacyLevel.INVITE, _mp_api)
 
 	scene_m.set_active_session(_scene)
 
@@ -178,24 +164,25 @@ func join_server(ip: String = "", port: int = 0) -> bool:
 
 func leave_server(id: String):
 	GlobalLogger.log("Trying to leave server '%s'." % id)
-	var _is_valid: bool = _session_db.has(id)
+	var _is_valid: bool = registry.has_session(id)
 
 	if _is_valid == false:
 		GlobalLogger.log("Session '%s' does not exist, cannot disconnect." % id, Enum.LogLevel.WARNING)
 		return
 
-	var mp_api: SceneMultiplayer = _session_db[id].api
+	var session: Dictionary = registry.get_session(id)
+	var mp_api: SceneMultiplayer = session.api
 
 	if mp_api.multiplayer_peer:
 		mp_api.multiplayer_peer.close()
 		GlobalLogger.log("Disconnected from session '%s'." % id, Enum.LogLevel.DEBUG)
 
-	scene_m.set_active_session(get_connected_sessions()[0].id)
+	scene_m.set_active_session(registry.get_all()[0].id)
 
 	scene_m.stop_master_scene(id)
 	scene_m.destroy_master_scene(id)
 
-	_session_db.erase(id)
+	registry.remove_session(id)
 
 	GlobalLogger.log("Successfully disconnected from session '%s' and cleaned up." % id, Enum.LogLevel.DEBUG)
 	Events.emit_signal("session_left")
@@ -204,40 +191,39 @@ func leave_server(id: String):
 
 func kick_player(server_id: String, peer_id: int, reason: String):
 	GlobalLogger.log("Kicking peer '%s' from '%s' for reason '%s'" % [peer_id, server_id, reason], Enum.LogLevel.DEBUG)
-	var _is_valid: bool = _session_db.has(server_id)
+	var _is_valid: bool = registry.has_session(server_id)
 
 	# TODO: Check if peer exists
 	if _is_valid == true:
-		var mp_api: SceneMultiplayer = _session_db[server_id].api
+		var session: Dictionary = registry.get_session(server_id)
+		var mp_api: SceneMultiplayer = session.api
 		# TODO: Notify user of kick
 		mp_api.disconnect_peer(peer_id)
 	return
 
 
+## @deprecated: Use registry.get_all()
 func get_connected_sessions():
-	var result = []
-
-	for session_id in _session_db.keys():
-		result.append(_session_db[session_id].merged({ "id": session_id }))
-
-	return result
+	GlobalLogger.log("Deprecated call '%s'" % get_stack()[0]["function"], Enum.LogLevel.WARNING)
+	return registry.get_all()
 
 
 func set_active_session(id: String):
-	var _is_valid: bool = _session_db.has(id)
+	var _is_valid: bool = registry.has_session(id)
 
 	if _is_valid:
 		GlobalLogger.log("Tried to mark an invalid session as active: '%s'" % id, Enum.LogLevel.WARNING)
 		return
 
-	for session_id in _session_db.keys():
-		var _my_session_id = _session_db[session_id].api.multiplayer.get_unique_id()
-		_session_db[session_id].active = false
+	for session_id in registry.get_all_ids():
+		var _session: Dictionary = registry.get_session(session_id)
+		var _my_session_id = _session.api.multiplayer.get_unique_id()
 		scene_m.get_master_root(session_id).get_node("PlayerManager").players.get(_my_session_id).get("node").camera.current = false
 
-	var my_id = _session_db[id].api.multiplayer.get_unique_id()
+	var _target_session: Dictionary = registry.get_session(id)
+
+	var my_id = _target_session.api.multiplayer.get_unique_id()
 	scene_m.get_master_root(id).get_node("PlayerManager").players.get(my_id).get("node").camera.current = true
-	_session_db[id].active = true
 	scene_m.set_active_session(id)
 	Events.dash_session_changed.emit(id)
 	return
@@ -254,10 +240,14 @@ func _update_session_server_listing(session_info: Dictionary, session_server: St
 		response_dict.error = url.error
 		return response_dict
 
+	var _session: Dictionary = registry.get_session(session_info.id)
+	var _session_server_key_index: int = _session.session_server_keys.find_custom(func(pair): return pair.url == session_server)
+	var _session_session_server_key: String = _session.session_server_keys[_session_server_key_index].key
+
 	url = url.data
 	var _api_key = Accounts.get_session_server_token(url.host)
 	var _body = {
-		"id": _session_db[session_info.id].public_id,
+		"id": _session_session_server_key,
 		"session_name": session_info.name,
 		"session_description": session_info.description,
 		"session_privacy": session_info.privacy,
@@ -287,10 +277,14 @@ func _remove_session_from_server(server_id: String, session_server: String) -> D
 		response_dict.error = url.error
 		return response_dict
 
+	var _session: Dictionary = registry.get_session(server_id)
+	var _session_server_key_index: int = _session.session_server_keys.find_custom(func(pair): return pair.url == session_server)
+	var _session_session_server_key: String = _session.session_server_keys[_session_server_key_index].key
+
 	url = url.data
 	var _api_key = Accounts.get_session_server_token(url.host)
 	var _body = {
-		"id": _session_db[server_id].public_id,
+		"id": _session_session_server_key,
 	}
 
 	var _removal_response = await HTTP.req(
@@ -341,9 +335,13 @@ func _heartbeat_session(session_id: String, session_server_url: String) -> void:
 		GlobalLogger.log("Failed to deconstruct the URL '%s'. Error: '%s'" % [_full_url, _url.error])
 		return
 
+	var _session: Dictionary = registry.get_session(session_id)
+	var _session_server_key_index: int = _session.session_server_keys.find_custom(func(pair): return pair.url == session_server_url)
+	var _session_session_server_key: String = _session.session_server_keys[_session_server_key_index].key
+
 	_url = _url.data
 	var _api_key = Accounts.get_session_server_token(_url.host)
-	var body = { "session_id": _session_db[session_id].public_id }
+	var body = { "session_id": _session_session_server_key }
 
 	var response = await HTTP.req(
 		HTTPClient.Method.METHOD_POST,
@@ -414,16 +412,3 @@ func _advertise_session(session_info: Dictionary, session_server: String) -> Dic
 	response_dict.ok = true
 	response_dict.data = advertise_response
 	return response_dict
-
-
-func _create_instance_db_entry(api: SceneMultiplayer, name: String, privacy: Enum.PrivacyLevel, port: int, type: String = "host") -> Dictionary:
-	var _instance = _instance_database_template.duplicate()
-
-	_instance.api = api
-	_instance.name = name
-	_instance.start_time = int(Time.get_unix_time_from_system())
-	_instance.privacy = privacy
-	_instance.port = port
-	_instance.type = type
-
-	return _instance

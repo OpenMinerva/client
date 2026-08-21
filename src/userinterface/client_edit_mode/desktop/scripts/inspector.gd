@@ -566,7 +566,7 @@ func _gizmo_visibility(to_set_visible: bool = false) -> void:
 # CEM Camera
 func _cem_camera_state(state: bool) -> void:
 	var _active_session_id = app_scene_m.active_session
-	var _session_api = app_network_m._session_db[_active_session_id].api
+	var _session_api = app_network_m.registry.get_session(_active_session_id).api
 	var _player_id: int = _session_api.get_unique_id()
 	var _player_db = session_players_m.players[str(_player_id)]
 	var _player_node: Node3D

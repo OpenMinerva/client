@@ -161,8 +161,10 @@ func set_active_session(session_id: String):
 
 	for _scene in network_m.get_connected_sessions():
 		# Each session gets disabled
-		scene_container.get_node(_scene.id).visible = false
-		scene_container.get_node(_scene.id).process_mode = Node.PROCESS_MODE_DISABLED
+		var _target_scene = scene_container.get_node(_scene.id)
+		_target_scene.visible = false
+		_target_scene.process_mode = Node.PROCESS_MODE_DISABLED
+
 		_set_camera_active_state(_scene.id, false)
 		_set_player_authority_state(_scene.id, false)
 		for gizmo in scene_container.get_node(_scene.id).get_node("SpawnableManager")._gizmos:
@@ -200,15 +202,15 @@ func _get_scene_by_type(scene_type: Enum.BaseLevel) -> String:
 
 func _set_camera_active_state(session_id, state: bool = false) -> void:
 	# TODO: check if session exists.
-	var my_id: String = str(network_m._session_db[session_id].api.get_unique_id())
+	var _my_peer_id: String = network_m.registry.get_peer_id(session_id)
 	var master_scene: Node3D = get_master_scene(session_id)
 	# HACK: If my_id = 0, we get the desired result. This is not safe though.
-	if my_id == "0":
+	if _my_peer_id == "0":
 		GlobalLogger.log("Could not set active state for session '%s', is session open?" % [session_id], Enum.LogLevel.WARNING)
 		return
 	var player_manager: Node = master_scene.get_node("PlayerManager")
 	var player_database = player_manager.players
-	var my_database_entry = player_database.get(my_id)
+	var my_database_entry = player_database.get(_my_peer_id)
 	if my_database_entry != null:
 		if my_database_entry.node == null:
 			# FIXME: This error should not be necessary, there is a bigger problem somewhere else.
@@ -220,15 +222,15 @@ func _set_camera_active_state(session_id, state: bool = false) -> void:
 
 
 func _set_player_authority_state(session_id, is_active: bool = false) -> void:
-	var my_id: String = str(network_m._session_db[session_id].api.get_unique_id())
+	var _my_peer_id: String = network_m.registry.get_peer_id(session_id)
 	var master_scene: Node3D = get_master_scene(session_id)
 	# HACK: If my_id = 0, we get the desired result. This is not safe though.
-	if my_id == "0":
+	if _my_peer_id == "0":
 		GlobalLogger.log("Could not set player authority for session '%s', is session open?" % [session_id], Enum.LogLevel.WARNING)
 		return
 	var player_manager: Node = master_scene.get_node("PlayerManager")
 	var player_database = player_manager.players
-	var my_database_entry = player_database.get(my_id)
+	var my_database_entry = player_database.get(_my_peer_id)
 
 	if my_database_entry != null:
 		var player = my_database_entry.node
@@ -238,7 +240,7 @@ func _set_player_authority_state(session_id, is_active: bool = false) -> void:
 			return
 
 		if is_active:
-			player.set_multiplayer_authority(int(my_id))
+			player.set_multiplayer_authority(int(_my_peer_id))
 			return
 
 		player.set_multiplayer_authority(0)
