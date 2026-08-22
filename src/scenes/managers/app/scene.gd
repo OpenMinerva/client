@@ -202,7 +202,7 @@ func _get_scene_by_type(scene_type: Enum.BaseLevel) -> String:
 
 func _set_camera_active_state(session_id, state: bool = false) -> void:
 	# TODO: check if session exists.
-	var _my_peer_id: String = network_m.registry.get_peer_id(session_id)
+	var _my_peer_id: String = str(network_m.registry.get_peer_id(session_id))
 	var master_scene: Node3D = get_master_scene(session_id)
 	# HACK: If my_id = 0, we get the desired result. This is not safe though.
 	if _my_peer_id == "0":
@@ -222,7 +222,7 @@ func _set_camera_active_state(session_id, state: bool = false) -> void:
 
 
 func _set_player_authority_state(session_id, is_active: bool = false) -> void:
-	var _my_peer_id: String = network_m.registry.get_peer_id(session_id)
+	var _my_peer_id: String = str(network_m.registry.get_peer_id(session_id))
 	var master_scene: Node3D = get_master_scene(session_id)
 	# HACK: If my_id = 0, we get the desired result. This is not safe though.
 	if _my_peer_id == "0":
