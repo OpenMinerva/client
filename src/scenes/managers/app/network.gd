@@ -64,48 +64,48 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 	return true
 
 
-func stop_server(id: String):
-	var _is_valid: bool = registry.has_session(id)
-	GlobalLogger.log("Stopping server '%s'." % id)
+func stop_server(session_id: String):
+	var _is_valid: bool = registry.has_session(session_id)
+	GlobalLogger.log("Stopping server '%s'." % session_id)
 
 	# TODO: Disable join requests to server.
 
 	if _is_valid == false:
-		GlobalLogger.log("Session '%s' does not exist, cannot stop the server." % id, Enum.LogLevel.WARNING)
+		GlobalLogger.log("Session '%s' does not exist, cannot stop the server." % session_id, Enum.LogLevel.WARNING)
 		return
 
-	var session: Dictionary = registry.get_session(id)
+	var session: Dictionary = registry.get_session(session_id)
 
 	var mp_api: SceneMultiplayer = session.api
 	var all_peers = mp_api.get_peers()
 
 	# Kick all players
 	for _peer in all_peers:
-		kick_player(id, _peer, "Server Closing")
+		kick_player(session_id, _peer, "Server Closing")
 
 	# Close the server
 	mp_api.multiplayer_peer.close()
 	mp_api.multiplayer_peer = null
 
 	# Application cleanup
-	scene_m.stop_master_scene(id)
-	scene_m.destroy_master_scene(id)
+	scene_m.stop_master_scene(session_id)
+	scene_m.destroy_master_scene(session_id)
 
 	for _listing in session.session_server_keys:
 		advertiser.destroy_session(session.id, _listing.key, _listing.url)
 
 	# Database cleanup
-	registry.remove_session(id)
+	registry.remove_session(session_id)
 
 	Events.emit_signal("session_left")
 	return
 
 
-func update_server(id: String, server_info: Dictionary):
-	GlobalLogger.log("Updating server '%s'." % id)
+func update_server(session_id: String, server_info: Dictionary):
+	GlobalLogger.log("Updating server '%s'." % session_id)
 
 	var _saved_session_servers = SettingsManager.get_session_servers()
-	var _server: Dictionary = registry.get_session(id)
+	var _server: Dictionary = registry.get_session(session_id)
 	var _current_listings: Array[String] = []
 
 	# Update our current listings.
@@ -115,7 +115,7 @@ func update_server(id: String, server_info: Dictionary):
 
 		# Invite only sessions are completely delisted
 		if server_info.privacy == Enum.PrivacyLevel.INVITE:
-			advertiser.destroy_session(id, _listing.key, _listing.url)
+			advertiser.destroy_session(session_id, _listing.key, _listing.url)
 			continue
 
 		# Otherwise send an update request to the server
@@ -130,7 +130,7 @@ func update_server(id: String, server_info: Dictionary):
 
 			var _server_key = await advertiser.create_session(server_info, _session_server.url)
 			if _server_key != "":
-				registry.add_session_server_key(id, _session_server.url, _server_key)
+				registry.add_session_server_key(session_id, _session_server.url, _server_key)
 
 	Events.emit_signal("instance_updated")
 	return
@@ -170,35 +170,35 @@ func join_server(ip: String = "", port: int = 0) -> bool:
 	return true
 
 
-func leave_server(id: String):
-	GlobalLogger.log("Trying to leave server '%s'." % id)
+func leave_server(session_id: String):
+	GlobalLogger.log("Trying to leave server '%s'." % session_id)
 
-	var _is_valid: bool = registry.has_session(id)
+	var _is_valid: bool = registry.has_session(session_id)
 
 	if _is_valid == false:
-		GlobalLogger.log("Session '%s' does not exist, cannot disconnect." % id, Enum.LogLevel.WARNING)
+		GlobalLogger.log("Session '%s' does not exist, cannot disconnect." % session_id, Enum.LogLevel.WARNING)
 		return
 
-	var session: Dictionary = registry.get_session(id)
+	var session: Dictionary = registry.get_session(session_id)
 	var mp_api: SceneMultiplayer = session.api
 
 	if mp_api.is_server():
 		GlobalLogger.log("Tried to leave a server we are the host of, stopping the server.")
-		stop_server(id)
+		stop_server(session_id)
 		return
 
 	if mp_api.multiplayer_peer:
 		mp_api.multiplayer_peer.close()
-		GlobalLogger.log("Disconnected from session '%s'." % id, Enum.LogLevel.DEBUG)
+		GlobalLogger.log("Disconnected from session '%s'." % session_id, Enum.LogLevel.DEBUG)
 
 	scene_m.set_active_session(registry.get_all()[0].id)
 
-	scene_m.stop_master_scene(id)
-	scene_m.destroy_master_scene(id)
+	scene_m.stop_master_scene(session_id)
+	scene_m.destroy_master_scene(session_id)
 
-	registry.remove_session(id)
+	registry.remove_session(session_id)
 
-	GlobalLogger.log("Successfully disconnected from session '%s' and cleaned up." % id, Enum.LogLevel.DEBUG)
+	GlobalLogger.log("Successfully disconnected from session '%s' and cleaned up." % session_id, Enum.LogLevel.DEBUG)
 	Events.emit_signal("session_left")
 	return
 
@@ -222,22 +222,22 @@ func get_connected_sessions():
 	return registry.get_all()
 
 
-func set_active_session(id: String):
-	var _is_valid: bool = registry.has_session(id)
+func set_active_session(session_id: String):
+	var _is_valid: bool = registry.has_session(session_id)
 
 	if _is_valid:
-		GlobalLogger.log("Tried to mark an invalid session as active: '%s'" % id, Enum.LogLevel.WARNING)
+		GlobalLogger.log("Tried to mark an invalid session as active: '%s'" % session_id, Enum.LogLevel.WARNING)
 		return
 
-	for session_id in registry.get_all_ids():
-		var _session: Dictionary = registry.get_session(session_id)
+	for _connected_session_id in registry.get_all_ids():
+		var _session: Dictionary = registry.get_session(_connected_session_id)
 		var _my_session_id = _session.api.multiplayer.get_unique_id()
-		scene_m.get_master_root(session_id).get_node("PlayerManager").players.get(_my_session_id).get("node").camera.current = false
+		scene_m.get_master_root(_connected_session_id).get_node("PlayerManager").players.get(_my_session_id).get("node").camera.current = false
 
-	var _target_session: Dictionary = registry.get_session(id)
+	var _target_session: Dictionary = registry.get_session(session_id)
 
 	var my_id = _target_session.api.multiplayer.get_unique_id()
-	scene_m.get_master_root(id).get_node("PlayerManager").players.get(my_id).get("node").camera.current = true
-	scene_m.set_active_session(id)
-	Events.dash_session_changed.emit(id)
+	scene_m.get_master_root(session_id).get_node("PlayerManager").players.get(my_id).get("node").camera.current = true
+	scene_m.set_active_session(session_id)
+	Events.dash_session_changed.emit(session_id)
 	return
