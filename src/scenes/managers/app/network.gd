@@ -15,6 +15,7 @@ var _heartbeats = { }
 
 @onready var registry: Node = get_node("Registry")
 @onready var port_scanner: Node = get_node("PortScanner")
+@onready var advertiser: Node = get_node("Advertiser")
 @onready var scene_m = get_node("../SceneManager")
 
 
@@ -102,27 +103,28 @@ func update_server(id: String, server_info: Dictionary):
 	GlobalLogger.log("Updating server '%s'." % id)
 
 	var _saved_session_servers = SettingsManager.get_session_servers()
+	var _server: Dictionary = registry.get_session(id)
 
 	if server_info.privacy > Enum.PrivacyLevel.INVITE:
-		for _server in _saved_session_servers:
+		for _session_server in _saved_session_servers:
 			if _heartbeats.has(id):
 				GlobalLogger.log("Session '%s' is already advertised. Updating instead." % id)
-				await _update_session_server_listing(server_info, _server.url)
+				await _update_session_server_listing(server_info, _session_server.url)
 			else:
 				GlobalLogger.log("Advertising Session '%s'." % id)
-				var advertise_response = await _advertise_session(server_info, _server.url)
+				var advertise_response = await advertiser.create_session(server_info, _session_server.url)
 
-				if advertise_response.ok == true:
-					registry.add_session_server_key(id, _server.url, advertise_response.data.id)
-					_create_heartbeat_timer(server_info.id, _server.url)
+				if advertise_response != "":
+					registry.add_session_server_key(id, _session_server.url, advertise_response)
+					_create_heartbeat_timer(server_info.id, _session_server.url)
 
 	if server_info.privacy == Enum.PrivacyLevel.INVITE:
 		if _heartbeats.has(id):
 			GlobalLogger.log("Destroying session heartbeat for '%s'" % id)
 			_heartbeats.erase(id)
 
-		for _server in _saved_session_servers:
-			_remove_session_from_server(id, _server.url)
+		for _listing in _server.session_server_keys:
+			advertiser.destroy_session(id, _listing.key, _listing.url)
 
 	Events.emit_signal("instance_updated")
 	return
@@ -355,60 +357,3 @@ func _heartbeat_session(session_id: String, session_server_url: String) -> void:
 	if response and response.get("ok"):
 		GlobalLogger.log("Heartbeat sent for session '%s'" % session_id)
 	return
-
-
-func _advertise_session(session_info: Dictionary, session_server: String) -> Dictionary:
-	var response_dict = { "ok": false, "error": null, "data": null }
-	GlobalLogger.log("Advertising session '%s' to the server '%s'" % [session_info.id, session_server])
-	var _full_url = "%s/api/v1/postSession" % session_server
-	var url = UrlParser.deconstruct(_full_url)
-
-	if url.ok != true:
-		GlobalLogger.log("Failed to deconstruct the URL '%s'. Error: '%s'" % [_full_url, url.error])
-		response_dict.error = url.error
-		return response_dict
-
-	url = url.data
-
-	var _api_key = Accounts.get_session_server_token(url.host)
-	if _api_key == "":
-		response_dict.error = "Could not get the account server token."
-		return response_dict
-
-	var _body = {
-		"session_name": session_info.name,
-		"session_description": session_info.description,
-		"session_privacy": session_info.privacy,
-		"session_port": session_info.port,
-	}
-
-	var advertise_response = await HTTP.req(
-		HTTPClient.Method.METHOD_POST,
-		url.host,
-		url.path,
-		url.port,
-		["Accept: application/json", "Content-Type: application/json", "x-api-key: %s" % _api_key],
-		JSON.stringify(_body),
-	)
-
-	# FIXME: What is this flow? This is bad?
-	if advertise_response.ok != true:
-		response_dict.error = advertise_response.error
-		return response_dict
-
-	advertise_response = JSON.parse_string(advertise_response.body)
-
-	if advertise_response == null:
-		GlobalLogger.log(advertise_response, Enum.LogLevel.ERROR)
-		response_dict.error = "Unknown error. Check logs."
-		return response_dict
-
-	if advertise_response.ok == false:
-		response_dict.error = advertise_response.error
-		return response_dict
-
-	advertise_response = advertise_response.data
-
-	response_dict.ok = true
-	response_dict.data = advertise_response
-	return response_dict
