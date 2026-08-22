@@ -87,6 +87,14 @@ func stop_server(session_id: String):
 	mp_api.multiplayer_peer.close()
 	mp_api.multiplayer_peer = null
 
+	# If we are in this session, go to the previous one.
+	if scene_m.active_session == session_id:
+		var _next_session: String = registry.get_previous()
+		if _next_session.is_empty() == true:
+			GlobalLogger.log("There is no session to move to. You are now probably in the void!", Enum.LogLevel.ERROR)
+			return
+		scene_m.set_active_session(_next_session)
+
 	# Application cleanup
 	scene_m.stop_master_scene(session_id)
 	scene_m.destroy_master_scene(session_id)
@@ -191,7 +199,12 @@ func leave_server(session_id: String):
 		mp_api.multiplayer_peer.close()
 		GlobalLogger.log("Disconnected from session '%s'." % session_id, Enum.LogLevel.DEBUG)
 
-	scene_m.set_active_session(registry.get_all()[0].id)
+	if scene_m.active_session == session_id:
+		var _previous_session: String = registry.get_previous()
+		if _previous_session.is_empty() == true:
+			GlobalLogger.log("There is no session to move to. You are now probably in the void!", Enum.LogLevel.ERROR)
+			return
+		scene_m.set_active_session(_previous_session)
 
 	scene_m.stop_master_scene(session_id)
 	scene_m.destroy_master_scene(session_id)

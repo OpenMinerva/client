@@ -74,6 +74,9 @@ func remove_session(session_id: String) -> void:
 	var _index: int = _database.find_custom(func(entry): return entry.id == session_id)
 	_database.remove_at(_index)
 
+	var _stack_index: int = _session_stack.find(session_id)
+	_session_stack.remove_at(_stack_index)
+
 	GlobalLogger.log("Session '%s' removed from registry." % session_id, Enum.LogLevel.INFO)
 	return
 
@@ -120,12 +123,25 @@ func get_peer_id(session_id: String) -> int:
 
 
 func set_recent(session_id: String) -> void:
-	GlobalLogger.log("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
+	GlobalLogger.log("Setting session '%s' as recent." % session_id)
+	if has_session(session_id) == false:
+		GlobalLogger.log("Session '%s' did not exist, can not add it to the stack." % session_id)
+		return
+
+	if _session_stack.has(session_id) == true:
+		var _index: int = _session_stack.find(session_id)
+		_session_stack.remove_at(_index)
+
+	_session_stack.push_front(session_id)
 	return
 
 
 func get_previous() -> String:
-	GlobalLogger.log("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
+	GlobalLogger.log("Retreiving the previous session in the stack.")
+
+	if _session_stack.size() > 1:
+		return _session_stack[1]
+
 	return ""
 
 
