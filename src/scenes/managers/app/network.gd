@@ -71,7 +71,8 @@ func stop_server(id: String):
 	var _is_valid: bool = registry.has_session(id)
 	GlobalLogger.log("Stopping server '%s'." % id)
 
-	# TODO: Disable join requests to server
+	# TODO: Disable join requests to server.
+	# TODO: Delist the session from session servers.
 
 	if _is_valid == false:
 		GlobalLogger.log("Session '%s' does not exist, cannot stop the server." % id, Enum.LogLevel.WARNING)
@@ -109,7 +110,8 @@ func update_server(id: String, server_info: Dictionary):
 		for _session_server in _saved_session_servers:
 			if _heartbeats.has(id):
 				GlobalLogger.log("Session '%s' is already advertised. Updating instead." % id)
-				await _update_session_server_listing(server_info, _session_server.url)
+				for _listing in _server.session_server_keys:
+					await advertiser.update_session(server_info, _listing.key, _listing.url)
 			else:
 				GlobalLogger.log("Advertising Session '%s'." % id)
 				var advertise_response = await advertiser.create_session(server_info, _session_server.url)
@@ -229,82 +231,6 @@ func set_active_session(id: String):
 	scene_m.set_active_session(id)
 	Events.dash_session_changed.emit(id)
 	return
-
-
-func _update_session_server_listing(session_info: Dictionary, session_server: String) -> Dictionary:
-	var response_dict = { "ok": false, "error": null, "data": null }
-
-	GlobalLogger.log("Updating session '%s' to the server '%s'" % [session_info.id, session_server])
-	var url = UrlParser.deconstruct("%s/api/v1/updateSession" % session_server)
-
-	if url.ok != true:
-		GlobalLogger.log("Failed to deconstruct the URL '%s'. Error: '%s'" % [session_server, url.error])
-		response_dict.error = url.error
-		return response_dict
-
-	var _session: Dictionary = registry.get_session(session_info.id)
-	var _session_server_key_index: int = _session.session_server_keys.find_custom(func(pair): return pair.url == session_server)
-	var _session_session_server_key: String = _session.session_server_keys[_session_server_key_index].key
-
-	url = url.data
-	var _api_key = Accounts.get_session_server_token(url.host)
-	var _body = {
-		"id": _session_session_server_key,
-		"session_name": session_info.name,
-		"session_description": session_info.description,
-		"session_privacy": session_info.privacy,
-	}
-
-	var _update_response = await HTTP.req(
-		HTTPClient.Method.METHOD_POST,
-		url.host,
-		url.path,
-		url.port,
-		["Accept: application/json", "Content-Type: application/json", "x-api-key: %s" % _api_key],
-		JSON.stringify(_body),
-	)
-
-	return response_dict
-
-
-func _remove_session_from_server(server_id: String, session_server: String) -> Dictionary:
-	var response_dict = { "ok": false, "error": null, "data": { } }
-	var _full_url = "%s/api/v1/deleteSession" % session_server
-
-	GlobalLogger.log("Removing session '%s' to the server '%s'" % [server_id, session_server])
-	var url = UrlParser.deconstruct(_full_url)
-
-	if url.ok != true:
-		GlobalLogger.log("Failed to deconstruct the URL '%s'. Error: '%s'" % [_full_url, url.error])
-		response_dict.error = url.error
-		return response_dict
-
-	var _session: Dictionary = registry.get_session(server_id)
-	var _session_server_key_index: int = _session.session_server_keys.find_custom(func(pair): return pair.url == session_server)
-	var _session_session_server_key: String = _session.session_server_keys[_session_server_key_index].key
-
-	url = url.data
-	var _api_key = Accounts.get_session_server_token(url.host)
-	var _body = {
-		"id": _session_session_server_key,
-	}
-
-	var _removal_response = await HTTP.req(
-		HTTPClient.Method.METHOD_DELETE,
-		url.host,
-		url.path,
-		url.port,
-		["Accept: application/json", "Content-Type: application/json", "x-api-key: %s" % _api_key],
-		JSON.stringify(_body),
-	)
-
-	if _removal_response.ok:
-		response_dict.ok = true
-		response_dict.data = JSON.parse_string(_removal_response.body)
-		return response_dict
-
-	response_dict.error = _removal_response.error
-	return response_dict
 
 
 func _create_heartbeat_timer(session_id: String, session_server_url: String):

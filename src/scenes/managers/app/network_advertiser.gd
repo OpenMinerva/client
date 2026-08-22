@@ -66,7 +66,51 @@ func create_session(session_info: Dictionary, session_server_url: String) -> Str
 	return _advertise_response_json.data.id
 
 
-func update_session() -> void:
+## Updates a session listing with a target session server.
+## [param session_info] is a dictionary containing all of the information about our server.
+## [param session_key] is the session key we were given with our listing to the session server.
+## [param session_server_url] is the target session server url.
+func update_session(session_info: Dictionary, session_key: String, session_server_url: String) -> void:
+	GlobalLogger.log("Attempting to update session '%s' with server '%s'" % [session_info.id, session_server_url], Enum.LogLevel.INFO)
+
+	var _request_url: Dictionary = UrlParser.deconstruct("%s/api/v1/updateSession" % session_server_url)
+	if _request_url.ok != true:
+		GlobalLogger.log("'%s' is not a valid URL." % _request_url, Enum.LogLevel.WARNING)
+		return
+
+	var _deconstructed_url: Dictionary = _request_url.data
+	var _api_key: String = Accounts.get_session_server_token(_deconstructed_url.host)
+	var _body = {
+		"id": session_key,
+		"session_name": session_info.name,
+		"session_description": session_info.description,
+		"session_privacy": session_info.privacy,
+	}
+
+	var _update_response = await HTTP.req(
+		HTTPClient.Method.METHOD_POST,
+		_deconstructed_url.host,
+		_deconstructed_url.path,
+		_deconstructed_url.port,
+		["Accept: application/json", "Content-Type: application/json", "x-api-key: %s" % _api_key],
+		JSON.stringify(_body),
+	)
+
+	if _update_response.ok != true:
+		GlobalLogger.log("Request to session server '%s' failed." % session_server_url, Enum.LogLevel.INFO)
+		return
+
+	var _update_response_json = JSON.parse_string(_update_response.body)
+	if _update_response_json == null:
+		GlobalLogger.log("Failed to parse update response. Unknown error.", Enum.LogLevel.ERROR)
+		GlobalLogger.log(_update_response_json, Enum.LogLevel.ERROR)
+		return
+
+	if _update_response_json.ok == false:
+		GlobalLogger.log("Failed to update session.", Enum.LogLevel.ERROR)
+		GlobalLogger.log(_update_response_json, Enum.LogLevel.ERROR)
+		return
+
 	return
 
 
