@@ -69,7 +69,6 @@ func stop_server(id: String):
 	GlobalLogger.log("Stopping server '%s'." % id)
 
 	# TODO: Disable join requests to server.
-	# TODO: Delist the session from session servers.
 
 	if _is_valid == false:
 		GlobalLogger.log("Session '%s' does not exist, cannot stop the server." % id, Enum.LogLevel.WARNING)
@@ -92,8 +91,13 @@ func stop_server(id: String):
 	scene_m.stop_master_scene(id)
 	scene_m.destroy_master_scene(id)
 
+	for _listing in session.session_server_keys:
+		advertiser.destroy_session(session.id, _listing.key, _listing.url)
+
 	# Database cleanup
 	registry.remove_session(id)
+
+	Events.emit_signal("session_left")
 	return
 
 
@@ -168,6 +172,7 @@ func join_server(ip: String = "", port: int = 0) -> bool:
 
 func leave_server(id: String):
 	GlobalLogger.log("Trying to leave server '%s'." % id)
+
 	var _is_valid: bool = registry.has_session(id)
 
 	if _is_valid == false:
@@ -176,6 +181,11 @@ func leave_server(id: String):
 
 	var session: Dictionary = registry.get_session(id)
 	var mp_api: SceneMultiplayer = session.api
+
+	if mp_api.is_server():
+		GlobalLogger.log("Tried to leave a server we are the host of, stopping the server.")
+		stop_server(id)
+		return
 
 	if mp_api.multiplayer_peer:
 		mp_api.multiplayer_peer.close()
