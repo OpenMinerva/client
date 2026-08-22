@@ -9,8 +9,8 @@
 extends Node
 ## This file contains all of the session advertisement functionality for listing our session among session servers.
 
-## The internal database for keeping track of heartbeat timers.
-var _heartbeats = { }
+## The internal database for keeping track of open sessions.
+var _open_sessions = []
 
 
 ## List a session with a given session server.
@@ -63,7 +63,10 @@ func create_session(session_info: Dictionary, session_server_url: String) -> Str
 		GlobalLogger.log(_advertise_response_json, Enum.LogLevel.ERROR)
 		return ""
 
-	return _advertise_response_json.data.id
+	var _session_key = _advertise_response_json.data.id
+	_open_sessions.append(_session_key)
+	_create_heartbeat(_session_key, session_server_url, 20)
+	return _session_key
 
 
 ## Updates a session listing with a target session server.
@@ -144,6 +147,9 @@ func destroy_session(session_id: String, session_key: String, session_server_url
 
 	if _removal_response.ok == true:
 		GlobalLogger.log("Successfully removed listing '%s' from session server '%s'." % [session_id, session_server_url], Enum.LogLevel.INFO)
+		var _listing_index: int = _open_sessions.find(session_key)
+		_open_sessions.remove_at(_listing_index)
+
 		return true
 
 	GlobalLogger.log("Unknown error removing listing '%s' from session server '%s'." % [session_id, session_server_url], Enum.LogLevel.ERROR)
@@ -151,17 +157,49 @@ func destroy_session(session_id: String, session_key: String, session_server_url
 	return false
 
 
-func create_heartbeat() -> void:
+func _create_heartbeat(session_key: String, session_server_url: String, seconds_interval: int = 20) -> void:
+	GlobalLogger.log("Creating a heartbeat timer for '%s'" % session_server_url)
+
+	var _timer = get_tree().create_timer(seconds_interval)
+	_timer.timeout.connect(_heartbeat_timeout.bind(session_key, session_server_url))
 	return
 
 
-func destroy_heartbeat() -> void:
+func _heartbeat_timeout(session_key: String, session_server_url: String) -> void:
+	if _open_sessions.has(session_key) == false:
+		GlobalLogger.log("Session was removed from open sessions, not sending a heartbeat.")
+		return
+
+	_send_heartbeat(session_key, session_server_url)
+	_create_heartbeat(session_key, session_server_url, 20)
 	return
 
 
-func has_heartbeat() -> bool:
-	return false
+func _send_heartbeat(session_key: String, session_server_url: String) -> void:
+	var _request_url: Dictionary = UrlParser.deconstruct("%s/api/v1/heartbeatSession" % session_server_url)
+	if _request_url.ok != true:
+		GlobalLogger.log("'%s' is not a valid URL." % _request_url, Enum.LogLevel.WARNING)
+		return
 
+	var _deconstructed_url = _request_url.data
+	var _api_key: String = Accounts.get_session_server_token(_deconstructed_url.host)
+	var _body = { "session_id": session_key }
 
-func _create_heartbeat_timer(seconds_interval: int = 60) -> void:
+	var _heartbeat_response = await HTTP.req(
+		HTTPClient.Method.METHOD_POST,
+		_deconstructed_url.host,
+		_deconstructed_url.path,
+		_deconstructed_url.port,
+		["Accept: application/json", "Content-Type: application/json", "x-api-key: %s" % _api_key],
+		JSON.stringify(_body),
+	)
+
+	if _heartbeat_response == null:
+		GlobalLogger.log("Failed to get a valid response for sending a heartbeat.", Enum.LogLevel.ERROR)
+		return
+
+	if _heartbeat_response.ok == true:
+		GlobalLogger.log("Successfully sent heartbeat to '%s'" % session_server_url)
+		return
+
 	return

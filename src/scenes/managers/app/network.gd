@@ -10,9 +10,6 @@ extends Node
 
 const MAX_CLIENTS = 1000
 
-# TODO: This interal DB template assumes only a single session server is being advertised to.
-var _heartbeats = { }
-
 @onready var registry: Node = get_node("Registry")
 @onready var port_scanner: Node = get_node("PortScanner")
 @onready var advertiser: Node = get_node("Advertiser")
@@ -105,28 +102,31 @@ func update_server(id: String, server_info: Dictionary):
 
 	var _saved_session_servers = SettingsManager.get_session_servers()
 	var _server: Dictionary = registry.get_session(id)
+	var _current_listings: Array[String] = []
+
+	# Update our current listings.
+	for _listing in _server.session_server_keys:
+		GlobalLogger.log("Updating session '%s'" % _server.id)
+		_current_listings.append(_listing.url)
+
+		# Invite only sessions are completely delisted
+		if server_info.privacy == Enum.PrivacyLevel.INVITE:
+			advertiser.destroy_session(id, _listing.key, _listing.url)
+			continue
+
+		# Otherwise send an update request to the server
+		await advertiser.update_session(server_info, _listing.key, _listing.url)
+		continue
 
 	if server_info.privacy > Enum.PrivacyLevel.INVITE:
+		# List on session servers we were not on before.
 		for _session_server in _saved_session_servers:
-			if _heartbeats.has(id):
-				GlobalLogger.log("Session '%s' is already advertised. Updating instead." % id)
-				for _listing in _server.session_server_keys:
-					await advertiser.update_session(server_info, _listing.key, _listing.url)
-			else:
-				GlobalLogger.log("Advertising Session '%s'." % id)
-				var advertise_response = await advertiser.create_session(server_info, _session_server.url)
+			if _current_listings.has(_session_server.url) == true:
+				continue
 
-				if advertise_response != "":
-					registry.add_session_server_key(id, _session_server.url, advertise_response)
-					_create_heartbeat_timer(server_info.id, _session_server.url)
-
-	if server_info.privacy == Enum.PrivacyLevel.INVITE:
-		if _heartbeats.has(id):
-			GlobalLogger.log("Destroying session heartbeat for '%s'" % id)
-			_heartbeats.erase(id)
-
-		for _listing in _server.session_server_keys:
-			advertiser.destroy_session(id, _listing.key, _listing.url)
+			var _server_key = await advertiser.create_session(server_info, _session_server.url)
+			if _server_key != "":
+				registry.add_session_server_key(id, _session_server.url, _server_key)
 
 	Events.emit_signal("instance_updated")
 	return
@@ -230,56 +230,4 @@ func set_active_session(id: String):
 	scene_m.get_master_root(id).get_node("PlayerManager").players.get(my_id).get("node").camera.current = true
 	scene_m.set_active_session(id)
 	Events.dash_session_changed.emit(id)
-	return
-
-
-func _create_heartbeat_timer(session_id: String, session_server_url: String):
-	GlobalLogger.log("Creating a heartbeat timer for server '%s'" % session_id)
-	var timer = get_tree().create_timer(20)
-
-	_heartbeats[session_id] = timer
-
-	timer.timeout.connect(_heartbeat_timer_timeout.bind(session_id, session_server_url))
-	return
-
-
-func _heartbeat_timer_timeout(session_id: String, session_server_url: String):
-	GlobalLogger.log("Sending a heartbeat for server '%s'" % session_id)
-	if _heartbeats.has(session_id) == false:
-		GlobalLogger.log("Server '%s' does not exist anymore, not sending a heartbeat." % session_id)
-		return
-
-	_heartbeat_session(session_id, session_server_url)
-
-	_create_heartbeat_timer(session_id, session_server_url)
-	return
-
-
-func _heartbeat_session(session_id: String, session_server_url: String) -> void:
-	var _full_url = "%s/api/v1/heartbeatSession" % session_server_url
-	var _url = UrlParser.deconstruct(_full_url)
-
-	if _url.ok != true:
-		GlobalLogger.log("Failed to deconstruct the URL '%s'. Error: '%s'" % [_full_url, _url.error])
-		return
-
-	var _session: Dictionary = registry.get_session(session_id)
-	var _session_server_key_index: int = _session.session_server_keys.find_custom(func(pair): return pair.url == session_server_url)
-	var _session_session_server_key: String = _session.session_server_keys[_session_server_key_index].key
-
-	_url = _url.data
-	var _api_key = Accounts.get_session_server_token(_url.host)
-	var body = { "session_id": _session_session_server_key }
-
-	var response = await HTTP.req(
-		HTTPClient.Method.METHOD_POST,
-		_url.host,
-		_url.path,
-		_url.port,
-		["Accept: application/json", "Content-Type: application/json", "x-api-key: %s" % _api_key],
-		JSON.stringify(body),
-	)
-
-	if response and response.get("ok"):
-		GlobalLogger.log("Heartbeat sent for session '%s'" % session_id)
 	return
