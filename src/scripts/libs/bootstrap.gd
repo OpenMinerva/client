@@ -26,10 +26,10 @@ func _notification(what: int) -> void:
 		_connected_servers.reverse()
 
 		for server in _connected_servers:
-			if server.type == "host":
+			if server.type == network_m.registry.SessionConnectionType.HOST:
 				network_m.stop_server(server.id)
 				continue
-			if server.type == "client":
+			if server.type == network_m.registry.SessionConnectionType.CLIENT:
 				network_m.leave_server(server.id)
 				continue
 

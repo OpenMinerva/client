@@ -1,6 +1,18 @@
 [gd_scene format=3 uid="uid://5v8rbnp716b0"]
 
-[ext_resource type="Script" uid="uid://bh55hvwwmnob1" path="res://scenes/managers/app/network.gd" id="1_daels"]
+[ext_resource type="Script" uid="uid://hqpfg7bb4fbb" path="res://scenes/managers/app/network.gd" id="1_daels"]
+[ext_resource type="Script" uid="uid://db4ccr4y2k5gt" path="res://scenes/managers/app/network_port_scanner.gd" id="2_aybq3"]
+[ext_resource type="Script" uid="uid://dgb66dbovn6x0" path="res://scenes/managers/app/network_registry.gd" id="3_qmx3r"]
+[ext_resource type="Script" uid="uid://cca3mgrp1adt8" path="res://scenes/managers/app/network_advertiser.gd" id="4_twtuj"]
 
 [node name="NetworkManager" type="Node" unique_id=823257785]
 script = ExtResource("1_daels")
+
+[node name="PortScanner" type="Node" parent="." unique_id=721119445]
+script = ExtResource("2_aybq3")
+
+[node name="Registry" type="Node" parent="." unique_id=2033064433]
+script = ExtResource("3_qmx3r")
+
+[node name="Advertiser" type="Node" parent="." unique_id=1464170156]
+script = ExtResource("4_twtuj")

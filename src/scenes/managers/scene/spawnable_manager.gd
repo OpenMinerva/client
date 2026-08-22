@@ -87,7 +87,7 @@ func sync_all() -> void:
 
 @rpc("any_peer", "reliable")
 func create(node_type: String, node_parent: int = 0, model_path: String = "") -> Variant:
-	var my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
+	var my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
 	var caller_id: int = multiplayer.get_remote_sender_id()
 	GlobalLogger.log("[%s] Spawning '%s'." % [my_id, node_type])
 
@@ -119,11 +119,11 @@ func create(node_type: String, node_parent: int = 0, model_path: String = "") ->
 
 @rpc("call_local", "any_peer", "reliable")
 func destroy(node_id: int) -> Variant:
-	if app_network_m._session_db.has(app_scene_m.active_session) == false:
+	if app_network_m.registry.has_session(app_scene_m.active_session) == false:
 		GlobalLogger.log("Failed to destroy node '%s'." % node_id, Enum.LogLevel.ERROR)
 		return
 
-	var my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
+	var my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
 	var caller_id: int = multiplayer.get_remote_sender_id()
 
 	if my_id == 1:
@@ -172,7 +172,7 @@ func deselect(gizmo_id: int) -> void:
 
 @rpc("any_peer", "reliable")
 func set_transform(node_id: int, p_transform: Transform3D, ignore_sender: bool = true) -> void:
-	var _my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
+	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
 	var _caller_id: int = multiplayer.get_remote_sender_id()
 
 	if _my_id == 1:
@@ -198,7 +198,7 @@ func set_transform(node_id: int, p_transform: Transform3D, ignore_sender: bool =
 
 @rpc("any_peer", "reliable")
 func set_property(node_id: int, property_name: String, property_value: Variant) -> void:
-	var _my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
+	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
 	var _caller_id: int = multiplayer.get_remote_sender_id()
 
 	if _my_id == 1:
@@ -213,7 +213,7 @@ func set_property(node_id: int, property_name: String, property_value: Variant) 
 func set_resource(node_id: int, property_name: String, resource_id: int) -> void:
 	# NOTE: This resource settter is very basic and only works as a way for initializing a joining peer on the server.
 	# There is not a complex nor complete lifecycle management for these assets.
-	var _my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
+	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
 	var _caller_id: int = multiplayer.get_remote_sender_id()
 
 	if _my_id == 1:
@@ -236,7 +236,7 @@ func set_resource(node_id: int, property_name: String, resource_id: int) -> void
 @rpc("any_peer", "reliable")
 func set_authority(node_id: int, peer_id: int) -> void:
 	# TODO: Only allow the host to call this function.
-	var _my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
+	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
 	var _caller_id: int = multiplayer.get_remote_sender_id()
 
 	if _my_id == 1:
@@ -248,7 +248,7 @@ func set_authority(node_id: int, peer_id: int) -> void:
 
 @rpc("call_local", "any_peer", "reliable")
 func create_asset(asset_type: String, properties: Array) -> Variant:
-	var my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
+	var my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
 	var caller_id: int = multiplayer.get_remote_sender_id()
 	GlobalLogger.log("[%s] Creating Asset '%s'." % [my_id, asset_type])
 
@@ -280,7 +280,7 @@ func create_asset(asset_type: String, properties: Array) -> Variant:
 
 @rpc("call_local", "any_peer", "reliable")
 func set_parent(node_id: int, parent_node_id: int) -> void:
-	var my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
+	var my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
 
 	GlobalLogger.log("[%s] Setting parent of '%s' to '%s'." % [my_id, node_id, parent_node_id])
 
@@ -402,7 +402,7 @@ func set_authority_on_spawnable(node_id: int, peer_id: int) -> void:
 
 
 func receive_database(database: Array, players: Dictionary, assets: Array, asset_relations: Array) -> void:
-	var _my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
+	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
 
 	GlobalLogger.log("[%s] Receiving spawnable database with %d entries" % [_my_id, database.size()])
 

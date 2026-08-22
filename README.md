@@ -2,9 +2,11 @@
 > This repository is currently pre-alpha, breaking changes happen frequently, there have not been any security audits, and data loss is expected.
 
 <p align="center">
+  <br>
   <img height="150" src="https://github.com/openminerva/client/blob/alpha/docs/logos/om-logo-big.webp?raw=true" />
 </p>
 <p align="center">
+  <br>
   <a href="https://discord.gg/Kx6avB52gK">
     <img src="https://dcbadge.limes.pink/api/server/https://discord.gg/Kx6avB52gK" alt="Discord" />
   </a>
@@ -17,7 +19,7 @@
 OpenMinerva is the no-nonsense self-hosted virtual collaboration environment for flatscreen / VR / AR.
 
 <p align="center">
-  <img height="150" src="./docs/preview/wwyb_promo.webp?raw=true" />
+  <img height="200" src="./docs/preview/wwyb_promo.webp?raw=true" />
 </p>
 
 ## About
