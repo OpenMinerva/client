@@ -1,3 +1,4 @@
+@warning_ignore("unused_signal")
 # --- License
 # File: /client/src/scenes/managers/scene/signalbus.gd
 # Project: OpenMinerva
@@ -8,7 +9,6 @@
 # --- License
 extends Node
 
-@warning_ignore("unused_signal")
 signal node_created(node: Node)
-@warning_ignore("unused_signal")
 signal node_destroyed(node: Node)
+signal node_metadata_change(node: Node)

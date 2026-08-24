@@ -196,6 +196,20 @@ func set_transform(node_id: int, p_transform: Transform3D, ignore_sender: bool =
 	return
 
 
+@rpc("call_local", "any_peer", "reliable")
+func set_metadata(node_id: int, metadata_name: String, metadata_value: Variant) -> void:
+	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
+	var _caller_id: int = multiplayer.get_remote_sender_id()
+
+	if _my_id == 1:
+		set_metadata_on_spawnable.rpc(node_id, metadata_name, metadata_value)
+	else:
+		await rpcawaiter.send_rpc(1, set_property.bind(node_id, metadata_name, metadata_value))
+		return
+
+	return
+
+
 @rpc("any_peer", "reliable")
 func set_property(node_id: int, property_name: String, property_value: Variant) -> void:
 	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
@@ -312,7 +326,6 @@ func set_parent(node_id: int, parent_node_id: int) -> void:
 	return
 
 
-# TODO: How would large assets work?
 @rpc("authority", "reliable")
 func spawn_spawnable(p_type: String, p_name: String = "", p_path: String = "", parent_id: int = 0) -> int:
 	var _spawned_entity
@@ -374,6 +387,21 @@ func transform_spawnable(node_id: int, transform: Transform3D) -> void:
 		return
 
 	_entity_db.node.transform = transform
+	return
+
+
+@rpc("call_local", "authority", "reliable")
+func set_metadata_on_spawnable(node_id: int, metadata_name: String, metadata_value: Variant) -> void:
+	var _entity_db = get_by_id(node_id)
+
+	# TODO: Error check.
+	if _entity_db == { }:
+		return
+
+	GlobalLogger.log("Adjusting metadata '%s' on node '%s'." % [metadata_name, node_id])
+	_entity_db.node.set_meta(metadata_name, metadata_value)
+	session_signalbus.node_metadata_change.emit(_entity_db.node)
+
 	return
 
 

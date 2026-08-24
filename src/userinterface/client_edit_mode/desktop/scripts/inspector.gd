@@ -253,6 +253,11 @@ func _on_node_destroyed(node_entry: Dictionary) -> void:
 	return
 
 
+func _on_node_metadata_changed(_node_entry: Node) -> void:
+	_inspector_build()
+	return
+
+
 func _on_session_changed(_session_id: String) -> void:
 	var _session_master: Node3D = app_scene_m.get_master_scene(_session_id)
 	session_signalbus = _session_master.get_node("SignalBus")
@@ -267,6 +272,7 @@ func _on_session_changed(_session_id: String) -> void:
 	if session_signalbus.is_connected("node_created", _on_node_created) == false:
 		session_signalbus.node_created.connect(_on_node_created)
 		session_signalbus.node_destroyed.connect(_on_node_destroyed)
+		session_signalbus.node_metadata_change.connect(_on_node_metadata_changed)
 
 	_inspector_build()
 	return
@@ -439,8 +445,11 @@ func _inspector_get_all_tree_ancestors(starting_item: TreeItem) -> Array[TreeIte
 
 # Inspector events
 func _inspector_item_edited() -> void:
+	var _node: Node = _inspector_editing.get_metadata(0)
+	var _new_name: String = _inspector_editing.get_text(0)
+
 	_inspector_editing.set_editable(0, false)
-	_inspector_editing.get_metadata(0).set_meta("pretty_name", _inspector_editing.get_text(0))
+	session_spawnable_m.set_metadata.rpc(int(_node.name), "pretty_name", _new_name)
 
 
 func _inspector_clear() -> void:
