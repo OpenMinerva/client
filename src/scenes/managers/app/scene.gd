@@ -92,7 +92,7 @@ func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel, scene_
 			_spawnable_manager.set_parent.rpc(int(_world_node.name), 0)
 
 		# Delete the initial fake root from the loaded world.
-		_spawnable_manager.destroy.rpc(int(_target_node.name))
+		_spawnable_manager.destroy.rpc_id(1, int(_target_node.name))
 
 	# Allow scene to be visible in the inspector
 	_root_scene_node.set_meta("scene_node", true)

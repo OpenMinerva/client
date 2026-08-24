@@ -78,7 +78,7 @@ metadata/scene_node = true
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1673060133]
 transform = Transform3D(1, 0, 0, 0, 0.995942, 0.08999716, 0, -0.08999716, 0.995942, 0, 0, 0)
 shadow_enabled = true
-metadata/scene_node = false
+metadata/scene_node = true
 metadata/spawnable_type = "DirectionalLight3D"
 metadata/pretty_name = "DirectionalLight3D"
 

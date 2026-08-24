@@ -85,15 +85,19 @@ func load_spawnable(path: String) -> void:
 		_task.id = _node_id
 		_task.parent = -1
 		_task.path = _node_path
-		_task.properties = [] # An array listing the keys of property fields.
+		_task.properties = []
+		_task.resources = []
 
 		for _prop_id in range(_num_properties):
 			var _prop_name: String = _state.get_node_property_name(_node_id, _prop_id)
 			var _prop_value: Variant = _state.get_node_property_value(_node_id, _prop_id)
 
 			if _prop_value is Resource:
-				_task.properties.append(_prop_name)
+				_task.resources.append(_prop_name)
 				_prop_value = _flatten_resource(_prop_value)
+
+			if _prop_name.begins_with("metadata/") == true:
+				_task.properties.append({ "name": _prop_name.replace("metadata/", ""), "value": _prop_value })
 
 			_task.set(_prop_name, _prop_value)
 
@@ -140,6 +144,9 @@ func load_spawnable(path: String) -> void:
 			session_spawnable_manager.set_transform(int(_task.node.name), _task.transform)
 
 		for _prop in _task.properties:
+			session_spawnable_manager.set_metadata.rpc_id(1, int(_node.name), _prop.name, _prop.value)
+
+		for _prop in _task.resources:
 			var _prop_dict = _task[_prop]
 
 			# First we should create the asset on the server
