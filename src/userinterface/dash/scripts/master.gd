@@ -19,6 +19,17 @@ func _ready():
 	return
 
 
+func _unhandled_input(event):
+	if event.is_action_pressed("escape"):
+		if visible == false:
+			Events.emit_signal("dash_set_state", true)
+			Events.emit_signal("cem_set_state", false)
+		else:
+			Events.emit_signal("dash_set_state", false)
+			Events.emit_signal("cem_set_state", false)
+		get_viewport().set_input_as_handled()
+
+
 func _handle_switch_tab(tab_name):
 	GlobalLogger.log("Changing dashboard tab to: '%s'" % tab_name)
 	for _index in len(pages):
@@ -36,12 +47,3 @@ func _handle_dash_state(is_open: bool) -> void:
 	GlobalLogger.log("Changing dashboard state: '%s'" % is_open)
 	StateManager.update_mouse_state()
 	visible = is_open
-
-
-func _unhandled_input(event):
-	if event.is_action_pressed("escape"):
-		if visible == false:
-			Events.emit_signal("dash_set_state", true)
-		else:
-			Events.emit_signal("dash_set_state", false)
-		get_viewport().set_input_as_handled()

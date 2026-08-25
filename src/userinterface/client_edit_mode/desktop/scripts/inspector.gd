@@ -21,7 +21,6 @@ var _inspector_opened_tree_nodes: Array[Node] = []
 var _inspector_selected_node: Node = null
 var _inspector_tree_filters: Array[String] = []
 var _inspector_tree_search: String = ""
-var _cem_state: bool = false
 var _cem_camera: bool = false
 
 # FIXME: You can select the selected spawnable. (Safe but probably should be changed)
@@ -81,8 +80,12 @@ func _input(event: InputEvent):
 				_inspector_popup.visible = false
 
 	if event.is_action_pressed("cem_activate"):
-		_cem_state = !_cem_state
-		Events.emit_signal("cem_set_state", _cem_state)
+		if StateManager.cem == false:
+			Events.emit_signal("dash_set_state", false)
+			Events.emit_signal("cem_set_state", true)
+		else:
+			Events.emit_signal("dash_set_state", false)
+			Events.emit_signal("cem_set_state", false)
 
 		StateManager.update_mouse_state()
 
