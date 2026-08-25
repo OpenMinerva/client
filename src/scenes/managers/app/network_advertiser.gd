@@ -55,12 +55,12 @@ func create_session(session_info: Dictionary, session_server_url: String) -> Str
 	var _advertise_response_json = JSON.parse_string(_advertise_response.body)
 	if _advertise_response_json == null:
 		GlobalLogger.log("Failed to parse listing response. Unknown error.", Enum.LogLevel.ERROR)
-		GlobalLogger.log(_advertise_response_json, Enum.LogLevel.ERROR)
+		GlobalLogger.log(str(_advertise_response), Enum.LogLevel.ERROR)
 		return ""
 
 	if _advertise_response_json.ok == false:
 		GlobalLogger.log("Failed to list session.", Enum.LogLevel.ERROR)
-		GlobalLogger.log(_advertise_response_json, Enum.LogLevel.ERROR)
+		GlobalLogger.log(_advertise_response_json.to_string(), Enum.LogLevel.ERROR)
 		return ""
 
 	var _session_key = _advertise_response_json.data.id
