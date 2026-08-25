@@ -153,7 +153,7 @@ func _phys_normal(delta) -> void:
 		Events.escape_mouse.emit(_should_escape_mouse)
 		StateManager.update_mouse_state()
 
-	if StateManager.is_mouse_captured() == false:
+	if StateManager.is_mouse_captured() == false || _cem_camera == true:
 		velocity.x = 0
 		velocity.z = 0
 
