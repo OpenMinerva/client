@@ -16,6 +16,7 @@ func _ready():
 	Events.connect("dash_set_state", _handle_dash_state)
 
 	Events.emit_signal("dash_switch_tab", "Home")
+	StateManager.update_mouse_state()
 	return
 
 
