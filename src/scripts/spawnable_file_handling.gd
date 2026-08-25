@@ -85,8 +85,9 @@ func load_spawnable(path: String) -> void:
 		_task.id = _node_id
 		_task.parent = -1
 		_task.path = _node_path
-		_task.properties = []
+		_task.metadata = []
 		_task.resources = []
+		_task.properties = []
 
 		for _prop_id in range(_num_properties):
 			var _prop_name: String = _state.get_node_property_name(_node_id, _prop_id)
@@ -97,7 +98,10 @@ func load_spawnable(path: String) -> void:
 				_prop_value = _flatten_resource(_prop_value)
 
 			if _prop_name.begins_with("metadata/") == true:
-				_task.properties.append({ "name": _prop_name.replace("metadata/", ""), "value": _prop_value })
+				_task.metadata.append({ "name": _prop_name.replace("metadata/", ""), "value": _prop_value })
+
+			if typeof(_prop_name) != TYPE_STRING_NAME && _prop_name.begins_with("metadata/") == false:
+				_task.properties.append({ "name": _prop_name, "value": _prop_value })
 
 			_task.set(_prop_name, _prop_value)
 
@@ -143,8 +147,11 @@ func load_spawnable(path: String) -> void:
 		if _task.has("transform") == true:
 			session_spawnable_manager.set_transform(int(_task.node.name), _task.transform)
 
-		for _prop in _task.properties:
+		for _prop in _task.metadata:
 			session_spawnable_manager.set_metadata.rpc_id(1, int(_node.name), _prop.name, _prop.value)
+
+		for _prop in _task.properties:
+			session_spawnable_manager.set_property.rpc_id(1, int(_task.node.name), _prop.name, _prop.value)
 
 		for _prop in _task.resources:
 			var _prop_dict = _task[_prop]

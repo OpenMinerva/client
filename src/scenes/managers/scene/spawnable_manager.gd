@@ -210,7 +210,7 @@ func set_metadata(node_id: int, metadata_name: String, metadata_value: Variant) 
 	return
 
 
-@rpc("any_peer", "reliable")
+@rpc("call_local", "any_peer", "reliable")
 func set_property(node_id: int, property_name: String, property_value: Variant) -> void:
 	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
 	var _caller_id: int = multiplayer.get_remote_sender_id()
