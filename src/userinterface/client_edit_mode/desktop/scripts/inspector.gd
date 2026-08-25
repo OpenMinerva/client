@@ -249,6 +249,7 @@ func _on_node_destroyed(node_entry: Dictionary) -> void:
 	if my_gizmo:
 		my_gizmo.deselect(node_entry.node)
 
+	await get_tree().process_frame
 	_inspector_build()
 	return
 

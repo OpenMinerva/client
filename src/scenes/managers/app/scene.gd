@@ -218,8 +218,7 @@ func _set_camera_active_state(session_id, state: bool = false) -> void:
 			# FIXME: This error should not be necessary, there is a bigger problem somewhere else.
 			return
 
-		var camera = my_database_entry.node.get_node("Head/Camera3D")
-		camera.current = state
+		my_database_entry.node.enable_camera()
 	return
 
 

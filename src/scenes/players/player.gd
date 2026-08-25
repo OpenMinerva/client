@@ -37,6 +37,7 @@ var _speed: float = 0
 @onready var _node_body = get_node(".")
 @onready var _node_camera = get_node("Head/Camera3D")
 @onready var _node_cem_camera: Node3D = null
+@onready var _node_cem_camera_camera: Camera3D = null
 @onready var _inspector_tree_node: Node = get_tree().current_scene.get_node("Inspector/VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer")
 @onready var _inspector_properties_node: Node = get_tree().current_scene.get_node("Inspector/VBoxContainer/HBoxContainer/HSplitContainer/Properties")
 @onready var _inspector_toolbar_node: Node = get_tree().current_scene.get_node("Inspector/VBoxContainer/Toolbar")
@@ -88,6 +89,17 @@ func _input(event) -> void:
 			_node_cem_camera.rotation.y -= event.relative.x * _DEFAULT_SENSITIVITY * 0.001
 			_node_cem_camera.rotation.x = clampf(_node_cem_camera.rotation.x - event.relative.y * _DEFAULT_SENSITIVITY * 0.001, deg_to_rad(-89), deg_to_rad(89))
 
+	return
+
+
+func enable_camera() -> void:
+	if _cem_camera == true:
+		_node_cem_camera_camera.current = true
+		_node_camera.current = false
+	else:
+		if _node_cem_camera_camera != null:
+			_node_cem_camera_camera.current = false
+		_node_camera.current = true
 	return
 
 
@@ -203,6 +215,7 @@ func _cem_camera_state(state: bool) -> void:
 	# TODO: Add error if this code is ran without _node_cem_camera defined.
 	if _node_cem_camera != null:
 		_node_cem_camera.get_child(0).current = false
+		_node_cem_camera_camera = null
 		await _session_spawnable_m.destroy(int(_node_cem_camera.name))
 	_node_camera.current = true
 
@@ -211,7 +224,7 @@ func _cem_camera_state(state: bool) -> void:
 
 func _cem_camera_build() -> Node3D:
 	var _cem_root = await _session_spawnable_m.create("Node3D")
-	await _session_spawnable_m.create("Camera3D", int(_cem_root.name))
+	_node_cem_camera_camera = await _session_spawnable_m.create("Camera3D", int(_cem_root.name))
 	await _session_spawnable_m.create("Box", int(_cem_root.name))
 
 	_cem_root.set_meta("persistent", false)
