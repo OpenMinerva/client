@@ -7,6 +7,7 @@
 # Authors: Armored Dragon
 # --- License
 extends Node
+## This file handles the file system management of the application. If the app needs to read a file or writes a file, it will go through here.
 
 const BASE_SPAWNABLE_DIR = "user://spawnables/"
 
@@ -14,13 +15,14 @@ var spawnables_dir: Array[String] = []
 
 
 func _ready() -> void:
-	_initialize_spawnable_folder()
+	_initialize()
 	return
 
 
 # Creates a log file following the internal format.
 # FIXME: Logger library should handle this.
 func create_log_file() -> String:
+	GlobalLogger.log("Deprecated call '%s'" % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	GlobalLogger.log("Creating a log file for this session.")
 	_maybe_make_directory("user://logs/")
 	# TODO: Sanataize param
@@ -35,6 +37,7 @@ func create_log_file() -> String:
 
 
 func create_file(dir: String, file_name: String) -> void:
+	GlobalLogger.log("Deprecated call '%s'" % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	_maybe_make_directory(dir)
 	# TODO: Sanitize name
 	var file = FileAccess.open("%s/%s" % [dir, file_name], FileAccess.WRITE)
@@ -42,37 +45,20 @@ func create_file(dir: String, file_name: String) -> void:
 	file.close()
 
 
-func get_inv_filelist() -> Dictionary:
+func get_inv_filelist(directory: String) -> Dictionary:
+	GlobalLogger.log("Deprecated call '%s'" % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	var response = { "files": [], "directories": [] }
 
-	var _files = Database.get_spawnables_by_directory(_current_path())
+	var _files = Database.get_spawnables_by_directory(directory)
 
 	response.files = _files
-	response.directories = DirAccess.get_directories_at(_current_path())
+	response.directories = DirAccess.get_directories_at(directory)
 
 	return response
 
 
-func move_inv_deeper(folder: String) -> void:
-	# Move to a new folder from the current _maybe_make_directory
-	# TODO: Validate folder exists
-	spawnables_dir.append(folder)
-	return
-
-
-func move_inv_relocate(target: int) -> void:
-	# Relocate the current spawnable file path to a previous position in the path.
-	spawnables_dir.resize(target)
-	return
-
-
-func create_folder(folder_name: String = "New Folder") -> void:
-	# TODO: Sanatize file name
-	DirAccess.make_dir_recursive_absolute(_current_path() + "/%s" % folder_name)
-	return
-
-
 func delete_folder(folder_name: String) -> void:
+	GlobalLogger.log("Deprecated call '%s'" % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	# TODO: Sanatize file name
 	# TODO: Recursive delete for all files
 	DirAccess.remove_absolute(_current_path() + "/%s" % folder_name)
@@ -80,17 +66,35 @@ func delete_folder(folder_name: String) -> void:
 
 
 func delete_file(file_path: String) -> void:
+	GlobalLogger.log("Deprecated call '%s'" % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	# TODO: Validate that we have a file path and not a directory.
 	DirAccess.remove_absolute(file_path)
 	return
 
 
+## This will create a folder at a given directory if it does not already exist.
+## [param directory] is the directory to create. Note that "user://" is automatically prefixed.
+func create_folder(directory: String) -> void:
+	GlobalLogger.log("Trying to make directory 'user://%s'" % directory)
+	var dir_access = DirAccess.open("user://")
+	dir_access.make_dir_recursive(directory)
+	return
+
+
+## Initialize the file system the application is expecting. This will create all of the base folders.
+func _initialize() -> void:
+	DirAccess.make_dir_recursive_absolute(BASE_SPAWNABLE_DIR)
+	return
+
+
 func _maybe_make_directory(dir: String):
+	GlobalLogger.log("Deprecated call '%s'" % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	var dir_access = DirAccess.open("user://")
 	dir_access.make_dir_recursive(dir)
 
 
 func _parse_log_file_name(file_name: String) -> Dictionary:
+	GlobalLogger.log("Deprecated call '%s'" % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	var date = file_name.split(".")[1].split("-")
 	var year = date[0].split("_")[0]
 	var month = date[0].split("_")[1]
@@ -103,21 +107,14 @@ func _parse_log_file_name(file_name: String) -> Dictionary:
 
 
 func _get_today_log_file_name() -> String:
+	GlobalLogger.log("Deprecated call '%s'" % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	var current_timestring = Time.get_datetime_string_from_system()
 	var file_name = current_timestring.replace("-", "_").replace("T", "-").replace(":", "_")
 	return file_name
 
 
-# TODO: Initialization section to make sure all folders exist.
-# Spawnables local file management
-func _initialize_spawnable_folder() -> void:
-	# Check if the folder exists
-	DirAccess.make_dir_recursive_absolute(BASE_SPAWNABLE_DIR)
-
-	return
-
-
 func _current_path() -> String:
+	GlobalLogger.log("Deprecated call '%s'" % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	var _response: String = BASE_SPAWNABLE_DIR + "/".join(spawnables_dir)
 	if _response.ends_with("/") == false:
 		_response = _response + "/"
