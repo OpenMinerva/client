@@ -312,11 +312,9 @@ func set_parent(node_id: int, parent_node_id: int) -> void:
 		# Update the database.
 		var _db_index: int = _database.find_custom(func(entry): return entry.id == node_id)
 		_database[_db_index].parent = parent_node_id
-		return
 	else:
 		# Call on the host to create (and sync) the resource.
 		await rpcawaiter.send_rpc(1, set_parent.bind(node_id, parent_node_id))
-		return
 
 	return
 

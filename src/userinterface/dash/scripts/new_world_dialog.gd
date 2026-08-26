@@ -6,7 +6,7 @@
 # License: MIT License
 # Authors: Armored Dragon
 # --- License
-extends "res://userinterface/client_edit_mode/desktop/scripts/moveable_window.gd"
+extends "res://userinterface/client_edit_mode/desktop/scripts/movable_window.gd"
 
 @export var target_scene_path: String = ""
 @export var base: Enum.BaseLevel = Enum.BaseLevel.GRID

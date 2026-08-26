@@ -6,12 +6,13 @@
 # License: MIT License
 # Authors: Armored Dragon
 # --- License
-extends "moveable_window.gd"
+extends "movable_window.gd"
+
+var parent_node_id: int = 0
 
 @onready var _list_container = get_node("BackgroundColor/MarginContainer/VBoxContainer/ScrollContainer/VBoxContainer")
 @onready var _button_template = preload("res://userinterface/dash/partials/generic_button.tscn")
 
-var parent_node_id: int = 0
 
 func _ready() -> void:
 	_build_content()
@@ -22,6 +23,7 @@ func _ready() -> void:
 
 	gui_input.connect(_on_input)
 	return
+
 
 func _build_content() -> void:
 	var valid_options = NSB.get_schema().keys()
@@ -44,13 +46,16 @@ func _build_content() -> void:
 		_button.set_icon(_schema_listing.icon)
 	return
 
+
 func _node_selected(node_db_index) -> void:
 	selection.emit(node_db_index, parent_node_id)
 	return
 
+
 func _close() -> void:
 	visible = false
 	return
+
 
 func _on_input(event) -> void:
 	if event is InputEventMouseButton:
@@ -63,6 +68,7 @@ func _on_input(event) -> void:
 
 	return
 
+
 func _mouse_drag(_event) -> void:
 	if _is_dragging:
 		var _game_size: Vector2 = DisplayServer.window_get_size()
@@ -72,6 +78,7 @@ func _mouse_drag(_event) -> void:
 		if _is_out_of_bounds == false:
 			global_position = _target_position
 	return
+
 
 func _mouse_click(event) -> void:
 	if event.button_index != MOUSE_BUTTON_LEFT:
@@ -83,6 +90,7 @@ func _mouse_click(event) -> void:
 	else:
 		_is_dragging = false
 	return
+
 
 func _on_item_activated(index: int) -> void:
 	var tree_node = get_node("PanelContainer/ItemList")

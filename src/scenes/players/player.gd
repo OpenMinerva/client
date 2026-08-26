@@ -92,14 +92,19 @@ func _input(event) -> void:
 	return
 
 
-func enable_camera() -> void:
-	if _cem_camera == true:
-		_node_cem_camera_camera.current = true
-		_node_camera.current = false
+func set_camera_state(state: bool = false) -> void:
+	if state == true:
+		if _cem_camera == true:
+			_node_cem_camera_camera.current = true
+			_node_camera.current = false
+		else:
+			if _node_cem_camera_camera != null:
+				_node_cem_camera_camera.current = false
+			_node_camera.current = true
 	else:
 		if _node_cem_camera_camera != null:
 			_node_cem_camera_camera.current = false
-		_node_camera.current = true
+		_node_camera.current = false
 	return
 
 

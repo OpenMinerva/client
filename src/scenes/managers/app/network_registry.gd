@@ -51,11 +51,11 @@ var _session_stack: Array[String] = []
 ## [param max_connected_users] is the maximum amount of connected peers to the session.
 ## [param privacy] sets the privacy of the session to the session servers.
 ## [param api] is the internal SceneMultiplayer API used for this session.
-func add_session(name: String, description: String, type: SessionConnectionType, port: int, max_connected_users: int, privacy: Enum.PrivacyLevel, api: SceneMultiplayer) -> void:
+func add_session(session_name: String, description: String, _type: SessionConnectionType, port: int, max_connected_users: int, privacy: Enum.PrivacyLevel, api: SceneMultiplayer) -> void:
 	var _session = DATABASE_TEMPLATE.duplicate(true)
 
-	_session.id = name
-	_session.name = name
+	_session.id = session_name
+	_session.name = session_name
 	_session.description = description
 	_session.port = port
 	_session.max_connected_users = max_connected_users
@@ -81,7 +81,7 @@ func remove_session(session_id: String) -> void:
 	return
 
 
-func update_players(session_id: String, players: Array[Dictionary]) -> void:
+func update_players(_session_id: String, _players: Array[Dictionary]) -> void:
 	GlobalLogger.log("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	return
 
