@@ -8,13 +8,11 @@
 # --- License
 extends Node
 
-# Dashboard
+var app_closing: bool = false
 var dashboard: bool = false
-# Client Editor Mode
 var cem: bool = false
 var _cem_camera: bool = false
 var _cem_camera_rotating: bool = false
-# Other
 var _escaped: bool = false
 
 

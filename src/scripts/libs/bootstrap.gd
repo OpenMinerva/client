@@ -20,6 +20,7 @@ func _ready() -> void:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		GlobalLogger.log("Shutting down", Enum.LogLevel.INFO)
+		StateManager.app_closing = true
 
 		# Shutdown / leave all servers.
 		var _connected_servers: Array = network_m.get_connected_sessions()

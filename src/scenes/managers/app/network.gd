@@ -91,7 +91,8 @@ func stop_server(session_id: String):
 	if scene_m.active_session == session_id:
 		var _next_session: String = registry.get_previous()
 		if _next_session.is_empty() == true:
-			GlobalLogger.log("There is no session to move to. You are now probably in the void!", Enum.LogLevel.ERROR)
+			if StateManager.app_closing == false:
+				GlobalLogger.log("There is no session to move to. You are now probably in the void!", Enum.LogLevel.ERROR)
 			return
 		scene_m.set_active_session(_next_session)
 
@@ -202,7 +203,8 @@ func leave_server(session_id: String):
 	if scene_m.active_session == session_id:
 		var _previous_session: String = registry.get_previous()
 		if _previous_session.is_empty() == true:
-			GlobalLogger.log("There is no session to move to. You are now probably in the void!", Enum.LogLevel.ERROR)
+			if StateManager.app_closing == false:
+				GlobalLogger.log("There is no session to move to. You are now probably in the void!", Enum.LogLevel.ERROR)
 			return
 		scene_m.set_active_session(_previous_session)
 
