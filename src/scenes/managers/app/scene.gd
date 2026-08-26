@@ -97,9 +97,6 @@ func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel, scene_
 	# Allow scene to be visible in the inspector
 	_root_scene_node.set_meta("scene_node", true)
 
-	# Add new scene
-	_scene.add_child(_root_scene_node)
-
 	# Start everything
 	start_master_scene(id)
 
