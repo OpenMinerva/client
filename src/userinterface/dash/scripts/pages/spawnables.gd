@@ -196,7 +196,7 @@ func _open_file_dialog() -> void:
 func _create_folder() -> void:
 	var _folder_name = _folder_creation_dialog.get_node("LineEdit").text
 	GlobalLogger.log("Creating folder '%s'" % _folder_name)
-	FileManager.create_folder(SPAWNABLE_BASE_DIRECTORY + _folder_name)
+	FileManager.create_folder(_get_current_path() + _folder_name)
 	_folder_creation_dialog.get_node("LineEdit").text = ""
 	_build_view()
 	return
@@ -219,6 +219,8 @@ func _open_delete_dialog() -> void:
 func _delete_selected() -> void:
 	var _folder_name = _selected_folder.label
 	var _type: String = _selected_folder.get_meta("type")
+	var _path: String = _get_current_path() + _folder_name
+
 	GlobalLogger.log("Deleting Item '%s'" % _folder_name)
 
 	if _type == "spawnable":
@@ -233,7 +235,7 @@ func _delete_selected() -> void:
 		Database.delete_spawnable(_db_entry.hash)
 
 	if _type == "folder":
-		FileManager.delete_folder(_folder_name)
+		FileManager.delete_folder(_path)
 
 	_build_view()
 	return

@@ -199,7 +199,7 @@ func _save_account_database() -> void:
 	GlobalLogger.log("Saving account database to disk.")
 	DirAccess.open("user://").make_dir_recursive("user://database")
 
-	var file = FileAccess.open(ACCOUNT_DATABASE_DIRECTORY, FileAccess.WRITE)
+	var file = FileManager.open(ACCOUNT_DATABASE_DIRECTORY)
 	if file:
 		file.store_var(_database) # Serializes variable to binary
 		file.close()
@@ -210,12 +210,12 @@ func _save_account_database() -> void:
 func _load_account_database() -> Dictionary:
 	GlobalLogger.log("Loading the local account database.", Enum.LogLevel.INFO)
 
-	var account_file_exists = FileAccess.file_exists(ACCOUNT_DATABASE_DIRECTORY)
+	var account_file_exists = FileManager.file_exists(ACCOUNT_DATABASE_DIRECTORY)
 	if account_file_exists == false:
 		GlobalLogger.log("Account database does not exist, creating one now.", Enum.LogLevel.INFO)
 		_save_account_database()
 
-	var file = FileAccess.open(ACCOUNT_DATABASE_DIRECTORY, FileAccess.READ)
+	var file = FileManager.open(ACCOUNT_DATABASE_DIRECTORY)
 
 	var account_data: Dictionary = { }
 

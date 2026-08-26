@@ -47,7 +47,7 @@ static func get_glb_assets(file_path: String) -> String:
 	var gltf_hash = JSON.stringify(manifest).sha256_text()
 	var gltf_manifest_path = app_cache_dir + "gltf/%s.gltf" % gltf_hash
 
-	var file = FileAccess.open(gltf_manifest_path, FileAccess.WRITE)
+	var file = FileManager.open(gltf_manifest_path)
 	file.store_string(JSON.stringify(manifest, "", true))
 	file.close()
 	return gltf_manifest_path
@@ -81,7 +81,7 @@ static func extract_meshes(gltf_state: GLTFState, path_root: String) -> String:
 	var bin_path = path_root + "/%s.bin" % buffer_hash
 	DirAccess.make_dir_absolute(path_root)
 
-	var file = FileAccess.open(bin_path, FileAccess.WRITE)
+	var file = FileManager.open(bin_path)
 
 	for buffer in buffers:
 		file.store_buffer(buffer)

@@ -71,10 +71,22 @@ func set_file_logging(enabled: bool):
 
 
 func _initialize_log_file():
-	log_file_path = FileManager.create_log_file()
-	log_file = FileAccess.open(log_file_path, FileAccess.WRITE)
+	var _log_file_name = _create_log_name()
+	var _log_file_path = "user://logs/%s.%s.log" % [ProjectSettings.get_setting("application/config/name"), _log_file_name]
+
+	FileManager.create_file(_log_file_path)
+	# TODO: Validate we have a log file FileAccess.
+	log_file = FileManager.open(_log_file_path)
 	log_file_initialized = true
-	self.log("Opened log file at %s" % log_file_path)
+
+	self.log("Opened log file at %s" % _log_file_path)
+	return
+
+
+func _create_log_name() -> String:
+	var _current_timestring = Time.get_datetime_string_from_system()
+	var _file_name = _current_timestring.replace("-", "_").replace("T", "-").replace(":", "_")
+	return _file_name
 
 
 func _log_to_file(message: String = "", level: int = 0):
@@ -82,3 +94,15 @@ func _log_to_file(message: String = "", level: int = 0):
 		var formatted_log = "[%s] %s" % [log_level_names[level], message]
 		log_file.store_line(formatted_log)
 		log_file.flush()
+# TODO: Compress log files weekly.
+# func _parse_log_file_name(file_name: String) -> Dictionary:
+# 	GlobalLogger.log("Deprecated call '%s'" % get_stack()[0]["function"], Enum.LogLevel.WARNING)
+# 	var date = file_name.split(".")[1].split("-")
+# 	var year = date[0].split("_")[0]
+# 	var month = date[0].split("_")[1]
+# 	var day = date[0].split("_")[2]
+# 	var hour = date[1].split("_")[0]
+# 	var minute = date[1].split("_")[1]
+# 	var second = date[1].split("_")[2]
+# 	var time_dictionary = Time.get_datetime_dict_from_datetime_string("%s-%s-%sT%s:%s:%s" % [year, month, day, hour, minute, second], true)
+# 	return time_dictionary
