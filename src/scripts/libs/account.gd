@@ -197,7 +197,7 @@ func _create_oauth(account) -> Dictionary:
 ## Save the current account database we have in memory to the disk.
 func _save_account_database() -> void:
 	GlobalLogger.log("Saving account database to disk.")
-	DirAccess.open("user://").make_dir_recursive("user://database")
+	FileManager.create_directory("user://database")
 
 	var file = FileManager.open(ACCOUNT_DATABASE_DIRECTORY, FileAccess.WRITE)
 	if file:
