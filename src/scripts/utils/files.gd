@@ -13,7 +13,9 @@ extends Node
 
 ## The base directory on the file system where spawnables live.
 const BASE_SPAWNABLE_DIR = "user://spawnables/"
-const FILEACCESS_MODEFLAGS: Array = ClassDB.class_get_enum_constants("FileAccess", "ModeFlags")
+
+## Contains all of the file access mode flags in a string format for logging purposes.
+var _fileaccess_modeflags: Array = ClassDB.class_get_enum_constants("FileAccess", "ModeFlags")
 
 
 func _ready() -> void:
@@ -25,7 +27,7 @@ func _ready() -> void:
 ## [param path] is the path of the file to create. Note that there is not a prefix and can write anywhere on the file system.
 func create_file(path: String) -> void:
 	var _base_dir: String = path.get_base_dir()
-	var _file_name: String = path.get_basename()
+	var _file_name: String = path.get_file()
 
 	if file_exists(path) == true:
 		GlobalLogger.log("File '%s' exists already, not creating." % path)
@@ -59,7 +61,7 @@ func open(path: String, mode: FileAccess.ModeFlags = FileAccess.READ) -> FileAcc
 
 	var _file: FileAccess = FileAccess.open(path, mode)
 	if _file != null:
-		GlobalLogger.log("File '%s' opened in mode '%s'." % [path, FILEACCESS_MODEFLAGS[mode]])
+		GlobalLogger.log("File '%s' opened in mode '%s'." % [path, _fileaccess_modeflags[mode]])
 		return _file
 
 	GlobalLogger.log("File '%s' was not opened due to an error." % [path], Enum.LogLevel.WARNING)
@@ -84,9 +86,10 @@ func directory_exists(path: String) -> bool:
 ## [param path] is the path to look in and return a list of folders. Note that there is not a prefix and can look anywhere on the file system.
 func list_directories(path: String) -> Array:
 	GlobalLogger.log("Listing directories at '%s'." % path)
+
 	if directory_exists(path) == false:
 		GlobalLogger.log("Directory '%s' does not exist." % path)
-		return
+		return []
 
 	return DirAccess.get_directories_at(path)
 
