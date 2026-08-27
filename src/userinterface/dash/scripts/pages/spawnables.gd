@@ -49,7 +49,7 @@ func _handle_page_opened(page_name) -> void:
 
 
 func _build_view() -> void:
-	var _filelist = FileManager.get_inv_filelist(_get_current_path())
+	var _filelist = _get_inv_filelist()
 	var _files = _filelist["files"]
 	var _dirs = _filelist["directories"]
 
@@ -93,6 +93,17 @@ func _build_view() -> void:
 		var _listing = _create_button(_path_container, _path, null, _dir_relocate.bind(index), Vector2(200, 35))
 		continue
 	return
+
+
+func _get_inv_filelist() -> Dictionary:
+	var response = { "files": [], "directories": [] }
+
+	var _files = Database.get_spawnables_by_directory(_get_current_path())
+
+	response.files = _files
+	response.directories = FileManager.list_directories(_get_current_path())
+
+	return response
 
 
 func _dir_deeper(folder_name: String) -> void:

@@ -9,6 +9,7 @@
 extends Node
 ## This file handles the file system management of the application. If the app needs to read a file or writes a file, it will go through here.
 
+## The base directory on the file system where spawnables live.
 const BASE_SPAWNABLE_DIR = "user://spawnables/"
 
 
@@ -33,16 +34,12 @@ func create_file(directory: String) -> void:
 	return
 
 
-func get_inv_filelist(directory: String) -> Dictionary:
-	GlobalLogger.log("Deprecated call '%s'" % get_stack()[0]["function"], Enum.LogLevel.WARNING)
-	var response = { "files": [], "directories": [] }
-
-	var _files = Database.get_spawnables_by_directory(directory)
-
-	response.files = _files
-	response.directories = DirAccess.get_directories_at(directory)
-
-	return response
+## Get a list of all available directories from a given [param path].
+## [param path] is the path to look in and return a list of folders. Note that there is not a prefix and can look anywhere on the file system.
+func list_directories(path: String) -> Array:
+	GlobalLogger.log("Listing directories at '%s'." % path)
+	# TODO: Validate path exists.
+	return DirAccess.get_directories_at(path)
 
 
 ## Delete a folder from a directory.
