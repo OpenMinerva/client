@@ -28,7 +28,7 @@ func create_file(path: String) -> void:
 
 	# TODO: Validate that file does not already exist.
 
-	create_directory(_base_dir.get_base_dir())
+	create_directory(_base_dir)
 	var file = FileAccess.open(path, FileAccess.WRITE)
 	file.close()
 
@@ -36,14 +36,32 @@ func create_file(path: String) -> void:
 	return
 
 
+## Delete a file from the file system.
+## [param path] is the path of the file on the file system.
+func delete_file(path: String) -> void:
+	if file_exists(path) == false:
+		GlobalLogger.log("File '%s' does not exist, not removing." % path)
+		return
+
+	DirAccess.remove_absolute(path)
+	return
+
+
 ## Opens a file on the file system. 
 ## [param path] is the path of the file to open. Note that there is not a prefix and can open any file on the file system.
 func open(path: String, mode: FileAccess.ModeFlags = FileAccess.READ) -> FileAccess:
 	var _enum_flags: Array = ClassDB.class_get_enum_constants("FileAccess", "ModeFlags")
-	# TODO: Validate file exists.
+	if file_exists(path) == false:
+		GlobalLogger.log("File '%s' does not exist, not opening." % path)
+		return
+
 	var _file: FileAccess = FileAccess.open(path, mode)
-	GlobalLogger.log("File '%s' opened in mode '%s'." % [path, _enum_flags[mode]])
-	return _file
+	if _file != null:
+		GlobalLogger.log("File '%s' opened in mode '%s'." % [path, _enum_flags[mode]])
+		return _file
+
+	GlobalLogger.log("File '%s' was not opened due to an error." % [path], Enum.LogLevel.WARNING)
+	return null
 
 
 ## Checks to see if a file exists on the file system.
@@ -51,6 +69,13 @@ func open(path: String, mode: FileAccess.ModeFlags = FileAccess.READ) -> FileAcc
 func file_exists(path: String) -> bool:
 	GlobalLogger.log("Checking if '%s' exists on the file system.")
 	return FileAccess.file_exists(path)
+
+
+## Checks to see if a directory exists on the file system.
+## [param path] is the path of the file to check. Note that there is not a prefix and can check any file on the file system.
+func directory_exists(path: String) -> bool:
+	GlobalLogger.log("Checking if '%s' exists on the file system.")
+	return FileAccess.dir_exists_absolute(path)
 
 
 ## Get a list of all available directories from a given [param path].
@@ -65,28 +90,24 @@ func list_directories(path: String) -> Array:
 ## [param directory_path] is the directory of the folder to create. Note that there is not a prefix and can remove any folder on the file system.
 # TODO: Make function recursively delete files in a folder if desired.
 func delete_directory(path: String, _recursive: bool = false) -> void:
+	if directory_exists(path) == false:
+		GlobalLogger.log("Directory '%s' does not exist, not removing." % path)
+		return
+
 	DirAccess.remove_absolute(path)
 	GlobalLogger.log("Removed directory '%s'" % path)
 	return
 
 
 ## This will create a folder at a given directory if it does not already exist.
-## [param path] is the path to create. Note that "user://" is automatically prefixed.
+## [param path] is the path to create. Note that there is not a prefix and can create a directory anywhere on the file system.
 func create_directory(path: String) -> void:
-	GlobalLogger.log("Trying to make directory 'user://%s'" % path)
-	var dir_access = DirAccess.open("user://")
-	dir_access.make_dir_recursive(path)
-	return
-
-
-func delete_file(file_path: String) -> void:
-	GlobalLogger.log("Deprecated call '%s'" % get_stack()[0]["function"], Enum.LogLevel.WARNING)
-	# TODO: Validate that we have a file path and not a directory.
-	DirAccess.remove_absolute(file_path)
+	GlobalLogger.log("Trying to make directory '%s'" % path)
+	DirAccess.make_dir_recursive_absolute(path)
 	return
 
 
 ## Initialize the file system the application is expecting. This will create all of the base folders and set up the file system environment.
 func _initialize() -> void:
-	DirAccess.make_dir_recursive_absolute(BASE_SPAWNABLE_DIR)
+	create_directory(BASE_SPAWNABLE_DIR)
 	return
