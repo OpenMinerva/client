@@ -70,7 +70,7 @@ func remove_session_server(url: String) -> bool:
 
 
 func _save_settings():
-	var _file = FileManager.open("user://settings/current.json")
+	var _file = FileManager.open("user://settings/current.json", FileAccess.WRITE)
 	var _settings_string: String = JSON.stringify(_settings)
 	_file.store_string(_settings_string)
 	_file.close()

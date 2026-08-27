@@ -53,10 +53,11 @@ func delete_folder(directory: String, _recursive: bool = false) -> void:
 
 ## Opens a file on the file system. 
 ## [param directory] is the directory of the file to open. Note that there is not a prefix and can open any file on the file system.
-func open(directory: String) -> FileAccess:
+func open(directory: String, mode: FileAccess.ModeFlags = FileAccess.READ) -> FileAccess:
+	var _enum_flags: Array = ClassDB.class_get_enum_constants("FileAccess", "ModeFlags")
 	# TODO: Validate file exists.
-	var _file: FileAccess = FileAccess.open(directory, FileAccess.WRITE)
-	GlobalLogger.log("File '%s' opened." % directory)
+	var _file: FileAccess = FileAccess.open(directory, mode)
+	GlobalLogger.log("File '%s' opened in mode '%s'." % [directory, _enum_flags[mode]])
 	return _file
 
 

@@ -199,7 +199,7 @@ func _save_account_database() -> void:
 	GlobalLogger.log("Saving account database to disk.")
 	DirAccess.open("user://").make_dir_recursive("user://database")
 
-	var file = FileManager.open(ACCOUNT_DATABASE_DIRECTORY)
+	var file = FileManager.open(ACCOUNT_DATABASE_DIRECTORY, FileAccess.WRITE)
 	if file:
 		file.store_var(_database) # Serializes variable to binary
 		file.close()

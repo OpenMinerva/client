@@ -76,7 +76,7 @@ func _initialize_log_file():
 
 	FileManager.create_file(_log_file_path)
 	# TODO: Validate we have a log file FileAccess.
-	log_file = FileManager.open(_log_file_path)
+	log_file = FileManager.open(_log_file_path, FileAccess.WRITE)
 	log_file_initialized = true
 
 	self.log("Opened log file at %s" % _log_file_path)
