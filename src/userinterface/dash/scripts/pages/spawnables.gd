@@ -8,9 +8,6 @@
 # --- License
 extends "res://userinterface/dash/scripts/pages/left_nav_container.gd"
 
-const SPAWNABLE_BASE_DIRECTORY = "user://spawnables/"
-
-var current_dir: Array[String] = []
 var _folder_icon = load("res://resources/icons/godot/Folder.svg")
 var _item_icon = load("res://resources/icons/godot/Node3D.svg")
 var _world_icon = load("res://resources/icons/godot/World3D.svg")
@@ -86,8 +83,8 @@ func _build_view() -> void:
 	var _base_listing = _create_button(_path_container, "Base", null, _dir_relocate.bind(-1), Vector2(200, 35))
 
 	# Any lower path
-	for index in current_dir.size():
-		var _path = current_dir[index]
+	for index in StateManager.spawnable_directory.size():
+		var _path = StateManager.spawnable_directory[index]
 
 		var _label = Label.new()
 		_label.text = "/"
@@ -99,19 +96,19 @@ func _build_view() -> void:
 
 
 func _dir_deeper(folder_name: String) -> void:
-	current_dir.append(folder_name)
+	StateManager.spawnable_directory.append(folder_name)
 	_build_view()
 	return
 
 
 func _dir_relocate(index: int) -> void:
-	current_dir.resize(index + 1)
+	StateManager.spawnable_directory.resize(index + 1)
 	_build_view()
 	return
 
 
 func _get_current_path() -> String:
-	var _response: String = SPAWNABLE_BASE_DIRECTORY + "/".join(current_dir)
+	var _response: String = FileManager.BASE_SPAWNABLE_DIR + "/".join(StateManager.spawnable_directory)
 
 	if _response.ends_with("/") == false:
 		_response = _response + "/"

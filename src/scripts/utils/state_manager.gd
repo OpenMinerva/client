@@ -11,6 +11,7 @@ extends Node
 var app_closing: bool = false
 var dashboard: bool = false
 var cem: bool = false
+var spawnable_directory: Array = []
 var _cem_camera: bool = false
 var _cem_camera_rotating: bool = false
 var _escaped: bool = false
@@ -25,7 +26,6 @@ func _ready() -> void:
 	return
 
 
-# Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 func update_mouse_state() -> void:
 	if _escaped == true:
 		# User wants the mouse.
@@ -64,3 +64,12 @@ func update_mouse_state() -> void:
 
 func is_mouse_captured() -> bool:
 	return Input.get_mouse_mode()
+
+
+func get_spawnable_path_string() -> String:
+	var _response: String = FileManager.BASE_SPAWNABLE_DIR + "/".join(spawnable_directory)
+
+	if _response.ends_with("/") == false:
+		_response = _response + "/"
+
+	return _response
