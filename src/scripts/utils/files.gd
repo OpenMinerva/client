@@ -71,14 +71,14 @@ func open(path: String, mode: FileAccess.ModeFlags = FileAccess.READ) -> FileAcc
 ## Checks to see if a file exists on the file system.
 ## [param path] is the path of the file to check. Note that there is not a prefix and can check any file on the file system.
 func file_exists(path: String) -> bool:
-	GlobalLogger.log("Checking if '%s' exists on the file system.")
+	GlobalLogger.log("Checking if '%s' exists on the file system." % path)
 	return FileAccess.file_exists(path)
 
 
 ## Checks to see if a directory exists on the file system.
 ## [param path] is the path of the directory to check. Note that there is not a prefix and can check any file on the file system.
 func directory_exists(path: String) -> bool:
-	GlobalLogger.log("Checking if '%s' exists on the file system.")
+	GlobalLogger.log("Checking if '%s' exists on the file system." % path)
 	return DirAccess.dir_exists_absolute(path)
 
 
