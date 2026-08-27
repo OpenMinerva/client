@@ -43,7 +43,7 @@ func save_spawnable(root: Node, type: Enum.SpawnableType = Enum.SpawnableType.IT
 
 	_externalize_assets(root, _data_hash)
 
-	var file_path = FileManager._current_path() + _data_hash + ".tscn"
+	var file_path = StateManager.get_spawnable_path_string() + _data_hash + ".tscn"
 	ResourceSaver.save(packed_scene, file_path)
 
 	# Add spawnable to the database.
@@ -68,7 +68,7 @@ func load_spawnable(path: String) -> void:
 	var _path_parent_dictionary: Dictionary = { }
 
 	# Check if file exists at the given path.
-	if FileAccess.file_exists(path) == false:
+	if FileManager.file_exists(path) == false:
 		GlobalLogger.log("File '%s' does not exist." % path, Enum.LogLevel.INFO)
 		return
 
@@ -206,7 +206,7 @@ func _externalize_assets(root: Node, spawnable_hash: String) -> Node:
 				# Add to the database if we do not already have the asset in the database.
 
 				# Get the file size of the asset
-				var _file = FileAccess.open(_external_path, FileAccess.READ)
+				var _file = FileManager.open(_external_path)
 				_data_size = _file.get_length()
 				_file.close()
 

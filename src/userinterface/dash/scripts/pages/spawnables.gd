@@ -8,9 +8,6 @@
 # --- License
 extends "res://userinterface/dash/scripts/pages/left_nav_container.gd"
 
-const BASE_DIR = "user://inventory/"
-
-var current_dir: Array[String] = []
 var _folder_icon = load("res://resources/icons/godot/Folder.svg")
 var _item_icon = load("res://resources/icons/godot/Node3D.svg")
 var _world_icon = load("res://resources/icons/godot/World3D.svg")
@@ -52,7 +49,7 @@ func _handle_page_opened(page_name) -> void:
 
 
 func _build_view() -> void:
-	var _filelist = FileManager.get_inv_filelist()
+	var _filelist = _get_inv_filelist()
 	var _files = _filelist["files"]
 	var _dirs = _filelist["directories"]
 
@@ -86,8 +83,8 @@ func _build_view() -> void:
 	var _base_listing = _create_button(_path_container, "Base", null, _dir_relocate.bind(-1), Vector2(200, 35))
 
 	# Any lower path
-	for index in FileManager.spawnables_dir.size():
-		var _path = FileManager.spawnables_dir[index]
+	for index in StateManager.spawnable_directory.size():
+		var _path = StateManager.spawnable_directory[index]
 
 		var _label = Label.new()
 		_label.text = "/"
@@ -98,20 +95,40 @@ func _build_view() -> void:
 	return
 
 
-func _dir_deeper(path: String) -> void:
-	FileManager.move_inv_deeper(path)
+func _get_inv_filelist() -> Dictionary:
+	var response = { "files": [], "directories": [] }
+
+	var _files = Database.get_spawnables_by_directory(_get_current_path())
+
+	response.files = _files
+	response.directories = FileManager.list_directories(_get_current_path())
+
+	return response
+
+
+func _dir_deeper(folder_name: String) -> void:
+	StateManager.spawnable_directory.append(folder_name)
 	_build_view()
 	return
 
 
 func _dir_relocate(index: int) -> void:
-	FileManager.move_inv_relocate(index + 1)
+	StateManager.spawnable_directory.resize(index + 1)
 	_build_view()
 	return
 
 
+func _get_current_path() -> String:
+	var _response: String = FileManager.BASE_SPAWNABLE_DIR + "/".join(StateManager.spawnable_directory)
+
+	if _response.ends_with("/") == false:
+		_response = _response + "/"
+
+	return _response
+
+
 func _load_file(file_name: String) -> void:
-	var _path = FileManager._current_path() + file_name
+	var _path = _get_current_path() + file_name
 	_app_spawnable_file_handling_m.load_spawnable(_path)
 	return
 
@@ -120,7 +137,7 @@ func _create_world(file_name: String) -> void:
 	var _dialog: Control = dashboard.get_node("NewWorld")
 	var _world_load_dir_val: Control = _dialog.get_node("%WorldLoadDirVal")
 	var _base_val: Control = _dialog.get_node("%BaseVal")
-	var _file_path = FileManager._current_path() + file_name
+	var _file_path = _get_current_path() + file_name
 
 	_world_load_dir_val.text = _file_path
 	_base_val.selected = Enum.BaseLevel.CUSTOM
@@ -187,7 +204,7 @@ func _open_file_dialog() -> void:
 func _create_folder() -> void:
 	var _folder_name = _folder_creation_dialog.get_node("LineEdit").text
 	GlobalLogger.log("Creating folder '%s'" % _folder_name)
-	FileManager.create_folder(_folder_name)
+	FileManager.create_directory(_get_current_path() + _folder_name)
 	_folder_creation_dialog.get_node("LineEdit").text = ""
 	_build_view()
 	return
@@ -210,6 +227,8 @@ func _open_delete_dialog() -> void:
 func _delete_selected() -> void:
 	var _folder_name = _selected_folder.label
 	var _type: String = _selected_folder.get_meta("type")
+	var _path: String = _get_current_path() + _folder_name
+
 	GlobalLogger.log("Deleting Item '%s'" % _folder_name)
 
 	if _type == "spawnable":
@@ -224,7 +243,7 @@ func _delete_selected() -> void:
 		Database.delete_spawnable(_db_entry.hash)
 
 	if _type == "folder":
-		FileManager.delete_folder(_folder_name)
+		FileManager.delete_directory(_path)
 
 	_build_view()
 	return
