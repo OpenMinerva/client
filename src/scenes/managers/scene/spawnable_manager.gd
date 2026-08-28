@@ -229,16 +229,24 @@ func set_resource(node_id: int, property_name: String, resource_id: int) -> void
 		var _resource: Dictionary = get_resource_by_id(resource_id)
 
 		if _resource.has("resource") == false:
-			GlobalLogger.log("Resource '%s' is in invalid state.", Enum.LogLevel.ERROR)
+			GlobalLogger.log("Resource '%s' is in invalid state." % resource_id, Enum.LogLevel.ERROR)
 			return
 
-		set_property_on_spawnable.rpc(node_id, property_name, _resource.resource)
+		set_resource_on_spawnable.rpc(node_id, property_name, resource_id)
 
 		# FIXME: When a node gets deleted, there is no cleanup for the database.
 		_asset_node_relation_database.append({ "node_id": node_id, "node_property": property_name, "resource_id": resource_id })
 	else:
 		await rpcawaiter.send_rpc(1, set_resource.bind(node_id, property_name, resource_id))
 		return
+	return
+
+
+@rpc("call_local", "authority", "reliable")
+func set_resource_on_spawnable(node_id: int, property_name: String, resource_id: int) -> void:
+	var _resource: Dictionary = get_resource_by_id(resource_id)
+
+	set_property_on_spawnable(node_id, property_name, _resource.resource)
 	return
 
 
@@ -266,14 +274,14 @@ func create_asset(asset_type: String, properties: Array) -> Variant:
 		var _target_id: String = str(_database_id)
 
 		# Actually spawn in the asset for us, and all clients.
-		var _asset = spawn_asset(asset_type, properties)
-		spawn_asset.rpc(asset_type, properties)
+		var _asset = spawn_asset(asset_type, properties, _target_id)
+		spawn_asset.rpc(asset_type, properties, _target_id)
 
 		var _asset_db_index: int = _asset_database.find_custom(func(entry): return entry.id == _asset)
 
 		if caller_id != 0 && caller_id != my_id:
 			# This call originated from a client, we need to return a reference to the spawned asset, and not the asset itself.
-			return int(_asset_database[_asset_db_index].resource.name)
+			return int(_asset_database[_asset_db_index].resource.get_name())
 
 		return _asset_database[_asset_db_index].resource
 	else:
@@ -307,7 +315,7 @@ func set_parent(node_id: int, parent_node_id: int) -> void:
 			_parent_node = { "node": app_scene_m.get_master_root(app_scene_m.active_session) }
 
 		# Send the reparent signal to all clients.
-		_set_node_parent.rpc(_node.node, _parent_node.node)
+		_set_node_parent.rpc(int(_node.node.name), int(_parent_node.node.name))
 
 		# Update the database.
 		var _db_index: int = _database.find_custom(func(entry): return entry.id == node_id)
@@ -495,7 +503,7 @@ func get_resource_by_id(resource_id: int) -> Dictionary:
 
 
 @rpc("authority", "reliable")
-func spawn_asset(asset_type, properties, id: String = str(_database_id)) -> int:
+func spawn_asset(asset_type, properties, id: String = "") -> int:
 	GlobalLogger.log("Spawning '%s'." % asset_type)
 
 	# Create the resource on our end, and include it in the database.
@@ -505,10 +513,20 @@ func spawn_asset(asset_type, properties, id: String = str(_database_id)) -> int:
 	return int(_resource.get_name())
 
 
+# FIXME: I made some changes to this function I am not proud of, but it is working. Try to improve the flow for using fallback-to-root.
 @rpc("call_local", "any_peer", "reliable")
-func _set_node_parent(node: Node, parent_node: Node) -> void:
-	# Change node parent.
-	node.reparent(parent_node)
+func _set_node_parent(node_id: int, parent_node_id: int) -> void:
+	var _node: Dictionary = get_by_id(node_id)
+	var _parent: Dictionary = get_by_id(parent_node_id)
+
+	if _parent == { }:
+		_parent = { "node": app_scene_m.get_master_root(app_scene_m.active_session) }
+
+	if _node.node && _parent.node:
+		# Change node parent.
+		_node.node.reparent(_parent.node)
+		return
+
 	return
 
 
