@@ -30,6 +30,7 @@ signal cem_set_state(is_open: bool)
 signal cem_set_gizmo_state(state: bool)
 signal cem_camera_state(state: bool)
 signal cem_camera_rotating(state: bool)
+signal cem_spawnable_saved()
 # Multiplayer
 signal session_joined(instance: Dictionary)
 signal session_left(instance: Dictionary)

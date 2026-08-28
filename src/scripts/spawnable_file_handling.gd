@@ -56,6 +56,8 @@ func save_spawnable(root: Node, type: Enum.SpawnableType = Enum.SpawnableType.IT
 	}
 	Database.set_spawnable(_data_hash, _database_row)
 
+	Events.cem_spawnable_saved.emit()
+
 	# I have no idea what ownership is in terms of nodes are right now, so put it back as to not break anything
 	_restore_ownership(root, original_owners)
 

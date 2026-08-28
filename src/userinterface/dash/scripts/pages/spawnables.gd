@@ -30,6 +30,7 @@ func _ready():
 	super._ready()
 
 	Events.dash_switch_tab.connect(_handle_page_opened)
+	Events.cem_spawnable_saved.connect(func(): _build_view())
 
 	_create_folder_btn.pressed.connect(_open_file_dialog)
 	_delete_selected_btn.pressed.connect(_open_delete_dialog)
