@@ -54,10 +54,9 @@ func delete_file(path: String) -> void:
 
 ## Opens a file on the file system. 
 ## [param path] is the path of the file to open. Note that there is not a prefix and can open any file on the file system.
-func open(path: String, mode: FileAccess.ModeFlags = FileAccess.READ) -> FileAccess:
-	if file_exists(path) == false:
-		GlobalLogger.log("File '%s' does not exist, not opening." % path)
-		return null
+func open(path: String, mode: FileAccess.ModeFlags = FileAccess.READ, create_if_not_exist: bool = true) -> FileAccess:
+	if file_exists(path) == false && create_if_not_exist == true:
+		create_file(path)
 
 	var _file: FileAccess = FileAccess.open(path, mode)
 	if _file != null:
