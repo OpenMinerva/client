@@ -34,10 +34,14 @@ body:
       label: Provide your log file (if applicable)
     validations:
       required: false
+      accept: ".txt,.log"
   - type: upload
     id: screenshots
     attributes:
       label: Put here any screenshots or videos (optional)
+    validations:
+      required: false
+      accept: ".png,.jpg,.jpeg,.gif,.svg,.webp,.mp4,.mov,.webm"
   - type: markdown
     attributes:
       value: |
