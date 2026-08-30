@@ -19,7 +19,8 @@
 OpenMinerva is the no-nonsense self-hosted virtual collaboration environment for flatscreen / VR / AR.
 
 <p align="center">
-  <img height="200" src="./docs/preview/wwyb_promo.webp?raw=true" />
+  <img height="200" src="./docs/preview/wwyb_promo.webp?raw=true" style="margin-right: 16px;" />
+  <img height="200" src="./docs/preview/sponza_example.webp?raw=true" />
 </p>
 
 ## About
@@ -61,7 +62,7 @@ Example:
 - Select `project.godot` to import this project.
 
 ## Contributing
-See [CONTRIBUTING.md](https://github.com/OpenMinerva/client/blob/alpha/CONTRIBUTING.md) for guidelines, and information.
+See [CONTRIBUTING.md](https://github.com/OpenMinerva/client/blob/alpha/docs/CONTRIBUTING.md) for guidelines, and information.
 
 ## Used Addons
 These addons are used in building the OpenMinerva client:
@@ -71,8 +72,10 @@ These addons are used in building the OpenMinerva client:
 | Gizmo3DScript   |  Forked   | [Usage](https://github.com/OpenMinerva/client/tree/alpha/src/addons/Gizmo3DScript) | MIT | [Source](https://github.com/chrisizeful/Gizmo3D) |
 | Discord-RPC-GD  | Forked   |  [Usage](https://github.com/OpenMinerva/client/tree/alpha/src/addons/discord-rpc-gd) | MIT | [Source](https://codeberg.org/DiscordGodot/RPC-Legacy) |
 | rpc-await | Forked | [Usage](https://github.com/OpenMinerva/client/tree/alpha/src/addons/rpc-await) | MIT | [Source](https://github.com/dominiks/rpc-await) |
+| at-icons     | Forked     | [Usage](https://github.com/OpenMinerva/client/tree/alpha/src/resources/icons/at-icons) | MIT | [Source](https://github.com/Voxybuns/at-icons) |
 | godot-oauth2client | Owner | [Usage](https://github.com/OpenMinerva/client/tree/alpha/src/addons) | MIT | [Source](https://github.com/OpenMinerva/godot-oauth2client/tree/a835738a2674feb2679576a247169fc53c2d4682) |
 | godot-urlparser | Owner | [Usage](https://github.com/OpenMinerva/client/tree/alpha/src/addons) | MIT | [Source](https://github.com/OpenMinerva/godot-urlparser/tree/50632506d6a5a8a65bda52640339df98957fd0cd) |
 | godot-sqlite | Downloaded | Not included | MIT | [Source](https://github.com/2shady4u/godot-sqlite) |
+
 
 
