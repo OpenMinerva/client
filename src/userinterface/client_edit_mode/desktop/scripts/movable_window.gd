@@ -1,5 +1,5 @@
 # --- License
-# File: /client/src/userinterface/client_edit_mode/desktop/scripts/moveable_window.gd
+# File: /client/src/userinterface/client_edit_mode/desktop/scripts/movable_window.gd
 # Project: OpenMinerva
 # Created Date: 17 July 2026
 # Copyright (c) 2026 OpenMinerva
@@ -35,7 +35,7 @@ func _close() -> void:
 
 
 func _open() -> void:
-	var _half_window_size: Vector2 = DisplayServer.window_get_size() / 2
+	var _half_window_size: Vector2 = DisplayServer.window_get_size() / 2.0
 	var _target_pos: Vector2 = _half_window_size - (size / 2)
 
 	global_position = _target_pos

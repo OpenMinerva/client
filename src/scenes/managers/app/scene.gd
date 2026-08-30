@@ -51,7 +51,7 @@ func destroy_master_scene(id: String):
 	return
 
 
-func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel, scene_dir: String = "") -> void:
+func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel, scene_dir: String = "", set_up_root: bool = true) -> void:
 	var _scene = get_master_scene(id)
 
 	var _root_scene: String = _get_scene_by_type(scene_type)
@@ -84,7 +84,7 @@ func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel, scene_
 
 	# Remove the "root" node of the world, and instead parent all nodes under the true instance root.
 	# HACK: Force reparent the children of the node to the world root.
-	if _root_scene_node.get_children().size() > 0:
+	if set_up_root && _root_scene_node.get_children().size() > 0:
 		var _target_node: Node3D = _root_scene_node.get_children()[1]
 		var _spawnable_manager: Node = _scene.get_node("SpawnableManager")
 
@@ -92,13 +92,10 @@ func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel, scene_
 			_spawnable_manager.set_parent.rpc(int(_world_node.name), 0)
 
 		# Delete the initial fake root from the loaded world.
-		_spawnable_manager.destroy.rpc(int(_target_node.name))
+		_spawnable_manager.destroy.rpc_id(1, int(_target_node.name))
 
 	# Allow scene to be visible in the inspector
 	_root_scene_node.set_meta("scene_node", true)
-
-	# Add new scene
-	_scene.add_child(_root_scene_node)
 
 	# Start everything
 	start_master_scene(id)
@@ -161,17 +158,26 @@ func set_active_session(session_id: String):
 
 	for _scene in network_m.get_connected_sessions():
 		# Each session gets disabled
-		scene_container.get_node(_scene.id).visible = false
-		scene_container.get_node(_scene.id).process_mode = Node.PROCESS_MODE_DISABLED
+		var _target_scene = scene_container.get_node(_scene.id)
+		_target_scene.visible = false
+		_target_scene.process_mode = Node.PROCESS_MODE_DISABLED
+
 		_set_camera_active_state(_scene.id, false)
 		_set_player_authority_state(_scene.id, false)
+		for gizmo in scene_container.get_node(_scene.id).get_node("SpawnableManager")._gizmos:
+			gizmo._set_visibility(false)
 
 	# session_id gets enabled.
-	scene_container.get_node(session_id).process_mode = Node.PROCESS_MODE_INHERIT
+	var _scene_node: Node3D = scene_container.get_node(session_id)
+	_scene_node.process_mode = Node.PROCESS_MODE_INHERIT
 	_set_camera_active_state(session_id, true)
-	scene_container.get_node(session_id).visible = true
+	_scene_node.visible = true
 	_set_player_authority_state(session_id, true)
+	network_m.registry.set_recent(session_id)
 	Events.dash_session_changed.emit(session_id)
+	for gizmo in _scene_node.get_node("SpawnableManager")._gizmos:
+		gizmo._set_visibility(true)
+
 	return
 
 
@@ -195,35 +201,34 @@ func _get_scene_by_type(scene_type: Enum.BaseLevel) -> String:
 
 func _set_camera_active_state(session_id, state: bool = false) -> void:
 	# TODO: check if session exists.
-	var my_id: String = str(network_m._session_db[session_id].api.get_unique_id())
+	var _my_peer_id: String = str(network_m.registry.get_peer_id(session_id))
 	var master_scene: Node3D = get_master_scene(session_id)
 	# HACK: If my_id = 0, we get the desired result. This is not safe though.
-	if my_id == "0":
+	if _my_peer_id == "0":
 		GlobalLogger.log("Could not set active state for session '%s', is session open?" % [session_id], Enum.LogLevel.WARNING)
 		return
 	var player_manager: Node = master_scene.get_node("PlayerManager")
 	var player_database = player_manager.players
-	var my_database_entry = player_database.get(my_id)
+	var my_database_entry = player_database.get(_my_peer_id)
 	if my_database_entry != null:
 		if my_database_entry.node == null:
 			# FIXME: This error should not be necessary, there is a bigger problem somewhere else.
 			return
 
-		var camera = my_database_entry.node.get_node("Head/Camera3D")
-		camera.current = state
+		my_database_entry.node.set_camera_state(state)
 	return
 
 
 func _set_player_authority_state(session_id, is_active: bool = false) -> void:
-	var my_id: String = str(network_m._session_db[session_id].api.get_unique_id())
+	var _my_peer_id: String = str(network_m.registry.get_peer_id(session_id))
 	var master_scene: Node3D = get_master_scene(session_id)
 	# HACK: If my_id = 0, we get the desired result. This is not safe though.
-	if my_id == "0":
+	if _my_peer_id == "0":
 		GlobalLogger.log("Could not set player authority for session '%s', is session open?" % [session_id], Enum.LogLevel.WARNING)
 		return
 	var player_manager: Node = master_scene.get_node("PlayerManager")
 	var player_database = player_manager.players
-	var my_database_entry = player_database.get(my_id)
+	var my_database_entry = player_database.get(_my_peer_id)
 
 	if my_database_entry != null:
 		var player = my_database_entry.node
@@ -233,7 +238,7 @@ func _set_player_authority_state(session_id, is_active: bool = false) -> void:
 			return
 
 		if is_active:
-			player.set_multiplayer_authority(int(my_id))
+			player.set_multiplayer_authority(int(_my_peer_id))
 			return
 
 		player.set_multiplayer_authority(0)

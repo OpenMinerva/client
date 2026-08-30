@@ -8,8 +8,6 @@
 # --- License
 extends Node
 
-@onready var spawnable_m = get_node("../SpawnableManager")
-
 const PLAYER_TEMPLATE = {
 	"peer_id": 0,
 	"node_id": -1,
@@ -17,6 +15,9 @@ const PLAYER_TEMPLATE = {
 }
 
 var players = { }
+
+@onready var spawnable_m = get_node("../SpawnableManager")
+
 
 @rpc("call_local", "authority", "reliable")
 func add_player(peer_id: int) -> void:
@@ -27,6 +28,7 @@ func add_player(peer_id: int) -> void:
 	database_template.set("peer_id", peer_id)
 	players.set(str(peer_id), database_template)
 	return
+
 
 func set_player_database(database: Dictionary) -> void:
 	players = database
@@ -39,17 +41,23 @@ func set_player_database(database: Dictionary) -> void:
 
 	return
 
-@rpc("authority", "reliable")
+
+@rpc("call_local", "authority", "reliable")
 func remove_player(peer_id: int) -> void:
 	var caller_id = multiplayer.get_remote_sender_id()
+	var player_entry = players[str(peer_id)]
 
 	GlobalLogger.log("[%s] Removing peer '%s' from the player list" % [caller_id, peer_id])
-	players[str(peer_id)].get("node").queue_free()
 	players.erase(str(peer_id))
+	spawnable_m.destroy.rpc(int(player_entry.node.name))
 
-@rpc("authority", "reliable")
-func set_player_node(peer_id: int, node: Node3D) -> void:
+
+@rpc("call_local", "authority", "reliable")
+func set_player_node(peer_id: int, node_id: int) -> void:
 	var _target = players[str(peer_id)]
+
+	var _node_database_entry: Dictionary = spawnable_m.get_by_id(node_id)
+	var node = _node_database_entry.node
 
 	# TODO: Error warnings
 	if _target == null:
@@ -62,11 +70,15 @@ func set_player_node(peer_id: int, node: Node3D) -> void:
 	if peer_id == multiplayer.get_unique_id():
 		if node and node.has_method("set_multiplayer_authority"):
 			node.set_multiplayer_authority(peer_id)
+			# HACK: Force set the camera to active.
+			node._node_camera.current = true
 	return
+
 
 func kill_player() -> void:
 	GlobalLogger.log("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	return
+
 
 func get_player_count() -> int:
 	return players.keys().size()

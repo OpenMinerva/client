@@ -7,119 +7,114 @@
 # Authors: Armored Dragon
 # --- License
 extends Node
+## This file handles the file system management of the application. If the app needs to read a file or writes a file, it will go through here.
+## Some functions are named after their intended operation (example: `open`) as they are either agnostic of, or targeted towards specifically files OR folders. Other functions are named more specifically (example: `list_directories`, `delete_folder`) as they work for a specific file type.
+## These differences in generality are intentional and are done in some instances to better describe the intent of the action that is desired to be preformed at execution time.
 
+## The base directory on the file system where spawnables live.
 const BASE_SPAWNABLE_DIR = "user://spawnables/"
 
-var spawnables_dir: Array[String] = []
+## Contains all of the file access mode flags in a string format for logging purposes.
+var _fileaccess_modeflags: Array = ClassDB.class_get_enum_constants("FileAccess", "ModeFlags")
 
 
 func _ready() -> void:
-	_initialize_spawnable_folder()
+	_initialize()
 	return
 
 
-# Creates a log file following the internal format.
-# FIXME: Logger library should handle this.
-func create_log_file() -> String:
-	GlobalLogger.log("Creating a log file for this session.")
-	_maybe_make_directory("user://logs/")
-	# TODO: Sanataize param
-	# TODO: Error checks
-	# TODO: Try to create a different file if one already exists with that name.
-	var log_file_name = _get_today_log_file_name()
-	var log_file_path = "user://logs/%s.%s" % [ProjectSettings.get_setting("application/config/name"), log_file_name]
-	var file = FileAccess.open(log_file_path, FileAccess.WRITE)
-	file.close()
-	GlobalLogger.log("Log file '%s' created." % log_file_path)
-	return log_file_path
+## Creates a file on the file system
+## [param path] is the path of the file to create. Note that there is not a prefix and can write anywhere on the file system.
+func create_file(path: String) -> void:
+	var _base_dir: String = path.get_base_dir()
+	var _file_name: String = path.get_file()
 
+	if file_exists(path) == true:
+		GlobalLogger.log("File '%s' exists already, not creating." % path)
+		return
 
-func create_file(dir: String, file_name: String) -> void:
-	_maybe_make_directory(dir)
-	# TODO: Sanitize name
-	var file = FileAccess.open("%s/%s" % [dir, file_name], FileAccess.WRITE)
-	GlobalLogger.log("File '%s' created at '%s'." % [file_name, dir])
+	create_directory(_base_dir)
+	var file = FileAccess.open(path, FileAccess.WRITE)
 	file.close()
 
-
-func get_inv_filelist() -> Dictionary:
-	var response = { "files": [], "directories": [] }
-
-	var _files = Database.get_spawnables_by_directory(_current_path())
-
-	response.files = _files
-	response.directories = DirAccess.get_directories_at(_current_path())
-
-	return response
-
-
-func move_inv_deeper(folder: String) -> void:
-	# Move to a new folder from the current _maybe_make_directory
-	# TODO: Validate folder exists
-	spawnables_dir.append(folder)
+	GlobalLogger.log("File '%s' created at '%s'." % [_file_name, _base_dir])
 	return
 
 
-func move_inv_relocate(target: int) -> void:
-	# Relocate the current spawnable file path to a previous position in the path.
-	spawnables_dir.resize(target)
+## Delete a file from the file system.
+## [param path] is the path of the file on the file system.
+func delete_file(path: String) -> void:
+	if file_exists(path) == false:
+		GlobalLogger.log("File '%s' does not exist, not removing." % path)
+		return
+
+	DirAccess.remove_absolute(path)
 	return
 
 
-func create_folder(folder_name: String = "New Folder") -> void:
-	# TODO: Sanatize file name
-	DirAccess.make_dir_recursive_absolute(_current_path() + "/%s" % folder_name)
+## Opens a file on the file system. 
+## [param path] is the path of the file to open. Note that there is not a prefix and can open any file on the file system.
+func open(path: String, mode: FileAccess.ModeFlags = FileAccess.READ, create_if_not_exist: bool = true) -> FileAccess:
+	if file_exists(path) == false && create_if_not_exist == true:
+		create_file(path)
+
+	var _file: FileAccess = FileAccess.open(path, mode)
+	if _file != null:
+		GlobalLogger.log("File '%s' opened in mode '%s'." % [path, _fileaccess_modeflags[mode]])
+		return _file
+
+	GlobalLogger.log("File '%s' was not opened due to an error." % [path], Enum.LogLevel.WARNING)
+	return null
+
+
+## Checks to see if a file exists on the file system.
+## [param path] is the path of the file to check. Note that there is not a prefix and can check any file on the file system.
+func file_exists(path: String) -> bool:
+	GlobalLogger.log("Checking if '%s' exists on the file system." % path)
+	return FileAccess.file_exists(path)
+
+
+## Checks to see if a directory exists on the file system.
+## [param path] is the path of the directory to check. Note that there is not a prefix and can check any file on the file system.
+func directory_exists(path: String) -> bool:
+	GlobalLogger.log("Checking if '%s' exists on the file system." % path)
+	return DirAccess.dir_exists_absolute(path)
+
+
+## Get a list of all available directories from a given [param path].
+## [param path] is the path to look in and return a list of folders. Note that there is not a prefix and can look anywhere on the file system.
+func list_directories(path: String) -> Array:
+	GlobalLogger.log("Listing directories at '%s'." % path)
+
+	if directory_exists(path) == false:
+		GlobalLogger.log("Directory '%s' does not exist." % path)
+		return []
+
+	return DirAccess.get_directories_at(path)
+
+
+## Delete a directory.
+## [param path] is the directory of the directory to delete. Note that there is not a prefix and can remove any folder on the file system.
+# TODO: Make function recursively delete files in a folder if desired.
+func delete_directory(path: String) -> void:
+	if directory_exists(path) == false:
+		GlobalLogger.log("Directory '%s' does not exist, not removing." % path)
+		return
+
+	DirAccess.remove_absolute(path)
+	GlobalLogger.log("Removed directory '%s'" % path)
 	return
 
 
-func delete_folder(folder_name: String) -> void:
-	# TODO: Sanatize file name
-	# TODO: Recursive delete for all files
-	DirAccess.remove_absolute(_current_path() + "/%s" % folder_name)
+## This will create a folder at a given directory if it does not already exist.
+## [param path] is the path to create. Note that there is not a prefix and can create a directory anywhere on the file system.
+func create_directory(path: String) -> void:
+	GlobalLogger.log("Trying to make directory '%s'" % path)
+	DirAccess.make_dir_recursive_absolute(path)
 	return
 
 
-func delete_file(file_path: String) -> void:
-	# TODO: Validate that we have a file path and not a directory.
-	DirAccess.remove_absolute(file_path)
+## Initialize the file system the application is expecting. This will create all of the base folders and set up the file system environment.
+func _initialize() -> void:
+	create_directory(BASE_SPAWNABLE_DIR)
 	return
-
-
-func _maybe_make_directory(dir: String):
-	var dir_access = DirAccess.open("user://")
-	dir_access.make_dir_recursive(dir)
-
-
-func _parse_log_file_name(file_name: String) -> Dictionary:
-	var date = file_name.split(".")[1].split("-")
-	var year = date[0].split("_")[0]
-	var month = date[0].split("_")[1]
-	var day = date[0].split("_")[2]
-	var hour = date[1].split("_")[0]
-	var minute = date[1].split("_")[1]
-	var second = date[1].split("_")[2]
-	var time_dictionary = Time.get_datetime_dict_from_datetime_string("%s-%s-%sT%s:%s:%s" % [year, month, day, hour, minute, second], true)
-	return time_dictionary
-
-
-func _get_today_log_file_name() -> String:
-	var current_timestring = Time.get_datetime_string_from_system()
-	var file_name = current_timestring.replace("-", "_").replace("T", "-").replace(":", "_")
-	return file_name
-
-
-# TODO: Initialization section to make sure all folders exist.
-# Spawnables local file management
-func _initialize_spawnable_folder() -> void:
-	# Check if the folder exists
-	DirAccess.make_dir_recursive_absolute(BASE_SPAWNABLE_DIR)
-
-	return
-
-
-func _current_path() -> String:
-	var _response: String = BASE_SPAWNABLE_DIR + "/".join(spawnables_dir)
-	if _response.ends_with("/") == false:
-		_response = _response + "/"
-
-	return _response

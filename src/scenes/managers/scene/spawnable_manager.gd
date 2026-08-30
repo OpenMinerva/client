@@ -7,13 +7,8 @@
 # Authors: Armored Dragon
 # --- License
 extends Node
+## This file handles the spawnable management for a session. All synchronization and physics are handled through this file.
 
-# TODO: Network:
-# Node renaming.
-# Node reparenting.
-# Node position updating.
-# TODO: Database:
-# Sane _database_id. Don't hardcode 10.
 const SPAWNABLE_TEMPLATE: Dictionary = {
 	"type": -1,
 	"spawner": -1,
@@ -25,8 +20,9 @@ const SPAWNABLE_TEMPLATE: Dictionary = {
 }
 
 var _spawnable_network_batches: int = 4
-var _database_id: int = 10
+var _database_id: int = 1
 var _database: Array[Dictionary] = []
+var _gizmos: Array[Node] = []
 var _asset_database: Array[Dictionary] = []
 var _asset_node_relation_database: Array[Dictionary] = []
 
@@ -66,22 +62,27 @@ func sync_all() -> void:
 	if !is_multiplayer_authority():
 		return
 
+	var caller_id: int = multiplayer.get_remote_sender_id()
+	GlobalLogger.log("Received a request to sync all nodes from '%s'" % caller_id, Enum.LogLevel.INFO)
+	GlobalLogger.log("Database size: '%s'" % _database.size())
 	for spawnable in _database:
 		if spawnable.node == null:
 			GlobalLogger.log("Node does not exist.", Enum.LogLevel.WARNING)
-			return
+			continue
 
-		if spawnable.node.has_method("transform") == false:
+		if ("transform" in spawnable.node) == false:
 			# We can't transform something without a transform field!
-			return
+			GlobalLogger.log("'%s' does not have a transform. Not sending a transform." % spawnable.id)
+			continue
 
-		set_transform.rpc(spawnable.id, spawnable.node.transform)
+		GlobalLogger.log("Sending transform for '%s'" % spawnable.id)
+		transform_spawnable.rpc(spawnable.id, spawnable.node.transform)
 	return
 
 
 @rpc("any_peer", "reliable")
 func create(node_type: String, node_parent: int = 0, model_path: String = "") -> Variant:
-	var my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
+	var my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
 	var caller_id: int = multiplayer.get_remote_sender_id()
 	GlobalLogger.log("[%s] Spawning '%s'." % [my_id, node_type])
 
@@ -113,16 +114,21 @@ func create(node_type: String, node_parent: int = 0, model_path: String = "") ->
 
 @rpc("call_local", "any_peer", "reliable")
 func destroy(node_id: int) -> Variant:
-	if app_network_m._session_db.has(app_scene_m.active_session) == false:
+	if app_network_m.registry.has_session(app_scene_m.active_session) == false:
 		GlobalLogger.log("Failed to destroy node '%s'." % node_id, Enum.LogLevel.ERROR)
 		return
 
-	var my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
+	var my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
 	var caller_id: int = multiplayer.get_remote_sender_id()
 
 	if my_id == 1:
 		var _queue = _get_deletion_queue(str(node_id))
 		for node in _queue:
+			for _gizmo in _gizmos:
+				if node.is_class("Node3D") == true:
+					if _gizmo.is_selected(node):
+						deselect.rpc(int(_gizmo.name))
+
 			delete_spawnable(node.name)
 			delete_spawnable.rpc(node.name)
 
@@ -136,23 +142,72 @@ func destroy(node_id: int) -> Variant:
 		return
 
 
-@rpc("any_peer", "reliable")
-func set_transform(node_id: int, p_transform: Transform3D) -> void:
-	var _my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
-	var _caller_id: int = multiplayer.get_remote_sender_id()
+@rpc("call_local", "any_peer", "reliable")
+func select(node_id: int, gizmo_id: int) -> void:
+	var _node_db_index: int = _database.find_custom(func(entry): return entry.id == node_id)
+	var _node: Node = _database[_node_db_index].node
+	var _gizmo_db_index: int = _database.find_custom(func(entry): return entry.id == gizmo_id)
+	var _gizmo: Node = _database[_gizmo_db_index].node
 
-	if _my_id == 1:
-		# TODO: Compress for network?
-		transform_spawnable.rpc(node_id, p_transform)
-	else:
-		await rpcawaiter.send_rpc(1, set_transform.bind(node_id, p_transform))
-		return
+	if _node.is_class("Node3D"):
+		_gizmo.select(_node)
+		_gizmo._set_visibility(get_parent().visible)
+		_gizmo.transform_changed.connect(func(_mode, _value): set_transform(node_id, _node.transform))
+	return
+
+
+@rpc("call_local", "any_peer", "reliable")
+func deselect(gizmo_id: int) -> void:
+	var _gizmo_db_index: int = _database.find_custom(func(entry): return entry.id == gizmo_id)
+	var _gizmo: Node = _database[_gizmo_db_index].node
+
+	_gizmo.clear_selection()
 	return
 
 
 @rpc("any_peer", "reliable")
+func set_transform(node_id: int, p_transform: Transform3D, ignore_sender: bool = true) -> void:
+	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
+	var _caller_id: int = multiplayer.get_remote_sender_id()
+
+	if _my_id == 1:
+		var _target_peers: PackedInt32Array = []
+
+		if ignore_sender == false:
+			transform_spawnable.rpc(node_id, p_transform)
+			return
+
+		transform_spawnable(node_id, p_transform)
+
+		for _peer_id in multiplayer.get_peers():
+			if _peer_id != _caller_id:
+				_target_peers.append(_peer_id)
+
+		for _target in _target_peers:
+			transform_spawnable.rpc_id(_target, node_id, p_transform)
+	else:
+		await rpcawaiter.send_rpc(1, set_transform.bind(node_id, p_transform, ignore_sender))
+		return
+	return
+
+
+@rpc("call_local", "any_peer", "reliable")
+func set_metadata(node_id: int, metadata_name: String, metadata_value: Variant) -> void:
+	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
+	var _caller_id: int = multiplayer.get_remote_sender_id()
+
+	if _my_id == 1:
+		set_metadata_on_spawnable.rpc(node_id, metadata_name, metadata_value)
+	else:
+		await rpcawaiter.send_rpc(1, set_property.bind(node_id, metadata_name, metadata_value))
+		return
+
+	return
+
+
+@rpc("call_local", "any_peer", "reliable")
 func set_property(node_id: int, property_name: String, property_value: Variant) -> void:
-	var _my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
+	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
 	var _caller_id: int = multiplayer.get_remote_sender_id()
 
 	if _my_id == 1:
@@ -167,17 +222,17 @@ func set_property(node_id: int, property_name: String, property_value: Variant) 
 func set_resource(node_id: int, property_name: String, resource_id: int) -> void:
 	# NOTE: This resource settter is very basic and only works as a way for initializing a joining peer on the server.
 	# There is not a complex nor complete lifecycle management for these assets.
-	var _my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
+	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
 	var _caller_id: int = multiplayer.get_remote_sender_id()
 
 	if _my_id == 1:
 		var _resource: Dictionary = get_resource_by_id(resource_id)
 
 		if _resource.has("resource") == false:
-			GlobalLogger.log("Resource '%s' is in invalid state.", Enum.LogLevel.ERROR)
+			GlobalLogger.log("Resource '%s' is in invalid state." % resource_id, Enum.LogLevel.ERROR)
 			return
 
-		set_property_on_spawnable.rpc(node_id, property_name, _resource.resource)
+		set_resource_on_spawnable.rpc(node_id, property_name, resource_id)
 
 		# FIXME: When a node gets deleted, there is no cleanup for the database.
 		_asset_node_relation_database.append({ "node_id": node_id, "node_property": property_name, "resource_id": resource_id })
@@ -187,10 +242,18 @@ func set_resource(node_id: int, property_name: String, resource_id: int) -> void
 	return
 
 
+@rpc("call_local", "authority", "reliable")
+func set_resource_on_spawnable(node_id: int, property_name: String, resource_id: int) -> void:
+	var _resource: Dictionary = get_resource_by_id(resource_id)
+
+	set_property_on_spawnable(node_id, property_name, _resource.resource)
+	return
+
+
 @rpc("any_peer", "reliable")
 func set_authority(node_id: int, peer_id: int) -> void:
 	# TODO: Only allow the host to call this function.
-	var _my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
+	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
 	var _caller_id: int = multiplayer.get_remote_sender_id()
 
 	if _my_id == 1:
@@ -202,7 +265,7 @@ func set_authority(node_id: int, peer_id: int) -> void:
 
 @rpc("call_local", "any_peer", "reliable")
 func create_asset(asset_type: String, properties: Array) -> Variant:
-	var my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
+	var my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
 	var caller_id: int = multiplayer.get_remote_sender_id()
 	GlobalLogger.log("[%s] Creating Asset '%s'." % [my_id, asset_type])
 
@@ -211,14 +274,14 @@ func create_asset(asset_type: String, properties: Array) -> Variant:
 		var _target_id: String = str(_database_id)
 
 		# Actually spawn in the asset for us, and all clients.
-		var _asset = spawn_asset(asset_type, properties)
-		spawn_asset.rpc(asset_type, properties)
+		var _asset = spawn_asset(asset_type, properties, _target_id)
+		spawn_asset.rpc(asset_type, properties, _target_id)
 
 		var _asset_db_index: int = _asset_database.find_custom(func(entry): return entry.id == _asset)
 
 		if caller_id != 0 && caller_id != my_id:
 			# This call originated from a client, we need to return a reference to the spawned asset, and not the asset itself.
-			return int(_asset_database[_asset_db_index].resource.name)
+			return int(_asset_database[_asset_db_index].resource.get_name())
 
 		return _asset_database[_asset_db_index].resource
 	else:
@@ -234,7 +297,7 @@ func create_asset(asset_type: String, properties: Array) -> Variant:
 
 @rpc("call_local", "any_peer", "reliable")
 func set_parent(node_id: int, parent_node_id: int) -> void:
-	var my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
+	var my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
 
 	GlobalLogger.log("[%s] Setting parent of '%s' to '%s'." % [my_id, node_id, parent_node_id])
 
@@ -243,26 +306,27 @@ func set_parent(node_id: int, parent_node_id: int) -> void:
 		var _node = get_by_id(node_id)
 		var _parent_node = get_by_id(parent_node_id)
 
+		if _node == { }:
+			GlobalLogger.log("Failed to find the node: '%s'" % node_id, Enum.LogLevel.WARNING)
+			return
+
 		if parent_node_id <= 0:
 			# Invalid state, reparent to root.
 			_parent_node = { "node": app_scene_m.get_master_root(app_scene_m.active_session) }
 
 		# Send the reparent signal to all clients.
-		_set_node_parent.rpc(_node.node, _parent_node.node)
+		_set_node_parent.rpc(int(_node.node.name), int(_parent_node.node.name))
 
 		# Update the database.
 		var _db_index: int = _database.find_custom(func(entry): return entry.id == node_id)
 		_database[_db_index].parent = parent_node_id
-		return
 	else:
 		# Call on the host to create (and sync) the resource.
-		var _asset: int = await rpcawaiter.send_rpc(1, set_parent.bind(node_id, parent_node_id))
-		return
+		await rpcawaiter.send_rpc(1, set_parent.bind(node_id, parent_node_id))
 
 	return
 
 
-# TODO: How would large assets work?
 @rpc("authority", "reliable")
 func spawn_spawnable(p_type: String, p_name: String = "", p_path: String = "", parent_id: int = 0) -> int:
 	var _spawned_entity
@@ -289,13 +353,21 @@ func spawn_spawnable(p_type: String, p_name: String = "", p_path: String = "", p
 @rpc("authority", "reliable")
 func delete_spawnable(node_name: String) -> void:
 	GlobalLogger.log("Deleting node '%s'." % node_name)
+
+	if node_name.is_valid_int() == false:
+		GlobalLogger.log("Node '%s' is malformed." % node_name, Enum.LogLevel.ERROR)
+		return
+
 	var _entry_index = _database.find_custom(func(item): return item.id == int(node_name))
 	if _entry_index == -1:
-		# This should never happen! The node can never be removed from the scene tree then.
 		GlobalLogger.log("'%s' could not be located in the scene tree." % node_name, Enum.LogLevel.ERROR)
 		return
 
 	var _entry = _database[_entry_index]
+
+	if _entry.type == "Gizmo":
+		var _gizmo_index: int = _gizmos.find(_entry.node)
+		_gizmos.remove_at(_gizmo_index)
 
 	session_signalbus.node_destroyed.emit(_entry)
 	_entry.node.queue_free()
@@ -316,6 +388,21 @@ func transform_spawnable(node_id: int, transform: Transform3D) -> void:
 		return
 
 	_entity_db.node.transform = transform
+	return
+
+
+@rpc("call_local", "authority", "reliable")
+func set_metadata_on_spawnable(node_id: int, metadata_name: String, metadata_value: Variant) -> void:
+	var _entity_db = get_by_id(node_id)
+
+	# TODO: Error check.
+	if _entity_db == { }:
+		return
+
+	GlobalLogger.log("Adjusting metadata '%s' on node '%s'." % [metadata_name, node_id])
+	_entity_db.node.set_meta(metadata_name, metadata_value)
+	session_signalbus.node_metadata_change.emit(_entity_db.node)
+
 	return
 
 
@@ -344,7 +431,7 @@ func set_authority_on_spawnable(node_id: int, peer_id: int) -> void:
 
 
 func receive_database(database: Array, players: Dictionary, assets: Array, asset_relations: Array) -> void:
-	var _my_id: int = app_network_m._session_db[app_scene_m.active_session].api.get_unique_id()
+	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
 
 	GlobalLogger.log("[%s] Receiving spawnable database with %d entries" % [_my_id, database.size()])
 
@@ -416,7 +503,7 @@ func get_resource_by_id(resource_id: int) -> Dictionary:
 
 
 @rpc("authority", "reliable")
-func spawn_asset(asset_type, properties, id: String = str(_database_id)) -> int:
+func spawn_asset(asset_type, properties, id: String = "") -> int:
 	GlobalLogger.log("Spawning '%s'." % asset_type)
 
 	# Create the resource on our end, and include it in the database.
@@ -426,14 +513,24 @@ func spawn_asset(asset_type, properties, id: String = str(_database_id)) -> int:
 	return int(_resource.get_name())
 
 
+# FIXME: I made some changes to this function I am not proud of, but it is working. Try to improve the flow for using fallback-to-root.
 @rpc("call_local", "any_peer", "reliable")
-func _set_node_parent(node: Node, parent_node: Node) -> void:
-	# Change node parent.
-	node.reparent(parent_node)
+func _set_node_parent(node_id: int, parent_node_id: int) -> void:
+	var _node: Dictionary = get_by_id(node_id)
+	var _parent: Dictionary = get_by_id(parent_node_id)
+
+	if _parent == { }:
+		_parent = { "node": app_scene_m.get_master_root(app_scene_m.active_session) }
+
+	if _node.node && _parent.node:
+		# Change node parent.
+		_node.node.reparent(_parent.node)
+		return
+
 	return
 
 
-func _spawn_resource(resource_class: String, properties, asset_id: String = str(_database_id)) -> Resource:
+func _spawn_resource(resource_class: String, properties: Array, asset_id: String = str(_database_id)) -> Resource:
 	var _resource: Resource = null
 
 	# Create the resource
@@ -441,6 +538,9 @@ func _spawn_resource(resource_class: String, properties, asset_id: String = str(
 
 	# Set the resource properties
 	for _prop in properties:
+		if _prop.name == "resource_path":
+			# Don't set the resource path property, this causes an error, and is not required anyways.
+			continue
 		_resource.set_indexed(_prop.name, _prop.value)
 
 	# Add the resource to the database
@@ -478,6 +578,9 @@ func _add_asset_to_database(asset_class: String, resource: Resource, props: Arra
 
 func _get_deletion_queue(node_name: String) -> Array:
 	var _entry_index = _database.find_custom(func(item): return item.id == int(node_name))
+	if _entry_index < 0:
+		GlobalLogger.log("Tried to add an invalid node to the deletion queue.", Enum.LogLevel.WARNING)
+		return []
 	var _node = _database[_entry_index].node
 
 	var _queue = _add_to_deletion_queue(_node)
@@ -537,6 +640,10 @@ func _spawn_node(node_type: String, node_owner: int, parent: Node = instance_roo
 
 	# Add to scene tree
 	parent.add_child(_node)
+
+	if _pretty_name == "Gizmo":
+		_gizmos.append(_node)
+
 	return _node
 
 

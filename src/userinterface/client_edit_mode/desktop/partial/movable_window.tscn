@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b6qb2oq26yooy"]
 
-[ext_resource type="Script" uid="uid://bapubedba8eiu" path="res://userinterface/client_edit_mode/desktop/scripts/moveable_window.gd" id="1_le5nq"]
+[ext_resource type="Script" uid="uid://fpegx2jfo73q" path="res://userinterface/client_edit_mode/desktop/scripts/movable_window.gd" id="1_le5nq"]
 [ext_resource type="Shader" uid="uid://bwr4b0mhgi4w6" path="res://userinterface/dash/shaders/blur.gdshader" id="2_4cmho"]
 [ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="3_ddx82"]
 [ext_resource type="PackedScene" uid="uid://sntuc3p6k4s6" path="res://userinterface/dash/partials/generic_button.tscn" id="4_l1byb"]
@@ -68,7 +68,6 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="GenericButton" parent="BackgroundColor/MarginContainer/VBoxContainer/HBoxContainer" unique_id=649942124 instance=ExtResource("4_l1byb")]
-custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 size_flags_horizontal = 1
 icon = ExtResource("5_752f5")

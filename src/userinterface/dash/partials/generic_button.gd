@@ -38,6 +38,7 @@ func _ready() -> void:
 	if only_icon == true:
 		_node_label.queue_free()
 		_node_icon.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		_node_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		return
 
 	return
@@ -46,6 +47,11 @@ func _ready() -> void:
 func set_label(new_label: String) -> void:
 	label = new_label
 	_node_label.text = new_label
+	return
+
+
+func set_toggle(state: bool = false) -> void:
+	_node_button.toggle_mode = state
 	return
 
 

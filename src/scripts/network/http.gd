@@ -6,13 +6,12 @@
 # License: MIT License
 # Authors: Armored Dragon
 # --- License
-
 extends Node
 
 signal _completed(result: Dictionary)
 
-# TODO: When the http client fails to connect to server, no error appears.
 
+# TODO: When the http client fails to connect to server, no error appears.
 func req(method: HTTPClient.Method, host: String, path: String = "/", port: int = 443, headers: PackedStringArray = [], body: String = "") -> Dictionary:
 	var thread: Thread = Thread.new()
 	var params: Dictionary = {
@@ -22,15 +21,16 @@ func req(method: HTTPClient.Method, host: String, path: String = "/", port: int 
 		"port": port,
 		"headers": headers,
 		"body": body,
-		"thread": thread
+		"thread": thread,
 	}
 	thread.start(_thread_main.bind(params))
 
 	return await _completed
 
+
 func _thread_main(params: Dictionary) -> void:
 	var client: HTTPClient = HTTPClient.new()
-	var return_dict: Dictionary = {"ok": false, "body": ""}
+	var return_dict: Dictionary = { "ok": false, "body": "" }
 
 	var err: int = client.connect_to_host(params.host, params.port)
 
@@ -39,8 +39,8 @@ func _thread_main(params: Dictionary) -> void:
 		return_dict.error = "Connection failed"
 		_finish(params, return_dict)
 		return
-		
-   # Wait for connection
+
+	# Wait for connection
 	while client.get_status() == HTTPClient.STATUS_CONNECTING:
 		client.poll()
 		OS.delay_msec(10)
@@ -56,9 +56,9 @@ func _thread_main(params: Dictionary) -> void:
 		client.poll()
 		OS.delay_msec(10)
 
-	return_dict.status_code = client.get_response_code()
-	return_dict.response_headers = client.get_response_headers_as_dictionary()
-	
+	return_dict["status_code"] = client.get_response_code()
+	return_dict["response_headers"] = client.get_response_headers_as_dictionary()
+
 	var response_body: String = ""
 	while client.get_status() == HTTPClient.STATUS_BODY:
 		client.poll()
@@ -74,8 +74,10 @@ func _thread_main(params: Dictionary) -> void:
 
 	_finish(params, return_dict)
 
+
 func _finish(params: Dictionary, result: Dictionary) -> void:
 	call_deferred("_emit_completed", params.thread, result)
+
 
 func _emit_completed(thread: Thread, result: Dictionary) -> void:
 	emit_signal("_completed", result)

@@ -17,6 +17,7 @@ func _process(_delta):
 
 
 func setup_connection(api: SceneMultiplayer, id: String):
+	GlobalLogger.log("Setting up connection to '%s'" % id)
 	_specific_api = api
 	_server_id = id
 
@@ -59,6 +60,7 @@ func req_spawnable_db() -> void:
 
 @rpc("authority", "reliable")
 func rec_spawnable_db(db: Array, players: Dictionary, assets: Array, asset_relations: Array) -> void:
+	GlobalLogger.log("Received the spawnable database.")
 	# We have the database, set it.
 	await spawnable_m.receive_database(db, players, assets, asset_relations)
 
@@ -73,13 +75,14 @@ func _on_connected_to_server():
 	GlobalLogger.log("[%s] Connected to a server." % _my_id)
 
 	# Set the scene root to empty.
-	scene_m.set_master_root_from_program(_server_id, Enum.BaseLevel.EMPTY)
+	scene_m.set_master_root_from_program(_server_id, Enum.BaseLevel.EMPTY, "", false)
 
 	# Request the spawnable database from host
 	req_spawnable_db.rpc_id(1)
 
 
 func _on_server_disconnected():
+	GlobalLogger.log("Disconnected from '%s'" % _server_id)
 	network_m.leave_server(_server_id)
 	return
 
@@ -98,10 +101,10 @@ func _on_peer_connected(peer_id: int):
 	var _entity = await spawnable_m.create("OM_PlayerController")
 
 	# Set the player node in the player database.
-	player_m.set_player_node(peer_id, _entity)
+	player_m.set_player_node.rpc(peer_id, int(_entity.name))
 
 	# The host adds a listener for the on_delete, then spawns the player back in.
-	_entity.connect("tree_exiting", _on_peer_player_node_destroyed.bind(peer_id, int(_entity.name)))
+	_entity.connect("tree_exiting", _on_peer_player_node_destroyed.bind(peer_id))
 
 	GlobalLogger.log("[%s] Peer '%s' connected to our server." % [_my_id, peer_id])
 
@@ -112,30 +115,31 @@ func _on_peer_disconnected(peer_id: int) -> void:
 	if is_multiplayer_authority() == false:
 		return
 
-	player_m.remove_player(peer_id)
+	GlobalLogger.log("[%s] Peer '%s' disconnected to our server." % [_my_id, peer_id])
+
 	player_m.remove_player.rpc(peer_id)
 
-	GlobalLogger.log("[%s] Peer '%s' disconnected to our server." % [_my_id, peer_id])
 	return
 
 
-func _on_peer_player_node_destroyed(peer_id: int, node_id: int) -> void:
+func _on_peer_player_node_destroyed(peer_id: int) -> void:
+	if is_multiplayer_authority() == false:
+		return
+
 	GlobalLogger.log("Peer '%s' was destroyed! Queued a player controller respawn." % [peer_id])
-	spawnable_m.destroy(node_id)
-	spawnable_m.destroy.rpc(node_id)
 
 	var _timer = get_tree().create_timer(1)
 
 	_timer.timeout.connect(
 		func() -> void:
-			if player_m.players.keys().has(peer_id) == false:
+			if player_m.players.keys().has(str(peer_id)) == false:
 				# Check to see if player still exists in the database, don't spawn if they are gone.
 				GlobalLogger.log("Peer '%s' was disconnected, not respawning a player controller." % [peer_id])
 				return
 
 			var _entity = await spawnable_m.create("OM_PlayerController")
 			spawnable_m.set_authority.rpc(int(_entity.name), peer_id)
-			player_m.set_player_node(peer_id, _entity)
+			player_m.set_player_node.rpc(peer_id, int(_entity.name))
 			_entity.connect("tree_exiting", _on_peer_player_node_destroyed.bind(peer_id))
 	)
 

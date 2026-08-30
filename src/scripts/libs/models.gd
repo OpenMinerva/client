@@ -16,7 +16,7 @@ static func get_glb_assets(file_path: String) -> String:
 	var cache_dir = OS.get_cache_dir()
 
 	var app_cache_dir = cache_dir.path_join("OpenMinerva/")
-	DirAccess.make_dir_absolute(app_cache_dir)
+	FileManager.create_directory(app_cache_dir)
 
 	var gltf_doc = GLTFDocument.new()
 	var gltf_state = GLTFState.new()
@@ -38,7 +38,7 @@ static func get_glb_assets(file_path: String) -> String:
 	gltf_state.set_handle_binary_image_mode(GLTFState.HANDLE_BINARY_IMAGE_MODE_DISCARD_TEXTURES)
 	var gltf_extracted_meshes = extract_meshes(gltf_state, app_cache_dir + 'meshes/')
 	manifest.buffers[0]["uri"] = '../meshes/' + gltf_extracted_meshes + ".bin"
-	DirAccess.make_dir_absolute(app_cache_dir + 'gltf')
+	FileManager.create_directory(app_cache_dir + 'gltf')
 
 	# HACK: Force WEBP extensions in the gltf file.
 	manifest["extensionsRequired"] = ["EXT_texture_webp"]
@@ -47,7 +47,7 @@ static func get_glb_assets(file_path: String) -> String:
 	var gltf_hash = JSON.stringify(manifest).sha256_text()
 	var gltf_manifest_path = app_cache_dir + "gltf/%s.gltf" % gltf_hash
 
-	var file = FileAccess.open(gltf_manifest_path, FileAccess.WRITE)
+	var file = FileManager.open(gltf_manifest_path, FileAccess.WRITE)
 	file.store_string(JSON.stringify(manifest, "", true))
 	file.close()
 	return gltf_manifest_path
@@ -56,7 +56,7 @@ static func get_glb_assets(file_path: String) -> String:
 static func extract_images(gltf_state: GLTFState, path_root: String) -> Array:
 	var response_images = []
 	var gltf_images = gltf_state.get_images()
-	DirAccess.make_dir_absolute(path_root)
+	FileManager.create_directory(path_root)
 
 	for img_idx in range(gltf_images.size()):
 		var image_entry = gltf_images[img_idx]
@@ -79,9 +79,9 @@ static func extract_meshes(gltf_state: GLTFState, path_root: String) -> String:
 	var buffers = gltf_state.get_buffers()
 	var buffer_hash = hash_buffer_sha256_hex(buffers)
 	var bin_path = path_root + "/%s.bin" % buffer_hash
-	DirAccess.make_dir_absolute(path_root)
+	FileManager.create_directory(path_root)
 
-	var file = FileAccess.open(bin_path, FileAccess.WRITE)
+	var file = FileManager.open(bin_path, FileAccess.WRITE)
 
 	for buffer in buffers:
 		file.store_buffer(buffer)

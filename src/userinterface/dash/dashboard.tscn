@@ -24,12 +24,11 @@
 [ext_resource type="PackedScene" uid="uid://dg8ypxmuk8rv" path="res://userinterface/dash/partials/input_string.tscn" id="11_qutrk"]
 [ext_resource type="PackedScene" uid="uid://bqf6iew4kyf0b" path="res://userinterface/dash/partials/input_dropdown.tscn" id="12_86ms5"]
 [ext_resource type="Texture2D" uid="uid://c7ofnclcof0ud" path="res://resources/icons/world.svg" id="14_njqt8"]
-[ext_resource type="PackedScene" uid="uid://dtdvrvilw4fwr" path="res://userinterface/dash/partials/input_button.tscn" id="16_7lova"]
 [ext_resource type="Texture2D" uid="uid://blnd7x2qc6b7q" path="res://resources/icons/godot/Save.svg" id="17_xunij"]
 [ext_resource type="PackedScene" uid="uid://bgr4s3s31rfsi" path="res://userinterface/dash/partials/input_stringlist.tscn" id="18_njqt8"]
 [ext_resource type="PackedScene" uid="uid://c314yewjhuk8s" path="res://userinterface/dash/partials/input_stringconfirm.tscn" id="19_s6s1v"]
 [ext_resource type="PackedScene" uid="uid://gopciccm8xx5" path="res://userinterface/dash/partials/removable_string_listing.tscn" id="20_v67rh"]
-[ext_resource type="Script" uid="uid://2vk6cxto4xw" path="res://userinterface/dash/scripts/pages/spawnables.gd" id="21_d3sj0"]
+[ext_resource type="Script" uid="uid://bjoqvfyvj3d6x" path="res://userinterface/dash/scripts/pages/spawnables.gd" id="21_d3sj0"]
 [ext_resource type="Texture2D" uid="uid://8fwxg1ipf0fp" path="res://resources/icons/exit.svg" id="24_nakrv"]
 [ext_resource type="Script" uid="uid://cnm74wceowx3y" path="res://userinterface/dash/scripts/pages/debug.gd" id="24_v7inj"]
 [ext_resource type="Script" uid="uid://cah3jpmu1x72b" path="res://userinterface/dash/scripts/pages/exit.gd" id="24_wvg7d"]
@@ -244,22 +243,26 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="InstanceName" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/World" unique_id=1236567120 instance=ExtResource("11_qutrk")]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/World" unique_id=1803105250]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="WorldName" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/World/VBoxContainer" unique_id=1236567120 instance=ExtResource("11_qutrk")]
 unique_name_in_owner = true
 layout_mode = 2
 display_text = "Name"
 
-[node name="InstanceDescription" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/World" unique_id=368136274 instance=ExtResource("11_hia1r")]
+[node name="WorldDescription" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/World/VBoxContainer" unique_id=368136274 instance=ExtResource("11_hia1r")]
 unique_name_in_owner = true
 layout_mode = 2
 display_text = "Description"
 
-[node name="SaveWorld" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/World" unique_id=1676692906 instance=ExtResource("16_7lova")]
+[node name="SaveWorld" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/World" unique_id=2139889855 instance=ExtResource("8_0mns2")]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 50)
 layout_mode = 2
-display_text = "Save World"
-button_label = "Save"
-button_icon = ExtResource("17_xunij")
+label = "Save World"
+icon = ExtResource("17_xunij")
 
 [node name="Hosting" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right" parent_id_path=PackedInt32Array(17586745, 892180341) index="3" unique_id=1206037028]
 visible = false
@@ -280,24 +283,27 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_vertical = 3
 
+[node name="InstanceName" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/Hosting/ScrollContainer/VBoxContainer/VBoxContainer" unique_id=1472168861 instance=ExtResource("11_qutrk")]
+unique_name_in_owner = true
+layout_mode = 2
+display_text = "Name"
+
+[node name="InstanceDescription" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/Hosting/ScrollContainer/VBoxContainer/VBoxContainer" unique_id=1726995210 instance=ExtResource("11_hia1r")]
+unique_name_in_owner = true
+layout_mode = 2
+display_text = "Description"
+
 [node name="Privacy" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/Hosting/ScrollContainer/VBoxContainer/VBoxContainer" unique_id=1881042579 instance=ExtResource("12_86ms5")]
 layout_mode = 2
 display_text = "Privacy"
 options = Array[String](["Invite", "Friends", "Friends+", "Contacts+", "Contacts", "Public"])
 
-[node name="Save" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/Hosting/ScrollContainer/VBoxContainer" unique_id=995560766 instance=ExtResource("3_ocjmf")]
+[node name="SaveSession" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/Hosting/ScrollContainer/VBoxContainer" unique_id=530251867 instance=ExtResource("8_0mns2")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 50)
 layout_mode = 2
-display_text = "Save"
-selected_icon = "Instance"
-
-[node name="Button" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/Hosting/ScrollContainer/VBoxContainer/Save" index="0" unique_id=1422381468]
-toggle_mode = false
-
-[node name="TextureRect" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/Hosting/ScrollContainer/VBoxContainer/Save/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(995560766, 86696220) index="0" unique_id=1429445374]
-texture = ExtResource("14_njqt8")
-
-[node name="Label" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/Hosting/ScrollContainer/VBoxContainer/Save/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(995560766, 86696220) index="1" unique_id=1807295119]
-text = "Save"
+label = "Update Session"
+icon = ExtResource("14_njqt8")
 
 [node name="Sessions" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=1512510126 instance=ExtResource("3_av8ee")]
 visible = false
@@ -976,7 +982,6 @@ horizontal_alignment = 1
 
 [editable path="MarginContainer/VBoxContainer/Content/Container/Home/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/Listing"]
 [editable path="MarginContainer/VBoxContainer/Content/Container/Instance"]
-[editable path="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/Hosting/ScrollContainer/VBoxContainer/Save"]
 [editable path="MarginContainer/VBoxContainer/Content/Container/Sessions"]
 [editable path="MarginContainer/VBoxContainer/Content/Container/Settings"]
 [editable path="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right/Config/InputDropdown"]

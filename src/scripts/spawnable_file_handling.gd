@@ -43,7 +43,7 @@ func save_spawnable(root: Node, type: Enum.SpawnableType = Enum.SpawnableType.IT
 
 	_externalize_assets(root, _data_hash)
 
-	var file_path = FileManager._current_path() + _data_hash + ".tscn"
+	var file_path = StateManager.get_spawnable_path_string() + _data_hash + ".tscn"
 	ResourceSaver.save(packed_scene, file_path)
 
 	# Add spawnable to the database.
@@ -55,6 +55,8 @@ func save_spawnable(root: Node, type: Enum.SpawnableType = Enum.SpawnableType.IT
 		"type": type,
 	}
 	Database.set_spawnable(_data_hash, _database_row)
+
+	Events.cem_spawnable_saved.emit()
 
 	# I have no idea what ownership is in terms of nodes are right now, so put it back as to not break anything
 	_restore_ownership(root, original_owners)
@@ -68,7 +70,7 @@ func load_spawnable(path: String) -> void:
 	var _path_parent_dictionary: Dictionary = { }
 
 	# Check if file exists at the given path.
-	if FileAccess.file_exists(path) == false:
+	if FileManager.file_exists(path) == false:
 		GlobalLogger.log("File '%s' does not exist." % path, Enum.LogLevel.INFO)
 		return
 
@@ -85,15 +87,23 @@ func load_spawnable(path: String) -> void:
 		_task.id = _node_id
 		_task.parent = -1
 		_task.path = _node_path
-		_task.properties = [] # An array listing the keys of property fields.
+		_task.metadata = []
+		_task.resources = []
+		_task.properties = []
 
 		for _prop_id in range(_num_properties):
 			var _prop_name: String = _state.get_node_property_name(_node_id, _prop_id)
 			var _prop_value: Variant = _state.get_node_property_value(_node_id, _prop_id)
 
 			if _prop_value is Resource:
-				_task.properties.append(_prop_name)
+				_task.resources.append(_prop_name)
 				_prop_value = _flatten_resource(_prop_value)
+
+			if _prop_name.begins_with("metadata/") == true:
+				_task.metadata.append({ "name": _prop_name.replace("metadata/", ""), "value": _prop_value })
+
+			if typeof(_prop_name) != TYPE_STRING_NAME && _prop_name.begins_with("metadata/") == false:
+				_task.properties.append({ "name": _prop_name, "value": _prop_value })
 
 			_task.set(_prop_name, _prop_value)
 
@@ -139,7 +149,13 @@ func load_spawnable(path: String) -> void:
 		if _task.has("transform") == true:
 			session_spawnable_manager.set_transform(int(_task.node.name), _task.transform)
 
+		for _prop in _task.metadata:
+			session_spawnable_manager.set_metadata.rpc_id(1, int(_node.name), _prop.name, _prop.value)
+
 		for _prop in _task.properties:
+			session_spawnable_manager.set_property.rpc_id(1, int(_task.node.name), _prop.name, _prop.value)
+
+		for _prop in _task.resources:
 			var _prop_dict = _task[_prop]
 
 			# First we should create the asset on the server
@@ -192,7 +208,7 @@ func _externalize_assets(root: Node, spawnable_hash: String) -> Node:
 				# Add to the database if we do not already have the asset in the database.
 
 				# Get the file size of the asset
-				var _file = FileAccess.open(_external_path, FileAccess.READ)
+				var _file = FileManager.open(_external_path)
 				_data_size = _file.get_length()
 				_file.close()
 

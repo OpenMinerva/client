@@ -21,13 +21,10 @@ var _inspector_opened_tree_nodes: Array[Node] = []
 var _inspector_selected_node: Node = null
 var _inspector_tree_filters: Array[String] = []
 var _inspector_tree_search: String = ""
-var _cem_state: bool = false
 var _cem_camera: bool = false
 
-# FIXME: Selecting Gizmo crashes
 # FIXME: You can select the selected spawnable. (Safe but probably should be changed)
 # External Libraries / scripts
-# FIXME: DevSpawnableManager node
 @onready var _app_spawnable_file_handling_m: Node = get_tree().current_scene.get_node("SpawnableFileHandling")
 @onready var app_scene_m: Node = get_tree().current_scene.get_node("SceneManager")
 @onready var app_network_m: Node = get_tree().current_scene.get_node("NetworkManager")
@@ -62,9 +59,6 @@ func _ready() -> void:
 
 	_inspector_popup.visible = false
 
-	# TODO: Proper wait until building the inspector.
-	await get_tree().process_frame
-
 	_inspector_build()
 	_gizmo_set_mode()
 	return
@@ -86,8 +80,12 @@ func _input(event: InputEvent):
 				_inspector_popup.visible = false
 
 	if event.is_action_pressed("cem_activate"):
-		_cem_state = !_cem_state
-		Events.emit_signal("cem_set_state", _cem_state)
+		if StateManager.cem == false:
+			Events.emit_signal("dash_set_state", false)
+			Events.emit_signal("cem_set_state", true)
+		else:
+			Events.emit_signal("dash_set_state", false)
+			Events.emit_signal("cem_set_state", false)
 
 		StateManager.update_mouse_state()
 
@@ -160,7 +158,6 @@ func _add_signalbus_event_listeners() -> void:
 	GlobalLogger.log("Adding signal bus event listeners to the inspector.")
 	Events.cem_set_state.connect(_set_state)
 	Events.dash_session_changed.connect(_on_session_changed)
-	# TODO: Events.cem_set_gizmo_state.connect(_toggle_gizmos)
 	return
 
 
@@ -230,34 +227,46 @@ func _inspector_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_i
 func _set_state(state: bool) -> void:
 	GlobalLogger.log("Inspector state is being set to '%s'." % state)
 	_gizmo_visibility(state)
+	_inspector_build()
 	visible = state
 	_node_crosshair.visible = !state
 	return
 
 
 func _on_node_created(_node: Node) -> void:
-	# TODO: Instead of rebuilding the entire tree, just update the respective entry.
-	GlobalLogger.log("Inspector: Node created.")
+	if session_root == null:
+		session_root = app_scene_m.get_master_root(app_scene_m.active_session)
+
+	GlobalLogger.log("Node created.")
 	_inspector_build()
 	return
 
 
 func _on_node_destroyed(node_entry: Dictionary) -> void:
-	# TODO: Instead of rebuilding the entire tree, just update the respective entry.
-	GlobalLogger.log("Inspector: Node destroyed.")
+	if session_root == null:
+		session_root = app_scene_m.get_master_root(app_scene_m.active_session)
+
+	GlobalLogger.log("Node destroyed.")
 
 	# Deselect the node if selected.
 	if my_gizmo:
 		my_gizmo.deselect(node_entry.node)
 
+	await get_tree().process_frame
+	_inspector_build()
+	return
+
+
+func _on_node_metadata_changed(_node_entry: Node) -> void:
 	_inspector_build()
 	return
 
 
 func _on_session_changed(_session_id: String) -> void:
-	session_signalbus = app_scene_m.get_master_scene(app_scene_m.active_session).get_node("SignalBus")
-	session_spawnable_m = app_scene_m.get_master_scene(app_scene_m.active_session).get_node("SpawnableManager")
-	session_players_m = app_scene_m.get_master_scene(app_scene_m.active_session).get_node("PlayerManager")
+	var _session_master: Node3D = app_scene_m.get_master_scene(_session_id)
+	session_signalbus = _session_master.get_node("SignalBus")
+	session_spawnable_m = _session_master.get_node("SpawnableManager")
+	session_players_m = _session_master.get_node("PlayerManager")
 	session_root = app_scene_m.get_master_root(app_scene_m.active_session)
 
 	_inspector_selected = null
@@ -267,13 +276,17 @@ func _on_session_changed(_session_id: String) -> void:
 	if session_signalbus.is_connected("node_created", _on_node_created) == false:
 		session_signalbus.node_created.connect(_on_node_created)
 		session_signalbus.node_destroyed.connect(_on_node_destroyed)
+		session_signalbus.node_metadata_change.connect(_on_node_metadata_changed)
+
+	_inspector_build()
 	return
 
 
 # User Interface
 func _inspector_build(root_node: Node = session_root) -> void:
-	# TODO: Proper wait until building the inspector.
-	await get_tree().process_frame
+	if root_node == null:
+		GlobalLogger.log("Invalid root node: '%s'" % root_node, Enum.LogLevel.WARNING)
+		return
 
 	var _total_spawnable_label: String = str(session_spawnable_m._database.size())
 	var _total_player_label: String = str(session_players_m.get_player_count())
@@ -320,6 +333,10 @@ func _inspector_add_node(node: Node, parent: TreeItem) -> void:
 		return
 
 	var _tree_node = _inspector_tree.create_item(parent)
+
+	if _tree_node == null:
+		return
+
 	var _tree_icon = NSB.get_entry(node.get_class()).icon
 	var _is_collapsed = !_inspector_opened_tree_nodes.has(node)
 
@@ -432,8 +449,11 @@ func _inspector_get_all_tree_ancestors(starting_item: TreeItem) -> Array[TreeIte
 
 # Inspector events
 func _inspector_item_edited() -> void:
+	var _node: Node = _inspector_editing.get_metadata(0)
+	var _new_name: String = _inspector_editing.get_text(0)
+
 	_inspector_editing.set_editable(0, false)
-	_inspector_editing.get_metadata(0).set_meta("pretty_name", _inspector_editing.get_text(0))
+	session_spawnable_m.set_metadata.rpc(int(_node.name), "pretty_name", _new_name)
 
 
 func _inspector_clear() -> void:
@@ -479,28 +499,30 @@ func _inspector_spawn_node(type: String, parent: int) -> void:
 
 
 func _select(target_node: int) -> void:
-	var _node_db_entry = session_spawnable_m.get_by_id(target_node)
-
-	if my_gizmo != null:
-		_gizmo_delete()
-
-	if _node_db_entry == { }:
-		GlobalLogger.log("Tried to select a node that should not exist!", Enum.LogLevel.ERROR)
-
-		_inspector_selected_node = null
-		_set_npe_state(false)
+	if target_node == 0:
+		GlobalLogger.log("Invalid node selected", Enum.LogLevel.WARNING)
 		return
 
+	if my_gizmo != null:
+		GlobalLogger.log("Gizmo exists, deleting")
+		_gizmo_delete()
+
+	# TODO: Validate that the gizmo was created and did not error.
 	my_gizmo = await session_spawnable_m.create("Gizmo")
-	# TODO: Add to array of Gizmos
-	my_gizmo.select(_node_db_entry.node)
+
+	var _node_db_entry = session_spawnable_m.get_by_id(target_node)
+	session_spawnable_m.select.rpc(target_node, int(my_gizmo.name))
+
 	my_gizmo.mode = _gizmo_mode
 	my_gizmo.use_local_space = _gizmo_space_local
 
 	_node_property_editor.get_node_properties(_node_db_entry.node)
-	my_gizmo.transform_changed.connect(func(_mode, _value): session_spawnable_m.set_transform(target_node, _node_db_entry.node.transform))
+
 	# HACK: Update ALL of the node properties after a transformation was done.
+	# This should be happening somewhere else that is more stable / live.
 	my_gizmo.transform_end.connect(func(_mode): _node_property_editor.update_node_properties(_node_db_entry.node))
+
+	return
 
 
 func _gizmo_delete() -> void:
@@ -557,7 +579,7 @@ func _gizmo_visibility(to_set_visible: bool = false) -> void:
 # CEM Camera
 func _cem_camera_state(state: bool) -> void:
 	var _active_session_id = app_scene_m.active_session
-	var _session_api = app_network_m._session_db[_active_session_id].api
+	var _session_api = app_network_m.registry.get_session(_active_session_id).api
 	var _player_id: int = _session_api.get_unique_id()
 	var _player_db = session_players_m.players[str(_player_id)]
 	var _player_node: Node3D

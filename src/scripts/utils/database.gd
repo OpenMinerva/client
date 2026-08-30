@@ -77,13 +77,13 @@ func delete_spawnable(item_hash: String) -> bool:
 	return _success
 
 
-func get_asset(hash: String) -> Dictionary:
+func get_asset(asset_hash: String) -> Dictionary:
 	# TODO: Use query bindings?
-	GlobalLogger.log("[ Database ] Getting asset '%s'." % hash, Enum.LogLevel.DEBUG)
-	_db.query("SELECT * FROM asset WHERE hash = '%s'" % hash)
+	GlobalLogger.log("[ Database ] Getting asset '%s'." % asset_hash, Enum.LogLevel.DEBUG)
+	_db.query("SELECT * FROM asset WHERE hash = '%s'" % asset_hash)
 
 	if _db.query_result.is_empty():
-		GlobalLogger.log("[ Database ] Asset '%s' does not exist." % hash, Enum.LogLevel.DEBUG)
+		GlobalLogger.log("[ Database ] Asset '%s' does not exist." % asset_hash, Enum.LogLevel.DEBUG)
 		return { }
 
 	return _db.query_result[0]
