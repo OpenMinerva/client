@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://c5iqs1ro62837"]
+
+[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="1_0b8ag"]
+[ext_resource type="Script" uid="uid://dht8p10d785is" path="res://userinterface/client_edit_mode/node_property_editor/partials/color.gd" id="2_0b8ag"]
+
+[node name="Color" type="Control" unique_id=933711176]
+custom_minimum_size = Vector2(80, 30)
+layout_mode = 3
+anchor_right = 1.0
+anchor_bottom = 0.027777778
+grow_horizontal = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_0b8ag")
+script = ExtResource("2_0b8ag")
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="HBoxContainer" parent="." unique_id=1972995258]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.053703703
+grow_horizontal = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="VBoxContainer" unique_id=482404396]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Color"
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="VBoxContainer" unique_id=1428418942]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme = ExtResource("1_0b8ag")

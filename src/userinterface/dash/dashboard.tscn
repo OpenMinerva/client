@@ -1,0 +1,994 @@
+[gd_scene format=3 uid="uid://c4y1sb6lmdr0q"]
+
+[ext_resource type="Script" uid="uid://ci5jkh01ixats" path="res://userinterface/dash/scripts/master.gd" id="1_7d87s"]
+[ext_resource type="Shader" uid="uid://bwr4b0mhgi4w6" path="res://userinterface/dash/shaders/blur.gdshader" id="1_co0dt"]
+[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="2_0nfpo"]
+[ext_resource type="Script" uid="uid://bd7a7r2u4cbtf" path="res://userinterface/dash/scripts/header.gd" id="2_7obga"]
+[ext_resource type="Script" uid="uid://bkqsi1aebefhj" path="res://userinterface/dash/scripts/navigation.gd" id="3_8u0v7"]
+[ext_resource type="PackedScene" uid="uid://dog17wkc4h48c" path="res://userinterface/dash/partials/left_nav_container.tscn" id="3_av8ee"]
+[ext_resource type="PackedScene" uid="uid://ccoyv1v4otf1b" path="res://userinterface/dash/partials/nav_button.tscn" id="3_ocjmf"]
+[ext_resource type="Script" uid="uid://ba1v2y41s8drb" path="res://userinterface/dash/scripts/pages/settings.gd" id="4_ap0b5"]
+[ext_resource type="PackedScene" uid="uid://clvk6h18vwcd3" path="res://userinterface/dash/partials/account_button.tscn" id="4_aw6p6"]
+[ext_resource type="PackedScene" uid="uid://71vuc3qrtgi7" path="res://userinterface/dash/partials/category_button.tscn" id="4_ql400"]
+[ext_resource type="Script" uid="uid://behsvrk7cf3e3" path="res://userinterface/dash/scripts/pages/home.gd" id="6_bh4hj"]
+[ext_resource type="PackedScene" uid="uid://dh0u5xtwooa0v" path="res://userinterface/dash/partials/home_server_listing.tscn" id="7_kk1ia"]
+[ext_resource type="Script" uid="uid://g1gvftyku5mb" path="res://userinterface/dash/scripts/pages/sessions.gd" id="7_kk4yy"]
+[ext_resource type="Script" uid="uid://cs3l7uq2q5uvo" path="res://userinterface/dash/scripts/pages/instance.gd" id="7_o4evp"]
+[ext_resource type="PackedScene" uid="uid://sntuc3p6k4s6" path="res://userinterface/dash/partials/generic_button.tscn" id="8_0mns2"]
+[ext_resource type="PackedScene" uid="uid://cyom30b1p54df" path="res://userinterface/dash/partials/search.tscn" id="9_gtfiv"]
+[ext_resource type="Texture2D" uid="uid://dw8erklrxa784" path="res://resources/icons/godot/World3D.svg" id="9_kowlf"]
+[ext_resource type="PackedScene" uid="uid://b1q1rp1y4dt2f" path="res://userinterface/dash/partials/account_userlist_listing.tscn" id="9_o4evp"]
+[ext_resource type="Script" uid="uid://dhdqv7d4orjgy" path="res://userinterface/dash/scripts/pages/account_selection.gd" id="9_qutrk"]
+[ext_resource type="PackedScene" uid="uid://crp73pbni8ils" path="res://userinterface/dash/partials/input_boxstring.tscn" id="11_hia1r"]
+[ext_resource type="Script" uid="uid://b2snjauxtpn22" path="res://userinterface/dash/scripts/pages/account_creation.gd" id="11_jgxeq"]
+[ext_resource type="PackedScene" uid="uid://dg8ypxmuk8rv" path="res://userinterface/dash/partials/input_string.tscn" id="11_qutrk"]
+[ext_resource type="PackedScene" uid="uid://bqf6iew4kyf0b" path="res://userinterface/dash/partials/input_dropdown.tscn" id="12_86ms5"]
+[ext_resource type="Texture2D" uid="uid://c7ofnclcof0ud" path="res://resources/icons/world.svg" id="14_njqt8"]
+[ext_resource type="Texture2D" uid="uid://blnd7x2qc6b7q" path="res://resources/icons/godot/Save.svg" id="17_xunij"]
+[ext_resource type="PackedScene" uid="uid://bgr4s3s31rfsi" path="res://userinterface/dash/partials/input_stringlist.tscn" id="18_njqt8"]
+[ext_resource type="PackedScene" uid="uid://c314yewjhuk8s" path="res://userinterface/dash/partials/input_stringconfirm.tscn" id="19_s6s1v"]
+[ext_resource type="PackedScene" uid="uid://gopciccm8xx5" path="res://userinterface/dash/partials/removable_string_listing.tscn" id="20_v67rh"]
+[ext_resource type="Script" uid="uid://bjoqvfyvj3d6x" path="res://userinterface/dash/scripts/pages/spawnables.gd" id="21_d3sj0"]
+[ext_resource type="Texture2D" uid="uid://8fwxg1ipf0fp" path="res://resources/icons/exit.svg" id="24_nakrv"]
+[ext_resource type="Script" uid="uid://cnm74wceowx3y" path="res://userinterface/dash/scripts/pages/debug.gd" id="24_v7inj"]
+[ext_resource type="Script" uid="uid://cah3jpmu1x72b" path="res://userinterface/dash/scripts/pages/exit.gd" id="24_wvg7d"]
+[ext_resource type="PackedScene" uid="uid://b6qb2oq26yooy" path="res://userinterface/client_edit_mode/desktop/partial/movable_window.tscn" id="32_rmxmm"]
+[ext_resource type="Texture2D" uid="uid://bb6karp2363a5" path="res://resources/icons/at-icons/rocketship.svg" id="33_h0jai"]
+[ext_resource type="Script" uid="uid://c2ljo75xjxkm6" path="res://userinterface/dash/scripts/new_world_dialog.gd" id="35_owuc4"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_v7inj"]
+shader = ExtResource("1_co0dt")
+shader_parameter/color = Color(0.4, 0.4, 0.4, 1)
+shader_parameter/blur_amount = 3.0000001392401203
+shader_parameter/roughness = 0.2
+shader_parameter/roughness_affect = 0.0
+
+[node name="Dashboard" type="Control" unique_id=505457833]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_7d87s")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=235504345]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=124409058]
+layout_mode = 2
+
+[node name="TopBar" type="Control" parent="MarginContainer/VBoxContainer" unique_id=1724217308]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+script = ExtResource("2_7obga")
+
+[node name="BackgroundColor" type="Panel" parent="MarginContainer/VBoxContainer/TopBar" unique_id=1739661515]
+material = SubResource("ShaderMaterial_v7inj")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_0nfpo")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/TopBar" unique_id=1173993118]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/TopBar/MarginContainer" unique_id=1648745915]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="AccountButton" parent="MarginContainer/VBoxContainer/TopBar/MarginContainer/HBoxContainer" unique_id=649942124 instance=ExtResource("4_aw6p6")]
+layout_mode = 2
+selected_theme_type = "LightButton"
+
+[node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer/TopBar/MarginContainer/HBoxContainer" unique_id=1621069338]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Spacer2" type="Control" parent="MarginContainer/VBoxContainer/TopBar/MarginContainer/HBoxContainer" unique_id=47996349]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Spacer3" type="Control" parent="MarginContainer/VBoxContainer/TopBar/MarginContainer/HBoxContainer" unique_id=187996788]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Content" type="Control" parent="MarginContainer/VBoxContainer" unique_id=1517512624]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BackgroundColor" type="Panel" parent="MarginContainer/VBoxContainer/Content" unique_id=730467318]
+material = SubResource("ShaderMaterial_v7inj")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_0nfpo")
+
+[node name="Container" type="MarginContainer" parent="MarginContainer/VBoxContainer/Content" unique_id=226262957]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Home" type="Control" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=154112638]
+visible = false
+layout_mode = 2
+script = ExtResource("6_bh4hj")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Home" unique_id=1195053231]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Home/HBoxContainer" unique_id=1457867721]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/Content/Container/Home/HBoxContainer/VBoxContainer" unique_id=650457035]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("2_0nfpo")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Content/Container/Home/HBoxContainer/VBoxContainer/PanelContainer" unique_id=409134466]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Home/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer" unique_id=758556458]
+layout_mode = 2
+
+[node name="Listing" parent="MarginContainer/VBoxContainer/Content/Container/Home/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=902887409 instance=ExtResource("7_kk1ia")]
+layout_mode = 2
+theme = ExtResource("2_0nfpo")
+theme_type_variation = &"SolidBackground"
+
+[node name="CreateNewWorld" parent="MarginContainer/VBoxContainer/Content/Container/Home/HBoxContainer/VBoxContainer" unique_id=1412816903 instance=ExtResource("8_0mns2")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+label = "Create World"
+icon = ExtResource("9_kowlf")
+
+[node name="Spacing" type="Control" parent="MarginContainer/VBoxContainer/Content/Container/Home/HBoxContainer" unique_id=643242587]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Spacing2" type="Control" parent="MarginContainer/VBoxContainer/Content/Container/Home/HBoxContainer" unique_id=2026218850]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Spacing3" type="Control" parent="MarginContainer/VBoxContainer/Content/Container/Home/HBoxContainer" unique_id=2092666911]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Instance" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=17586745 instance=ExtResource("3_av8ee")]
+layout_mode = 2
+script = ExtResource("7_o4evp")
+
+[node name="Users" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Left" parent_id_path=PackedInt32Array(17586745, 1799305671) index="0" unique_id=612707214 instance=ExtResource("4_ql400")]
+layout_mode = 2
+toggle = true
+default_state = false
+
+[node name="Permissions" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Left" parent_id_path=PackedInt32Array(17586745, 1799305671) index="1" unique_id=915845213 instance=ExtResource("4_ql400")]
+layout_mode = 2
+toggle = true
+default_state = false
+
+[node name="World" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Left" parent_id_path=PackedInt32Array(17586745, 1799305671) index="2" unique_id=1224429742 instance=ExtResource("4_ql400")]
+layout_mode = 2
+toggle = true
+default_state = false
+
+[node name="Hosting" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Left" parent_id_path=PackedInt32Array(17586745, 1799305671) index="3" unique_id=536388283 instance=ExtResource("4_ql400")]
+layout_mode = 2
+toggle = true
+default_state = false
+
+[node name="Users" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right" parent_id_path=PackedInt32Array(17586745, 892180341) index="0" unique_id=1908722423]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="AccountButtonListing" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/Users" unique_id=430751695 instance=ExtResource("9_o4evp")]
+layout_mode = 2
+
+[node name="Permissions" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right" parent_id_path=PackedInt32Array(17586745, 892180341) index="1" unique_id=522357128]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="World" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right" parent_id_path=PackedInt32Array(17586745, 892180341) index="2" unique_id=1519071951]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/World" unique_id=1803105250]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="WorldName" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/World/VBoxContainer" unique_id=1236567120 instance=ExtResource("11_qutrk")]
+unique_name_in_owner = true
+layout_mode = 2
+display_text = "Name"
+
+[node name="WorldDescription" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/World/VBoxContainer" unique_id=368136274 instance=ExtResource("11_hia1r")]
+unique_name_in_owner = true
+layout_mode = 2
+display_text = "Description"
+
+[node name="SaveWorld" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/World" unique_id=2139889855 instance=ExtResource("8_0mns2")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 50)
+layout_mode = 2
+label = "Save World"
+icon = ExtResource("17_xunij")
+
+[node name="Hosting" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right" parent_id_path=PackedInt32Array(17586745, 892180341) index="3" unique_id=1206037028]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/Hosting" unique_id=264747709]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/Hosting/ScrollContainer" unique_id=233870972]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/Hosting/ScrollContainer/VBoxContainer" unique_id=1973332395]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="InstanceName" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/Hosting/ScrollContainer/VBoxContainer/VBoxContainer" unique_id=1472168861 instance=ExtResource("11_qutrk")]
+unique_name_in_owner = true
+layout_mode = 2
+display_text = "Name"
+
+[node name="InstanceDescription" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/Hosting/ScrollContainer/VBoxContainer/VBoxContainer" unique_id=1726995210 instance=ExtResource("11_hia1r")]
+unique_name_in_owner = true
+layout_mode = 2
+display_text = "Description"
+
+[node name="Privacy" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/Hosting/ScrollContainer/VBoxContainer/VBoxContainer" unique_id=1881042579 instance=ExtResource("12_86ms5")]
+layout_mode = 2
+display_text = "Privacy"
+options = Array[String](["Invite", "Friends", "Friends+", "Contacts+", "Contacts", "Public"])
+
+[node name="SaveSession" parent="MarginContainer/VBoxContainer/Content/Container/Instance/HBox/Right/Hosting/ScrollContainer/VBoxContainer" unique_id=530251867 instance=ExtResource("8_0mns2")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 50)
+layout_mode = 2
+label = "Update Session"
+icon = ExtResource("14_njqt8")
+
+[node name="Sessions" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=1512510126 instance=ExtResource("3_av8ee")]
+visible = false
+layout_mode = 2
+script = ExtResource("7_kk4yy")
+
+[node name="Art" parent="MarginContainer/VBoxContainer/Content/Container/Sessions/HBox/Left" parent_id_path=PackedInt32Array(1512510126, 1799305671) index="0" unique_id=790930258 instance=ExtResource("4_ql400")]
+layout_mode = 2
+selected_icon = "Art"
+default_state = false
+
+[node name="Environment" parent="MarginContainer/VBoxContainer/Content/Container/Sessions/HBox/Left" parent_id_path=PackedInt32Array(1512510126, 1799305671) index="1" unique_id=1381397115 instance=ExtResource("4_ql400")]
+layout_mode = 2
+selected_icon = "Environment"
+default_state = false
+
+[node name="Science" parent="MarginContainer/VBoxContainer/Content/Container/Sessions/HBox/Left" parent_id_path=PackedInt32Array(1512510126, 1799305671) index="2" unique_id=937204749 instance=ExtResource("4_ql400")]
+layout_mode = 2
+selected_icon = "Science"
+default_state = false
+
+[node name="Games" parent="MarginContainer/VBoxContainer/Content/Container/Sessions/HBox/Left" parent_id_path=PackedInt32Array(1512510126, 1799305671) index="3" unique_id=618470106 instance=ExtResource("4_ql400")]
+layout_mode = 2
+selected_icon = "Games"
+default_state = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Sessions/HBox/Right" parent_id_path=PackedInt32Array(1512510126, 892180341) index="0" unique_id=1522418383]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="InputString" parent="MarginContainer/VBoxContainer/Content/Container/Sessions/HBox/Right/VBoxContainer" unique_id=125373846 instance=ExtResource("9_gtfiv")]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/Content/Container/Sessions/HBox/Right/VBoxContainer" unique_id=1395158644]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("2_0nfpo")
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer/Content/Container/Sessions/HBox/Right/VBoxContainer/ScrollContainer" unique_id=2033791184]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 5
+
+[node name="Settings" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=739538319 instance=ExtResource("3_av8ee")]
+visible = false
+layout_mode = 2
+script = ExtResource("4_ap0b5")
+
+[node name="General" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Left" parent_id_path=PackedInt32Array(739538319, 1799305671) index="0" unique_id=1084146267 instance=ExtResource("4_ql400")]
+layout_mode = 2
+toggle = true
+default_state = false
+
+[node name="Display" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Left" parent_id_path=PackedInt32Array(739538319, 1799305671) index="1" unique_id=884696286 instance=ExtResource("4_ql400")]
+layout_mode = 2
+toggle = true
+default_state = false
+
+[node name="Audio" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Left" parent_id_path=PackedInt32Array(739538319, 1799305671) index="2" unique_id=83468254 instance=ExtResource("4_ql400")]
+layout_mode = 2
+toggle = true
+default_state = false
+
+[node name="Controls" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Left" parent_id_path=PackedInt32Array(739538319, 1799305671) index="3" unique_id=1439698396 instance=ExtResource("4_ql400")]
+layout_mode = 2
+toggle = true
+default_state = false
+
+[node name="Interface" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Left" parent_id_path=PackedInt32Array(739538319, 1799305671) index="4" unique_id=1049312458 instance=ExtResource("4_ql400")]
+layout_mode = 2
+toggle = true
+default_state = false
+
+[node name="Network" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Left" parent_id_path=PackedInt32Array(739538319, 1799305671) index="5" unique_id=1617618443 instance=ExtResource("4_ql400")]
+layout_mode = 2
+toggle = true
+default_state = false
+
+[node name="Config" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Left" parent_id_path=PackedInt32Array(739538319, 1799305671) index="6" unique_id=599049097 instance=ExtResource("4_ql400")]
+layout_mode = 2
+toggle = true
+default_state = false
+
+[node name="Security" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Left" parent_id_path=PackedInt32Array(739538319, 1799305671) index="7" unique_id=1818668003 instance=ExtResource("4_ql400")]
+layout_mode = 2
+toggle = true
+default_state = false
+
+[node name="Misc" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Left" parent_id_path=PackedInt32Array(739538319, 1799305671) index="8" unique_id=1457644847 instance=ExtResource("4_ql400")]
+layout_mode = 2
+toggle = true
+default_state = false
+
+[node name="Advanced" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Left" parent_id_path=PackedInt32Array(739538319, 1799305671) index="9" unique_id=498611097 instance=ExtResource("4_ql400")]
+layout_mode = 2
+toggle = true
+default_state = false
+
+[node name="General" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right" parent_id_path=PackedInt32Array(739538319, 892180341) index="0" unique_id=1586946041]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Display" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right" parent_id_path=PackedInt32Array(739538319, 892180341) index="1" unique_id=2012861645]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Audio" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right" parent_id_path=PackedInt32Array(739538319, 892180341) index="2" unique_id=1568674734]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Controls" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right" parent_id_path=PackedInt32Array(739538319, 892180341) index="3" unique_id=837764346]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Interface" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right" parent_id_path=PackedInt32Array(739538319, 892180341) index="4" unique_id=795526067]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Network" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right" parent_id_path=PackedInt32Array(739538319, 892180341) index="5" unique_id=247371837]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Config" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right" parent_id_path=PackedInt32Array(739538319, 892180341) index="6" unique_id=1318053714]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="InputDropdown" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right/Config" unique_id=1674546469 instance=ExtResource("18_njqt8")]
+layout_mode = 2
+display_text = "Session Servers"
+
+[node name="MarginContainer" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right/Config/InputDropdown/VBoxContainer" parent_id_path=PackedInt32Array(1674546469, 1064225030) index="0" unique_id=169083657]
+theme_override_constants/margin_top = 0
+
+[node name="Label" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right/Config/InputDropdown/VBoxContainer/MarginContainer/HBoxContainer" parent_id_path=PackedInt32Array(1674546469, 358122007) index="0" unique_id=144539274]
+text = "Session Servers"
+
+[node name="InputString" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right/Config/InputDropdown/VBoxContainer/MarginContainer2/PanelContainer/VBoxContainer" parent_id_path=PackedInt32Array(1674546469, 1765425757) index="0" unique_id=1750441705 instance=ExtResource("19_s6s1v")]
+layout_mode = 2
+display_text = "Add a Session Server"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right/Config/InputDropdown/VBoxContainer/MarginContainer2/PanelContainer/VBoxContainer" parent_id_path=PackedInt32Array(1674546469, 1765425757) index="1" unique_id=923149220]
+layout_mode = 2
+
+[node name="InputString" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right/Config/InputDropdown/VBoxContainer/MarginContainer2/PanelContainer/VBoxContainer/VBoxContainer" unique_id=2057714596 instance=ExtResource("20_v67rh")]
+layout_mode = 2
+
+[node name="Security" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right" parent_id_path=PackedInt32Array(739538319, 892180341) index="7" unique_id=1254009990]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Misc" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right" parent_id_path=PackedInt32Array(739538319, 892180341) index="8" unique_id=547943782]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Advanced" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right" parent_id_path=PackedInt32Array(739538319, 892180341) index="9" unique_id=1440915562]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Spawnables" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=1982137112 instance=ExtResource("3_av8ee")]
+visible = false
+layout_mode = 2
+script = ExtResource("21_d3sj0")
+
+[node name="Filesystem" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Left" parent_id_path=PackedInt32Array(1982137112, 1799305671) index="0" unique_id=1857841582 instance=ExtResource("4_ql400")]
+layout_mode = 2
+toggle = true
+default_state = false
+
+[node name="Local" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Left" parent_id_path=PackedInt32Array(1982137112, 1799305671) index="1" unique_id=1530762010 instance=ExtResource("4_ql400")]
+layout_mode = 2
+toggle = true
+default_state = false
+
+[node name="Cloud" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Left" parent_id_path=PackedInt32Array(1982137112, 1799305671) index="2" unique_id=1842483100 instance=ExtResource("4_ql400")]
+layout_mode = 2
+toggle = true
+default_state = false
+
+[node name="Local" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Right" parent_id_path=PackedInt32Array(1982137112, 892180341) index="0" unique_id=99513489]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 15
+
+[node name="Path" type="HFlowContainer" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Right/Local" unique_id=1614962154]
+layout_mode = 2
+
+[node name="Search" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Right/Local" unique_id=645937409 instance=ExtResource("9_gtfiv")]
+layout_mode = 2
+
+[node name="Actions" type="HFlowContainer" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Right/Local" unique_id=1048294567]
+layout_mode = 2
+
+[node name="NewFolder" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Right/Local/Actions" unique_id=1102827445 instance=ExtResource("4_ql400")]
+custom_minimum_size = Vector2(200, 35)
+layout_mode = 2
+default_state = false
+metadata/label = "New Folder"
+
+[node name="DeleteSelected" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Right/Local/Actions" unique_id=52618569 instance=ExtResource("4_ql400")]
+custom_minimum_size = Vector2(200, 35)
+layout_mode = 2
+default_state = false
+metadata/label = "Delete Selected"
+
+[node name="Folders" type="HFlowContainer" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Right/Local" unique_id=924126430]
+layout_mode = 2
+
+[node name="Files" type="HFlowContainer" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Right/Local" unique_id=68463159]
+layout_mode = 2
+
+[node name="Cloud" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/HBox/Right" parent_id_path=PackedInt32Array(1982137112, 892180341) index="1" unique_id=1583883317]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="FolderCreation" type="ConfirmationDialog" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables" unique_id=1641134432]
+oversampling_override = 1.0
+title = "Create Folder"
+initial_position = 2
+
+[node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables/FolderCreation" unique_id=306815796]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 192.0
+offset_bottom = 51.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+placeholder_text = "Folder Name..."
+
+[node name="DeleteConfirmation" type="ConfirmationDialog" parent="MarginContainer/VBoxContainer/Content/Container/Spawnables" unique_id=167116521]
+oversampling_override = 1.0
+title = "Delete Item"
+initial_position = 2
+size = Vector2i(348, 104)
+ok_button_text = "Delete"
+dialog_text = "Are you sure you want to delete the item
+\"Item\""
+
+[node name="Debug" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=506436187 instance=ExtResource("3_av8ee")]
+visible = false
+layout_mode = 2
+script = ExtResource("24_v7inj")
+
+[node name="General" parent="MarginContainer/VBoxContainer/Content/Container/Debug/HBox/Left" parent_id_path=PackedInt32Array(506436187, 1799305671) index="0" unique_id=725321320 instance=ExtResource("4_ql400")]
+layout_mode = 2
+toggle = true
+default_state = false
+
+[node name="Display" parent="MarginContainer/VBoxContainer/Content/Container/Debug/HBox/Left" parent_id_path=PackedInt32Array(506436187, 1799305671) index="1" unique_id=1791779287 instance=ExtResource("4_ql400")]
+layout_mode = 2
+toggle = true
+default_state = false
+
+[node name="Audio" parent="MarginContainer/VBoxContainer/Content/Container/Debug/HBox/Left" parent_id_path=PackedInt32Array(506436187, 1799305671) index="2" unique_id=1517275417 instance=ExtResource("4_ql400")]
+layout_mode = 2
+toggle = true
+default_state = false
+
+[node name="Controls" parent="MarginContainer/VBoxContainer/Content/Container/Debug/HBox/Left" parent_id_path=PackedInt32Array(506436187, 1799305671) index="3" unique_id=127589259 instance=ExtResource("4_ql400")]
+layout_mode = 2
+toggle = true
+default_state = false
+
+[node name="Interface" parent="MarginContainer/VBoxContainer/Content/Container/Debug/HBox/Left" parent_id_path=PackedInt32Array(506436187, 1799305671) index="4" unique_id=1269426169 instance=ExtResource("4_ql400")]
+layout_mode = 2
+toggle = true
+default_state = false
+
+[node name="Network" parent="MarginContainer/VBoxContainer/Content/Container/Debug/HBox/Left" parent_id_path=PackedInt32Array(506436187, 1799305671) index="5" unique_id=571186988 instance=ExtResource("4_ql400")]
+layout_mode = 2
+toggle = true
+default_state = false
+
+[node name="Config" parent="MarginContainer/VBoxContainer/Content/Container/Debug/HBox/Left" parent_id_path=PackedInt32Array(506436187, 1799305671) index="6" unique_id=1737883581 instance=ExtResource("4_ql400")]
+layout_mode = 2
+toggle = true
+default_state = false
+
+[node name="Security" parent="MarginContainer/VBoxContainer/Content/Container/Debug/HBox/Left" parent_id_path=PackedInt32Array(506436187, 1799305671) index="7" unique_id=1319373843 instance=ExtResource("4_ql400")]
+layout_mode = 2
+toggle = true
+default_state = false
+
+[node name="Misc" parent="MarginContainer/VBoxContainer/Content/Container/Debug/HBox/Left" parent_id_path=PackedInt32Array(506436187, 1799305671) index="8" unique_id=821001346 instance=ExtResource("4_ql400")]
+layout_mode = 2
+toggle = true
+default_state = false
+
+[node name="Advanced" parent="MarginContainer/VBoxContainer/Content/Container/Debug/HBox/Left" parent_id_path=PackedInt32Array(506436187, 1799305671) index="9" unique_id=59859102 instance=ExtResource("4_ql400")]
+layout_mode = 2
+toggle = true
+default_state = false
+
+[node name="General" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Debug/HBox/Right" parent_id_path=PackedInt32Array(506436187, 892180341) index="0" unique_id=588937059]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Exit" type="Control" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=2026000436]
+visible = false
+layout_mode = 2
+script = ExtResource("24_wvg7d")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Exit" unique_id=242586756]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Control2" type="Control" parent="MarginContainer/VBoxContainer/Content/Container/Exit/VBoxContainer" unique_id=1920615328]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Content/Container/Exit/VBoxContainer" unique_id=2046503768]
+layout_mode = 2
+size_flags_vertical = 6
+theme_override_font_sizes/font_size = 60
+text = "Thank you for using OpenMinerva!"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/Exit/VBoxContainer" unique_id=1333815646]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="Control2" type="Control" parent="MarginContainer/VBoxContainer/Content/Container/Exit/VBoxContainer/HBoxContainer" unique_id=1575232925]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Cancel" type="Button" parent="MarginContainer/VBoxContainer/Content/Container/Exit/VBoxContainer/HBoxContainer" unique_id=1827195067]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+theme = ExtResource("2_0nfpo")
+theme_type_variation = &"Danger"
+text = "Cancel"
+
+[node name="Exit" type="Button" parent="MarginContainer/VBoxContainer/Content/Container/Exit/VBoxContainer/HBoxContainer" unique_id=498096560]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+theme = ExtResource("2_0nfpo")
+theme_type_variation = &"Danger"
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/VBoxContainer/Content/Container/Exit/VBoxContainer/HBoxContainer/Exit" unique_id=782073328]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Content/Container/Exit/VBoxContainer/HBoxContainer/Exit/AspectRatioContainer" unique_id=1077428590]
+layout_mode = 2
+texture = ExtResource("24_nakrv")
+expand_mode = 2
+
+[node name="Control3" type="Control" parent="MarginContainer/VBoxContainer/Content/Container/Exit/VBoxContainer/HBoxContainer" unique_id=2059609441]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Control" type="Control" parent="MarginContainer/VBoxContainer/Content/Container/Exit/VBoxContainer" unique_id=772658709]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Control3" type="Control" parent="MarginContainer/VBoxContainer/Content/Container/Exit/VBoxContainer" unique_id=215825983]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="_AccountSelection" type="Control" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=942492755]
+visible = false
+layout_mode = 2
+script = ExtResource("9_qutrk")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection" unique_id=1122171112]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer" unique_id=1558467922]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer" unique_id=886733571]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer" unique_id=1823464631]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/scrollbar_h_separation = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/ScrollContainer" unique_id=295905298]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="NavButton" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer" unique_id=1677704621 instance=ExtResource("3_ocjmf")]
+layout_mode = 2
+display_text = "Create Account"
+
+[node name="Button" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/NavButton" index="0" unique_id=1422381468]
+toggle_mode = false
+
+[node name="Label" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/NavButton/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(1677704621, 86696220) index="1" unique_id=1807295119]
+size_flags_horizontal = 3
+text = "Create Account"
+
+[node name="Spacer2" type="Control" parent="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer" unique_id=962768924]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="_AccountCreation" type="Control" parent="MarginContainer/VBoxContainer/Content/Container" unique_id=580645222]
+visible = false
+layout_mode = 2
+script = ExtResource("11_jgxeq")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/_AccountCreation" unique_id=165524708]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer/Content/Container/_AccountCreation/HBoxContainer" unique_id=309184611]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/_AccountCreation/HBoxContainer" unique_id=1428128737]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/Content/Container/_AccountCreation/HBoxContainer/VBoxContainer" unique_id=2089091704]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/scrollbar_h_separation = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Content/Container/_AccountCreation/HBoxContainer/VBoxContainer/ScrollContainer" unique_id=1579107512]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="Username" parent="MarginContainer/VBoxContainer/Content/Container/_AccountCreation/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=829702118 instance=ExtResource("11_qutrk")]
+layout_mode = 2
+display_text = "Display Name"
+
+[node name="AccountServer" parent="MarginContainer/VBoxContainer/Content/Container/_AccountCreation/HBoxContainer/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1844371600 instance=ExtResource("11_qutrk")]
+layout_mode = 2
+display_text = "Account Server"
+
+[node name="Accept" parent="MarginContainer/VBoxContainer/Content/Container/_AccountCreation/HBoxContainer/VBoxContainer" unique_id=223705548 instance=ExtResource("3_ocjmf")]
+layout_mode = 2
+display_text = "Add"
+
+[node name="Button" parent="MarginContainer/VBoxContainer/Content/Container/_AccountCreation/HBoxContainer/VBoxContainer/Accept" index="0" unique_id=1422381468]
+toggle_mode = false
+
+[node name="Label" parent="MarginContainer/VBoxContainer/Content/Container/_AccountCreation/HBoxContainer/VBoxContainer/Accept/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(223705548, 86696220) index="1" unique_id=1807295119]
+size_flags_horizontal = 3
+text = "Add"
+
+[node name="Spacer2" type="Control" parent="MarginContainer/VBoxContainer/Content/Container/_AccountCreation/HBoxContainer" unique_id=275254948]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="NavBar" type="Control" parent="MarginContainer/VBoxContainer" unique_id=401495078]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+script = ExtResource("3_8u0v7")
+
+[node name="BackgroundColor" type="Panel" parent="MarginContainer/VBoxContainer/NavBar" unique_id=1463524110]
+material = SubResource("ShaderMaterial_v7inj")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_0nfpo")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/NavBar" unique_id=1303027290]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/NavBar/MarginContainer" unique_id=1576091722]
+layout_mode = 2
+alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="Home" parent="MarginContainer/VBoxContainer/NavBar/MarginContainer/HBoxContainer" unique_id=1398937292 instance=ExtResource("3_ocjmf")]
+layout_mode = 2
+display_text = "Home"
+selected_icon = "Home"
+
+[node name="Instance" parent="MarginContainer/VBoxContainer/NavBar/MarginContainer/HBoxContainer" unique_id=2065864495 instance=ExtResource("3_ocjmf")]
+layout_mode = 2
+display_text = "Instance"
+selected_icon = "Instance"
+
+[node name="Sessions" parent="MarginContainer/VBoxContainer/NavBar/MarginContainer/HBoxContainer" unique_id=115442342 instance=ExtResource("3_ocjmf")]
+layout_mode = 2
+display_text = "Sessions"
+selected_icon = "Sessions"
+
+[node name="Contacts" parent="MarginContainer/VBoxContainer/NavBar/MarginContainer/HBoxContainer" unique_id=1218469163 instance=ExtResource("3_ocjmf")]
+layout_mode = 2
+display_text = "Contacts"
+selected_icon = "Contacts"
+
+[node name="Spawnables" parent="MarginContainer/VBoxContainer/NavBar/MarginContainer/HBoxContainer" unique_id=1841335532 instance=ExtResource("3_ocjmf")]
+layout_mode = 2
+display_text = "Spawnables"
+selected_icon = "Assets"
+
+[node name="Apps" parent="MarginContainer/VBoxContainer/NavBar/MarginContainer/HBoxContainer" unique_id=121060802 instance=ExtResource("3_ocjmf")]
+layout_mode = 2
+display_text = "Apps"
+selected_icon = "Apps"
+
+[node name="Settings" parent="MarginContainer/VBoxContainer/NavBar/MarginContainer/HBoxContainer" unique_id=849079664 instance=ExtResource("3_ocjmf")]
+layout_mode = 2
+display_text = "Settings"
+selected_icon = "Settings"
+
+[node name="Debug" parent="MarginContainer/VBoxContainer/NavBar/MarginContainer/HBoxContainer" unique_id=194442451 instance=ExtResource("3_ocjmf")]
+layout_mode = 2
+display_text = "Debug"
+selected_icon = "Debug"
+
+[node name="Exit" parent="MarginContainer/VBoxContainer/NavBar/MarginContainer/HBoxContainer" unique_id=1580421633 instance=ExtResource("3_ocjmf")]
+layout_mode = 2
+display_text = "Exit"
+selected_icon = "Exit"
+selected_theme_type = "Danger"
+
+[node name="NewWorld" parent="." unique_id=524781090 instance=ExtResource("32_rmxmm")]
+visible = false
+layout_mode = 1
+script = ExtResource("35_owuc4")
+target_scene_path = ""
+base = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(524781090, 969090938) index="1" unique_id=1889766629]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="WorldName" type="Label" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer" unique_id=506539736]
+layout_mode = 2
+text = "World Name"
+
+[node name="WorldNameVal" type="LineEdit" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer" unique_id=2124841622]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "My New World"
+alignment = 1
+
+[node name="WorldLoadDir" type="Label" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer" unique_id=166016776]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Base World Directory"
+
+[node name="WorldLoadDirVal" type="LineEdit" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer" unique_id=863656716]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "user://spawnables/..."
+alignment = 1
+editable = false
+
+[node name="Base" type="Label" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer" unique_id=413752113]
+layout_mode = 2
+text = "Base"
+
+[node name="BaseVal" type="OptionButton" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer" unique_id=2057051427]
+unique_name_in_owner = true
+layout_mode = 2
+selected = 3
+item_count = 5
+popup/item_0/text = "Debug"
+popup/item_0/id = 0
+popup/item_0/disabled = true
+popup/item_1/text = "Home"
+popup/item_1/id = 1
+popup/item_1/disabled = true
+popup/item_2/text = "Empty"
+popup/item_2/id = 2
+popup/item_2/disabled = true
+popup/item_3/text = "Grid"
+popup/item_3/id = 3
+popup/item_4/text = "Custom"
+popup/item_4/id = 4
+popup/item_4/disabled = true
+
+[node name="Privacy" type="Label" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer" unique_id=1738386897]
+visible = false
+layout_mode = 2
+text = "Privacy"
+
+[node name="PrivacyVal" type="OptionButton" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer" unique_id=1867545901]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+selected = 0
+item_count = 6
+popup/item_0/text = "Private"
+popup/item_0/id = 0
+popup/item_1/text = "Friends"
+popup/item_1/id = 1
+popup/item_2/text = "Friends+"
+popup/item_2/id = 2
+popup/item_3/text = "Contacts"
+popup/item_3/id = 3
+popup/item_4/text = "Contacts+"
+popup/item_4/id = 4
+popup/item_5/text = "Public"
+popup/item_5/id = 5
+
+[node name="Spacer" type="Control" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer" unique_id=2006504238]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Create" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer" unique_id=1897979315 instance=ExtResource("8_0mns2")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+label = "Start"
+icon = ExtResource("33_h0jai")
+
+[node name="TextureRect" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer/Create/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(1897979315, 86696220) index="0" unique_id=1429445374]
+self_modulate = Color(0.5568628, 0.9372549, 0.5921569, 1)
+
+[node name="Label" parent="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer/Create/Button/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(1897979315, 86696220) index="1" unique_id=1807295119]
+horizontal_alignment = 1
+
+[editable path="MarginContainer/VBoxContainer/Content/Container/Home/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/Listing"]
+[editable path="MarginContainer/VBoxContainer/Content/Container/Instance"]
+[editable path="MarginContainer/VBoxContainer/Content/Container/Sessions"]
+[editable path="MarginContainer/VBoxContainer/Content/Container/Settings"]
+[editable path="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right/Config/InputDropdown"]
+[editable path="MarginContainer/VBoxContainer/Content/Container/Settings/HBox/Right/Config/InputDropdown/VBoxContainer/MarginContainer2/PanelContainer/VBoxContainer/InputString"]
+[editable path="MarginContainer/VBoxContainer/Content/Container/Spawnables"]
+[editable path="MarginContainer/VBoxContainer/Content/Container/Debug"]
+[editable path="MarginContainer/VBoxContainer/Content/Container/_AccountSelection/HBoxContainer/VBoxContainer/NavButton"]
+[editable path="MarginContainer/VBoxContainer/Content/Container/_AccountCreation/HBoxContainer/VBoxContainer/Accept"]
+[editable path="NewWorld"]
+[editable path="NewWorld/BackgroundColor/MarginContainer/VBoxContainer/VBoxContainer/Create"]

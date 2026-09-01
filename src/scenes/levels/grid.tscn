@@ -1,0 +1,78 @@
+[gd_scene format=3 uid="uid://b3t1dk4vpjk6p"]
+
+[ext_resource type="Shader" uid="uid://bh250q6rfv615" path="res://resources/shaders/grid_shader.gdshader" id="1_ikf4c"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_bcgop"]
+sky_top_color = Color(0.297, 0.40241668, 0.55, 1)
+energy_multiplier = 1.25
+
+[sub_resource type="Sky" id="Sky_8gpll"]
+sky_material = SubResource("ProceduralSkyMaterial_bcgop")
+
+[sub_resource type="Environment" id="Environment_q28r8"]
+background_mode = 2
+sky = SubResource("Sky_8gpll")
+tonemap_mode = 2
+ssr_enabled = true
+ssao_enabled = true
+glow_enabled = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gbca3"]
+render_priority = 0
+shader = ExtResource("1_ikf4c")
+shader_parameter/subdivisions = 1.0
+shader_parameter/grid_width = 0.02
+shader_parameter/background_color = Color(0.2, 0.2, 0.2, 1)
+shader_parameter/background_color_two = Color(0.1, 0.1, 0.1, 1)
+shader_parameter/grid_color = Color(0.5, 0.5, 0.5, 1)
+shader_parameter/dashed_scale_x = 0.01999999955296
+shader_parameter/dashed_scale_y = 0.01999999955296
+shader_parameter/dashed_count_x = 1.0
+shader_parameter/dashed_count_y = 1.0
+shader_parameter/point_width = 0.021
+shader_parameter/point_color = Color(0, 0, 0, 1)
+shader_parameter/point_scale_x = 0.05
+shader_parameter/point_scale_y = 0.05
+shader_parameter/inside_width = 0.01
+shader_parameter/inside_subdivisions = 5.0
+shader_parameter/inside_color = Color(0.4, 0.4, 0.4, 1)
+shader_parameter/in_dashed_scale_x = 0.3
+shader_parameter/in_dashed_scale_y = 0.3
+shader_parameter/in_dashed_count_x = 6.0
+shader_parameter/in_dashed_count_y = 6.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_8gpll"]
+material = SubResource("ShaderMaterial_gbca3")
+size = Vector2(1000, 1000)
+subdivide_width = 10
+subdivide_depth = 10
+orientation = 1
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_8gpll"]
+size = Vector3(1000, 0.001, 1000)
+
+[node name="Grid" type="Node3D" unique_id=53262658]
+metadata/spawnable_type = "Node3D"
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1916430820]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+metadata/scene_node = true
+metadata/spawnable_type = "DirectionalLight3D"
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1457348223]
+environment = SubResource("Environment_q28r8")
+metadata/scene_node = true
+metadata/spawnable_type = "WorldEnvironment"
+
+[node name="Ground" type="MeshInstance3D" parent="." unique_id=1644270184]
+mesh = SubResource("QuadMesh_8gpll")
+metadata/scene_node = true
+metadata/spawnable_type = "MeshInstance3D"
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Ground" unique_id=1945745055]
+metadata/spawnable_type = "StaticBody3D"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/StaticBody3D" unique_id=1464818279]
+shape = SubResource("BoxShape3D_8gpll")
+metadata/spawnable_type = "CollisionShape3D"
