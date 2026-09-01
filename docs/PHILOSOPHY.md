@@ -2,7 +2,7 @@
 This document is for everyone (observers, users, contributors, and you), and it serves to outline the *why* of OpenMinerva.
 
 ## OpenMinerva
-In short, OpenMinerva is designed to be a virtual and immersive collaborative space for humanity. The design goal of OpenMinerva is specifically designed to integrate into the roles of, but not limited to, classrooms, office spaces, training simulations, art exhibits, informational kiosks.
+In short, OpenMinerva is designed to be a virtual and immersive collaborative space for humanity. The design goal of OpenMinerva is specifically designed to integrate into the roles of, but not limited to, classrooms, office spaces, training simulations, art exhibits, and informational kiosks.
 Below are a few examples of situations where the feature-complete version of OpenMinerva will do well in.
 
 ### Educational:
@@ -24,7 +24,7 @@ Below are a few examples of situations where the feature-complete version of Ope
 - Simple experience export: Create a virtual reality application with OpenMinerva as nothing more than the core. (See [issue #120](https://github.com/OpenMinerva/client/issues/120))
 
 ### Art Exhibits.
-- Low hardware requirements enable cheaper device usage.
+- Low hardware requirements enable the use of more affordable devices.
 - Virtual Reality and flat-screen interoperability allows a mix and match of VR headsets and flat screen experiences.
 - Visitor analytics: Track a history of usage of your exhibitions. (See [issue #188](https://github.com/OpenMinerva/client/issues/188))
 - Network availability for free, open your gallery to the world with no extra charge.
@@ -37,8 +37,8 @@ Below are a few examples of situations where the feature-complete version of Ope
 
 
 ## Out of Scope
-- Live service / subscription-based functionality. Any officially provided services can be entirely self-hosted on your own hardware at your own expense.
-- In-platform economy: OpenMinerva is not a marketplace and does not support buying or selling items, assets, projects, or other creations natively within the platform. Users are free to utilize external storefronts to market their creations, but OpenMinerva itself remains a non-commercial collaboration platform. (Note: In the future there may be integrations with existing storefronts to make accessing purchased creations easier, however these integrations will be scoped and limited)
+- Live service / subscription-based lock-in. Any officially provided services can be entirely self-hosted on your own hardware at your own expense.
+- In-platform economy: OpenMinerva is not a marketplace and does not support buying or selling items, assets, projects, or other creations natively within the platform. Users are free to utilize external storefronts to market their creations, but OpenMinerva itself remains a non-commercial collaboration platform. 
 - AI automation tool integration. It is the belief of the sole maintainer that artificial intelligence created assets and tools do not provide a meaningful improvement to the goals of this project. Information provided by these tools are often times wrong, and the customers of these artificial intelligence tools will often times not provide the required care such as fact-checking or sourcing. These tools are extremely dangerous for educational environments and are not / will not be officially supported in any capacity. 
 - Platform lock-in: Protecting user-generated content *is* important and will remain in-scope, however "vendor lock-in" specifically into OpenMinerva itself is not. Owners of content will be allowed to export their assets into common standards from the application to use anywhere else. Protections to user-generated content provided by OpenMinerva can be easily confused for vendor lock-in, but controls of the user generated content protection system will always be in the hands of the owners of the content and can be removed at any time at their own discretion.
 - Data exploitation: No information is sent back to OpenMinerva servers or services without consent. Data that can be sent back to OpenMinerva servers is targeted and exclusively opt-in.

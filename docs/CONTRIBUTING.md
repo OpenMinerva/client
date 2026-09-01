@@ -62,10 +62,10 @@ When suggesting a feature, be prepared to discuss this feature for some amount o
 Before submitting a pull request, you should have a target issue you are addressing. If you are not trying to fix a documented issue, you should first document the issue using the [Issues](https://github.com/OpenMinerva/client/issues/new/choose). 
 
 #### Understand the project
-When submitting a pull request to the project, you are expected to abide by the enacted [Coding Standards](https://github.com/OpenMinerva/client/blob/docs/initial/docs/CODING_STANDARDS.md). If you do not know which edition of the coding standards to apply, the safest choice is to use the one found in the `alpha` branch.
+When submitting a pull request to the project, you are expected to abide by the enacted [Coding Standards](./CODING_STANDARDS.md). If you do not know which edition of the coding standards to apply, the safest choice is to use the one found in the `alpha` branch.
 
 #### Tag the issue
-After reading through [Coding Standards](https://github.com/OpenMinerva/client/blob/docs/initial/docs/CODING_STANDARDS.md), please tag the issue you are attempting to address. If you do not tag the targeted issue, your pull request will be delayed until you can provide the target issue.
+After reading through [Coding Standards](./CODING_STANDARDS.md), please tag the issue you are attempting to address. If you do not tag the targeted issue, your pull request will be delayed until you can provide the target issue.
 
 #### Discuss
 It is extremely likely that your pull request will need to be discussed first before merging. Expect to exchange some talk and have some feedback received. This discussion will often times be in the form of the code review. When receiving feedback for your code, please do not take feedback personally nor assume that you are being explicitly picked on. Your code will likely affect real people so it is important that your code is the best it can be.

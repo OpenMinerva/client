@@ -26,12 +26,12 @@ As the project grows and matures, so will this document. Please check back here 
 This project has a single maintainer, who is the **sole authority** on all decisions, including conduct and enforcement. There is not a "board of authority" nor otherwise elected members.
 
 - If your behavior violates this Code of Conduct, the maintainer will make an attempt to warn you in private. If a private communication can not be reasonably established, you will be warned publicly.
-- Repeated or serious violations will likely result in comments being removed, your account being blocked, or your contributions being revered at the maintainers own discretion.
+- Repeated or serious violations will likely result in comments being removed, your account being blocked, or your contributions being reverted at the maintainers own discretion.
 
 
 ## Reporting
 
-To report a violation, please contact the maintainer privately via publicmail@armoreddragon.com.
+To report a violation, please contact the moderators privately via [Discord](https://discord.gg/Kx6avB52gK) using the `tickets` channel. Alternatively if Discord is not an option, you may contact the maintainer privately via email: publicmail@armoreddragon.com. Do be aware that email is not as reliable as the `ticket` channel in the Discord, and responses may be slower.
 
 
 ## Scope
