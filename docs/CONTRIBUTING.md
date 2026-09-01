@@ -45,7 +45,7 @@ After you submit your issue, a maintainer will apply the appropriate tags for yo
 ### Suggesting Features
 
 - Search existing issues for features or enhancements matching to your idea.
-- Read through [Philosophy](./PHILOSOPHY.md) and [Project Plan](./PROJECT_PLAN.md) to see if your feature idea aligns with the mission of [OpenMinerva](https://openminerva.org).
+- Read through [Philosophy](./PHILOSOPHY.md) to see if your feature idea aligns with the mission of [OpenMinerva](https://openminerva.org).
 - Make a case that your feature is worth having to further the goal of the project.
   - Can your feature be implemented in-application without official support?
   - Is your idea worth shipping for everyone opposed to individually?
