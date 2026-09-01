@@ -26,6 +26,8 @@ OpenMinerva is the no-nonsense self-hosted virtual collaboration environment for
 ## About
 OpenMinerva aims to be a platform-agnostic flatscreen / virtual reality / augmented reality sandbox application that is fully self-hostable, and completely open source.
 
+To learn more about the OpenMinerva project, please read the [PHILOSOPHY.md](./docs/PHILOSOPHY.md) document. This document provides use-cases targets and other reasoning for this project.
+
 ## Installation
 It is not currently possible to install OpenMinerva client as a stand-alone executable, as the application is still in early alpha. For now, please download and install OpenMinerva as a developer. Please see [Development Quick Start](#development-quick-start)
 

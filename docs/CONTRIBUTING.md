@@ -1,10 +1,10 @@
 # Contributing
 
-Thank you for your interest in contributing to the OpenMinerva project! In this document you will find basic information about the expectations and processes in contributing to the project. Before you get started, please review [CODE_OF_CONDUCT.md](https://github.com/OpenMinerva/client/blob/alpha/docs/CODE_OF_CONDUCT.md) so that no toes are being stepped on. If you are wanting to submit an issue or a feature request, please search in the respective repository first before submitting an issue so as to avoid making duplicate issues.
+Thank you for your interest in contributing to the OpenMinerva project! In this document you will find basic information about the expectations and processes in contributing to the project. Before you get started, please review [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) so that no toes are being stepped on. If you are wanting to submit an issue or a feature request, please search in the respective repository first before submitting an issue so as to avoid making duplicate issues.
 
 ## Code of Conduct
 
-You can visit the dedicated [CODE_OF_CONDUCT.md](https://github.com/OpenMinerva/client/blob/alpha/docs/CODE_OF_CONDUCT.md) page.
+You can visit the dedicated [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) page.
 
 ## I Have a Question
 
@@ -45,7 +45,7 @@ After you submit your issue, a maintainer will apply the appropriate tags for yo
 ### Suggesting Features
 
 - Search existing issues for features or enhancements matching to your idea.
-- Read through [Philosophy](https://github.com/OpenMinerva/client/blob/alpha/docs/PHILOSOPHY.md) and [Project Plan](https://github.com/OpenMinerva/client/blob/alpha/docs/PROJECT_PLAN.md) to see if your feature idea aligns with the mission of [OpenMinerva](https://openminerva.org).
+- Read through [Philosophy](./PHILOSOPHY.md) and [Project Plan](./PROJECT_PLAN.md) to see if your feature idea aligns with the mission of [OpenMinerva](https://openminerva.org).
 - Make a case that your feature is worth having to further the goal of the project.
   - Can your feature be implemented in-application without official support?
   - Is your idea worth shipping for everyone opposed to individually?
