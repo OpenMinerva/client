@@ -101,7 +101,20 @@ The primary documentation provider for this project is the Godot supported [Docu
 ## Testing Requirements
 Before making a commit, you should test your changes by launching the application and testing your new feature. While testing you should monitor the logs to make sure there are no new errors caused by your changes.
 When making a pull request, your final commit before being submitted should not introduce any new errors. Do not defer fixes; all logged issues must be resolved before sent for review.
+
+## Key Branches
+OpenMinerva separates the repository into four separate key branches. `alpha`, `beta`, `stable`, and `lts-XXXX`.
+
+- `alpha`: This is the bleeding edge of the application. This includes early implementations of upcoming features, hot-fixes and any other kind of development work. This is similar to the `nightly` branch in other projects or repositories. This branch will typically target the `beta` branch.
+- `beta`: This is mostly for feature-freezes. When the beta branch gets updated, it will typically be frequently updated exclusively with bug and issue fixes until the application is in a stable state for the `stable` branch.
+- `stable`: Recommended and default installations of the OpenMinerva software. This branch is the primarily distributed branch on all major distribution platforms.
+- `lts-XXXX`: LTS, or Long-Term-Support, is a special branch that is feature frozen and exclusively receives bug or issue fixes for a extended period of time. The branch name is a year in the format of YYYY. Example: `lts-2026`, `lts-2028`.
+- `lts-XXXX-beta`: This extension of the `lts-XXXX` branch is similar to the `beta` branch in that this branch only focuses on bugs and issues before being merged back into `lts-XXXX`.
+
+
 ## Commits and Messages
+All new pull requests by default should target the [`alpha`](https://github.com/OpenMinerva/client/tree/alpha) branch. This includes fixes, features, documentation, hot-fixes, and anything else. If you do not know which branch to use, use `alpha`.
+
 ### Branch Names
 - Branch names should be targeted and descriptive to the contents of the pull request.
 - Use an appropriate branch type.
