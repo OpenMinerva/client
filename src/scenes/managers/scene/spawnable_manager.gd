@@ -9,7 +9,6 @@
 extends Node
 ## This file handles the spawnable management for a session. All synchronization and physics are handled through this file.
 
-var _spawnable_network_batches: int = 4
 var _gizmos: Array[Node] = []
 
 @onready var app_scene_m: Node = get_tree().current_scene.get_node("SceneManager")
@@ -22,13 +21,7 @@ var _gizmos: Array[Node] = []
 @onready var _registry: Node = get_node("Registry")
 
 
-# TODO: Handle physics for our items, and
 func _physics_process(_delta):
-	# NOTE: Networking is done in batches of 4. Meaning 25% of the scene is networked at any given frame.
-	# There was no reason in me doing this, but I think I was trying to make it so that you do not have to network so many things in a given instant.
-	# As far as I know there was not an existing problem I was trying to solve and I have no idea what I was thinking.
-	# However, it's not breaking anything in the current instant so I will leave it in until it proves to be a problem or if I think of a better way of doing this.
-	var current_batch: int = Engine.get_physics_frames() % _spawnable_network_batches
 	if !is_multiplayer_authority():
 		return
 
@@ -36,8 +29,6 @@ func _physics_process(_delta):
 		if spawnable.type != "RigidBody3D":
 			continue
 		if spawnable.node.sleeping == true:
-			continue
-		if spawnable.id % _spawnable_network_batches == current_batch:
 			continue
 
 		transform_spawnable.rpc(spawnable.id, spawnable.node.transform)
