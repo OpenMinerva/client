@@ -8,6 +8,7 @@
 extends Node
 
 @onready var _registry = get_node("../Registry")
+@onready var _session_signalbus: Node = get_node("../../SignalBus")
 
 
 @rpc("authority", "reliable")
@@ -24,7 +25,7 @@ func create(node_type: String, spawner_peer_id: int, parent: int, node_id: int) 
 	var _parent_node_exists: bool = _parent_node != { }
 	if _parent_node_exists == false:
 		GlobalLogger.log("Could not locate the parent node '%s'. Using root." % parent, Enum.LogLevel.INFO)
-		_parent_node = { "node": get_parent().get_parent().get_node("root") }
+		_parent_node = { "node": get_node("../../root") }
 
 	_node = NSB.build(node_type)
 
@@ -44,3 +45,33 @@ func create(node_type: String, spawner_peer_id: int, parent: int, node_id: int) 
 
 func destroy() -> Node:
 	return
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func _server_create_spawnable(node_type: String, node_parent: int, forced_node_id: int = -1) -> int:
+	var _caller_id: int = multiplayer.get_remote_sender_id()
+	if _caller_id == 0:
+		_caller_id = multiplayer.get_unique_id()
+
+	# TODO: Permission check and handling.
+
+	var _node_id: int = _registry.get_active_id()
+
+	if forced_node_id != -1:
+		_node_id = forced_node_id
+
+	# Validate node_parent, or default to root.
+	var _parent = _registry.get_spawnable(node_parent)
+	if _parent == { }:
+		_parent = { "node": get_node("../../root") }
+
+	var _spawnable: Node = create(node_type, _caller_id, int(_parent.node.name), _node_id)
+	create.rpc(node_type, _caller_id, int(_parent.node.name), _node_id)
+
+	# Emit session-wide event.
+	_session_signalbus.node_created.emit(_spawnable)
+
+	if is_instance_valid(_spawnable) == false:
+		return -1
+
+	return int(_spawnable.name)

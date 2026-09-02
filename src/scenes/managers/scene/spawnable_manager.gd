@@ -2,9 +2,8 @@
 # File: /client/src/scenes/managers/scene/spawnable_manager.gd
 # Project: OpenMinerva
 # Created Date: 18 May 2026
-# Copyright (c) 2026 OpenMinerva
+# Copyright (c) 2026 OpenMinerva Contributors
 # License: MIT License
-# Authors: Armored Dragon
 # --- License
 extends Node
 ## This file handles the spawnable management for a session. All synchronization and physics are handled through this file.
@@ -61,18 +60,20 @@ func sync_all() -> void:
 	return
 
 
-# TODO: Move function to spawnable module
+## Create a spawnable in the session. This is an abstraction that will automatically handle the networking between the host and the client. If the host attempts to call this function in a session, they will call `_server_create_spawnable` directly. If a client calls this function, the client will automatically `rpc` the `_server_create_spawnable` to the host.
+## [param node_type] is a string name of the type of node to spawn.
+## [param node_parent] is the node id of the parent node to spawn. When the node is spawned, the node is automatically parented.
 func create_spawnable(node_type: String, node_parent: int = -1) -> Node:
 	if multiplayer.is_server():
 		GlobalLogger.log("Spawning node '%s'" % node_type)
-		var _spawnable_id: int = _server_create_spawnable(node_type, node_parent)
+		var _spawnable_id: int = _spawnables._server_create_spawnable(node_type, node_parent)
 		var _spawnable_db_entry: Dictionary = _registry.get_spawnable(_spawnable_id)
 		if _spawnable_db_entry.has("node") == false:
 			return null
 		return _spawnable_db_entry.node
 	else:
 		GlobalLogger.log("Requesting a spawn of node '%s'" % node_type)
-		var _spawnable_id: int = await rpcawaiter.send_rpc(1, _server_create_spawnable.bind(node_type, node_parent))
+		var _spawnable_id: int = await rpcawaiter.send_rpc(1, _spawnables._server_create_spawnable.bind(node_type, node_parent))
 		var _spawnable_db_entry: Dictionary = _registry.get_spawnable(_spawnable_id)
 		if _spawnable_db_entry.has("node") == false:
 			return null
@@ -372,7 +373,7 @@ func receive_database(database: Array, players: Dictionary, assets: Array, asset
 	# Spawn in all of the nodes
 	for spawnable in database:
 		GlobalLogger.log("Spawning '%s' as '%s'." % [spawnable.id, spawnable.type])
-		_server_create_spawnable(spawnable.type, int(spawnable.parent), int(spawnable.id))
+		_spawnables._server_create_spawnable(spawnable.type, int(spawnable.parent), int(spawnable.id))
 
 	# Spawn in all of the assets
 	for asset in assets:
@@ -447,37 +448,6 @@ func spawn_asset(asset_type, properties, id: String = "") -> int:
 	return int(_resource.get_name())
 
 
-# TODO: Move function to spawnable module
-@rpc("any_peer", "call_remote", "reliable")
-func _server_create_spawnable(node_type: String, node_parent: int, forced_node_id: int = -1) -> int:
-	var _caller_id: int = multiplayer.get_remote_sender_id()
-	if _caller_id == 0:
-		_caller_id = multiplayer.get_unique_id()
-
-	# TODO: Permission check and handling.
-
-	var _node_id: int = _registry.get_active_id()
-
-	if forced_node_id != -1:
-		_node_id = forced_node_id
-
-	# Validate node_parent, or default to root.
-	var _parent = _registry.get_spawnable(node_parent)
-	if _parent == { }:
-		_parent = { "node": get_parent().get_node("root") }
-
-	var _spawnable: Node = _spawnables.create(node_type, _caller_id, int(_parent.node.name), _node_id)
-	_spawnables.create.rpc(node_type, _caller_id, int(_parent.node.name), _node_id)
-
-	# Emit session-wide event.
-	session_signalbus.node_created.emit(_spawnable)
-
-	if is_instance_valid(_spawnable) == false:
-		return -1
-
-	return int(_spawnable.name)
-
-
 # FIXME: I made some changes to this function I am not proud of, but it is working. Try to improve the flow for using fallback-to-root.
 @rpc("call_local", "any_peer", "reliable")
 func _set_node_parent(node_id: int, parent_node_id: int) -> void:
@@ -546,30 +516,3 @@ func _add_to_deletion_queue(node: Node, list: Array[Node] = []) -> Array[Node]:
 		_add_to_deletion_queue(child, list)
 
 	return list
-
-
-func _add_collisions_recursive(node: Node):
-	var meshes = _find_all_mesh_instances(node)
-	var colliders = []
-
-	for mesh in meshes:
-		var collision_shape = CollisionShape3D.new()
-		var convex_shape = ConvexPolygonShape3D.new()
-		convex_shape.set_points(mesh.mesh.get_faces())
-
-		collision_shape.shape = convex_shape
-		colliders.append(collision_shape)
-
-	return colliders
-
-
-func _find_all_mesh_instances(node: Node) -> Array:
-	var found = []
-
-	if node is MeshInstance3D:
-		found.append(node)
-
-	for child in node.get_children():
-		found.append_array(_find_all_mesh_instances(child))
-
-	return found
