@@ -138,11 +138,11 @@ func load_spawnable(path: String) -> void:
 				GlobalLogger.log("Spawnable type not defined. Using Node3D.", Enum.LogLevel.WARNING)
 				_task["metadata/spawnable_type"] = "Node3D"
 
-			_node = await session_spawnable_manager.create(_task["metadata/spawnable_type"])
+			_node = await session_spawnable_manager.create_spawnable(_task["metadata/spawnable_type"])
 		else:
 			var _parent_task_index_id: int = _tasks.find_custom(func(_entry): return _entry.id == _task.parent)
 			var _parent_task: Dictionary = _tasks[_parent_task_index_id]
-			_node = await session_spawnable_manager.create(_task["metadata/spawnable_type"], int(_parent_task.node.name))
+			_node = await session_spawnable_manager.create_spawnable(_task["metadata/spawnable_type"], int(_parent_task.node.name))
 
 		_task.node = _node
 

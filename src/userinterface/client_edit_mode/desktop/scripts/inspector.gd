@@ -130,7 +130,7 @@ func _drop_data(mouse_position: Vector2, data: Variant):
 		_target_node = _target_tree_item.get_metadata(0)
 
 	# Send the reparent RPC request.
-	session_spawnable_m.set_parent(int(_dragged_node.name), int(_target_node.name))
+	await session_spawnable_m.set_parent(int(_dragged_node.name), int(_target_node.name))
 
 	_inspector_build()
 
@@ -494,7 +494,7 @@ func _inspector_popup_button_pressed(label: String) -> void:
 
 func _inspector_spawn_node(type: String, parent: int) -> void:
 	GlobalLogger.log("Spawning node type '%s' with parent '%s'" % [type, parent])
-	var _entity = await session_spawnable_m.create(type, parent)
+	var _entity = await session_spawnable_m.create_spawnable(type, parent)
 	_select(int(_entity.name))
 	# TODO: Gizmo select the new entity
 	return
@@ -510,7 +510,7 @@ func _select(target_node: int) -> void:
 		_gizmo_delete()
 
 	# TODO: Validate that the gizmo was created and did not error.
-	my_gizmo = await session_spawnable_m.create("Gizmo")
+	my_gizmo = await session_spawnable_m.create_spawnable("Gizmo")
 
 	var _node_db_entry = session_spawnable_m.get_by_id(target_node)
 	session_spawnable_m.select.rpc(target_node, int(my_gizmo.name))

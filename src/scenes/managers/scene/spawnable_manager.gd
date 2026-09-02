@@ -61,35 +61,22 @@ func sync_all() -> void:
 	return
 
 
-@rpc("any_peer", "reliable")
-func create(node_type: String, node_parent: int = 0, model_path: String = "") -> Variant:
-	var my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
-	var caller_id: int = multiplayer.get_remote_sender_id()
-	GlobalLogger.log("[%s] Spawning '%s'." % [my_id, node_type])
-
-	if my_id == 1:
-		var _target_id: int = _registry.get_active_id()
-
-		var entity: int = spawn_spawnable(node_type, _target_id, model_path, node_parent)
-		spawn_spawnable.rpc(node_type, _target_id, model_path, node_parent)
-
-		# HACK: Reparent the node again so that it gets saved in the database.
-		set_parent(entity, node_parent)
-
-		var _db_entry: Dictionary = _registry.get_spawnable(entity)
-
-		if caller_id != 0 && caller_id != my_id:
-			# This is a client request to spawn.
-			# We return the synced node name here so we can get the client-side node later.
-			return int(_db_entry.node.name)
-
-		return _db_entry.node
+# TODO: Move function to spawnable module
+func create_spawnable(node_type: String, node_parent: int = -1) -> Node:
+	if multiplayer.is_server():
+		GlobalLogger.log("Spawning node '%s'" % node_type)
+		var _spawnable_id: int = _server_create_spawnable(node_type, node_parent)
+		var _spawnable_db_entry: Dictionary = _registry.get_spawnable(_spawnable_id)
+		if _spawnable_db_entry.has("node") == false:
+			return null
+		return _spawnable_db_entry.node
 	else:
-		var entity: int = await rpcawaiter.send_rpc(1, create.bind(node_type, node_parent, model_path))
-
-		var _db_entry: Dictionary = _registry.get_spawnable(entity)
-
-		return _db_entry.node
+		GlobalLogger.log("Requesting a spawn of node '%s'" % node_type)
+		var _spawnable_id: int = await rpcawaiter.send_rpc(1, _server_create_spawnable.bind(node_type, node_parent))
+		var _spawnable_db_entry: Dictionary = _registry.get_spawnable(_spawnable_id)
+		if _spawnable_db_entry.has("node") == false:
+			return null
+		return _spawnable_db_entry.node
 
 
 @rpc("call_local", "any_peer", "reliable")
@@ -280,18 +267,13 @@ func set_parent(node_id: int, parent_node_id: int) -> void:
 	if my_id == 1:
 		# Get the node references.
 		var _node = get_by_id(node_id)
-		var _parent_node = get_by_id(parent_node_id)
 
 		if _node == { }:
 			GlobalLogger.log("Failed to find the node: '%s'" % node_id, Enum.LogLevel.WARNING)
 			return
 
-		if parent_node_id <= 0:
-			# Invalid state, reparent to root.
-			_parent_node = { "node": app_scene_m.get_master_root(app_scene_m.active_session) }
-
 		# Send the reparent signal to all clients.
-		_set_node_parent.rpc(int(_node.node.name), int(_parent_node.node.name))
+		_set_node_parent.rpc(int(_node.node.name), parent_node_id)
 
 		# Update the database.
 		var _db_entry = _registry.get_spawnable(node_id)
@@ -301,28 +283,6 @@ func set_parent(node_id: int, parent_node_id: int) -> void:
 		await rpcawaiter.send_rpc(1, set_parent.bind(node_id, parent_node_id))
 
 	return
-
-
-@rpc("authority", "reliable")
-func spawn_spawnable(p_type: String, p_node_id: int, p_path: String = "", parent_id: int = 0) -> int:
-	var _spawned_entity
-	var parent_node = get_parent().get_node("root")
-
-	if parent_id > 1:
-		var _parent_db_entry: Dictionary = _registry.get_spawnable(parent_id)
-		parent_node = _parent_db_entry.node
-
-	# HACK: When connecting to the server, the entity of the joining user is attempted to spawn twice. This null check will see if the node already exists on the server by name.
-	_spawned_entity = _spawnables.create(p_type, 1, int(parent_node.name), int(p_node_id))
-
-	if _spawned_entity == null:
-		GlobalLogger.log("Tried to spawn in something that already exists? Returning the reference to the existing node.", Enum.LogLevel.WARNING)
-		return int(p_node_id)
-
-	_spawned_entity.owner = parent_node
-
-	session_signalbus.node_created.emit(_spawned_entity)
-	return int(_spawned_entity.name)
 
 
 # TODO: require actioning user
@@ -412,7 +372,7 @@ func receive_database(database: Array, players: Dictionary, assets: Array, asset
 	# Spawn in all of the nodes
 	for spawnable in database:
 		GlobalLogger.log("Spawning '%s' as '%s'." % [spawnable.id, spawnable.type])
-		spawn_spawnable(spawnable.type, spawnable.id, "", int(spawnable.parent))
+		_server_create_spawnable(spawnable.type, int(spawnable.parent), int(spawnable.id))
 
 	# Spawn in all of the assets
 	for asset in assets:
@@ -487,6 +447,37 @@ func spawn_asset(asset_type, properties, id: String = "") -> int:
 	return int(_resource.get_name())
 
 
+# TODO: Move function to spawnable module
+@rpc("any_peer", "call_remote", "reliable")
+func _server_create_spawnable(node_type: String, node_parent: int, forced_node_id: int = -1) -> int:
+	var _caller_id: int = multiplayer.get_remote_sender_id()
+	if _caller_id == 0:
+		_caller_id = multiplayer.get_unique_id()
+
+	# TODO: Permission check and handling.
+
+	var _node_id: int = _registry.get_active_id()
+
+	if forced_node_id != -1:
+		_node_id = forced_node_id
+
+	# Validate node_parent, or default to root.
+	var _parent = _registry.get_spawnable(node_parent)
+	if _parent == { }:
+		_parent = { "node": get_parent().get_node("root") }
+
+	var _spawnable: Node = _spawnables.create(node_type, _caller_id, int(_parent.node.name), _node_id)
+	_spawnables.create.rpc(node_type, _caller_id, int(_parent.node.name), _node_id)
+
+	# Emit session-wide event.
+	session_signalbus.node_created.emit(_spawnable)
+
+	if is_instance_valid(_spawnable) == false:
+		return -1
+
+	return int(_spawnable.name)
+
+
 # FIXME: I made some changes to this function I am not proud of, but it is working. Try to improve the flow for using fallback-to-root.
 @rpc("call_local", "any_peer", "reliable")
 func _set_node_parent(node_id: int, parent_node_id: int) -> void:
@@ -496,7 +487,7 @@ func _set_node_parent(node_id: int, parent_node_id: int) -> void:
 	if _parent == { }:
 		_parent = { "node": app_scene_m.get_master_root(app_scene_m.active_session) }
 
-	if _node.node && _parent.node:
+	if _node.has("node") && _parent.has("node"):
 		# Change node parent.
 		_node.node.reparent(_parent.node)
 		return

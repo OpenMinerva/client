@@ -228,9 +228,9 @@ func _cem_camera_state(state: bool) -> void:
 
 
 func _cem_camera_build() -> Node3D:
-	var _cem_root = await _session_spawnable_m.create("Node3D")
-	_node_cem_camera_camera = await _session_spawnable_m.create("Camera3D", int(_cem_root.name))
-	await _session_spawnable_m.create("Box", int(_cem_root.name))
+	var _cem_root = await _session_spawnable_m.create_spawnable("Node3D")
+	_node_cem_camera_camera = await _session_spawnable_m.create_spawnable("Camera3D", int(_cem_root.name))
+	await _session_spawnable_m.create_spawnable("Box", int(_cem_root.name))
 
 	_cem_root.set_meta("persistent", false)
 

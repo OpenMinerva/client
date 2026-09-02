@@ -162,6 +162,12 @@ func join_server(ip: String = "", port: int = 0) -> bool:
 	# Create server master scene.
 	var _scene: String = scene_m.create_master_scene()
 
+	var _session_ready: bool = false
+	while _session_ready == false:
+		# TODO: Safety and breakout.
+		_session_ready = scene_m.is_scene_ready(_scene)
+		await get_tree().process_frame
+
 	# Get a reference to the master scene from our scene ID.
 	var master_scene: Node3D = scene_m.get_master_scene(_scene)
 

@@ -10,6 +10,7 @@ extends Node
 @onready var _registry = get_node("../Registry")
 
 
+@rpc("authority", "reliable")
 func create(node_type: String, spawner_peer_id: int, parent: int, node_id: int) -> Node:
 	var _node: Node = null
 	var _node_schema: Dictionary = NSB.get_entry(node_type)
@@ -27,7 +28,7 @@ func create(node_type: String, spawner_peer_id: int, parent: int, node_id: int) 
 
 	_node = NSB.build(node_type)
 
-	var _db_id = _registry.add_spawnable(_node, node_type, spawner_peer_id, node_id)
+	var _db_id: int = _registry.add_spawnable(_node, node_type, spawner_peer_id, node_id)
 
 	_node.name = str(_db_id)
 
@@ -37,6 +38,7 @@ func create(node_type: String, spawner_peer_id: int, parent: int, node_id: int) 
 
 	_parent_node.node.add_child(_node)
 
+	get_parent().set_parent(_db_id, parent)
 	return _node
 
 
