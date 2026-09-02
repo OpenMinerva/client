@@ -68,6 +68,12 @@ func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel, scene_
 	_root_scene_node.name = "root"
 	_scene.add_child(_root_scene_node)
 
+	var _session_ready: bool = false
+	while _session_ready == false:
+		# TODO: Safety and breakout.
+		_session_ready = is_scene_ready(id)
+		await get_tree().process_frame
+
 	# HACK: Wait a frame for the active_session variable to populate
 	await get_tree().process_frame
 
@@ -179,6 +185,11 @@ func set_active_session(session_id: String):
 		gizmo._set_visibility(true)
 
 	return
+
+
+func is_scene_ready(session_id: String) -> bool:
+	var _scene: Node3D = get_master_scene(session_id)
+	return _scene.is_ready
 
 
 func _get_scene_by_type(scene_type: Enum.BaseLevel) -> String:

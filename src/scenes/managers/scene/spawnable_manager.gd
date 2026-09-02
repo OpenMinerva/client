@@ -9,22 +9,8 @@
 extends Node
 ## This file handles the spawnable management for a session. All synchronization and physics are handled through this file.
 
-const SPAWNABLE_TEMPLATE: Dictionary = {
-	"type": -1,
-	"spawner": -1,
-	"physics_owner": 1,
-	"node": null,
-	"parent": -1,
-	"id": -1,
-	"pretty_name": "ERROR",
-}
-
 var _spawnable_network_batches: int = 4
-var _database_id: int = 1
-var _database: Array[Dictionary] = []
 var _gizmos: Array[Node] = []
-var _asset_database: Array[Dictionary] = []
-var _asset_node_relation_database: Array[Dictionary] = []
 
 @onready var app_scene_m: Node = get_tree().current_scene.get_node("SceneManager")
 @onready var app_network_m: Node = get_tree().current_scene.get_node("NetworkManager")
@@ -33,6 +19,7 @@ var _asset_node_relation_database: Array[Dictionary] = []
 @onready var rpcawaiter: Node = get_parent().get_node("RpcAwaiter")
 @onready var session_signalbus: Node = get_node("../SignalBus")
 @onready var player_m: Node = get_node("../PlayerManager")
+@onready var _registry: Node = get_node("Registry")
 
 
 # TODO: Handle physics for our items, and
@@ -42,10 +29,10 @@ func _physics_process(_delta):
 	# As far as I know there was not an existing problem I was trying to solve and I have no idea what I was thinking.
 	# However, it's not breaking anything in the current instant so I will leave it in until it proves to be a problem or if I think of a better way of doing this.
 	var current_batch: int = Engine.get_physics_frames() % _spawnable_network_batches
-
 	if !is_multiplayer_authority():
 		return
-	for spawnable in _database:
+
+	for spawnable in _registry.get_all_spawnable():
 		if spawnable.type != "RigidBody3D":
 			continue
 		if spawnable.node.sleeping == true:
@@ -62,9 +49,11 @@ func sync_all() -> void:
 	if !is_multiplayer_authority():
 		return
 
+	var _database: Array[Dictionary] = _registry.get_all_spawnable()
 	var caller_id: int = multiplayer.get_remote_sender_id()
 	GlobalLogger.log("Received a request to sync all nodes from '%s'" % caller_id, Enum.LogLevel.INFO)
 	GlobalLogger.log("Database size: '%s'" % _database.size())
+
 	for spawnable in _database:
 		if spawnable.node == null:
 			GlobalLogger.log("Node does not exist.", Enum.LogLevel.WARNING)
@@ -87,7 +76,7 @@ func create(node_type: String, node_parent: int = 0, model_path: String = "") ->
 	GlobalLogger.log("[%s] Spawning '%s'." % [my_id, node_type])
 
 	if my_id == 1:
-		var _target_id: String = str(_database_id)
+		var _target_id: String = str(_registry.get_active_id())
 
 		var entity: int = spawn_spawnable(node_type, _target_id, model_path, node_parent)
 		spawn_spawnable.rpc(node_type, _target_id, model_path, node_parent)
@@ -95,21 +84,19 @@ func create(node_type: String, node_parent: int = 0, model_path: String = "") ->
 		# HACK: Reparent the node again so that it gets saved in the database.
 		set_parent(entity, node_parent)
 
-		var database_index: int = _database.find_custom(func(entry): return entry.id == entity)
+		var _db_entry: Dictionary = _registry.get_spawnable(entity)
 		if caller_id != 0 && caller_id != my_id:
 			# This is a client request to spawn.
 			# We return the synced node name here so we can get the client-side node later.
-			return int(_database[database_index].node.name)
+			return int(_db_entry.node.name)
 
-		return _database[database_index].node
+		return _db_entry.node
 	else:
 		var entity: int = await rpcawaiter.send_rpc(1, create.bind(node_type, node_parent, model_path))
 
-		# Since we are given the node name, we will need to find the node in our database.
-		var database_index: int = _database.find_custom(func(entry): return entry.id == entity)
+		var _db_entry: Dictionary = _registry.get_spawnable(entity)
 
-		# Database index was found, get the node at that index.
-		return _database[database_index].node
+		return _db_entry.node
 
 
 @rpc("call_local", "any_peer", "reliable")
@@ -144,10 +131,8 @@ func destroy(node_id: int) -> Variant:
 
 @rpc("call_local", "any_peer", "reliable")
 func select(node_id: int, gizmo_id: int) -> void:
-	var _node_db_index: int = _database.find_custom(func(entry): return entry.id == node_id)
-	var _node: Node = _database[_node_db_index].node
-	var _gizmo_db_index: int = _database.find_custom(func(entry): return entry.id == gizmo_id)
-	var _gizmo: Node = _database[_gizmo_db_index].node
+	var _node: Node = _registry.get_spawnable(node_id).node
+	var _gizmo: Node = _registry.get_spawnable(gizmo_id).node
 
 	if _node.is_class("Node3D"):
 		_gizmo.select(_node)
@@ -158,9 +143,7 @@ func select(node_id: int, gizmo_id: int) -> void:
 
 @rpc("call_local", "any_peer", "reliable")
 func deselect(gizmo_id: int) -> void:
-	var _gizmo_db_index: int = _database.find_custom(func(entry): return entry.id == gizmo_id)
-	var _gizmo: Node = _database[_gizmo_db_index].node
-
+	var _gizmo: Node = _registry.get_spawnable(gizmo_id).node
 	_gizmo.clear_selection()
 	return
 
@@ -235,7 +218,7 @@ func set_resource(node_id: int, property_name: String, resource_id: int) -> void
 		set_resource_on_spawnable.rpc(node_id, property_name, resource_id)
 
 		# FIXME: When a node gets deleted, there is no cleanup for the database.
-		_asset_node_relation_database.append({ "node_id": node_id, "node_property": property_name, "resource_id": resource_id })
+		_registry.add_relation(node_id, property_name, resource_id)
 	else:
 		await rpcawaiter.send_rpc(1, set_resource.bind(node_id, property_name, resource_id))
 		return
@@ -271,28 +254,28 @@ func create_asset(asset_type: String, properties: Array) -> Variant:
 
 	if my_id == 1:
 		# This was a host calling this function.
-		var _target_id: String = str(_database_id)
+		var _target_id: String = str(_registry.get_active_id())
 
 		# Actually spawn in the asset for us, and all clients.
 		var _asset = spawn_asset(asset_type, properties, _target_id)
 		spawn_asset.rpc(asset_type, properties, _target_id)
 
-		var _asset_db_index: int = _asset_database.find_custom(func(entry): return entry.id == _asset)
+		var _asset_db_entry: Dictionary = _registry.get_asset(_asset)
 
 		if caller_id != 0 && caller_id != my_id:
 			# This call originated from a client, we need to return a reference to the spawned asset, and not the asset itself.
-			return int(_asset_database[_asset_db_index].resource.get_name())
+			return int(_asset_db_entry.resource.get_name())
 
-		return _asset_database[_asset_db_index].resource
+		return _asset_db_entry.resource
 	else:
 		# Call on the host to create (and sync) the resource.
 		var _asset: int = await rpcawaiter.send_rpc(1, create_asset.bind(asset_type, properties))
 
 		# We have the asset name (id), we need to find it in the asset_database.
-		var _asset_db_index: int = _asset_database.find_custom(func(entry): return entry.id == _asset)
 
+		var _asset_db_entry: Dictionary = _registry.get_asset(_asset)
 		# Return the resource directly.
-		return _asset_database[_asset_db_index].resource
+		return _asset_db_entry.resource
 
 
 @rpc("call_local", "any_peer", "reliable")
@@ -318,8 +301,8 @@ func set_parent(node_id: int, parent_node_id: int) -> void:
 		_set_node_parent.rpc(int(_node.node.name), int(_parent_node.node.name))
 
 		# Update the database.
-		var _db_index: int = _database.find_custom(func(entry): return entry.id == node_id)
-		_database[_db_index].parent = parent_node_id
+		var _db_entry = _registry.get_spawnable(node_id)
+		_db_entry.parent = parent_node_id
 	else:
 		# Call on the host to create (and sync) the resource.
 		await rpcawaiter.send_rpc(1, set_parent.bind(node_id, parent_node_id))
@@ -333,8 +316,8 @@ func spawn_spawnable(p_type: String, p_name: String = "", p_path: String = "", p
 	var parent_node = get_parent().get_node("root")
 
 	if parent_id > 1:
-		var database_index = _database.find_custom(func(entry): return entry.id == parent_id)
-		parent_node = _database[database_index].node
+		var _parent_db_entry: Dictionary = _registry.get_spawnable(parent_id)
+		parent_node = _parent_db_entry.node
 
 	# HACK: When connecting to the server, the entity of the joining user is attempted to spawn twice. This null check will see if the node already exists on the server by name.
 	_spawned_entity = _spawn_node(p_type, 1, parent_node, p_path, p_name)
@@ -358,20 +341,18 @@ func delete_spawnable(node_name: String) -> void:
 		GlobalLogger.log("Node '%s' is malformed." % node_name, Enum.LogLevel.ERROR)
 		return
 
-	var _entry_index = _database.find_custom(func(item): return item.id == int(node_name))
-	if _entry_index == -1:
+	var _db_entry: Dictionary = _registry.get_spawnable(int(node_name))
+	if _db_entry == { }:
 		GlobalLogger.log("'%s' could not be located in the scene tree." % node_name, Enum.LogLevel.ERROR)
 		return
 
-	var _entry = _database[_entry_index]
-
-	if _entry.type == "Gizmo":
-		var _gizmo_index: int = _gizmos.find(_entry.node)
+	if _db_entry.type == "Gizmo":
+		var _gizmo_index: int = _gizmos.find(_db_entry.node)
 		_gizmos.remove_at(_gizmo_index)
 
-	session_signalbus.node_destroyed.emit(_entry)
-	_entry.node.queue_free()
-	_database.remove_at(_entry_index)
+	session_signalbus.node_destroyed.emit(_db_entry)
+	_db_entry.node.queue_free()
+	_registry.remove_spawnable(int(node_name))
 	return
 
 
@@ -485,21 +466,21 @@ func get_all_node_children(node: Node) -> Array:
 
 
 func get_by_id(spawnable_id: int) -> Dictionary:
-	var target_entry = _database.find_custom(func(entry): return entry.id == spawnable_id)
+	var _db_entry: Dictionary = _registry.get_spawnable(spawnable_id)
 
-	if target_entry == -1:
+	if _db_entry == { }:
 		return { }
 
-	return _database[target_entry]
+	return _db_entry
 
 
 func get_resource_by_id(resource_id: int) -> Dictionary:
-	var target_entry = _asset_database.find_custom(func(entry): return entry.id == resource_id)
+	var _asset_db_entry: Dictionary = _registry.get_asset(resource_id)
 
-	if target_entry == -1:
+	if _asset_db_entry == { }:
 		return { }
 
-	return _asset_database[target_entry]
+	return _asset_db_entry
 
 
 @rpc("authority", "reliable")
@@ -530,7 +511,7 @@ func _set_node_parent(node_id: int, parent_node_id: int) -> void:
 	return
 
 
-func _spawn_resource(resource_class: String, properties: Array, asset_id: String = str(_database_id)) -> Resource:
+func _spawn_resource(resource_class: String, properties: Array, asset_id: String = str(_registry.get_active_id())) -> Resource:
 	var _resource: Resource = null
 
 	# Create the resource
@@ -554,34 +535,17 @@ func _spawn_resource(resource_class: String, properties: Array, asset_id: String
 
 
 func _add_asset_to_database(asset_class: String, resource: Resource, props: Array, asset_id: int = 0) -> int:
-	# If we are a client, we ignore the database completely, we are supplied the id by the server.
-	var _db_entry = {
-		"id": 0,
-		"asset_class": "",
-		"properties": { },
-	}
-
-	if asset_id == 0:
-		GlobalLogger.log("No asset_id supplied.", Enum.LogLevel.ERROR)
-		return 0
-	else:
-		_db_entry.id = asset_id
-
-	_db_entry.resource = resource
-	_db_entry.props = props
-	_db_entry.asset_class = asset_class
-
-	_asset_database.append(_db_entry)
-	_database_id = _database_id + 1
-	return _db_entry.id
+	GlobalLogger.log("Deprecated call '%s'" % get_stack()[0]["function"], Enum.LogLevel.WARNING)
+	return _registry.add_asset(asset_class, resource, props, asset_id)
 
 
 func _get_deletion_queue(node_name: String) -> Array:
-	var _entry_index = _database.find_custom(func(item): return item.id == int(node_name))
-	if _entry_index < 0:
+	var _db_entry: Dictionary = _registry.get_spawnable(int(node_name))
+
+	if _db_entry == { }:
 		GlobalLogger.log("Tried to add an invalid node to the deletion queue.", Enum.LogLevel.WARNING)
 		return []
-	var _node = _database[_entry_index].node
+	var _node = _db_entry.node
 
 	var _queue = _add_to_deletion_queue(_node)
 	_queue.reverse()
@@ -600,14 +564,15 @@ func _add_to_deletion_queue(node: Node, list: Array[Node] = []) -> Array[Node]:
 	return list
 
 
-func _spawn_node(node_type: String, node_owner: int, parent: Node = instance_root, model_path = "", node_name: String = str(_database_id)) -> Node:
+func _spawn_node(node_type: String, node_owner: int, parent: Node = instance_root, model_path = "", node_name: String = str(_registry.get_active_id())) -> Node:
 	var _node: Node
 	var _node_name = node_type
 	var _node_schema = NSB.get_entry(_node_name)
 	var _pretty_name: String
 
-	var _database_index: int = _database.find_custom(func(entry): return entry.id == int(node_name))
-	if _database_index > -1:
+	var _db_entry: Dictionary = _registry.get_spawnable(int(node_name))
+
+	if _db_entry != { }:
 		GlobalLogger.log("Tried to spawn in a node that already exists.", Enum.LogLevel.ERROR)
 		return
 
@@ -622,7 +587,7 @@ func _spawn_node(node_type: String, node_owner: int, parent: Node = instance_roo
 		_node = NSB.build(_node_name, model_path)
 
 	# Add to database
-	var _db_id = _add_to_database(_node, node_type, node_owner, int(node_name))
+	var _db_id = _registry.add_spawnable(_node, node_type, node_owner, int(node_name))
 
 	if model_path != "":
 		_pretty_name = model_path.get_file()
@@ -645,26 +610,6 @@ func _spawn_node(node_type: String, node_owner: int, parent: Node = instance_roo
 		_gizmos.append(_node)
 
 	return _node
-
-
-func _add_to_database(node: Node, type: String, node_owner: int, node_id: int = 0) -> int:
-	# If we are a client, we ignore _database_id entirely.
-	var _db_entry = SPAWNABLE_TEMPLATE.duplicate()
-
-	if node_id == 0:
-		GlobalLogger.log("No node_id supplied.", Enum.LogLevel.ERROR)
-		return 0
-	else:
-		_db_entry.id = node_id
-
-	_db_entry.node = node
-	_db_entry.type = type
-	_db_entry.spawner = node_owner
-	_database.append(_db_entry)
-
-	_database_id = _database_id + 1
-
-	return _db_entry.id
 
 
 func _add_collisions_recursive(node: Node):

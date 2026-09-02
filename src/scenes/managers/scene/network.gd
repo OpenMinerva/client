@@ -49,11 +49,14 @@ func on_banned():
 func req_spawnable_db() -> void:
 	# A peer wants the server database.
 	var caller_id = multiplayer.get_remote_sender_id()
+	var _database: Array[Dictionary] = spawnable_m._registry.get_all_spawnable()
+	var _assets: Array[Dictionary] = spawnable_m._registry.get_all_asset()
+	var _asset_relations: Array[Dictionary] = spawnable_m._registry.get_all_asset_relation()
 
-	GlobalLogger.log("Sending spawnable database to peer %d: %d entries" % [caller_id, spawnable_m._database.size()])
+	GlobalLogger.log("Sending spawnable database to peer %d: %d entries" % [caller_id, _database.size()])
 
 	# Send the spawnable and player database to the client.
-	rec_spawnable_db.rpc_id(caller_id, spawnable_m._database, player_m.players, spawnable_m._asset_database, spawnable_m._asset_node_relation_database)
+	rec_spawnable_db.rpc_id(caller_id, _database, player_m.players, _assets, _asset_relations)
 
 	return
 

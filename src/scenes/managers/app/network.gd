@@ -55,6 +55,12 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 	scene_m.start_master_scene(_scene)
 	scene_m.set_active_session(_scene)
 
+	var _session_ready: bool = false
+	while _session_ready == false:
+		# TODO: Safety and breakout.
+		_session_ready = scene_m.is_scene_ready(_scene)
+		await get_tree().process_frame
+
 	# FIXME: Force spawn the host. This is probably bad design.
 	scene_m.get_master_scene(_scene).get_node("NetworkManager")._on_peer_connected(1)
 
