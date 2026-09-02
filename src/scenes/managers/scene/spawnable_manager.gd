@@ -19,6 +19,7 @@ var _gizmos: Array[Node] = []
 @onready var session_signalbus: Node = get_node("../SignalBus")
 @onready var player_m: Node = get_node("../PlayerManager")
 @onready var _registry: Node = get_node("Registry")
+@onready var _spawnables: Node = get_node("Spawnables")
 
 
 func _physics_process(_delta):
@@ -67,7 +68,7 @@ func create(node_type: String, node_parent: int = 0, model_path: String = "") ->
 	GlobalLogger.log("[%s] Spawning '%s'." % [my_id, node_type])
 
 	if my_id == 1:
-		var _target_id: String = str(_registry.get_active_id())
+		var _target_id: int = _registry.get_active_id()
 
 		var entity: int = spawn_spawnable(node_type, _target_id, model_path, node_parent)
 		spawn_spawnable.rpc(node_type, _target_id, model_path, node_parent)
@@ -76,6 +77,7 @@ func create(node_type: String, node_parent: int = 0, model_path: String = "") ->
 		set_parent(entity, node_parent)
 
 		var _db_entry: Dictionary = _registry.get_spawnable(entity)
+
 		if caller_id != 0 && caller_id != my_id:
 			# This is a client request to spawn.
 			# We return the synced node name here so we can get the client-side node later.
@@ -302,7 +304,7 @@ func set_parent(node_id: int, parent_node_id: int) -> void:
 
 
 @rpc("authority", "reliable")
-func spawn_spawnable(p_type: String, p_name: String = "", p_path: String = "", parent_id: int = 0) -> int:
+func spawn_spawnable(p_type: String, p_node_id: int, p_path: String = "", parent_id: int = 0) -> int:
 	var _spawned_entity
 	var parent_node = get_parent().get_node("root")
 
@@ -311,11 +313,11 @@ func spawn_spawnable(p_type: String, p_name: String = "", p_path: String = "", p
 		parent_node = _parent_db_entry.node
 
 	# HACK: When connecting to the server, the entity of the joining user is attempted to spawn twice. This null check will see if the node already exists on the server by name.
-	_spawned_entity = _spawn_node(p_type, 1, parent_node, p_path, p_name)
+	_spawned_entity = _spawnables.create(p_type, 1, int(parent_node.name), int(p_node_id))
 
 	if _spawned_entity == null:
 		GlobalLogger.log("Tried to spawn in something that already exists? Returning the reference to the existing node.", Enum.LogLevel.WARNING)
-		return int(p_name)
+		return int(p_node_id)
 
 	_spawned_entity.owner = parent_node
 
@@ -410,7 +412,7 @@ func receive_database(database: Array, players: Dictionary, assets: Array, asset
 	# Spawn in all of the nodes
 	for spawnable in database:
 		GlobalLogger.log("Spawning '%s' as '%s'." % [spawnable.id, spawnable.type])
-		spawn_spawnable(spawnable.type, str(spawnable.id), "", int(spawnable.parent))
+		spawn_spawnable(spawnable.type, spawnable.id, "", int(spawnable.parent))
 
 	# Spawn in all of the assets
 	for asset in assets:
@@ -553,54 +555,6 @@ func _add_to_deletion_queue(node: Node, list: Array[Node] = []) -> Array[Node]:
 		_add_to_deletion_queue(child, list)
 
 	return list
-
-
-func _spawn_node(node_type: String, node_owner: int, parent: Node = instance_root, model_path = "", node_name: String = str(_registry.get_active_id())) -> Node:
-	var _node: Node
-	var _node_name = node_type
-	var _node_schema = NSB.get_entry(_node_name)
-	var _pretty_name: String
-
-	var _db_entry: Dictionary = _registry.get_spawnable(int(node_name))
-
-	if _db_entry != { }:
-		GlobalLogger.log("Tried to spawn in a node that already exists.", Enum.LogLevel.ERROR)
-		return
-
-	if node_type == "":
-		GlobalLogger.log("Tried to spawn in a invalid node.", Enum.LogLevel.ERROR)
-		return
-
-	# HACK: Fixes importing skeletons?
-	if _node_name == "Model" && model_path == "":
-		_node = NSB.build("Node3D")
-	else:
-		_node = NSB.build(_node_name, model_path)
-
-	# Add to database
-	var _db_id = _registry.add_spawnable(_node, node_type, node_owner, int(node_name))
-
-	if model_path != "":
-		_pretty_name = model_path.get_file()
-	else:
-		_pretty_name = str(_node_schema.pretty_name)
-
-	# Editor changes
-	set_node_visible_to_inspector(_node)
-	_node.name = str(_db_id)
-	_node.set_meta("pretty_name", _pretty_name)
-	_node.set_meta("spawnable_type", node_type)
-	_node.set_meta("icon", _node_schema.icon)
-	if _node.get("position") != null:
-		_node.position = Vector3(0, 0, 0)
-
-	# Add to scene tree
-	parent.add_child(_node)
-
-	if _pretty_name == "Gizmo":
-		_gizmos.append(_node)
-
-	return _node
 
 
 func _add_collisions_recursive(node: Node):

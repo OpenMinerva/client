@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://b8y61adv3jap4" path="res://scenes/managers/scene/base.gd" id="1_qmew7"]
 [ext_resource type="Script" uid="uid://cxbdjoelope42" path="res://scenes/managers/scene/signalbus.gd" id="2_fundk"]
 [ext_resource type="Script" uid="uid://b4ulg37adbihd" path="res://scenes/managers/scene/spawnable_manager_registry.gd" id="2_qmew7"]
+[ext_resource type="Script" uid="uid://xeu8drtif4w5" path="res://scenes/managers/scene/spawnable_manager_spawnables.gd" id="4_g3oah"]
 [ext_resource type="Script" uid="uid://b0dicnumx46f8" path="res://addons/rpc-await/rpc_await.gd" id="5_nd5i0"]
 
 [node name="Base" type="Node3D" unique_id=2084163635]
@@ -16,6 +17,9 @@ script = ExtResource("1_5on25")
 
 [node name="Registry" type="Node" parent="SpawnableManager" unique_id=990125222]
 script = ExtResource("2_qmew7")
+
+[node name="Spawnables" type="Node" parent="SpawnableManager" unique_id=1540259170]
+script = ExtResource("4_g3oah")
 
 [node name="NetworkManager" type="Node" parent="." unique_id=2144728320]
 script = ExtResource("1_fundk")
