@@ -8,8 +8,6 @@
 extends Node
 ## This file handles the spawnable management for a session. All synchronization and physics are handled through this file.
 
-var _gizmos: Array[Node] = []
-
 @onready var app_scene_m: Node = get_tree().current_scene.get_node("SceneManager")
 @onready var app_network_m: Node = get_tree().current_scene.get_node("NetworkManager")
 @onready var network_m: Node = get_node("../NetworkManager")
@@ -66,47 +64,30 @@ func sync_all() -> void:
 func create_spawnable(node_type: String, node_parent: int = -1) -> Node:
 	if multiplayer.is_server():
 		GlobalLogger.log("Spawning node '%s'" % node_type)
-		var _spawnable_id: int = _spawnables._server_create_spawnable(node_type, node_parent)
+		var _spawnable_id: int = _spawnables.server_create_spawnable(node_type, node_parent)
 		var _spawnable_db_entry: Dictionary = _registry.get_spawnable(_spawnable_id)
 		if _spawnable_db_entry.has("node") == false:
 			return null
 		return _spawnable_db_entry.node
 	else:
 		GlobalLogger.log("Requesting a spawn of node '%s'" % node_type)
-		var _spawnable_id: int = await rpcawaiter.send_rpc(1, _spawnables._server_create_spawnable.bind(node_type, node_parent))
+		var _spawnable_id: int = await rpcawaiter.send_rpc(1, _spawnables.server_create_spawnable.bind(node_type, node_parent))
 		var _spawnable_db_entry: Dictionary = _registry.get_spawnable(_spawnable_id)
 		if _spawnable_db_entry.has("node") == false:
 			return null
 		return _spawnable_db_entry.node
 
 
-@rpc("call_local", "any_peer", "reliable")
-func destroy(node_id: int) -> Variant:
-	if app_network_m.registry.has_session(app_scene_m.active_session) == false:
-		GlobalLogger.log("Failed to destroy node '%s'." % node_id, Enum.LogLevel.ERROR)
-		return
-
-	var my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
-	var caller_id: int = multiplayer.get_remote_sender_id()
-
-	if my_id == 1:
-		var _queue = _get_deletion_queue(str(node_id))
-		for node in _queue:
-			for _gizmo in _gizmos:
-				if node.is_class("Node3D") == true:
-					if _gizmo.is_selected(node):
-						deselect.rpc(int(_gizmo.name))
-
-			delete_spawnable(node.name)
-			delete_spawnable.rpc(node.name)
-
-		if caller_id != 0 && caller_id != my_id:
-			# This is a client request to delete
-			return
-
+## Destroy a spawnable in the session. This is an abstraction that will automatically handle the networking between the host and teh client. If the host attempts to call this function in a session, they will call `_server_destroy_spawnable` directly. If a client calls this function, the client will automatically `rpc` the `_server_destroy_spawnable` to the host.
+## [param node_id] is the id of the node to destroy.
+func destroy_spawnable(node_id: int) -> void:
+	if multiplayer.is_server():
+		GlobalLogger.log("Destroying node '%s'" % node_id)
+		_spawnables.server_destroy_spawnable(node_id)
 		return
 	else:
-		await rpcawaiter.send_rpc(1, destroy.bind(node_id))
+		GlobalLogger.log("Requesting a destroy of node '%s'" % node_id)
+		var _spawnable_id: int = await rpcawaiter.send_rpc(1, _spawnables._server_destroy_spawnable.bind(node_id))
 		return
 
 
@@ -283,30 +264,6 @@ func set_parent(node_id: int, parent_node_id: int) -> void:
 		# Call on the host to create (and sync) the resource.
 		await rpcawaiter.send_rpc(1, set_parent.bind(node_id, parent_node_id))
 
-	return
-
-
-# TODO: require actioning user
-@rpc("authority", "reliable")
-func delete_spawnable(node_name: String) -> void:
-	GlobalLogger.log("Deleting node '%s'." % node_name)
-
-	if node_name.is_valid_int() == false:
-		GlobalLogger.log("Node '%s' is malformed." % node_name, Enum.LogLevel.ERROR)
-		return
-
-	var _db_entry: Dictionary = _registry.get_spawnable(int(node_name))
-	if _db_entry == { }:
-		GlobalLogger.log("'%s' could not be located in the scene tree." % node_name, Enum.LogLevel.ERROR)
-		return
-
-	if _db_entry.type == "Gizmo":
-		var _gizmo_index: int = _gizmos.find(_db_entry.node)
-		_gizmos.remove_at(_gizmo_index)
-
-	session_signalbus.node_destroyed.emit(_db_entry)
-	_db_entry.node.queue_free()
-	_registry.remove_spawnable(int(node_name))
 	return
 
 
@@ -491,28 +448,3 @@ func _spawn_resource(resource_class: String, properties: Array, asset_id: String
 func _add_asset_to_database(asset_class: String, resource: Resource, props: Array, asset_id: int = 0) -> int:
 	GlobalLogger.log("Deprecated call '%s'" % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	return _registry.add_asset(asset_class, resource, props, asset_id)
-
-
-func _get_deletion_queue(node_name: String) -> Array:
-	var _db_entry: Dictionary = _registry.get_spawnable(int(node_name))
-
-	if _db_entry == { }:
-		GlobalLogger.log("Tried to add an invalid node to the deletion queue.", Enum.LogLevel.WARNING)
-		return []
-	var _node = _db_entry.node
-
-	var _queue = _add_to_deletion_queue(_node)
-	_queue.reverse()
-	return _queue
-
-
-func _add_to_deletion_queue(node: Node, list: Array[Node] = []) -> Array[Node]:
-	list.append(node)
-
-	if node.get_meta("deep_delete", true) == false:
-		return list
-
-	for child in node.get_children():
-		_add_to_deletion_queue(child, list)
-
-	return list

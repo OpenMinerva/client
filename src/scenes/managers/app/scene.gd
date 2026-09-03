@@ -98,7 +98,7 @@ func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel, scene_
 			_spawnable_manager.set_parent.rpc(int(_world_node.name), 0)
 
 		# Delete the initial fake root from the loaded world.
-		_spawnable_manager.destroy.rpc_id(1, int(_target_node.name))
+		_spawnable_manager.destroy_spawnable.rpc_id(1, int(_target_node.name))
 
 	# Allow scene to be visible in the inspector
 	_root_scene_node.set_meta("scene_node", true)
@@ -170,8 +170,7 @@ func set_active_session(session_id: String):
 
 		_set_camera_active_state(_scene.id, false)
 		_set_player_authority_state(_scene.id, false)
-		for gizmo in scene_container.get_node(_scene.id).get_node("SpawnableManager")._gizmos:
-			gizmo._set_visibility(false)
+		# TODO: Deselect and disable gizmos.
 
 	# session_id gets enabled.
 	var _scene_node: Node3D = scene_container.get_node(session_id)
@@ -181,8 +180,7 @@ func set_active_session(session_id: String):
 	_set_player_authority_state(session_id, true)
 	network_m.registry.set_recent(session_id)
 	Events.dash_session_changed.emit(session_id)
-	for gizmo in _scene_node.get_node("SpawnableManager")._gizmos:
-		gizmo._set_visibility(true)
+	# TODO: Enable gizmos if required.
 
 	return
 

@@ -11,6 +11,36 @@ extends Node
 @onready var _session_signalbus: Node = get_node("../../SignalBus")
 
 
+@rpc("any_peer", "call_remote", "reliable")
+func server_create_spawnable(node_type: String, node_parent: int, forced_node_id: int = -1) -> int:
+	var _caller_id: int = _get_caller_id()
+
+	# TODO: Permission check and handling.
+
+	# TODO: Logging (https://github.com/OpenMinerva/client/issues/191)
+
+	var _node_id: int = _registry.get_active_id()
+
+	if forced_node_id != -1:
+		_node_id = forced_node_id
+
+	# Validate node_parent, or default to root.
+	var _parent = _registry.get_spawnable(node_parent)
+	if _parent == { }:
+		_parent = { "node": get_node("../../root") }
+
+	var _spawnable: Node = create(node_type, _caller_id, int(_parent.node.name), _node_id)
+	create.rpc(node_type, _caller_id, int(_parent.node.name), _node_id)
+
+	# Emit session-wide event.
+	_session_signalbus.node_created.emit(_spawnable)
+
+	if is_instance_valid(_spawnable) == false:
+		return -1
+
+	return int(_spawnable.name)
+
+
 @rpc("authority", "reliable")
 func create(node_type: String, spawner_peer_id: int, parent: int, node_id: int) -> Node:
 	var _node: Node = null
@@ -43,35 +73,58 @@ func create(node_type: String, spawner_peer_id: int, parent: int, node_id: int) 
 	return _node
 
 
-func destroy() -> Node:
+@rpc("any_peer", "call_remote", "reliable")
+func server_destroy_spawnable(node_id: int) -> void:
+	var _caller_id: int = _get_caller_id()
+
+	# TODO: Permissions
+
+	# TODO: Logging (https://github.com/OpenMinerva/client/issues/191)
+
+	var _db_entry = _registry.get_spawnable(node_id)
+	var _deletion_queue: Array = _generate_deletion_queue(_db_entry.node)
+
+	for _node in _deletion_queue:
+		# TODO: Gizmo removal. Somehow not broken?
+		# for _gizmo in get_parent()._gizmos:
+		# 	if _node.is_class("Node3D") == true:
+		# 		if _gizmo.is_selected(_node):
+		# 			get_parent().deselect.rpc(int(_gizmo.name))
+
+		if _node.name.is_valid_int() == false:
+			GlobalLogger.log("Node '%s' is malformed." % _db_entry.node.name, Enum.LogLevel.ERROR)
+			return
+
+		destroy.rpc(int(_node.name))
+
 	return
 
 
-@rpc("any_peer", "call_remote", "reliable")
-func _server_create_spawnable(node_type: String, node_parent: int, forced_node_id: int = -1) -> int:
+@rpc("call_local", "authority", "reliable")
+func destroy(node_id: int) -> void:
+	var _db_entry = _registry.get_spawnable(node_id)
+
+	if _db_entry == { }:
+		GlobalLogger.log("'%s' could not be located in the scene tree." % node_id, Enum.LogLevel.ERROR)
+		return
+
+	_session_signalbus.node_destroyed.emit(_db_entry)
+	_db_entry.node.queue_free()
+	_registry.remove_spawnable(node_id)
+	return
+
+
+func _get_caller_id() -> int:
 	var _caller_id: int = multiplayer.get_remote_sender_id()
 	if _caller_id == 0:
 		_caller_id = multiplayer.get_unique_id()
 
-	# TODO: Permission check and handling.
+	return _caller_id
 
-	var _node_id: int = _registry.get_active_id()
 
-	if forced_node_id != -1:
-		_node_id = forced_node_id
-
-	# Validate node_parent, or default to root.
-	var _parent = _registry.get_spawnable(node_parent)
-	if _parent == { }:
-		_parent = { "node": get_node("../../root") }
-
-	var _spawnable: Node = create(node_type, _caller_id, int(_parent.node.name), _node_id)
-	create.rpc(node_type, _caller_id, int(_parent.node.name), _node_id)
-
-	# Emit session-wide event.
-	_session_signalbus.node_created.emit(_spawnable)
-
-	if is_instance_valid(_spawnable) == false:
-		return -1
-
-	return int(_spawnable.name)
+func _generate_deletion_queue(base_node: Node) -> Array:
+	var result: Array = []
+	for child in base_node.get_children():
+		result.append_array(_generate_deletion_queue(child))
+	result.append(base_node)
+	return result

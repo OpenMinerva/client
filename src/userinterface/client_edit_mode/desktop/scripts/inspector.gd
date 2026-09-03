@@ -479,7 +479,7 @@ func _inspector_popup_button_pressed(label: String) -> void:
 			_inspector_add_node_window.parent_node_id = int(_node.name)
 			_inspector_add_node_window.show()
 		"Remove":
-			await session_spawnable_m.destroy(int(_node.name))
+			await session_spawnable_m.destroy_spawnable(int(_node.name))
 		"Rename":
 			_inspector_selected.set_editable(0, true)
 			_inspector_tree.edit_selected()
@@ -529,7 +529,7 @@ func _select(target_node: int) -> void:
 
 func _gizmo_delete() -> void:
 	my_gizmo.clear_selection()
-	await session_spawnable_m.destroy(int(my_gizmo.name))
+	await session_spawnable_m.destroy_spawnable(int(my_gizmo.name))
 	return
 
 

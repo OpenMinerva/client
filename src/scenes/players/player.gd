@@ -221,7 +221,7 @@ func _cem_camera_state(state: bool) -> void:
 	if _node_cem_camera != null:
 		_node_cem_camera.get_child(0).current = false
 		_node_cem_camera_camera = null
-		await _session_spawnable_m.destroy(int(_node_cem_camera.name))
+		await _session_spawnable_m.destroy_spawnable(int(_node_cem_camera.name))
 	_node_camera.current = true
 
 	return
