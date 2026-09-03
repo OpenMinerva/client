@@ -87,7 +87,21 @@ func destroy_spawnable(node_id: int) -> void:
 		return
 	else:
 		GlobalLogger.log("Requesting a destroy of node '%s'" % node_id)
-		var _spawnable_id: int = await rpcawaiter.send_rpc(1, _spawnables._server_destroy_spawnable.bind(node_id))
+		var _spawnable_id: int = await rpcawaiter.send_rpc(1, _spawnables.server_destroy_spawnable.bind(node_id))
+		return
+
+
+## Parent a spawnable in the session to another spawnable. This is an abstraction that will automatically handle the networking between the host and teh client. If the host attempts to call this function in a session, they will call `server_parent_spawnable` directly. If a client calls this function, the client will automatically `rpc` the `server_parent_spawnable` to the host.
+## [param node_id] is the id of the node to parent.
+## [param parent_id] is the id of the node to parent to.
+func parent_spawnable(node_id: int, parent_id: int = -1) -> void:
+	if multiplayer.is_server():
+		GlobalLogger.log("Parenting node '%s' to '%s'" % [node_id, parent_id])
+		_spawnables.server_parent_spawnable(node_id, parent_id)
+		return
+	else:
+		GlobalLogger.log("Requesting a parent of node '%s' to '%s'" % [node_id, parent_id])
+		var _spawnable_id: int = await rpcawaiter.send_rpc(1, _spawnables.server_parent_spawnable.bind(node_id, parent_id))
 		return
 
 
@@ -240,33 +254,6 @@ func create_asset(asset_type: String, properties: Array) -> Variant:
 		return _asset_db_entry.resource
 
 
-@rpc("call_local", "any_peer", "reliable")
-func set_parent(node_id: int, parent_node_id: int) -> void:
-	var my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
-
-	GlobalLogger.log("[%s] Setting parent of '%s' to '%s'." % [my_id, node_id, parent_node_id])
-
-	if my_id == 1:
-		# Get the node references.
-		var _node = get_by_id(node_id)
-
-		if _node == { }:
-			GlobalLogger.log("Failed to find the node: '%s'" % node_id, Enum.LogLevel.WARNING)
-			return
-
-		# Send the reparent signal to all clients.
-		_set_node_parent.rpc(int(_node.node.name), parent_node_id)
-
-		# Update the database.
-		var _db_entry = _registry.get_spawnable(node_id)
-		_db_entry.parent = parent_node_id
-	else:
-		# Call on the host to create (and sync) the resource.
-		await rpcawaiter.send_rpc(1, set_parent.bind(node_id, parent_node_id))
-
-	return
-
-
 @rpc("call_local", "authority", "reliable")
 func transform_spawnable(node_id: int, transform: Transform3D) -> void:
 	var _entity_db = get_by_id(node_id)
@@ -403,23 +390,6 @@ func spawn_asset(asset_type, properties, id: String = "") -> int:
 
 	# Return the _asset_database id of the resource.
 	return int(_resource.get_name())
-
-
-# FIXME: I made some changes to this function I am not proud of, but it is working. Try to improve the flow for using fallback-to-root.
-@rpc("call_local", "any_peer", "reliable")
-func _set_node_parent(node_id: int, parent_node_id: int) -> void:
-	var _node: Dictionary = get_by_id(node_id)
-	var _parent: Dictionary = get_by_id(parent_node_id)
-
-	if _parent == { }:
-		_parent = { "node": app_scene_m.get_master_root(app_scene_m.active_session) }
-
-	if _node.has("node") && _parent.has("node"):
-		# Change node parent.
-		_node.node.reparent(_parent.node)
-		return
-
-	return
 
 
 func _spawn_resource(resource_class: String, properties: Array, asset_id: String = str(_registry.get_active_id())) -> Resource:

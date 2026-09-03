@@ -11,6 +11,7 @@ extends Node
 @onready var _session_signalbus: Node = get_node("../../SignalBus")
 
 
+# Create
 @rpc("any_peer", "call_remote", "reliable")
 func server_create_spawnable(node_type: String, node_parent: int, forced_node_id: int = -1) -> int:
 	var _caller_id: int = _get_caller_id()
@@ -69,10 +70,11 @@ func create(node_type: String, spawner_peer_id: int, parent: int, node_id: int) 
 
 	_parent_node.node.add_child(_node)
 
-	get_parent().set_parent(_db_id, parent)
+	get_parent().parent_spawnable(_db_id, parent)
 	return _node
 
 
+# Destroy
 @rpc("any_peer", "call_remote", "reliable")
 func server_destroy_spawnable(node_id: int) -> void:
 	var _caller_id: int = _get_caller_id()
@@ -82,6 +84,11 @@ func server_destroy_spawnable(node_id: int) -> void:
 	# TODO: Logging (https://github.com/OpenMinerva/client/issues/191)
 
 	var _db_entry = _registry.get_spawnable(node_id)
+
+	if _db_entry == { }:
+		GlobalLogger.log("Node '%s' does not exist. Not destroying.")
+		return
+
 	var _deletion_queue: Array = _generate_deletion_queue(_db_entry.node)
 
 	for _node in _deletion_queue:
@@ -114,6 +121,45 @@ func destroy(node_id: int) -> void:
 	return
 
 
+# Parenting
+func server_parent_spawnable(node_id: int, parent_id: int) -> void:
+	var _caller_id: int = _get_caller_id()
+
+	# TODO: Permissions
+
+	# TODO: Logging (https://github.com/OpenMinerva/client/issues/191)
+
+	var _target_db_entry = _registry.get_spawnable(node_id)
+	var _parent_db_entry = _registry.get_spawnable(parent_id)
+
+	if _target_db_entry == { }:
+		GlobalLogger.log("Failed to find the node: '%s'" % node_id, Enum.LogLevel.WARNING)
+		return
+
+	if _parent_db_entry == { }:
+		GlobalLogger.log("Failed to find the node to parent to '%s'. Falling back to root." % parent_id, Enum.LogLevel.INFO)
+
+	parent.rpc(node_id, parent_id)
+
+	return
+
+
+@rpc("call_local", "authority", "reliable")
+func parent(node_id: int, parent_id: int) -> void:
+	var _target_db_entry = _registry.get_spawnable(node_id)
+	var _parent_db_entry = _registry.get_spawnable(parent_id)
+
+	if _parent_db_entry == { }:
+		# Fallback to root.
+		_parent_db_entry = { "node": get_node("../../root") }
+
+	_target_db_entry.node.reparent(_parent_db_entry.node)
+
+	# TODO: Update database
+	return
+
+
+# Local helpers
 func _get_caller_id() -> int:
 	var _caller_id: int = multiplayer.get_remote_sender_id()
 	if _caller_id == 0:

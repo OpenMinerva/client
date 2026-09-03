@@ -126,11 +126,12 @@ func _drop_data(mouse_position: Vector2, data: Variant):
 
 	if _target_tree_item == null:
 		_target_node = session_root
-	else:
-		_target_node = _target_tree_item.get_metadata(0)
+		await session_spawnable_m.parent_spawnable(int(_dragged_node.name), -1)
+		return
 
-	# Send the reparent RPC request.
-	await session_spawnable_m.set_parent(int(_dragged_node.name), int(_target_node.name))
+	_target_node = _target_tree_item.get_metadata(0)
+
+	await session_spawnable_m.parent_spawnable(int(_dragged_node.name), int(_target_node.name))
 
 	_inspector_build()
 
