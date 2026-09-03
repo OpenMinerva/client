@@ -92,15 +92,16 @@ func server_destroy_spawnable(node_id: int) -> void:
 	var _deletion_queue: Array = _generate_deletion_queue(_db_entry.node)
 
 	for _node in _deletion_queue:
-		# TODO: Gizmo removal. Somehow not broken?
-		# for _gizmo in get_parent()._gizmos:
-		# 	if _node.is_class("Node3D") == true:
-		# 		if _gizmo.is_selected(_node):
-		# 			get_parent().deselect.rpc(int(_gizmo.name))
+		for _gizmo in _registry._gizmos:
+			if _node.is_class("Node3D") == true:
+				var _gizmo_db_entry: Dictionary = _registry.get_spawnable(_gizmo)
+
+				if _gizmo_db_entry.node.is_selected(_node):
+					get_parent().deselect.rpc(int(_gizmo_db_entry.node.name))
 
 		if _node.name.is_valid_int() == false:
 			GlobalLogger.log("Node '%s' is malformed." % _db_entry.node.name, Enum.LogLevel.ERROR)
-			return
+			continue
 
 		destroy.rpc(int(_node.name))
 

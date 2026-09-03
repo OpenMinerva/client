@@ -31,7 +31,7 @@ const ASSET_RELATION_TEMPLATE: Dictionary = {
 @onready var _spawnables: Array[Dictionary] = []
 @onready var _assets: Array[Dictionary] = []
 @onready var _asset_relations: Array[Dictionary] = []
-@onready var _gizmos: Array[Dictionary] = []
+@onready var _gizmos: Array[int] = []
 
 
 func add_spawnable(node: Node, type: String, spawner_peer_id: int, node_id: int = _id) -> int:
@@ -46,6 +46,9 @@ func add_spawnable(node: Node, type: String, spawner_peer_id: int, node_id: int 
 	_spawnables.append(_db_entry)
 
 	_id = _id + 1
+
+	if type == "Gizmo":
+		_gizmos.append(_db_entry.id)
 
 	GlobalLogger.log("Spawnable '%s' successfully added to database as id '%s'." % [node.name, _db_entry.id])
 	return _db_entry.id
@@ -67,6 +70,10 @@ func get_spawnable(node_id: int) -> Dictionary:
 func remove_spawnable(node_id: int) -> void:
 	GlobalLogger.log("Removing spawnable '%s' from database." % node_id)
 	var _db_index: int = _spawnables.find_custom(func(entry): return entry.id == node_id)
+
+	if _spawnables[_db_index].type == "Gizmo":
+		var _gizmo_database_index: int = _gizmos.find_custom(func(entry): return entry == node_id)
+		_gizmos.remove_at(_gizmo_database_index)
 
 	if _db_index != -1:
 		_spawnables.remove_at(_db_index)

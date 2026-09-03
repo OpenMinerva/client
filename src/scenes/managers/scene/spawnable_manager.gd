@@ -121,6 +121,7 @@ func select(node_id: int, gizmo_id: int) -> void:
 func deselect(gizmo_id: int) -> void:
 	var _gizmo: Node = _registry.get_spawnable(gizmo_id).node
 	_gizmo.clear_selection()
+	destroy_spawnable(gizmo_id)
 	return
 
 
