@@ -71,11 +71,10 @@ func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel, scene_
 	var _session_ready: bool = false
 	while _session_ready == false:
 		# TODO: Safety and breakout.
-		_session_ready = is_scene_ready(id)
+		var _scene_ready: bool = is_scene_ready(id)
+		var _active_session_set: bool = network_m.scene_m.active_session.is_empty() == false
+		_session_ready = _scene_ready == true && _active_session_set == true
 		await get_tree().process_frame
-
-	# HACK: Wait a frame for the active_session variable to populate
-	await get_tree().process_frame
 
 	# Use spawnable system to read the TSCN file, and instantiate it into the multiplayer instance.
 	if scene_type == Enum.BaseLevel.CUSTOM:
@@ -98,7 +97,7 @@ func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel, scene_
 			_spawnable_manager.parent_spawnable(int(_world_node.name), -1)
 
 		# Delete the initial fake root from the loaded world.
-		_spawnable_manager.destroy_spawnable.rpc_id(1, int(_target_node.name))
+		_spawnable_manager._spawnables.server_destroy_spawnable(int(_target_node.name))
 
 	# Allow scene to be visible in the inspector
 	_root_scene_node.set_meta("scene_node", true)

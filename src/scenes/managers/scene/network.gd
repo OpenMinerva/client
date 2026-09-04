@@ -101,7 +101,7 @@ func _on_peer_connected(peer_id: int):
 	player_m.add_player.rpc(peer_id)
 
 	# Spawn the player controller.
-	var _entity = await spawnable_m.create_spawnable("OM_PlayerController")
+	var _entity = await spawnable_m.create_spawnable("OM_PlayerController", -1)
 
 	# Set the player node in the player database.
 	player_m.set_player_node.rpc(peer_id, int(_entity.name))

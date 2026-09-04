@@ -81,6 +81,15 @@ func remove_spawnable(node_id: int) -> void:
 	return
 
 
+func update_spawnable(node_id: int, key: String, value: Variant) -> void:
+	var _db_index: int = _spawnables.find_custom(func(entry): return entry.id == node_id)
+
+	# TODO: Error handling.
+
+	_spawnables[_db_index][key] = value
+	return
+
+
 func get_all_spawnable() -> Array[Dictionary]:
 	return _spawnables
 

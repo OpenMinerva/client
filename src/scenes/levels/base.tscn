@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bysrhijnau31g"]
 
-[ext_resource type="Script" uid="uid://diq1um0iu2v50" path="res://scenes/managers/scene/spawnable_manager.gd" id="1_5on25"]
+[ext_resource type="Script" uid="uid://c733ll3njk003" path="res://scenes/managers/scene/spawnable_manager.gd" id="1_5on25"]
 [ext_resource type="Script" uid="uid://c13l6ywhxq6n5" path="res://scenes/managers/scene/player.gd" id="1_c3hqj"]
 [ext_resource type="Script" uid="uid://bmm4mxv8pm5gh" path="res://scenes/managers/scene/network.gd" id="1_fundk"]
 [ext_resource type="Script" uid="uid://b8y61adv3jap4" path="res://scenes/managers/scene/base.gd" id="1_qmew7"]

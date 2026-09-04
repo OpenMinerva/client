@@ -43,10 +43,11 @@ func server_create_spawnable(node_type: String, node_parent: int, forced_node_id
 
 
 @rpc("authority", "reliable")
-func create(node_type: String, spawner_peer_id: int, parent: int, node_id: int) -> Node:
+func create(node_type: String, spawner_peer_id: int, parent_id: int, node_id: int, local_parent: bool = false) -> Node:
 	var _node: Node = null
 	var _node_schema: Dictionary = NSB.get_entry(node_type)
-	var _parent_node: Dictionary = _registry.get_spawnable(parent)
+	var _parent_node: Dictionary = _registry.get_spawnable(parent_id)
+	var _use_root: bool = false
 
 	var _node_exists: bool = _registry.get_spawnable(node_id) != { }
 	if _node_exists == true:
@@ -55,8 +56,9 @@ func create(node_type: String, spawner_peer_id: int, parent: int, node_id: int) 
 
 	var _parent_node_exists: bool = _parent_node != { }
 	if _parent_node_exists == false:
-		GlobalLogger.log("Could not locate the parent node '%s'. Using root." % parent, Enum.LogLevel.INFO)
+		GlobalLogger.log("Could not locate the parent node '%s'. Using root." % parent_id, Enum.LogLevel.INFO)
 		_parent_node = { "node": get_node("../../root") }
+		_use_root = true
 
 	_node = NSB.build(node_type)
 
@@ -70,7 +72,20 @@ func create(node_type: String, spawner_peer_id: int, parent: int, node_id: int) 
 
 	_parent_node.node.add_child(_node)
 
-	get_parent().parent_spawnable(_db_id, parent)
+	if _use_root == true:
+		if local_parent == true:
+			parent(_db_id, -1)
+			return _node
+
+		get_parent().parent_spawnable(_db_id, -1)
+		return _node
+
+	if local_parent == true:
+		print("Local parent '%s' to '%s'" % [_db_id, parent_id])
+		parent(_db_id, parent_id)
+		return _node
+
+	get_parent().parent_spawnable(_db_id, parent_id)
 	return _node
 
 
@@ -123,6 +138,7 @@ func destroy(node_id: int) -> void:
 
 
 # Parenting
+@rpc("any_peer", "call_remote", "reliable")
 func server_parent_spawnable(node_id: int, parent_id: int) -> void:
 	var _caller_id: int = _get_caller_id()
 
@@ -154,9 +170,57 @@ func parent(node_id: int, parent_id: int) -> void:
 		# Fallback to root.
 		_parent_db_entry = { "node": get_node("../../root") }
 
+	if _target_db_entry == { }:
+		return
+
 	_target_db_entry.node.reparent(_parent_db_entry.node)
 
-	# TODO: Update database
+	_registry.update_spawnable(node_id, "parent", parent_id)
+	return
+
+
+# Transforming
+@rpc("any_peer", "call_remote", "reliable")
+func server_transform_spawnable(node_id: int, transform: Transform3D, ignore_sender: bool = true) -> void:
+	var _caller_id: int = _get_caller_id()
+
+	# TODO: Permissions
+
+	# TODO: Logging (https://github.com/OpenMinerva/client/issues/191)
+
+	var _db_entry = _registry.get_spawnable(node_id)
+	var _target_peers: PackedInt32Array = []
+
+	if ignore_sender == false:
+		set_transform.rpc(node_id, transform)
+		return
+
+	set_transform(node_id, transform)
+
+	for _peer_id in multiplayer.get_peers():
+		if _peer_id != _caller_id:
+			_target_peers.append(_peer_id)
+
+	for _target in _target_peers:
+		set_transform.rpc_id(_target, node_id, transform)
+
+	return
+
+
+@rpc("call_local", "authority", "reliable")
+func set_transform(node_id: int, transform: Transform3D) -> void:
+	var _db_entry = _registry.get_spawnable(node_id)
+
+	if _db_entry == { }:
+		GlobalLogger.log("Could not locate node id '%s'" % node_id, Enum.LogLevel.WARNING)
+		return
+
+	if _db_entry.node == null:
+		GlobalLogger.log("Could not locate node '%s'" % node_id, Enum.LogLevel.WARNING)
+		return
+
+	_db_entry.node.transform = transform
+
 	return
 
 

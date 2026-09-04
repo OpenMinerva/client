@@ -84,7 +84,7 @@ func _input(event) -> void:
 
 				# Network position:
 				var _transform = _node_cem_camera.transform
-				_session_spawnable_m.set_transform(int(_node_cem_camera.name), _transform)
+				_session_spawnable_m.transform_spawnable(int(_node_cem_camera.name), _transform, true)
 
 			_node_cem_camera.rotation.y -= event.relative.x * _DEFAULT_SENSITIVITY * 0.001
 			_node_cem_camera.rotation.x = clampf(_node_cem_camera.rotation.x - event.relative.y * _DEFAULT_SENSITIVITY * 0.001, deg_to_rad(-89), deg_to_rad(89))
@@ -145,7 +145,7 @@ func _phys_buildmode() -> void:
 		_node_cem_camera.translate(Vector3(_local_direction.x * 0.1, 0, _local_direction.z * 0.1))
 
 		var _transform = _node_cem_camera.transform
-		_session_spawnable_m.set_transform(int(_node_cem_camera.name), _transform)
+		_session_spawnable_m.transform_spawnable(int(_node_cem_camera.name), _transform, true)
 	return
 
 
@@ -188,7 +188,7 @@ func _send_player_position() -> void:
 	if is_multiplayer_authority() == false:
 		return
 
-	_session_spawnable_m.set_transform(int(name), transform)
+	_session_spawnable_m.transform_spawnable(int(name), transform, true)
 
 	return
 
@@ -211,7 +211,7 @@ func _cem_camera_state(state: bool) -> void:
 		_node_cem_camera.get_child(0).current = true
 
 		_node_cem_camera.position = Vector3(_player_pos.x + 2, _player_pos.y + 2, _player_pos.z + 2)
-		_session_spawnable_m.set_transform(int(_node_cem_camera.name), _node_cem_camera.transform)
+		_session_spawnable_m.transform_spawnable(int(_node_cem_camera.name), _node_cem_camera.transform, true)
 
 		_node_cem_camera.look_at(_node_body.global_position)
 		return

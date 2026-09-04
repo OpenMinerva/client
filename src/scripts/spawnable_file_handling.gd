@@ -147,7 +147,7 @@ func load_spawnable(path: String) -> void:
 		_task.node = _node
 
 		if _task.has("transform") == true:
-			session_spawnable_manager.set_transform(int(_task.node.name), _task.transform)
+			session_spawnable_manager.transform_spawnable(int(_task.node.name), _task.transform)
 
 		for _prop in _task.metadata:
 			session_spawnable_manager.set_metadata.rpc_id(1, int(_node.name), _prop.name, _prop.value)

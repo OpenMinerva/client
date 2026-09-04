@@ -29,7 +29,7 @@ func _physics_process(_delta):
 		if spawnable.node.sleeping == true:
 			continue
 
-		transform_spawnable.rpc(spawnable.id, spawnable.node.transform)
+		transform_spawnable(spawnable.id, spawnable.node.transform)
 	return
 
 
@@ -39,8 +39,8 @@ func sync_all() -> void:
 		return
 
 	var _database: Array[Dictionary] = _registry.get_all_spawnable()
-	var caller_id: int = multiplayer.get_remote_sender_id()
-	GlobalLogger.log("Received a request to sync all nodes from '%s'" % caller_id, Enum.LogLevel.INFO)
+	var _caller_id: int = _spawnables._get_caller_id()
+	GlobalLogger.log("Received a request to sync all nodes from '%s'" % _caller_id, Enum.LogLevel.INFO)
 	GlobalLogger.log("Database size: '%s'" % _database.size())
 
 	for spawnable in _database:
@@ -54,7 +54,7 @@ func sync_all() -> void:
 			continue
 
 		GlobalLogger.log("Sending transform for '%s'" % spawnable.id)
-		transform_spawnable.rpc(spawnable.id, spawnable.node.transform)
+		_spawnables.set_transform.rpc_id(_caller_id, spawnable.id, spawnable.node.transform)
 	return
 
 
@@ -78,7 +78,7 @@ func create_spawnable(node_type: String, node_parent: int = -1) -> Node:
 		return _spawnable_db_entry.node
 
 
-## Destroy a spawnable in the session. This is an abstraction that will automatically handle the networking between the host and teh client. If the host attempts to call this function in a session, they will call `_server_destroy_spawnable` directly. If a client calls this function, the client will automatically `rpc` the `_server_destroy_spawnable` to the host.
+## Destroy a spawnable in the session. This is an abstraction that will automatically handle the networking between the host and the client. If the host attempts to call this function in a session, they will call `_server_destroy_spawnable` directly. If a client calls this function, the client will automatically `rpc` the `_server_destroy_spawnable` to the host.
 ## [param node_id] is the id of the node to destroy.
 func destroy_spawnable(node_id: int) -> void:
 	if multiplayer.is_server():
@@ -87,11 +87,11 @@ func destroy_spawnable(node_id: int) -> void:
 		return
 	else:
 		GlobalLogger.log("Requesting a destroy of node '%s'" % node_id)
-		var _spawnable_id: int = await rpcawaiter.send_rpc(1, _spawnables.server_destroy_spawnable.bind(node_id))
+		await rpcawaiter.send_rpc(1, _spawnables.server_destroy_spawnable.bind(node_id))
 		return
 
 
-## Parent a spawnable in the session to another spawnable. This is an abstraction that will automatically handle the networking between the host and teh client. If the host attempts to call this function in a session, they will call `server_parent_spawnable` directly. If a client calls this function, the client will automatically `rpc` the `server_parent_spawnable` to the host.
+## Parent a spawnable in the session to another spawnable. This is an abstraction that will automatically handle the networking between the host and the client. If the host attempts to call this function in a session, they will call `server_parent_spawnable` directly. If a client calls this function, the client will automatically `rpc` the `server_parent_spawnable` to the host.
 ## [param node_id] is the id of the node to parent.
 ## [param parent_id] is the id of the node to parent to.
 func parent_spawnable(node_id: int, parent_id: int = -1) -> void:
@@ -101,7 +101,19 @@ func parent_spawnable(node_id: int, parent_id: int = -1) -> void:
 		return
 	else:
 		GlobalLogger.log("Requesting a parent of node '%s' to '%s'" % [node_id, parent_id])
-		var _spawnable_id: int = await rpcawaiter.send_rpc(1, _spawnables.server_parent_spawnable.bind(node_id, parent_id))
+		await rpcawaiter.send_rpc(1, _spawnables.server_parent_spawnable.bind(node_id, parent_id))
+		return
+
+
+## Transform a spawnable in the session in 3D space. This is an abstraction that will automatically handle the networking between the host and the client. If the host attempts to call this function in a session, they will call `server_transform_spawnable` directly. If a client calls this function, the client will automatically `rpc` the `server_transform_spawnable` to the host.
+func transform_spawnable(node_id: int, transform: Transform3D, ignore_sender: bool = true) -> void:
+	if multiplayer.is_server():
+		# GlobalLogger.log("Transforming node '%s'." % node_id)
+		_spawnables.server_transform_spawnable(node_id, transform, ignore_sender)
+		return
+	else:
+		# GlobalLogger.log("Requesting a transform of node '%s'" % node_id)
+		await rpcawaiter.send_rpc(1, _spawnables.server_transform_spawnable.bind(node_id, transform, ignore_sender))
 		return
 
 
@@ -113,7 +125,7 @@ func select(node_id: int, gizmo_id: int) -> void:
 	if _node.is_class("Node3D"):
 		_gizmo.select(_node)
 		_gizmo._set_visibility(get_parent().visible)
-		_gizmo.transform_changed.connect(func(_mode, _value): set_transform(node_id, _node.transform))
+		_gizmo.transform_changed.connect(func(_mode, _value): transform_spawnable(node_id, _node.transform))
 	return
 
 
@@ -122,32 +134,6 @@ func deselect(gizmo_id: int) -> void:
 	var _gizmo: Node = _registry.get_spawnable(gizmo_id).node
 	_gizmo.clear_selection()
 	destroy_spawnable(gizmo_id)
-	return
-
-
-@rpc("any_peer", "reliable")
-func set_transform(node_id: int, p_transform: Transform3D, ignore_sender: bool = true) -> void:
-	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
-	var _caller_id: int = multiplayer.get_remote_sender_id()
-
-	if _my_id == 1:
-		var _target_peers: PackedInt32Array = []
-
-		if ignore_sender == false:
-			transform_spawnable.rpc(node_id, p_transform)
-			return
-
-		transform_spawnable(node_id, p_transform)
-
-		for _peer_id in multiplayer.get_peers():
-			if _peer_id != _caller_id:
-				_target_peers.append(_peer_id)
-
-		for _target in _target_peers:
-			transform_spawnable.rpc_id(_target, node_id, p_transform)
-	else:
-		await rpcawaiter.send_rpc(1, set_transform.bind(node_id, p_transform, ignore_sender))
-		return
 	return
 
 
@@ -256,22 +242,6 @@ func create_asset(asset_type: String, properties: Array) -> Variant:
 
 
 @rpc("call_local", "authority", "reliable")
-func transform_spawnable(node_id: int, transform: Transform3D) -> void:
-	var _entity_db = get_by_id(node_id)
-
-	if _entity_db == { }:
-		GlobalLogger.log("Could not locate node id '%s'" % node_id, Enum.LogLevel.WARNING)
-		return
-
-	if _entity_db.node == null:
-		GlobalLogger.log("Could not locate node '%s'" % node_id, Enum.LogLevel.WARNING)
-		return
-
-	_entity_db.node.transform = transform
-	return
-
-
-@rpc("call_local", "authority", "reliable")
 func set_metadata_on_spawnable(node_id: int, metadata_name: String, metadata_value: Variant) -> void:
 	var _entity_db = get_by_id(node_id)
 
@@ -315,10 +285,11 @@ func receive_database(database: Array, players: Dictionary, assets: Array, asset
 
 	GlobalLogger.log("[%s] Receiving spawnable database with %d entries" % [_my_id, database.size()])
 
+	# breakpoint
 	# Spawn in all of the nodes
 	for spawnable in database:
 		GlobalLogger.log("Spawning '%s' as '%s'." % [spawnable.id, spawnable.type])
-		_spawnables._server_create_spawnable(spawnable.type, int(spawnable.parent), int(spawnable.id))
+		_spawnables.create(spawnable.type, spawnable.spawner, int(spawnable.parent), int(spawnable.id), true)
 
 	# Spawn in all of the assets
 	for asset in assets:
