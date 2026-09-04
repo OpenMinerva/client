@@ -2,9 +2,8 @@
 # File: /client/src/scripts/spawnable_file_handling.gd
 # Project: OpenMinerva
 # Created Date: 16 June 2026
-# Copyright (c) 2026 OpenMinerva
+# Copyright (c) 2026 OpenMinerva Contributors
 # License: MIT License
-# Authors: Armored Dragon
 # --- License
 extends Node
 

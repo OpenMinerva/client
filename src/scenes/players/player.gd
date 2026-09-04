@@ -2,9 +2,8 @@
 # File: /client/src/scenes/players/player.gd
 # Project: OpenMinerva
 # Created Date: 04 July 2026
-# Copyright (c) 2026 OpenMinerva
+# Copyright (c) 2026 OpenMinerva Contributors
 # License: MIT License
-# Authors: Armored Dragon
 # --- License
 extends CharacterBody3D
 
@@ -26,10 +25,6 @@ var _scene_root: Node3D
 # Variables
 var _speed: float = 0
 
-# FIXME: Multiplayer CEM camera:
-# When one player activates CEM camera, all players spawn the camera?
-# Size not networked.
-# Position not networked.
 # Libraries
 @onready var _app_scene_m: Node = get_tree().current_scene.get_node("SceneManager")
 @onready var _session_spawnable_m: Node

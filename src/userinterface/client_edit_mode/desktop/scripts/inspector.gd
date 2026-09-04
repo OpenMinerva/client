@@ -2,9 +2,8 @@
 # File: /client/src/userinterface/client_edit_mode/desktop/scripts/inspector.gd
 # Project: OpenMinerva
 # Created Date: 10 June 2026
-# Copyright (c) 2026 OpenMinerva
+# Copyright (c) 2026 OpenMinerva Contributors
 # License: MIT License
-# Authors: Armored Dragon
 # --- License
 extends Control
 

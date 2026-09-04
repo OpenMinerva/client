@@ -2,9 +2,8 @@
 # File: /client/src/scenes/managers/app/network.gd
 # Project: OpenMinerva
 # Created Date: 13 April 2026
-# Copyright (c) 2026 OpenMinerva
+# Copyright (c) 2026 OpenMinerva Contributors
 # License: MIT License
-# Authors: Armored Dragon
 # --- License
 extends Node
 

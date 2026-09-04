@@ -285,7 +285,6 @@ func receive_database(database: Array, players: Dictionary, assets: Array, asset
 
 	GlobalLogger.log("[%s] Receiving spawnable database with %d entries" % [_my_id, database.size()])
 
-	# breakpoint
 	# Spawn in all of the nodes
 	for spawnable in database:
 		GlobalLogger.log("Spawning '%s' as '%s'." % [spawnable.id, spawnable.type])

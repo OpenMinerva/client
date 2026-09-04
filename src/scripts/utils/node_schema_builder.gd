@@ -2,9 +2,8 @@
 # File: /client/src/scripts/utils/node_schema_builder.gd
 # Project: OpenMinerva
 # Created Date: 03 June 2026
-# Copyright (c) 2026 OpenMinerva
+# Copyright (c) 2026 OpenMinerva Contributors
 # License: MIT License
-# Authors: Armored Dragon
 # --- License
 class_name NSB
 extends Node

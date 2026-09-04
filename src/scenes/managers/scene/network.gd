@@ -1,3 +1,10 @@
+# --- License
+# File: /client/src/scenes/managers/scene/network.gd
+# Project: OpenMinerva
+# Created Date: 04 May 2026
+# Copyright (c) 2026 OpenMinerva Contributors
+# License: MIT License
+# --- License
 extends Node
 
 var _specific_api: SceneMultiplayer = null
