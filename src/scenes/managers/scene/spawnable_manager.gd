@@ -17,6 +17,7 @@ extends Node
 @onready var player_m: Node = get_node("../PlayerManager")
 @onready var _registry: Node = get_node("Registry")
 @onready var _spawnables: Node = get_node("Spawnables")
+@onready var _gizmos: Node = get_node("Gizmos")
 
 
 func _physics_process(_delta):
@@ -117,24 +118,35 @@ func transform_spawnable(node_id: int, transform: Transform3D, ignore_sender: bo
 		return
 
 
-@rpc("call_local", "any_peer", "reliable")
-func select(node_id: int, gizmo_id: int) -> void:
-	var _node: Node = _registry.get_spawnable(node_id).node
-	var _gizmo: Node = _registry.get_spawnable(gizmo_id).node
+## Select a spawnable with a gizmo. This is an abstraction that will automatically handle the networking between the host and the client. Only one node can be selected at a time.
+## [param node_id] is the node_id to select.
+func select_spawnable(node_id: int) -> Node:
+	if multiplayer.is_server():
+		GlobalLogger.log("Selecting node '%s'." % node_id)
+		var _gizmo_id: int = _gizmos.server_select_spawnable(node_id)
+		var _spawnable_db_entry: Dictionary = _registry.get_spawnable(_gizmo_id)
+		if _spawnable_db_entry.has("node") == false:
+			return null
+		return _spawnable_db_entry.node
+	else:
+		GlobalLogger.log("Requesting a selection of node '%s'" % node_id)
+		var _gizmo_id: int = await rpcawaiter.send_rpc(1, _gizmos.server_select_spawnable.bind(node_id))
 
-	if _node.is_class("Node3D"):
-		_gizmo.select(_node)
-		_gizmo._set_visibility(get_parent().visible)
-		_gizmo.transform_changed.connect(func(_mode, _value): transform_spawnable(node_id, _node.transform))
-	return
+		var _spawnable_db_entry: Dictionary = _registry.get_spawnable(_gizmo_id)
+		if _spawnable_db_entry.has("node") == false:
+			return null
+		return _spawnable_db_entry.node
 
 
-@rpc("call_local", "any_peer", "reliable")
-func deselect(gizmo_id: int) -> void:
-	var _gizmo: Node = _registry.get_spawnable(gizmo_id).node
-	_gizmo.clear_selection()
-	destroy_spawnable(gizmo_id)
-	return
+func deselect_spawnable(gizmo_id: int) -> void:
+	if multiplayer.is_server():
+		GlobalLogger.log("Destroying gizmo '%s'." % gizmo_id)
+		_gizmos.server_deselect_spawnable(gizmo_id)
+		return
+	else:
+		GlobalLogger.log("Requesting a destruction of gizmo '%s'." % gizmo_id)
+		await rpcawaiter.send_rpc(1, _gizmos.server_deselect_spawnable.bind(gizmo_id))
+		return
 
 
 @rpc("call_local", "any_peer", "reliable")

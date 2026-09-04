@@ -227,6 +227,8 @@ func _inspector_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_i
 func _set_state(state: bool) -> void:
 	GlobalLogger.log("Inspector state is being set to '%s'." % state)
 	_gizmo_visibility(state)
+	if session_root == null && app_scene_m.active_session.is_empty() == false:
+		session_root = app_scene_m.get_master_root(app_scene_m.active_session)
 	_inspector_build()
 	visible = state
 	_node_crosshair.visible = !state
@@ -242,15 +244,11 @@ func _on_node_created(_node: Node) -> void:
 	return
 
 
-func _on_node_destroyed(node_entry: Dictionary) -> void:
+func _on_node_destroyed(_node_entry: Dictionary) -> void:
 	if session_root == null:
 		session_root = app_scene_m.get_master_root(app_scene_m.active_session)
 
 	GlobalLogger.log("Node destroyed.")
-
-	# Deselect the node if selected.
-	if my_gizmo:
-		my_gizmo.deselect(node_entry.node)
 
 	await get_tree().process_frame
 	_inspector_build()
@@ -505,15 +503,8 @@ func _select(target_node: int) -> void:
 		GlobalLogger.log("Invalid node selected", Enum.LogLevel.WARNING)
 		return
 
-	if my_gizmo != null:
-		GlobalLogger.log("Gizmo exists, deleting")
-		_gizmo_delete()
-
-	# TODO: Validate that the gizmo was created and did not error.
-	my_gizmo = await session_spawnable_m.create_spawnable("Gizmo")
-
 	var _node_db_entry = session_spawnable_m.get_by_id(target_node)
-	session_spawnable_m.select.rpc(target_node, int(my_gizmo.name))
+	my_gizmo = await session_spawnable_m.select_spawnable(target_node)
 
 	my_gizmo.mode = _gizmo_mode
 	my_gizmo.use_local_space = _gizmo_space_local
