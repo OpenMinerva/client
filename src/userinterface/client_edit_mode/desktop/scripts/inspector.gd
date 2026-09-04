@@ -286,7 +286,7 @@ func _inspector_build(root_node: Node = session_root) -> void:
 		GlobalLogger.log("Invalid root node: '%s'" % root_node, Enum.LogLevel.WARNING)
 		return
 
-	var _database: Array[Dictionary] = session_spawnable_m._registry.get_all_spawnable()
+	var _database: Array[Dictionary] = session_spawnable_m.registry.get_all_spawnable()
 
 	var _total_spawnable_label: String = str(_database.size())
 	var _total_player_label: String = str(session_players_m.get_player_count())

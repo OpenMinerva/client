@@ -15,16 +15,16 @@ extends Node
 @onready var rpcawaiter: Node = get_parent().get_node("RpcAwaiter")
 @onready var session_signalbus: Node = get_node("../SignalBus")
 @onready var player_m: Node = get_node("../PlayerManager")
-@onready var _registry: Node = get_node("Registry")
-@onready var _spawnables: Node = get_node("Spawnables")
-@onready var _gizmos: Node = get_node("Gizmos")
+@onready var registry: Node = get_node("Registry")
+@onready var spawnables: Node = get_node("Spawnables")
+@onready var gizmos: Node = get_node("Gizmos")
 
 
 func _physics_process(_delta):
 	if !is_multiplayer_authority():
 		return
 
-	for spawnable in _registry.get_all_spawnable():
+	for spawnable in registry.get_all_spawnable():
 		if spawnable.type != "RigidBody3D":
 			continue
 		if spawnable.node.sleeping == true:
@@ -39,8 +39,8 @@ func sync_all() -> void:
 	if !is_multiplayer_authority():
 		return
 
-	var _database: Array[Dictionary] = _registry.get_all_spawnable()
-	var _caller_id: int = _spawnables._get_caller_id()
+	var _database: Array[Dictionary] = registry.get_all_spawnable()
+	var _caller_id: int = spawnables._get_caller_id()
 	GlobalLogger.log("Received a request to sync all nodes from '%s'" % _caller_id, Enum.LogLevel.INFO)
 	GlobalLogger.log("Database size: '%s'" % _database.size())
 
@@ -55,7 +55,7 @@ func sync_all() -> void:
 			continue
 
 		GlobalLogger.log("Sending transform for '%s'" % spawnable.id)
-		_spawnables.set_transform.rpc_id(_caller_id, spawnable.id, spawnable.node.transform)
+		spawnables.set_transform.rpc_id(_caller_id, spawnable.id, spawnable.node.transform)
 	return
 
 
@@ -65,15 +65,15 @@ func sync_all() -> void:
 func create_spawnable(node_type: String, node_parent: int = -1) -> Node:
 	if multiplayer.is_server():
 		GlobalLogger.log("Spawning node '%s'" % node_type)
-		var _spawnable_id: int = _spawnables.server_create_spawnable(node_type, node_parent)
-		var _spawnable_db_entry: Dictionary = _registry.get_spawnable(_spawnable_id)
+		var _spawnable_id: int = spawnables.server_create_spawnable(node_type, node_parent)
+		var _spawnable_db_entry: Dictionary = registry.get_spawnable(_spawnable_id)
 		if _spawnable_db_entry.has("node") == false:
 			return null
 		return _spawnable_db_entry.node
 	else:
 		GlobalLogger.log("Requesting a spawn of node '%s'" % node_type)
-		var _spawnable_id: int = await rpcawaiter.send_rpc(1, _spawnables.server_create_spawnable.bind(node_type, node_parent))
-		var _spawnable_db_entry: Dictionary = _registry.get_spawnable(_spawnable_id)
+		var _spawnable_id: int = await rpcawaiter.send_rpc(1, spawnables.server_create_spawnable.bind(node_type, node_parent))
+		var _spawnable_db_entry: Dictionary = registry.get_spawnable(_spawnable_id)
 		if _spawnable_db_entry.has("node") == false:
 			return null
 		return _spawnable_db_entry.node
@@ -84,11 +84,11 @@ func create_spawnable(node_type: String, node_parent: int = -1) -> Node:
 func destroy_spawnable(node_id: int) -> void:
 	if multiplayer.is_server():
 		GlobalLogger.log("Destroying node '%s'" % node_id)
-		_spawnables.server_destroy_spawnable(node_id)
+		spawnables.server_destroy_spawnable(node_id)
 		return
 	else:
 		GlobalLogger.log("Requesting a destroy of node '%s'" % node_id)
-		await rpcawaiter.send_rpc(1, _spawnables.server_destroy_spawnable.bind(node_id))
+		await rpcawaiter.send_rpc(1, spawnables.server_destroy_spawnable.bind(node_id))
 		return
 
 
@@ -98,11 +98,11 @@ func destroy_spawnable(node_id: int) -> void:
 func parent_spawnable(node_id: int, parent_id: int = -1) -> void:
 	if multiplayer.is_server():
 		GlobalLogger.log("Parenting node '%s' to '%s'" % [node_id, parent_id])
-		_spawnables.server_parent_spawnable(node_id, parent_id)
+		spawnables.server_parent_spawnable(node_id, parent_id)
 		return
 	else:
 		GlobalLogger.log("Requesting a parent of node '%s' to '%s'" % [node_id, parent_id])
-		await rpcawaiter.send_rpc(1, _spawnables.server_parent_spawnable.bind(node_id, parent_id))
+		await rpcawaiter.send_rpc(1, spawnables.server_parent_spawnable.bind(node_id, parent_id))
 		return
 
 
@@ -110,11 +110,11 @@ func parent_spawnable(node_id: int, parent_id: int = -1) -> void:
 func transform_spawnable(node_id: int, transform: Transform3D, ignore_sender: bool = true) -> void:
 	if multiplayer.is_server():
 		# GlobalLogger.log("Transforming node '%s'." % node_id)
-		_spawnables.server_transform_spawnable(node_id, transform, ignore_sender)
+		spawnables.server_transform_spawnable(node_id, transform, ignore_sender)
 		return
 	else:
 		# GlobalLogger.log("Requesting a transform of node '%s'" % node_id)
-		await rpcawaiter.send_rpc(1, _spawnables.server_transform_spawnable.bind(node_id, transform, ignore_sender))
+		await rpcawaiter.send_rpc(1, spawnables.server_transform_spawnable.bind(node_id, transform, ignore_sender))
 		return
 
 
@@ -123,16 +123,16 @@ func transform_spawnable(node_id: int, transform: Transform3D, ignore_sender: bo
 func select_spawnable(node_id: int) -> Node:
 	if multiplayer.is_server():
 		GlobalLogger.log("Selecting node '%s'." % node_id)
-		var _gizmo_id: int = _gizmos.server_select_spawnable(node_id)
-		var _spawnable_db_entry: Dictionary = _registry.get_spawnable(_gizmo_id)
+		var _gizmo_id: int = gizmos.server_select_spawnable(node_id)
+		var _spawnable_db_entry: Dictionary = registry.get_spawnable(_gizmo_id)
 		if _spawnable_db_entry.has("node") == false:
 			return null
 		return _spawnable_db_entry.node
 	else:
 		GlobalLogger.log("Requesting a selection of node '%s'" % node_id)
-		var _gizmo_id: int = await rpcawaiter.send_rpc(1, _gizmos.server_select_spawnable.bind(node_id))
+		var _gizmo_id: int = await rpcawaiter.send_rpc(1, gizmos.server_select_spawnable.bind(node_id))
 
-		var _spawnable_db_entry: Dictionary = _registry.get_spawnable(_gizmo_id)
+		var _spawnable_db_entry: Dictionary = registry.get_spawnable(_gizmo_id)
 		if _spawnable_db_entry.has("node") == false:
 			return null
 		return _spawnable_db_entry.node
@@ -143,11 +143,11 @@ func select_spawnable(node_id: int) -> Node:
 func deselect_spawnable(gizmo_id: int) -> void:
 	if multiplayer.is_server():
 		GlobalLogger.log("Destroying gizmo '%s'." % gizmo_id)
-		_gizmos.server_deselect_spawnable(gizmo_id)
+		gizmos.server_deselect_spawnable(gizmo_id)
 		return
 	else:
 		GlobalLogger.log("Requesting a destruction of gizmo '%s'." % gizmo_id)
-		await rpcawaiter.send_rpc(1, _gizmos.server_deselect_spawnable.bind(gizmo_id))
+		await rpcawaiter.send_rpc(1, gizmos.server_deselect_spawnable.bind(gizmo_id))
 		return
 
 
@@ -195,7 +195,7 @@ func set_resource(node_id: int, property_name: String, resource_id: int) -> void
 		set_resource_on_spawnable.rpc(node_id, property_name, resource_id)
 
 		# FIXME: When a node gets deleted, there is no cleanup for the database.
-		_registry.add_relation(node_id, property_name, resource_id)
+		registry.add_relation(node_id, property_name, resource_id)
 	else:
 		await rpcawaiter.send_rpc(1, set_resource.bind(node_id, property_name, resource_id))
 		return
@@ -231,13 +231,13 @@ func create_asset(asset_type: String, properties: Array) -> Variant:
 
 	if my_id == 1:
 		# This was a host calling this function.
-		var _target_id: String = str(_registry.get_active_id())
+		var _target_id: String = str(registry.get_active_id())
 
 		# Actually spawn in the asset for us, and all clients.
 		var _asset = spawn_asset(asset_type, properties, _target_id)
 		spawn_asset.rpc(asset_type, properties, _target_id)
 
-		var _asset_db_entry: Dictionary = _registry.get_asset(_asset)
+		var _asset_db_entry: Dictionary = registry.get_asset(_asset)
 
 		if caller_id != 0 && caller_id != my_id:
 			# This call originated from a client, we need to return a reference to the spawned asset, and not the asset itself.
@@ -250,7 +250,7 @@ func create_asset(asset_type: String, properties: Array) -> Variant:
 
 		# We have the asset name (id), we need to find it in the asset_database.
 
-		var _asset_db_entry: Dictionary = _registry.get_asset(_asset)
+		var _asset_db_entry: Dictionary = registry.get_asset(_asset)
 		# Return the resource directly.
 		return _asset_db_entry.resource
 
@@ -302,7 +302,7 @@ func receive_database(database: Array, players: Dictionary, assets: Array, asset
 	# Spawn in all of the nodes
 	for spawnable in database:
 		GlobalLogger.log("Spawning '%s' as '%s'." % [spawnable.id, spawnable.type])
-		_spawnables.create(spawnable.type, spawnable.spawner, int(spawnable.parent), int(spawnable.id), true)
+		spawnables.create(spawnable.type, spawnable.spawner, int(spawnable.parent), int(spawnable.id), true)
 
 	# Spawn in all of the assets
 	for asset in assets:
@@ -325,7 +325,7 @@ func receive_database(database: Array, players: Dictionary, assets: Array, asset
 
 
 func get_by_id(spawnable_id: int) -> Dictionary:
-	var _db_entry: Dictionary = _registry.get_spawnable(spawnable_id)
+	var _db_entry: Dictionary = registry.get_spawnable(spawnable_id)
 
 	if _db_entry == { }:
 		return { }
@@ -334,7 +334,7 @@ func get_by_id(spawnable_id: int) -> Dictionary:
 
 
 func get_resource_by_id(resource_id: int) -> Dictionary:
-	var _asset_db_entry: Dictionary = _registry.get_asset(resource_id)
+	var _asset_db_entry: Dictionary = registry.get_asset(resource_id)
 
 	if _asset_db_entry == { }:
 		return { }
@@ -353,7 +353,7 @@ func spawn_asset(asset_type, properties, id: String = "") -> int:
 	return int(_resource.get_name())
 
 
-func _spawn_resource(resource_class: String, properties: Array, asset_id: String = str(_registry.get_active_id())) -> Resource:
+func _spawn_resource(resource_class: String, properties: Array, asset_id: String = str(registry.get_active_id())) -> Resource:
 	var _resource: Resource = null
 
 	# Create the resource
@@ -378,4 +378,4 @@ func _spawn_resource(resource_class: String, properties: Array, asset_id: String
 
 func _add_asset_to_database(asset_class: String, resource: Resource, props: Array, asset_id: int = 0) -> int:
 	GlobalLogger.log("Deprecated call '%s'" % get_stack()[0]["function"], Enum.LogLevel.WARNING)
-	return _registry.add_asset(asset_class, resource, props, asset_id)
+	return registry.add_asset(asset_class, resource, props, asset_id)
