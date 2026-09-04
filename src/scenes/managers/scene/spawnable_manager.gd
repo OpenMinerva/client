@@ -138,6 +138,8 @@ func select_spawnable(node_id: int) -> Node:
 		return _spawnable_db_entry.node
 
 
+## Deselect a spawnable with a gizmo. This is an abstraction that will automatically handle the networking between the host and the client. Only one node can be selected at a time. In effect, this will destroy the gizmo, but it has some extra checks and function calls to make sure that the application does not have an error.
+## [param gizmo_id] is the id of the gizmo node to deselect.
 func deselect_spawnable(gizmo_id: int) -> void:
 	if multiplayer.is_server():
 		GlobalLogger.log("Destroying gizmo '%s'." % gizmo_id)
@@ -320,30 +322,6 @@ func receive_database(database: Array, players: Dictionary, assets: Array, asset
 	player_m.set_player_database(players)
 
 	return
-
-
-func set_node_visible_to_inspector(node: Node) -> void:
-	var nodes = get_all_node_children(node)
-
-	# Check if we had already declared this node to be hidden.
-	if node.get_meta("scene_node", true) == false:
-		return
-
-	for target in nodes:
-		target.set_meta("scene_node", true)
-
-	return
-
-
-func get_all_node_children(node: Node) -> Array:
-	var nodes = []
-
-	if node:
-		nodes.append(node)
-	for child in node.get_children():
-		nodes.append_array(get_all_node_children(child))
-
-	return nodes
 
 
 func get_by_id(spawnable_id: int) -> Dictionary:

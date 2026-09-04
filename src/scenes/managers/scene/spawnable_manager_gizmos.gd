@@ -8,6 +8,7 @@
 extends Node
 
 var _session_gizmos: Dictionary = { }
+# TODO: There needs to be a more proper "manager" for these gizmos so that you can individually set gizmos as active, and properly save and access your desired gizmo mode. _legacy_last_gizmo_mode is a stopgap to save the gizmo mode between showing it and hiding it.
 var _legacy_last_gizmo_mode: int = 0
 
 @onready var _manager = get_parent()
