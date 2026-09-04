@@ -81,7 +81,6 @@ func create(node_type: String, spawner_peer_id: int, parent_id: int, node_id: in
 		return _node
 
 	if local_parent == true:
-		print("Local parent '%s' to '%s'" % [_db_id, parent_id])
 		parent(_db_id, parent_id)
 		return _node
 

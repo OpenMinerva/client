@@ -169,7 +169,7 @@ func set_active_session(session_id: String):
 
 		_set_camera_active_state(_scene.id, false)
 		_set_player_authority_state(_scene.id, false)
-		# TODO: Deselect and disable gizmos.
+		_target_scene.get_node("SpawnableManager/Gizmos").hide_session_gizmos()
 
 	# session_id gets enabled.
 	var _scene_node: Node3D = scene_container.get_node(session_id)
@@ -179,7 +179,7 @@ func set_active_session(session_id: String):
 	_set_player_authority_state(session_id, true)
 	network_m.registry.set_recent(session_id)
 	Events.dash_session_changed.emit(session_id)
-	# TODO: Enable gizmos if required.
+	_scene_node.get_node("SpawnableManager/Gizmos").show_session_gizmos()
 
 	return
 

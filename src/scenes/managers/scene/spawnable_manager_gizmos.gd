@@ -8,6 +8,7 @@
 extends Node
 
 var _session_gizmos: Dictionary = { }
+var _legacy_last_gizmo_mode: int = 0
 
 @onready var _manager = get_parent()
 @onready var _registry = get_node("../Registry")
@@ -75,10 +76,20 @@ func deselect(gizmo_id: int) -> void:
 
 # Session handling
 func show_session_gizmos() -> void:
-	# TODO: Session-wide toggle of rendering gizmos. If you are not in edit mode, the gizmos just do not render under any circumstance.
+	for _gizmo_id in _registry._gizmos:
+		var _gizmo_node: Node = _registry.get_spawnable(_gizmo_id).node
+		_gizmo_node.mode = _legacy_last_gizmo_mode
+		_gizmo_node.show_selection_box = true
+		_gizmo_node.visible = true
+		return
 	return
 
 
 func hide_session_gizmos() -> void:
-	# TODO: Session-wide toggle of rendering gizmos. If you are not in edit mode, the gizmos just do not render under any circumstance.
-	return
+	for _gizmo_id in _registry._gizmos:
+		var _gizmo_node: Node = _registry.get_spawnable(_gizmo_id).node
+		_legacy_last_gizmo_mode = _gizmo_node.mode
+		_gizmo_node.mode = 0
+		_gizmo_node.show_selection_box = false
+		_gizmo_node.visible = false
+		return
