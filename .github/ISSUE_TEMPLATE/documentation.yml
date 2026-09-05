@@ -1,0 +1,36 @@
+name: Documentation Issue.
+description: Report an issue with documentation.
+labels: ["needs-triage", "documentation"]
+body:
+  - type: "textarea"
+    attributes:
+      label: "What is the problem?"
+      description: "A clear and concise description of what the problem is."
+      placeholder: "For the Spawnable system, it says to [...] when you should do [...]."
+    validations:
+      required: true
+  - type: "textarea"
+    attributes:
+      label: "Where is the problem located?"
+      description: "Provide a direct link to either the documentation, or the problem function(s)."
+      placeholder: "Link to spawnables.gd line #54."
+    validations:
+      required: true
+  - type: "textarea"
+    attributes:
+      label: "What is the category of the problem?"
+      description: "A quick tag to categorize the issue."
+      options:
+        - Wrong
+        - Outdated
+        - Missing
+    validations:
+      required: true
+  - type: "textarea"
+    attributes:
+      label: "Additional context"
+      description: "Add any other context about this issue."
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting this issue! We will get back to you as soon as possible.
