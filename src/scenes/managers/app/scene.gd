@@ -68,8 +68,13 @@ func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel, scene_
 	_root_scene_node.name = "root"
 	_scene.add_child(_root_scene_node)
 
-	# HACK: Wait a frame for the active_session variable to populate
-	await get_tree().process_frame
+	var _session_ready: bool = false
+	while _session_ready == false:
+		# TODO: Safety and breakout.
+		var _scene_ready: bool = is_scene_ready(id)
+		var _active_session_set: bool = network_m.scene_m.active_session.is_empty() == false
+		_session_ready = _scene_ready == true && _active_session_set == true
+		await get_tree().process_frame
 
 	# Use spawnable system to read the TSCN file, and instantiate it into the multiplayer instance.
 	if scene_type == Enum.BaseLevel.CUSTOM:
@@ -89,10 +94,10 @@ func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel, scene_
 		var _spawnable_manager: Node = _scene.get_node("SpawnableManager")
 
 		for _world_node in _target_node.get_children():
-			_spawnable_manager.set_parent.rpc(int(_world_node.name), 0)
+			_spawnable_manager.parent_spawnable(int(_world_node.name), -1)
 
 		# Delete the initial fake root from the loaded world.
-		_spawnable_manager.destroy.rpc_id(1, int(_target_node.name))
+		_spawnable_manager.spawnables.server_destroy_spawnable(int(_target_node.name))
 
 	# Allow scene to be visible in the inspector
 	_root_scene_node.set_meta("scene_node", true)
@@ -164,8 +169,7 @@ func set_active_session(session_id: String):
 
 		_set_camera_active_state(_scene.id, false)
 		_set_player_authority_state(_scene.id, false)
-		for gizmo in scene_container.get_node(_scene.id).get_node("SpawnableManager")._gizmos:
-			gizmo._set_visibility(false)
+		_target_scene.get_node("SpawnableManager/Gizmos").hide_session_gizmos()
 
 	# session_id gets enabled.
 	var _scene_node: Node3D = scene_container.get_node(session_id)
@@ -175,10 +179,14 @@ func set_active_session(session_id: String):
 	_set_player_authority_state(session_id, true)
 	network_m.registry.set_recent(session_id)
 	Events.dash_session_changed.emit(session_id)
-	for gizmo in _scene_node.get_node("SpawnableManager")._gizmos:
-		gizmo._set_visibility(true)
+	_scene_node.get_node("SpawnableManager/Gizmos").show_session_gizmos()
 
 	return
+
+
+func is_scene_ready(session_id: String) -> bool:
+	var _scene: Node3D = get_master_scene(session_id)
+	return _scene.is_ready
 
 
 func _get_scene_by_type(scene_type: Enum.BaseLevel) -> String:

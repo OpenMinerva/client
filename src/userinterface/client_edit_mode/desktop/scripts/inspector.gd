@@ -2,9 +2,8 @@
 # File: /client/src/userinterface/client_edit_mode/desktop/scripts/inspector.gd
 # Project: OpenMinerva
 # Created Date: 10 June 2026
-# Copyright (c) 2026 OpenMinerva
+# Copyright (c) 2026 OpenMinerva Contributors
 # License: MIT License
-# Authors: Armored Dragon
 # --- License
 extends Control
 
@@ -126,11 +125,12 @@ func _drop_data(mouse_position: Vector2, data: Variant):
 
 	if _target_tree_item == null:
 		_target_node = session_root
-	else:
-		_target_node = _target_tree_item.get_metadata(0)
+		await session_spawnable_m.parent_spawnable(int(_dragged_node.name), -1)
+		return
 
-	# Send the reparent RPC request.
-	session_spawnable_m.set_parent(int(_dragged_node.name), int(_target_node.name))
+	_target_node = _target_tree_item.get_metadata(0)
+
+	await session_spawnable_m.parent_spawnable(int(_dragged_node.name), int(_target_node.name))
 
 	_inspector_build()
 
@@ -227,6 +227,8 @@ func _inspector_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_i
 func _set_state(state: bool) -> void:
 	GlobalLogger.log("Inspector state is being set to '%s'." % state)
 	_gizmo_visibility(state)
+	if session_root == null && app_scene_m.active_session.is_empty() == false:
+		session_root = app_scene_m.get_master_root(app_scene_m.active_session)
 	_inspector_build()
 	visible = state
 	_node_crosshair.visible = !state
@@ -242,15 +244,11 @@ func _on_node_created(_node: Node) -> void:
 	return
 
 
-func _on_node_destroyed(node_entry: Dictionary) -> void:
+func _on_node_destroyed(_node_entry: Dictionary) -> void:
 	if session_root == null:
 		session_root = app_scene_m.get_master_root(app_scene_m.active_session)
 
 	GlobalLogger.log("Node destroyed.")
-
-	# Deselect the node if selected.
-	if my_gizmo:
-		my_gizmo.deselect(node_entry.node)
 
 	await get_tree().process_frame
 	_inspector_build()
@@ -288,7 +286,9 @@ func _inspector_build(root_node: Node = session_root) -> void:
 		GlobalLogger.log("Invalid root node: '%s'" % root_node, Enum.LogLevel.WARNING)
 		return
 
-	var _total_spawnable_label: String = str(session_spawnable_m._database.size())
+	var _database: Array[Dictionary] = session_spawnable_m.registry.get_all_spawnable()
+
+	var _total_spawnable_label: String = str(_database.size())
 	var _total_player_label: String = str(session_players_m.get_player_count())
 
 	GlobalLogger.log("Generating the inspector view with parent '%s'." % root_node)
@@ -477,7 +477,7 @@ func _inspector_popup_button_pressed(label: String) -> void:
 			_inspector_add_node_window.parent_node_id = int(_node.name)
 			_inspector_add_node_window.show()
 		"Remove":
-			await session_spawnable_m.destroy(int(_node.name))
+			await session_spawnable_m.destroy_spawnable(int(_node.name))
 		"Rename":
 			_inspector_selected.set_editable(0, true)
 			_inspector_tree.edit_selected()
@@ -492,7 +492,7 @@ func _inspector_popup_button_pressed(label: String) -> void:
 
 func _inspector_spawn_node(type: String, parent: int) -> void:
 	GlobalLogger.log("Spawning node type '%s' with parent '%s'" % [type, parent])
-	var _entity = await session_spawnable_m.create(type, parent)
+	var _entity = await session_spawnable_m.create_spawnable(type, parent)
 	_select(int(_entity.name))
 	# TODO: Gizmo select the new entity
 	return
@@ -503,15 +503,8 @@ func _select(target_node: int) -> void:
 		GlobalLogger.log("Invalid node selected", Enum.LogLevel.WARNING)
 		return
 
-	if my_gizmo != null:
-		GlobalLogger.log("Gizmo exists, deleting")
-		_gizmo_delete()
-
-	# TODO: Validate that the gizmo was created and did not error.
-	my_gizmo = await session_spawnable_m.create("Gizmo")
-
 	var _node_db_entry = session_spawnable_m.get_by_id(target_node)
-	session_spawnable_m.select.rpc(target_node, int(my_gizmo.name))
+	my_gizmo = await session_spawnable_m.select_spawnable(target_node)
 
 	my_gizmo.mode = _gizmo_mode
 	my_gizmo.use_local_space = _gizmo_space_local
@@ -527,7 +520,7 @@ func _select(target_node: int) -> void:
 
 func _gizmo_delete() -> void:
 	my_gizmo.clear_selection()
-	await session_spawnable_m.destroy(int(my_gizmo.name))
+	await session_spawnable_m.destroy_spawnable(int(my_gizmo.name))
 	return
 
 

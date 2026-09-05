@@ -2,9 +2,8 @@
 # File: /client/src/scenes/managers/app/network.gd
 # Project: OpenMinerva
 # Created Date: 13 April 2026
-# Copyright (c) 2026 OpenMinerva
+# Copyright (c) 2026 OpenMinerva Contributors
 # License: MIT License
-# Authors: Armored Dragon
 # --- License
 extends Node
 
@@ -54,6 +53,12 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 
 	scene_m.start_master_scene(_scene)
 	scene_m.set_active_session(_scene)
+
+	var _session_ready: bool = false
+	while _session_ready == false:
+		# TODO: Safety and breakout.
+		_session_ready = scene_m.is_scene_ready(_scene)
+		await get_tree().process_frame
 
 	# FIXME: Force spawn the host. This is probably bad design.
 	scene_m.get_master_scene(_scene).get_node("NetworkManager")._on_peer_connected(1)
@@ -155,6 +160,12 @@ func join_server(ip: String = "", port: int = 0) -> bool:
 
 	# Create server master scene.
 	var _scene: String = scene_m.create_master_scene()
+
+	var _session_ready: bool = false
+	while _session_ready == false:
+		# TODO: Safety and breakout.
+		_session_ready = scene_m.is_scene_ready(_scene)
+		await get_tree().process_frame
 
 	# Get a reference to the master scene from our scene ID.
 	var master_scene: Node3D = scene_m.get_master_scene(_scene)
