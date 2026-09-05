@@ -16,7 +16,7 @@ body:
       placeholder: "Link to spawnables.gd line #54."
     validations:
       required: true
-  - type: "textarea"
+  - type: "dropdown"
     attributes:
       label: "What is the category of the problem?"
       description: "A quick tag to categorize the issue."
