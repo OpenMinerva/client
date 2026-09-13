@@ -68,13 +68,7 @@ func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel, scene_
 	_root_scene_node.name = "root"
 	_scene.add_child(_root_scene_node)
 
-	var _session_ready: bool = false
-	while _session_ready == false:
-		# TODO: Safety and breakout.
-		var _scene_ready: bool = is_scene_ready(id)
-		var _active_session_set: bool = network_m.scene_m.active_session.is_empty() == false
-		_session_ready = _scene_ready == true && _active_session_set == true
-		await get_tree().process_frame
+	await await_session_ready(id)
 
 	# Use spawnable system to read the TSCN file, and instantiate it into the multiplayer instance.
 	if scene_type == Enum.BaseLevel.CUSTOM:
@@ -187,6 +181,18 @@ func set_active_session(session_id: String):
 func is_scene_ready(session_id: String) -> bool:
 	var _scene: Node3D = get_master_scene(session_id)
 	return _scene.is_ready
+
+
+func await_session_ready(session_id: String) -> void:
+	# TODO: Safety
+	var _session_ready: bool = false
+	while _session_ready == false:
+		var _scene_ready: bool = is_scene_ready(session_id)
+		var _active_session_set: bool = network_m.scene_m.active_session.is_empty() == false
+		_session_ready = _scene_ready == true && _active_session_set == true
+		await get_tree().process_frame
+
+	return
 
 
 func _get_scene_by_type(scene_type: Enum.BaseLevel) -> String:
