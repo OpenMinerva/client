@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://wmjsfgx486xa"]
+
+[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="1_h5new"]
+[ext_resource type="Script" uid="uid://dev0tv8ldaegm" path="res://userinterface/client_edit_mode/node_property_editor/partials/bool.gd" id="2_1puyx"]
+
+[node name="Bool" type="Control" unique_id=933711176]
+custom_minimum_size = Vector2(80, 30)
+layout_mode = 3
+anchor_right = 1.0
+anchor_bottom = 0.027777778
+grow_horizontal = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_h5new")
+script = ExtResource("2_1puyx")
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="HBoxContainer" parent="." unique_id=1972995258]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.053703703
+grow_horizontal = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="VBoxContainer" unique_id=482404396]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Vector3"
+
+[node name="CheckBox" type="CheckButton" parent="VBoxContainer" unique_id=643167569]
+custom_minimum_size = Vector2(30, 30)
+custom_maximum_size = Vector2(120, 30)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("1_h5new")
+flat = true
+alignment = 1
+clip_text = true
+icon_alignment = 1
+expand_icon = true

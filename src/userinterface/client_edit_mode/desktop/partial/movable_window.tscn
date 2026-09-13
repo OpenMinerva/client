@@ -1,0 +1,74 @@
+[gd_scene format=3 uid="uid://b6qb2oq26yooy"]
+
+[ext_resource type="Script" uid="uid://fpegx2jfo73q" path="res://userinterface/client_edit_mode/desktop/scripts/movable_window.gd" id="1_le5nq"]
+[ext_resource type="Shader" uid="uid://bwr4b0mhgi4w6" path="res://userinterface/dash/shaders/blur.gdshader" id="2_4cmho"]
+[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="3_ddx82"]
+[ext_resource type="PackedScene" uid="uid://sntuc3p6k4s6" path="res://userinterface/dash/partials/generic_button.tscn" id="4_l1byb"]
+[ext_resource type="Texture2D" uid="uid://bmjw8t1c6bi75" path="res://resources/icons/godot/Close.svg" id="5_752f5"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_j380t"]
+shader = ExtResource("2_4cmho")
+shader_parameter/color = Color(0.2, 0.2, 0.2, 1)
+shader_parameter/blur_amount = 3.0000001392401203
+shader_parameter/roughness = 0.2
+shader_parameter/roughness_affect = 0.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u7aab"]
+bg_color = Color(0.078431375, 0.078431375, 0.078431375, 0.78431374)
+
+[node name="MoveableWindow" type="Control" unique_id=524781090]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1620.0
+offset_bottom = -680.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("1_le5nq")
+
+[node name="BackgroundColor" type="Panel" parent="." unique_id=889545988]
+material = SubResource("ShaderMaterial_j380t")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+theme = ExtResource("3_ddx82")
+theme_override_styles/panel = SubResource("StyleBoxFlat_u7aab")
+
+[node name="MarginContainer" type="MarginContainer" parent="BackgroundColor" unique_id=802103033]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="BackgroundColor/MarginContainer" unique_id=969090938]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BackgroundColor/MarginContainer/VBoxContainer" unique_id=1407239756]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="BackgroundColor/MarginContainer/VBoxContainer/HBoxContainer" unique_id=665280700]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "Window Name"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GenericButton" parent="BackgroundColor/MarginContainer/VBoxContainer/HBoxContainer" unique_id=649942124 instance=ExtResource("4_l1byb")]
+layout_mode = 2
+size_flags_horizontal = 1
+icon = ExtResource("5_752f5")
+only_icon = true

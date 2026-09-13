@@ -1,0 +1,157 @@
+[gd_scene format=3 uid="uid://b1q1rp1y4dt2f"]
+
+[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="1_oxocb"]
+[ext_resource type="Texture2D" uid="uid://coqi7w7inqyv1" path="res://resources/icons/account.svg" id="2_a7mjn"]
+[ext_resource type="Texture2D" uid="uid://daebexy1etluo" path="res://resources/icons/ui/podiatry.svg" id="3_oxocb"]
+[ext_resource type="Texture2D" uid="uid://b4mmsxpws0l2k" path="res://resources/icons/ui/block.svg" id="4_a7mjn"]
+
+[sub_resource type="GDScript" id="GDScript_q3lw4"]
+resource_name = "export"
+script/source = "extends Control
+"
+
+[node name="AccountButtonListing" type="Control" unique_id=649942124]
+custom_minimum_size = Vector2(200, 75)
+layout_mode = 3
+anchor_top = 0.4652778
+anchor_right = 1.0
+anchor_bottom = 0.5347222
+offset_top = 37.5
+offset_bottom = -37.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_oxocb")
+script = SubResource("GDScript_q3lw4")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=250429512]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Button" type="Button" parent="HBoxContainer" unique_id=1422381468]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+theme = ExtResource("1_oxocb")
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/Button" unique_id=665374152]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBox" type="HBoxContainer" parent="HBoxContainer/Button/MarginContainer" unique_id=86696220]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer/Button/MarginContainer/HBox" unique_id=1429445374]
+layout_mode = 2
+texture = ExtResource("2_a7mjn")
+expand_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="HBoxContainer/Button/MarginContainer/HBox" unique_id=1074901883]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Name" type="Label" parent="HBoxContainer/Button/MarginContainer/HBox/VBox" unique_id=1807295119]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "ERROR"
+
+[node name="Location" type="Label" parent="HBoxContainer/Button/MarginContainer/HBox/VBox" unique_id=675948225]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.70380783, 0.70380783, 0.70380783, 1)
+text = "ERROR"
+
+[node name="Volume" type="PanelContainer" parent="HBoxContainer" unique_id=493364002]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme = ExtResource("1_oxocb")
+theme_type_variation = &"SolidBackground"
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/Volume" unique_id=1630519044]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+
+[node name="HSlider" type="HSlider" parent="HBoxContainer/Volume/MarginContainer" unique_id=1470760869]
+layout_mode = 2
+size_flags_vertical = 4
+mouse_default_cursor_shape = 2
+max_value = 150.0
+step = 5.0
+value = 100.0
+rounded = true
+ticks_on_borders = true
+
+[node name="Kick" type="AspectRatioContainer" parent="HBoxContainer" unique_id=559312234]
+custom_minimum_size = Vector2(75, 0)
+layout_mode = 2
+
+[node name="Button" type="Button" parent="HBoxContainer/Kick" unique_id=1933552852]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("1_oxocb")
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/Kick/Button" unique_id=564567149]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="HBoxContainer/Kick/Button/MarginContainer" unique_id=1526419418]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer/Kick/Button/MarginContainer/AspectRatioContainer" unique_id=522146680]
+layout_mode = 2
+texture = ExtResource("3_oxocb")
+expand_mode = 2
+
+[node name="Ban" type="AspectRatioContainer" parent="HBoxContainer" unique_id=931685674]
+custom_minimum_size = Vector2(75, 0)
+layout_mode = 2
+
+[node name="Button" type="Button" parent="HBoxContainer/Ban" unique_id=1649839441]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("1_oxocb")
+theme_type_variation = &"Danger"
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/Ban/Button" unique_id=335685794]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="HBoxContainer/Ban/Button/MarginContainer" unique_id=910803916]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer/Ban/Button/MarginContainer/AspectRatioContainer" unique_id=1008457231]
+layout_mode = 2
+texture = ExtResource("4_a7mjn")
+expand_mode = 2

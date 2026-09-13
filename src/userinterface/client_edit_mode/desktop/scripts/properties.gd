@@ -1,0 +1,147 @@
+# --- License
+# File: /client/src/userinterface/client_edit_mode/desktop/scripts/properties.gd
+# Project: OpenMinerva
+# Created Date: 15 July 2026
+# Copyright (c) 2026 OpenMinerva
+# License: MIT License
+# Authors: Armored Dragon
+# --- License
+extends MarginContainer
+
+const _dev_basic_props = ["position", "rotation", "scale", "visible"]
+
+var session_spawnable_m: Node
+var partials: Dictionary = { }
+var _node: Node
+
+# TODO: Add protections from making changes on null nodes (invalid nodes)
+# TODO: Handle enums for ints.
+@onready var _dev_transform_container: Node = get_node("VBoxContainer/Container/ScrollContainer/MarginContainer/VBoxContainer/FoldableContainer/VBoxContainer")
+@onready var _dev_property_container: Node = get_node("VBoxContainer/Container/ScrollContainer/MarginContainer/VBoxContainer")
+@onready var app_scene_m: Node = get_tree().current_scene.get_node("SceneManager")
+
+
+func _ready() -> void:
+	_dev_property_container.get_node("Visible").value_changed.connect(func(new_value): _property_changed("visible", new_value))
+	_dev_transform_container.get_node("Position").value_changed.connect(func(new_value): _property_changed("position", new_value))
+	_dev_transform_container.get_node("Rotation").value_changed.connect(func(new_value): _property_changed("rotation_degrees", new_value))
+	_dev_transform_container.get_node("Scale").value_changed.connect(func(new_value): _property_changed("scale", new_value))
+
+	Events.dash_session_changed.connect(_on_session_changed)
+	return
+
+
+func get_node_properties(node: Node) -> void:
+	_clear_node_properties()
+	_node = node
+	var _property_tree: Dictionary = _get_property_tree(node)
+
+	var _property_categories: Array = _property_tree.keys()
+	_property_categories.reverse()
+
+	for _category in _property_categories:
+		# Create the container node.
+		var _category_node = _get_partial("FoldableContainer")
+		_dev_property_container.add_child(_category_node)
+		_category_node.set_label(_category)
+
+		# Add all of the sub properties.
+		for _prop in _property_tree[_category]:
+			var _sub_property = _get_partial("%s" % type_string(_prop.type))
+
+			if _sub_property == null:
+				continue
+
+			_category_node.get_node("VBoxContainer").add_child(_sub_property)
+			_sub_property.set_value(node.get(_prop.name))
+			_sub_property.set_label(_prop.name.capitalize())
+			_sub_property.value_changed.connect(func(new_value): _property_changed(_prop.name, new_value))
+			continue
+
+	update_node_properties(node)
+	return
+
+
+func update_node_properties(node: Node) -> void:
+	if "visible" in node:
+		_dev_property_container.get_node("Visible").set_value(node.get("visible"))
+
+	if "position" in node:
+		_dev_transform_container.get_node("Position").set_value(node.get("position"))
+
+	if "rotation_degrees" in node:
+		_dev_transform_container.get_node("Rotation").set_value(node.get("rotation_degrees"))
+
+	if "scale" in node:
+		_dev_transform_container.get_node("Scale").set_value(node.get("scale"))
+	return
+
+
+func _get_property_tree(node: Node) -> Dictionary:
+	var tree: Dictionary = { }
+	var current_category: String = ""
+
+	for _property in node.get_property_list():
+		var _usage: int = _property["usage"]
+		var _p_name: String = _property["name"]
+
+		if _p_name.begins_with("metadata/"):
+			# Metadata is ignored.
+			continue
+
+		if _dev_basic_props.has(_p_name):
+			# These properties are handled at the top of the NPE.
+			continue
+
+		if _usage & PROPERTY_USAGE_CATEGORY:
+			# If this property is a category.
+			current_category = _p_name
+			tree[current_category] = []
+			continue
+
+		if _usage & (PROPERTY_USAGE_GROUP | PROPERTY_USAGE_SUBGROUP):
+			# TODO: Subgroups?
+			# Ignore groups and subgroups.
+			continue
+
+		if _usage & PROPERTY_USAGE_EDITOR && !current_category.is_empty():
+			tree[current_category].append(_property)
+
+	return tree
+
+
+func _clear_node_properties() -> void:
+	var _child_number: int = 0
+	for child in _dev_property_container.get_children():
+		if _child_number <= 1:
+			_child_number = _child_number + 1
+			continue
+		child.queue_free()
+	return
+
+
+func _property_changed(property_name: String, property_value: Variant) -> void:
+	# TODO: Network change
+	if _node == null:
+		return
+
+	session_spawnable_m.set_property(int(_node.name), property_name, property_value)
+	return
+
+
+func _get_partial(type: String) -> Node:
+	if partials.keys().has(type):
+		return partials[type].instantiate()
+
+	var _new_partial = load("res://userinterface/client_edit_mode/node_property_editor/partials/%s.tscn" % type)
+	if _new_partial == null:
+		GlobalLogger.log("Could not find partial for type '%s'" % type, Enum.LogLevel.WARNING)
+		return null
+
+	partials[type] = _new_partial
+	return partials[type].instantiate()
+
+
+func _on_session_changed(_session_id: String) -> void:
+	session_spawnable_m = app_scene_m.get_master_scene(app_scene_m.active_session).get_node("SpawnableManager")
+	return
