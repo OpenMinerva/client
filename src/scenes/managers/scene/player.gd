@@ -49,7 +49,7 @@ func remove_player(peer_id: int) -> void:
 
 	GlobalLogger.log("[%s] Removing peer '%s' from the player list" % [caller_id, peer_id])
 	players.erase(str(peer_id))
-	spawnable_m.destroy.rpc(int(player_entry.node.name))
+	spawnable_m.destroy_spawnable(int(player_entry.node.name))
 
 
 @rpc("call_local", "authority", "reliable")

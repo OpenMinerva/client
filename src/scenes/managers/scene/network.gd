@@ -1,3 +1,10 @@
+# --- License
+# File: /client/src/scenes/managers/scene/network.gd
+# Project: OpenMinerva
+# Created Date: 04 May 2026
+# Copyright (c) 2026 OpenMinerva Contributors
+# License: MIT License
+# --- License
 extends Node
 
 var _specific_api: SceneMultiplayer = null
@@ -49,11 +56,14 @@ func on_banned():
 func req_spawnable_db() -> void:
 	# A peer wants the server database.
 	var caller_id = multiplayer.get_remote_sender_id()
+	var _database: Array[Dictionary] = spawnable_m.registry.get_all_spawnable()
+	var _assets: Array[Dictionary] = spawnable_m.registry.get_all_asset()
+	var _asset_relations: Array[Dictionary] = spawnable_m.registry.get_all_asset_relation()
 
-	GlobalLogger.log("Sending spawnable database to peer %d: %d entries" % [caller_id, spawnable_m._database.size()])
+	GlobalLogger.log("Sending spawnable database to peer %d: %d entries" % [caller_id, _database.size()])
 
 	# Send the spawnable and player database to the client.
-	rec_spawnable_db.rpc_id(caller_id, spawnable_m._database, player_m.players, spawnable_m._asset_database, spawnable_m._asset_node_relation_database)
+	rec_spawnable_db.rpc_id(caller_id, _database, player_m.players, _assets, _asset_relations)
 
 	return
 
@@ -98,7 +108,7 @@ func _on_peer_connected(peer_id: int):
 	player_m.add_player.rpc(peer_id)
 
 	# Spawn the player controller.
-	var _entity = await spawnable_m.create("OM_PlayerController")
+	var _entity = await spawnable_m.create_spawnable("OM_PlayerController", -1)
 
 	# Set the player node in the player database.
 	player_m.set_player_node.rpc(peer_id, int(_entity.name))
