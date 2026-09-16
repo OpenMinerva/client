@@ -15,12 +15,12 @@ func before_test() -> void:
 
 
 func test_starts() -> void:
-	var _inspector = _runner.find_child("Inspector")
-	var _scenes_container = _runner.find_child("Scenes")
-	var _app_network_manager = _runner.find_child("AppNetworkManager")
-	var _app_scene_manager = _runner.find_child("SceneManager")
-	var _app_spawnable_file_handling = _runner.find_child("SpawnableFileHandling")
-	var _dashboard = _runner.find_child("Dashboard")
+	var _inspector: Control = _runner.find_child("Inspector")
+	var _scenes_container: Node3D = _runner.find_child("Scenes")
+	var _app_network_manager: Node = _runner.find_child("AppNetworkManager")
+	var _app_scene_manager: Node = _runner.find_child("SceneManager")
+	var _app_spawnable_file_handling: Node = _runner.find_child("SpawnableFileHandling")
+	var _dashboard: Control = _runner.find_child("Dashboard")
 
 	assert(_inspector != null)
 	assert(_scenes_container != null)
