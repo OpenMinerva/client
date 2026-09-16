@@ -18,7 +18,7 @@ var _node: Node
 # TODO: Handle enums for ints.
 @onready var _dev_transform_container: Node = get_node("VBoxContainer/Container/ScrollContainer/MarginContainer/VBoxContainer/FoldableContainer/VBoxContainer")
 @onready var _dev_property_container: Node = get_node("VBoxContainer/Container/ScrollContainer/MarginContainer/VBoxContainer")
-@onready var app_scene_m: Node = get_tree().current_scene.get_node("SceneManager")
+@onready var app_scene_m = get_tree().root.find_child("SceneManager", true, false)
 
 
 func _ready() -> void:

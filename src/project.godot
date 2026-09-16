@@ -55,7 +55,13 @@ window/stretch/aspect="expand"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/Gizmo3DScript/plugin.cfg", "res://addons/discord-rpc-gd/plugin.cfg", "res://addons/godot-oauth2client/plugin.cfg", "res://addons/godot-sqlite/plugin.cfg", "res://addons/godot-urlparser/plugin.cfg", "res://addons/rpc-await/plugin.cfg")
+enabled=PackedStringArray("res://addons/Gizmo3DScript/plugin.cfg", "res://addons/discord-rpc-gd/plugin.cfg", "res://addons/gdUnit4/plugin.cfg", "res://addons/godot-oauth2client/plugin.cfg", "res://addons/godot-sqlite/plugin.cfg", "res://addons/godot-urlparser/plugin.cfg", "res://addons/rpc-await/plugin.cfg")
+
+[gdunit4]
+
+settings/common/update_notification_enabled=false
+settings/test/test_discovery=true
+ui/toolbar/run_overall=true
 
 [gui]
 

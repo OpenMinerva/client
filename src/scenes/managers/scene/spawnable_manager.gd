@@ -8,14 +8,13 @@
 extends Node
 ## This file handles the spawnable management for a session. All synchronization and physics are handled through this file.
 
-@onready var app_scene_m: Node = get_tree().current_scene.get_node("SceneManager")
-@onready var app_network_m: Node = get_tree().current_scene.get_node("NetworkManager")
-@onready var network_m: Node = get_node("../NetworkManager")
+@onready var app_scene_m: Node = get_tree().root.find_child("SceneManager", true, false)
+@onready var app_network_m: Node = get_tree().root.find_child("AppNetworkManager", true, false)
 @onready var instance_root: Node = get_parent().get_node("root")
 @onready var rpcawaiter: Node = get_parent().get_node("RpcAwaiter")
 @onready var session_signalbus: Node = get_node("../SignalBus")
 @onready var player_m: Node = get_node("../PlayerManager")
-@onready var registry: Node = get_node("Registry")
+@onready var registry: Node = get_node("./Registry")
 @onready var spawnables: Node = get_node("Spawnables")
 @onready var gizmos: Node = get_node("Gizmos")
 

@@ -8,7 +8,7 @@
 # --- License
 extends Node
 
-@onready var network_m = get_tree().current_scene.get_node("NetworkManager")
+@onready var network_m = get_tree().root.find_child("NetworkManager", true, false)
 
 
 func _ready() -> void:

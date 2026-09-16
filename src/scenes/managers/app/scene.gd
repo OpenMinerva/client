@@ -11,9 +11,9 @@ extends Node
 var active_session: String = ""
 
 # Game managers
-@onready var network_m: Node = get_tree().current_scene.get_node("NetworkManager")
-@onready var scene_container: Node3D = get_tree().current_scene.get_node("Scenes")
-@onready var spawnable_file_handling: Node = get_tree().current_scene.get_node("SpawnableFileHandling")
+@onready var network_m: Node = get_tree().root.find_child("AppNetworkManager", true, false)
+@onready var scene_container: Node = get_tree().root.find_child("Scenes", true, false)
+@onready var spawnable_file_handling: Node = get_tree().root.find_child("SpawnableFileHandling", true, false)
 
 
 func _ready():

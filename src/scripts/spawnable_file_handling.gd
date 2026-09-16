@@ -7,7 +7,7 @@
 # --- License
 extends Node
 
-@onready var scene_m = get_tree().current_scene.get_node("SceneManager")
+@onready var scene_m: Node = get_tree().root.find_child("SceneManager", true, false)
 
 
 func _ready() -> void:

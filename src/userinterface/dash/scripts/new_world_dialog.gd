@@ -11,9 +11,9 @@ extends "res://userinterface/client_edit_mode/desktop/scripts/movable_window.gd"
 @export var target_scene_path: String = ""
 @export var base: Enum.BaseLevel = Enum.BaseLevel.GRID
 
-@onready var network_m = get_tree().current_scene.get_node("NetworkManager")
-@onready var scene_m = get_tree().current_scene.get_node("SceneManager")
-@onready var dashboard = get_tree().current_scene.get_node("Dashboard")
+@onready var network_m: Node = get_tree().root.find_child("NetworkManager", true, false)
+@onready var scene_m: Node = get_tree().root.find_child("SceneManager", true, false)
+@onready var dashboard: Node = get_tree().root.find_child("Dashboard", true, false)
 @onready var _create_world_button: Control = get_node("%Create")
 @onready var _base_val_ui: Control = get_node("%BaseVal")
 @onready var _world_load_dir_ui: Control = get_node("%WorldLoadDir")

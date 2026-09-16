@@ -3,3 +3,6 @@
 /src/addons/godot-sqlite
 /src/addons/gdUnit4
 /src/setup_downloads/
+
+# gdUnit
+/src/reports
