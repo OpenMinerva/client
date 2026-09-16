@@ -78,6 +78,7 @@ These addons are used in building the OpenMinerva client:
 | godot-oauth2client | Owner | [Usage](https://github.com/OpenMinerva/client/tree/alpha/src/addons) | MIT | [Source](https://github.com/OpenMinerva/godot-oauth2client/tree/a835738a2674feb2679576a247169fc53c2d4682) |
 | godot-urlparser | Owner | [Usage](https://github.com/OpenMinerva/client/tree/alpha/src/addons) | MIT | [Source](https://github.com/OpenMinerva/godot-urlparser/tree/50632506d6a5a8a65bda52640339df98957fd0cd) |
 | godot-sqlite | Downloaded | Not included | MIT | [Source](https://github.com/2shady4u/godot-sqlite) |
+| gdUnit4 | Downloaded | Not included | MIT | [Source](https://github.com/godot-gdunit-labs/gdUnit4) |
 
 
 
