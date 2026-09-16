@@ -1,3 +1,10 @@
+# --- License
+# File: /client/src/test/user_interface.gd
+# Project: OpenMinerva
+# Created Date: 16 September 2026
+# Copyright (c) 2026 OpenMinerva Contributors
+# License: MIT License
+# --- License
 extends GdUnitTestSuite
 
 var _runner: GdUnitSceneRunner
