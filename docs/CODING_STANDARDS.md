@@ -102,6 +102,9 @@ The primary documentation provider for this project is the Godot supported [Docu
 Before making a commit, you should test your changes by launching the application and testing your new feature. While testing you should monitor the logs to make sure there are no new errors caused by your changes.
 When making a pull request, your final commit before being submitted should not introduce any new errors. Do not defer fixes; all logged issues must be resolved before sent for review.
 
+### Making automated tests
+When you make a new feature, you should make unit tests for your new feature. OpenMinerva uses [gdUnit4](https://github.com/godot-gdunit-labs/gdUnit4) to make unit tests for the application. For examples of using this testing suite, please see the [/src/test](https://github.com/OpenMinerva/client/tree/feature/unit-tests/src/test) folder. Tests are expected to follow the coding standards just the same as any other code in the codebase would.
+
 ## Key Branches
 OpenMinerva separates the repository into four separate key branches. `alpha`, `beta`, `stable`, and `lts-XXXX`.
 
