@@ -7,7 +7,7 @@
 # --- License
 extends Node
 
-@onready var scene_m: Node = get_tree().root.find_child("SceneManager", true, false)
+@onready var scene_m: Node = get_tree().root.find_child("AppSceneManager", true, false)
 
 
 func _ready() -> void:
@@ -63,7 +63,7 @@ func save_spawnable(root: Node, type: Enum.SpawnableType = Enum.SpawnableType.IT
 	return
 
 
-func load_spawnable(path: String) -> void:
+func load_spawnable(path: String) -> Node:
 	var session_spawnable_manager = scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager")
 	var _tasks: Array[Dictionary] = []
 	var _path_parent_dictionary: Dictionary = { }
@@ -163,7 +163,10 @@ func load_spawnable(path: String) -> void:
 			# Then we set that resource as the value of the resource property.
 			session_spawnable_manager.set_resource(int(_task.node.name), _prop, int(_asset.get_name()))
 
-	return
+	var _parent_task_index: int = _tasks.find_custom(func(entry): return entry.id == 0)
+	var _parent_task = _tasks[_parent_task_index]
+	var _parent_node: Node = _parent_task.node
+	return _parent_node
 
 
 func _add_spawnable_asset_relation(spawnable_hash: String, asset_hash: String) -> void:

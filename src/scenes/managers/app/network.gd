@@ -12,7 +12,12 @@ const MAX_CLIENTS = 1000
 @onready var registry: Node = get_node("Registry")
 @onready var port_scanner: Node = get_node("PortScanner")
 @onready var advertiser: Node = get_node("Advertiser")
-@onready var scene_m: Node = get_tree().root.find_child("SceneManager", true, false)
+@onready var scene_m: Node = get_tree().root.find_child("AppSceneManager", true, false)
+
+
+func _ready():
+	Events.action_start_server.connect(start_server)
+	return
 
 
 func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRID, scene_dir: String = "") -> bool:

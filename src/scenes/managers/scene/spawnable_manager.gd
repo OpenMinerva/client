@@ -8,7 +8,7 @@
 extends Node
 ## This file handles the spawnable management for a session. All synchronization and physics are handled through this file.
 
-@onready var app_scene_m: Node = get_tree().root.find_child("SceneManager", true, false)
+@onready var app_scene_m: Node = get_tree().root.find_child("AppSceneManager", true, false)
 @onready var app_network_m: Node = get_tree().root.find_child("AppNetworkManager", true, false)
 @onready var instance_root: Node = get_parent().get_node("root")
 @onready var rpcawaiter: Node = get_parent().get_node("RpcAwaiter")

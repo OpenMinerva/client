@@ -12,8 +12,8 @@ var session_settings: Dictionary = {
 	"privacy": 0,
 }
 
-@onready var scene_m: Node = get_tree().root.find_child("SceneManager", true, false)
-@onready var network_m: Node = get_tree().root.find_child("NetworkManager", true, false)
+@onready var scene_m: Node = get_tree().root.find_child("AppSceneManager", true, false)
+@onready var network_m: Node = get_tree().root.find_child("AppNetworkManager", true, false)
 @onready var _app_spawnable_file_handling: Node = get_tree().root.find_child("SpawnableFileHandling", true, false)
 @onready var privacy_settings: Control = get_node("HBox/Right/Hosting/ScrollContainer/VBoxContainer/VBoxContainer/Privacy/PanelContainer/MarginContainer/HBoxContainer/MarginContainer/OptionButton")
 @onready var save_hosting_button = get_node("%SaveSession")

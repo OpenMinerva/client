@@ -26,7 +26,7 @@ var _cem_camera: bool = false
 # External Libraries / scripts
 @onready var _app_spawnable_file_handling_m = get_tree().root.find_child("SpawnableFileHandling", true, false)
 @onready var app_network_m = get_tree().root.find_child("AppNetworkManager", true, false)
-@onready var app_scene_m = get_tree().root.find_child("SceneManager", true, false)
+@onready var app_scene_m = get_tree().root.find_child("AppSceneManager", true, false)
 @onready var session_spawnable_m: Node
 @onready var session_signalbus: Node
 @onready var session_players_m: Node

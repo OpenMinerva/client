@@ -18,6 +18,8 @@ signal dash_session_changed(session_id: String)
 signal dash_message_received(message: Dictionary)
 signal dash_notification(notification: Dictionary)
 signal dash_account_list_loaded(account_list: PackedStringArray)
+# Application
+signal action_start_server(port: int, root_scene: Enum.BaseLevel, scene_dir: String)
 # Debug
 signal debug_entity_set_state()
 # Settings

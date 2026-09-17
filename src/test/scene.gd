@@ -8,24 +8,26 @@
 extends GdUnitTestSuite
 
 var _runner: GdUnitSceneRunner
+var _scene_container: Node3D
 
 
 func before_test() -> void:
 	_runner = scene_runner("res://scenes/master.tscn")
+	_scene_container = _runner.find_child("Scenes")
 	return
 
 
 ## Make sure that the "master" scene containing all of our UI elements exists.
 func test_initial_scene() -> void:
 	var _inspector: Control = _runner.find_child("Inspector")
-	var _scenes_container: Node3D = _runner.find_child("Scenes")
+	_scene_container = _runner.find_child("Scenes")
 	var _app_network_manager: Node = _runner.find_child("AppNetworkManager")
-	var _app_scene_manager: Node = _runner.find_child("SceneManager")
+	var _app_scene_manager: Node = _runner.find_child("AppSceneManager")
 	var _app_spawnable_file_handling: Node = _runner.find_child("SpawnableFileHandling")
 	var _dashboard: Control = _runner.find_child("Dashboard")
 
 	assert(_inspector != null)
-	assert(_scenes_container != null)
+	assert(_scene_container != null)
 	assert(_app_network_manager != null)
 	assert(_app_scene_manager != null)
 	assert(_app_spawnable_file_handling != null)
@@ -35,8 +37,6 @@ func test_initial_scene() -> void:
 
 ## This will make sure that the initial home world layout is what we expect.
 func test_home_world_layout() -> void:
-	var _scene_container: Node3D = _runner.find_child("Scenes")
-
 	# There should be a single session when the application opens.
 	assert(_scene_container.get_child_count() == 1)
 
@@ -52,6 +52,17 @@ func test_home_world_layout() -> void:
 	# There should be more than three children in the scene.
 	# This makes sure the session root was set up properly, destroying the initial parent node when loading a world.
 	assert(_home_session_root.get_child_count() > 3)
+	return
+
+
+func test_start_server() -> void:
+	Events.action_start_server.emit()
+
+	await _runner.simulate_frames(5)
+
+	var _new_scene: Node3D = _scene_container.get_children()[1]
+
+	print(_new_scene)
 	return
 
 
