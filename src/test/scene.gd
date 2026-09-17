@@ -61,6 +61,15 @@ func test_start_server() -> void:
 	return
 
 
+func test_stop_server(_do_skip: bool = true) -> void:
+	return
+
+
+func test_stop_home_server(_do_skip: bool = true) -> void:
+	# NOTE: Should not be allowed to stop the home server.
+	return
+
+
 func after_test() -> void:
 	_runner = null
 	return
