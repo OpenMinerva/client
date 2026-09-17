@@ -52,6 +52,7 @@ func destroy_master_scene(id: String):
 
 
 func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel, scene_dir: String = "", set_up_root: bool = true) -> void:
+	GlobalLogger.log("Setting master root from program.")
 	var _scene = get_master_scene(id)
 
 	var _root_scene: String = _get_scene_by_type(scene_type)

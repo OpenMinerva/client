@@ -69,7 +69,7 @@ func add_session(session_name: String, description: String, _type: SessionConnec
 ## Remove a session from our registry
 ## [param session_id] is the ID of the session to remove.
 func remove_session(session_id: String) -> void:
-	GlobalLogger.log("Removing session '%s' from registry." % session_id, Enum.LogLevel.DEBUG)
+	GlobalLogger.log("Removing session '%s' from registry." % session_id, Enum.LogLevel.INFO)
 
 	var _index: int = _database.find_custom(func(entry): return entry.id == session_id)
 	_database.remove_at(_index)

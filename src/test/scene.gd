@@ -70,6 +70,28 @@ func test_stop_home_server(_do_skip: bool = true) -> void:
 	return
 
 
+func test_close_application() -> void:
+	var _is_closing: bool = false
+	Bootstrap.quit_action = func() -> void: return
+
+	await _runner.simulate_frames(10)
+	# It looks like I don't need to assert anything here, gdUnit4 treats this as an error if this fails?
+	# That's probably wrong, but I can figure out what I need to assert here when something else fails.
+	await Bootstrap._notification(NOTIFICATION_WM_CLOSE_REQUEST)
+
+	# Application is in a closing state.
+	assert(StateManager.app_closing == true)
+
+	# We are not in any more servers.
+	assert(Bootstrap.network_m.registry.get_all().size() == 0)
+
+	# Make sure we do not have any more scene nodes.
+	var _scenes: Array[Node] = _scene_container.get_children()
+	assert(_scenes.size() == 0)
+
+	return
+
+
 func after_test() -> void:
 	_runner = null
 	return

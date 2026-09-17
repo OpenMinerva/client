@@ -103,8 +103,8 @@ func stop_server(session_id: String):
 		if _next_session.is_empty() == true:
 			if StateManager.app_closing == false:
 				GlobalLogger.log("There is no session to move to. You are now probably in the void!", Enum.LogLevel.ERROR)
-			return
-		scene_m.set_active_session(_next_session)
+		else:
+			scene_m.set_active_session(_next_session)
 
 	# Application cleanup
 	scene_m.stop_master_scene(session_id)
