@@ -12,7 +12,12 @@ const MAX_CLIENTS = 1000
 @onready var registry: Node = get_node("Registry")
 @onready var port_scanner: Node = get_node("PortScanner")
 @onready var advertiser: Node = get_node("Advertiser")
-@onready var scene_m = get_node("../SceneManager")
+@onready var scene_m: Node = get_tree().root.find_child("AppSceneManager", true, false)
+
+
+func _ready():
+	Events.action_start_server.connect(start_server)
+	return
 
 
 func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRID, scene_dir: String = "") -> bool:
@@ -98,8 +103,8 @@ func stop_server(session_id: String):
 		if _next_session.is_empty() == true:
 			if StateManager.app_closing == false:
 				GlobalLogger.log("There is no session to move to. You are now probably in the void!", Enum.LogLevel.ERROR)
-			return
-		scene_m.set_active_session(_next_session)
+		else:
+			scene_m.set_active_session(_next_session)
 
 	# Application cleanup
 	scene_m.stop_master_scene(session_id)

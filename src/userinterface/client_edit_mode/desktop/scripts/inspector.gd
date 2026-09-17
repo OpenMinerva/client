@@ -24,9 +24,9 @@ var _cem_camera: bool = false
 
 # FIXME: You can select the selected spawnable. (Safe but probably should be changed)
 # External Libraries / scripts
-@onready var _app_spawnable_file_handling_m: Node = get_tree().current_scene.get_node("SpawnableFileHandling")
-@onready var app_scene_m: Node = get_tree().current_scene.get_node("SceneManager")
-@onready var app_network_m: Node = get_tree().current_scene.get_node("NetworkManager")
+@onready var _app_spawnable_file_handling_m = get_tree().root.find_child("SpawnableFileHandling", true, false)
+@onready var app_network_m = get_tree().root.find_child("AppNetworkManager", true, false)
+@onready var app_scene_m = get_tree().root.find_child("AppSceneManager", true, false)
 @onready var session_spawnable_m: Node
 @onready var session_signalbus: Node
 @onready var session_players_m: Node
@@ -37,7 +37,7 @@ var _cem_camera: bool = false
 @onready var _node_toolbar_gizmo_control_container_misc: Control = _node_toolbar.get_node("MarginContainer/HBoxContainer/GizmoControlMisc")
 @onready var _node_toolbar_spawnable_count: Control = _node_toolbar.get_node("MarginContainer/HBoxContainer/SpawnableCount")
 @onready var _node_toolbar_player_count: Control = _node_toolbar.get_node("MarginContainer/HBoxContainer/PlayerCount")
-@onready var _node_crosshair: Node = get_tree().current_scene.get_node("Crosshair")
+@onready var _node_crosshair: Node = get_tree().root.find_child("Crosshair", true, false)
 @onready var _inspector_popup: Node = get_node("InspectorPopup")
 @onready var _inspector_add_node_window: Node = get_node("AddNodeWindow")
 @onready var _inspector_filter_search: LineEdit = get_node("VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/InputString/MarginContainer/HBoxContainer/MarginContainer/LineEdit")

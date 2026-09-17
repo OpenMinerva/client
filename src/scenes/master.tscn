@@ -49,9 +49,9 @@ width = 2.0
 [node name="Scenes" type="Node3D" parent="." unique_id=308239834]
 top_level = true
 
-[node name="NetworkManager" parent="." unique_id=1960146969 instance=ExtResource("1_jooxx")]
+[node name="AppNetworkManager" parent="." unique_id=1960146969 instance=ExtResource("1_jooxx")]
 
-[node name="SceneManager" parent="." unique_id=5477810 instance=ExtResource("2_h2qy3")]
+[node name="AppSceneManager" parent="." unique_id=5477810 instance=ExtResource("2_h2qy3")]
 
 [node name="SpawnableFileHandling" type="Node" parent="." unique_id=1121013970]
 script = ExtResource("6_kjytq")

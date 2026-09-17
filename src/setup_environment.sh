@@ -4,6 +4,11 @@ GODOT_SQL_TAG="v4.8"
 GODOT_SQL_URL="https://github.com/2shady4u/godot-sqlite/releases/download/${GODOT_SQL_TAG}/addons.zip"
 GODOT_SQL_HASH="f81531b5b9f1d4f422e9f882c409701adf197a17f894ca65ee2fa25759c25270"
 
+GDUNIT4_TAG="v6.2.1"
+GDUNIT4_URL="https://github.com/godot-gdunit-labs/gdUnit4/archive/refs/tags/${GDUNIT4_TAG}.zip"
+GDUNIT4_HASH="ffb48847c46f386bf0c7a716fd68c6dace7d67730775cf7f748adce8ef3ed794"
+
+
 echo ""
 echo "This script will download all of the required addons that are not currently present in the repository."
 echo ""
@@ -29,6 +34,29 @@ echo "godot-sqlite hash validated."
 
 # Extract to addons folder
 unzip -q  "setup_downloads/godot-sqlite.zip" -d "."
+
+
+# Download gdUnit4
+echo "Downloading 'gdUnit4' tagged '${GDUNIT4_TAG}'"
+
+if [ ! -f "setup_downloads/gdUnit4.zip" ]; then
+	curl -sSL -H "Accept: application/octet-stream" -o "setup_downloads/gdUnit4.zip" "${GDUNIT4_URL}" 
+fi
+
+# Validate SHA256
+downloaded_gdunit4_hash=$(sha256sum "setup_downloads/gdUnit4.zip" | awk '{print $1}' )
+echo $downloaded_gdunit4_hash
+if [ $downloaded_gdunit4_hash != $GDUNIT4_HASH ]; then
+	echo "Hash check for downloaded 'gdUnit4' zip failed"
+	exit
+fi
+
+echo "gdUnit4 hash validated."
+
+# Extract to addons folder
+unzip -q "setup_downloads/gdUnit4.zip" -d "setup_downloads/gdUnit4"
+mv setup_downloads/gdUnit4/*/addons/gdUnit4 "addons/"
+
 
 # Delete setup_downloads folder
 # rm -r "setup_downloads"

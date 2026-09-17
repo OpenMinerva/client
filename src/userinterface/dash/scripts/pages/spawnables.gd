@@ -15,7 +15,7 @@ var _action_buttons: Array[Node] = []
 var _template_button = preload("res://userinterface/dash/partials/generic_button.tscn")
 var _selected_folder: Node
 
-@onready var _app_spawnable_file_handling_m = get_tree().current_scene.get_node("SpawnableFileHandling")
+@onready var _app_spawnable_file_handling_m: Node = get_tree().root.find_child("SpawnableFileHandling", true, false)
 @onready var _path_container = $"HBox/Right/Local/Path"
 @onready var _folder_container = $"HBox/Right/Local/Folders"
 @onready var _file_container = $"HBox/Right/Local/Files"
@@ -23,7 +23,7 @@ var _selected_folder: Node
 @onready var _delete_selected_btn = $"HBox/Right/Local/Actions/DeleteSelected/Button"
 @onready var _folder_creation_dialog = $"FolderCreation"
 @onready var _deletion_dialog = $"DeleteConfirmation"
-@onready var dashboard = get_tree().current_scene.get_node("Dashboard")
+@onready var dashboard: Node = get_tree().root.find_child("Dashboard", true, false)
 
 
 func _ready():

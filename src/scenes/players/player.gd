@@ -26,7 +26,7 @@ var _scene_root: Node3D
 var _speed: float = 0
 
 # Libraries
-@onready var _app_scene_m: Node = get_tree().current_scene.get_node("SceneManager")
+@onready var _app_scene_m: Node = get_tree().current_scene.get_node("AppSceneManager")
 @onready var _session_spawnable_m: Node
 # Nodes
 @onready var _node_body = get_node(".")

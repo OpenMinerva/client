@@ -13,7 +13,7 @@ var _session_query = preload("res://userinterface/session_query.gd").new()
 @onready var template_world_listing: PackedScene = preload("res://userinterface/dash/partials/session_listing.tscn")
 @onready var world_listing_grid: GridContainer = get_node("HBox/Right/VBoxContainer/ScrollContainer/GridContainer")
 @onready var tag_nodes: Array[Node] = get_node("HBox/Left").get_children()
-@onready var network_m = get_tree().current_scene.get_node("NetworkManager")
+@onready var network_m: Node = get_tree().root.find_child("NetworkManager", true, false)
 
 
 func _ready():

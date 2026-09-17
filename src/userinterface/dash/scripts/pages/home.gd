@@ -10,9 +10,9 @@ extends Control
 
 @onready var active_sessions_container = get_node("HBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer")
 @onready var template_account_session_listing = preload("res://userinterface/dash/partials/home_server_listing.tscn")
-@onready var network_m = get_tree().current_scene.get_node("NetworkManager")
-@onready var scene_m = get_tree().current_scene.get_node("SceneManager")
-@onready var dashboard = get_tree().current_scene.get_node("Dashboard")
+@onready var network_m: Node = get_tree().root.find_child("AppNetworkManager", true, false)
+@onready var scene_m: Node = get_tree().root.find_child("AppSceneManager", true, false)
+@onready var dashboard: Node = get_tree().root.find_child("Dashboard", true, false)
 
 
 func _ready() -> void:

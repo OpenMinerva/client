@@ -45,6 +45,7 @@ This repository does not ship some required addons in order to prevent unnecessa
 
 For simplicity, here is a list of the missing addons:
 - [godot-sqlite](https://github.com/2shady4u/godot-sqlite) - Tagged `v4.8` - [Download](https://github.com/2shady4u/godot-sqlite/releases/download/v4.8/addons.zip)
+- [gdUnit4](https://github.com/godot-gdunit-labs/gdUnit4) - Tagged v6.2.1 - [Download](https://github.com/godot-gdunit-labs/gdUnit4/archive/refs/tags/v6.2.1.zip)
 
 Download these addons into the `/src/addons/` folder of this repository. 
 Example:
@@ -78,6 +79,7 @@ These addons are used in building the OpenMinerva client:
 | godot-oauth2client | Owner | [Usage](https://github.com/OpenMinerva/client/tree/alpha/src/addons) | MIT | [Source](https://github.com/OpenMinerva/godot-oauth2client/tree/a835738a2674feb2679576a247169fc53c2d4682) |
 | godot-urlparser | Owner | [Usage](https://github.com/OpenMinerva/client/tree/alpha/src/addons) | MIT | [Source](https://github.com/OpenMinerva/godot-urlparser/tree/50632506d6a5a8a65bda52640339df98957fd0cd) |
 | godot-sqlite | Downloaded | Not included | MIT | [Source](https://github.com/2shady4u/godot-sqlite) |
+| gdUnit4 | Downloaded | Not included | MIT | [Source](https://github.com/godot-gdunit-labs/gdUnit4) |
 
 
 

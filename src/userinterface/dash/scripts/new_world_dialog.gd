@@ -11,9 +11,9 @@ extends "res://userinterface/client_edit_mode/desktop/scripts/movable_window.gd"
 @export var target_scene_path: String = ""
 @export var base: Enum.BaseLevel = Enum.BaseLevel.GRID
 
-@onready var network_m = get_tree().current_scene.get_node("NetworkManager")
-@onready var scene_m = get_tree().current_scene.get_node("SceneManager")
-@onready var dashboard = get_tree().current_scene.get_node("Dashboard")
+@onready var network_m: Node = get_tree().root.find_child("AppNetworkManager", true, false)
+@onready var scene_m: Node = get_tree().root.find_child("AppSceneManager", true, false)
+@onready var dashboard: Node = get_tree().root.find_child("Dashboard", true, false)
 @onready var _create_world_button: Control = get_node("%Create")
 @onready var _base_val_ui: Control = get_node("%BaseVal")
 @onready var _world_load_dir_ui: Control = get_node("%WorldLoadDir")
@@ -59,7 +59,7 @@ func start_world() -> void:
 	var _world_privacy: Enum.PrivacyLevel = dashboard.get_node("%PrivacyVal").selected
 	var _world_load_dir: String = dashboard.get_node("%WorldLoadDirVal").text
 
-	network_m.start_server(0, _world_base, _world_load_dir)
+	Events.action_start_server.emit(0, _world_base, _world_load_dir)
 
 	# HACK: For some reason, the active session does not get updated when I expect it to. This will force the active session to switch to the newly created session.
 	var _sessions: Array = network_m.get_connected_sessions()

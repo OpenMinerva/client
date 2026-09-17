@@ -11,9 +11,9 @@ extends Node
 var active_session: String = ""
 
 # Game managers
-@onready var network_m: Node = get_tree().current_scene.get_node("NetworkManager")
-@onready var scene_container: Node3D = get_tree().current_scene.get_node("Scenes")
-@onready var spawnable_file_handling: Node = get_tree().current_scene.get_node("SpawnableFileHandling")
+@onready var network_m: Node = get_tree().root.find_child("AppNetworkManager", true, false)
+@onready var scene_container: Node = get_tree().root.find_child("Scenes", true, false)
+@onready var spawnable_file_handling: Node = get_tree().root.find_child("SpawnableFileHandling", true, false)
 
 
 func _ready():
@@ -52,6 +52,7 @@ func destroy_master_scene(id: String):
 
 
 func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel, scene_dir: String = "", set_up_root: bool = true) -> void:
+	GlobalLogger.log("Setting master root from program.")
 	var _scene = get_master_scene(id)
 
 	var _root_scene: String = _get_scene_by_type(scene_type)
@@ -71,20 +72,20 @@ func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel, scene_
 	await await_session_ready(id)
 
 	# Use spawnable system to read the TSCN file, and instantiate it into the multiplayer instance.
+	var _parent_node: Node
 	if scene_type == Enum.BaseLevel.CUSTOM:
 		if scene_dir == "":
 			GlobalLogger.log("Tried to load a custom scene, but there was not a directiory!", Enum.LogLevel.WARNING)
 			_root_scene = _get_scene_by_type(Enum.BaseLevel.GRID)
 			await spawnable_file_handling.load_spawnable(_root_scene)
 		else:
-			await spawnable_file_handling.load_spawnable(scene_dir)
+			_parent_node = await spawnable_file_handling.load_spawnable(scene_dir)
 	else:
-		await spawnable_file_handling.load_spawnable(_root_scene)
+		_parent_node = await spawnable_file_handling.load_spawnable(_root_scene)
 
 	# Remove the "root" node of the world, and instead parent all nodes under the true instance root.
-	# HACK: Force reparent the children of the node to the world root.
-	if set_up_root && _root_scene_node.get_children().size() > 0:
-		var _target_node: Node3D = _root_scene_node.get_children()[1]
+	if set_up_root == true:
+		var _target_node: Node3D = _parent_node
 		var _spawnable_manager: Node = _scene.get_node("SpawnableManager")
 
 		for _world_node in _target_node.get_children():
