@@ -41,31 +41,36 @@ func test_home_world_layout() -> void:
 	assert(_scene_container.get_child_count() == 1)
 
 	var _home_session_root: Node3D = _scene_container.get_children()[0].get_node("root")
-
-	await _runner.simulate_frames(10)
+	await _test_world_layout(_home_session_root)
 
 	# There should be a player in the session (us)
 	var _node_one: Node3D = _home_session_root.get_node("1")
 	assert(_node_one != null)
 	assert(_node_one.get_class() == "CharacterBody3D")
 
-	# There should be more than three children in the scene.
-	# This makes sure the session root was set up properly, destroying the initial parent node when loading a world.
-	assert(_home_session_root.get_child_count() > 3)
 	return
 
 
 func test_start_server() -> void:
 	Events.action_start_server.emit()
 
-	await _runner.simulate_frames(5)
-
 	var _new_scene: Node3D = _scene_container.get_children()[1]
+	await _test_world_layout(_new_scene)
 
-	print(_new_scene)
+	# TODO: Make sure our player connected and is in the scene.
 	return
 
 
 func after_test() -> void:
 	_runner = null
+	return
+
+
+func _test_world_layout(world_root: Node) -> void:
+	await _runner.simulate_frames(5)
+
+	# There should be more than three children in the scene.
+	# This makes sure the session root was set up properly, destroying the initial parent node when loading a world.
+	assert(world_root.get_child_count() > 3)
+
 	return
