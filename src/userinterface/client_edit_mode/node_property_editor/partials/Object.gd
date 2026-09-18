@@ -14,12 +14,13 @@ signal value_changed(new_value)
 @export var node_id: int = -1
 
 @onready var _label = get_node("VBoxContainer/Label")
-@onready var _button = get_node("VBoxContainer/Button")
+@onready var _edit_object = get_node("VBoxContainer/HBoxContainer/Edit")
+@onready var _change_object = get_node("VBoxContainer/HBoxContainer/Change")
 
 
 func _ready() -> void:
 	_label.text = property_name
-	_button.clicked.connect(_on_button_clicked)
+	_change_object.clicked.connect(_on_button_clicked)
 	return
 
 
