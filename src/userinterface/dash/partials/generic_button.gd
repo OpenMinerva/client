@@ -2,9 +2,8 @@
 # File: /client/src/userinterface/dash/partials/generic_button.gd
 # Project: OpenMinerva
 # Created Date: 30 June 2026
-# Copyright (c) 2026 OpenMinerva
+# Copyright (c) 2026 OpenMinerva Contributors
 # License: MIT License
-# Authors: Armored Dragon
 # --- License
 extends Control
 

@@ -23,6 +23,9 @@
 [ext_resource type="Texture2D" uid="uid://dtwfvglraa8t7" path="res://resources/icons/godot/Edit.svg" id="18_akq5y"]
 [ext_resource type="Texture2D" uid="uid://blnd7x2qc6b7q" path="res://resources/icons/godot/Save.svg" id="18_k3kne"]
 [ext_resource type="PackedScene" uid="uid://bnimj67377v8l" path="res://userinterface/client_edit_mode/desktop/partial/add_node_window.tscn" id="21_q5c3n"]
+[ext_resource type="PackedScene" uid="uid://b6qb2oq26yooy" path="res://userinterface/client_edit_mode/desktop/partial/movable_window.tscn" id="24_73wcm"]
+[ext_resource type="Script" uid="uid://cg4kxcrqgeiar" path="res://userinterface/dash/scripts/resource_selector_dialog.gd" id="25_40omq"]
+[ext_resource type="Script" uid="uid://bhu4vpalq1m1h" path="res://userinterface/dash/scripts/resource_editor_dialog.gd" id="26_mhmia"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_bstjd"]
 shader = ExtResource("2_lsah3")
@@ -367,6 +370,42 @@ visible = false
 layout_mode = 1
 window_name = "Window Name"
 
+[node name="ResourceSelector" parent="." unique_id=1271960799 instance=ExtResource("24_73wcm")]
+visible = false
+layout_mode = 1
+script = ExtResource("25_40omq")
+window_name = "Resource Editor"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="ResourceSelector/BackgroundColor/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(1271960799, 969090938) index="1" unique_id=191368255]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GRE_ValidList" type="VBoxContainer" parent="ResourceSelector/BackgroundColor/MarginContainer/VBoxContainer/ScrollContainer" unique_id=158102891]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ResourceEditor" parent="." unique_id=1501705663 instance=ExtResource("24_73wcm")]
+visible = false
+layout_mode = 1
+offset_right = -1420.0
+offset_bottom = -480.0
+script = ExtResource("26_mhmia")
+window_name = "Resource Editor"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="ResourceEditor/BackgroundColor/MarginContainer/VBoxContainer" parent_id_path=PackedInt32Array(1501705663, 969090938) index="1" unique_id=1349156652]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GRE_ResourceProperties" type="VBoxContainer" parent="ResourceEditor/BackgroundColor/MarginContainer/VBoxContainer/ScrollContainer" unique_id=981440956]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
 [editable path="VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/InputString"]
 [editable path="VBoxContainer/HBoxContainer/HSplitContainer/Properties/VBoxContainer/Container/ScrollContainer/MarginContainer/VBoxContainer/FoldableContainer"]
 [editable path="InspectorPopup"]
+[editable path="ResourceSelector"]
+[editable path="ResourceEditor"]
