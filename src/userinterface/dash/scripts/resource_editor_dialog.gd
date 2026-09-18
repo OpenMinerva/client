@@ -9,15 +9,15 @@ extends "res://userinterface/client_edit_mode/desktop/scripts/movable_window.gd"
 
 const icon_dir: String = "res://resources/icons/godot/"
 
-@export var base: Enum.BaseLevel = Enum.BaseLevel.GRID
-
+var partials: Dictionary = { }
 var _template_button = preload("res://userinterface/dash/partials/generic_button.tscn")
 var _node_db_entry: Dictionary
+var _resource: Resource
 
 @onready var scene_m: Node = get_tree().root.find_child("AppSceneManager", true, false)
 @onready var spawnable_m: Node
 @onready var dashboard: Node = get_tree().root.find_child("Dashboard", true, false)
-@onready var listing_container: Node = get_node("%GRE_ValidList")
+@onready var listing_container: Node = get_node("%GRE_ResourceProperties")
 
 
 func _ready() -> void:
@@ -25,11 +25,11 @@ func _ready() -> void:
 	closed.connect(func(): close_window(false))
 	update_ui()
 
-	Events.cem_open_rem_window.connect(show_window)
+	Events.cem_open_rem_edit_window.connect(show_window)
 	return
 
 
-func show_window(target_node_id: int, property_hints: PackedStringArray) -> void:
+func show_window(target_node_id: int, resource: Resource) -> void:
 	update_ui()
 	super._open()
 	visible = true
@@ -37,9 +37,10 @@ func show_window(target_node_id: int, property_hints: PackedStringArray) -> void
 	spawnable_m = scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager")
 
 	_node_db_entry = spawnable_m.get_by_id(target_node_id)
+	_resource = resource
 
 	_clear_window()
-	_populate_window(property_hints)
+	_populate_window()
 	return
 
 
@@ -62,22 +63,38 @@ func _clear_window() -> void:
 	return
 
 
-func _populate_window(property_hints: PackedStringArray) -> void:
-	var _inherit = ClassDB.get_inheriters_from_class(property_hints[0])
-	for _valid_option in _inherit:
-		var _icon: Texture2D = load(icon_dir + '/' + _valid_option + '.svg')
-		if _icon == null:
-			_icon = load(icon_dir + '/Error.svg')
-		var _new_button = _template_button.instantiate()
-		listing_container.add_child(_new_button)
-		_new_button.set_label(_valid_option)
-		_new_button.set_icon(_icon)
+func _populate_window() -> void:
+	if _resource == null:
+		GlobalLogger.log("No resource present.", Enum.LogLevel.WARNING)
+		return
 
-		_new_button.clicked.connect(_resource_button_clicked.bind(_valid_option))
+	var _list = _resource.get_property_list()
+	for _item in _list:
+		var _partial = _get_partial(type_string(_item.type))
+
+		if _partial == null:
+			continue
+
+		listing_container.add_child(_partial)
+		_partial.set_label(_item.name)
+		_partial.set_value(_resource[_item.name])
+		_partial.value_changed.connect(_partial_value_changed.bind(_item.name))
 	return
 
 
-func _resource_button_clicked(resource_class: String) -> void:
-	var _resource: Resource = await spawnable_m.create_asset(resource_class, [])
-	spawnable_m.set_resource(_node_db_entry.id, "mesh", int(_resource.get_name()))
+func _partial_value_changed(value: Variant, property: String) -> void:
+	spawnable_m.set_property(_node_db_entry.id, 'mesh:' + property, value)
 	return
+
+
+func _get_partial(type: String) -> Node:
+	if partials.keys().has(type):
+		return partials[type].instantiate()
+
+	var _new_partial = load("res://userinterface/client_edit_mode/node_property_editor/partials/%s.tscn" % type)
+	if _new_partial == null:
+		GlobalLogger.log("Could not find partial for type '%s'" % type, Enum.LogLevel.WARNING)
+		return null
+
+	partials[type] = _new_partial
+	return partials[type].instantiate()

@@ -11,6 +11,7 @@ signal value_changed(new_value)
 
 @export var property_name: String = ""
 @export var valid_classes: PackedStringArray = []
+@export var _resource: Resource
 @export var node_id: int = -1
 
 @onready var _label = get_node("VBoxContainer/Label")
@@ -21,6 +22,7 @@ signal value_changed(new_value)
 func _ready() -> void:
 	_label.text = property_name
 	_change_object.clicked.connect(_on_button_clicked)
+	_edit_object.clicked.connect(_on_edit_object_clicked)
 	return
 
 
@@ -29,6 +31,11 @@ func set_hint_string(string: String) -> void:
 		return
 
 	valid_classes = string.split(",", false)
+	return
+
+
+func set_resource(resource: Resource) -> void:
+	_resource = resource
 	return
 
 
@@ -49,4 +56,9 @@ func _on_value_changed(new_value: int) -> void:
 
 func _on_button_clicked() -> void:
 	Events.cem_open_rem_window.emit(node_id, valid_classes)
+	return
+
+
+func _on_edit_object_clicked() -> void:
+	Events.cem_open_rem_edit_window.emit(node_id, _resource)
 	return
