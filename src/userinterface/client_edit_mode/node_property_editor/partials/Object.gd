@@ -60,5 +60,5 @@ func _on_button_clicked() -> void:
 
 
 func _on_edit_object_clicked() -> void:
-	Events.cem_open_rem_edit_window.emit(node_id, _resource)
+	Events.cem_open_rem_edit_window.emit(_resource)
 	return

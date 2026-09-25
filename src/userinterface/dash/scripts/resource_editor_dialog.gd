@@ -10,8 +10,6 @@ extends "res://userinterface/client_edit_mode/desktop/scripts/movable_window.gd"
 const icon_dir: String = "res://resources/icons/godot/"
 
 var partials: Dictionary = { }
-var _template_button = preload("res://userinterface/dash/partials/generic_button.tscn")
-var _node_db_entry: Dictionary
 var _resource: Resource
 
 @onready var scene_m: Node = get_tree().root.find_child("AppSceneManager", true, false)
@@ -29,14 +27,13 @@ func _ready() -> void:
 	return
 
 
-func show_window(target_node_id: int, resource: Resource) -> void:
+func show_window(resource: Resource) -> void:
 	update_ui()
 	super._open()
 	visible = true
 
 	spawnable_m = scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager")
 
-	_node_db_entry = spawnable_m.get_by_id(target_node_id)
 	_resource = resource
 
 	_clear_window()
@@ -78,12 +75,19 @@ func _populate_window() -> void:
 		listing_container.add_child(_partial)
 		_partial.set_label(_item.name)
 		_partial.set_value(_resource[_item.name])
+
+		if type_string(_item.type) == "Object":
+			_partial.set_hint_string(_item.hint_string)
+
+			if _item.hint_string == "Mesh" || _item.name == "material":
+				_partial.set_resource(_resource[_item.name])
+
 		_partial.value_changed.connect(_partial_value_changed.bind(_item.name))
 	return
 
 
 func _partial_value_changed(value: Variant, property: String) -> void:
-	spawnable_m.set_property(_node_db_entry.id, 'mesh:' + property, value)
+	spawnable_m.set_property_on_resource(int(_resource.get_name()), property, value)
 	return
 
 
