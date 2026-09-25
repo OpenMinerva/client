@@ -11,6 +11,7 @@ const icon_dir: String = "res://resources/icons/godot/"
 
 var _template_button = preload("res://userinterface/dash/partials/generic_button.tscn")
 var _node_db_entry: Dictionary
+var _path: String = ""
 
 @onready var scene_m: Node = get_tree().root.find_child("AppSceneManager", true, false)
 @onready var spawnable_m: Node
@@ -27,7 +28,7 @@ func _ready() -> void:
 	return
 
 
-func show_window(target_node_id: int, property_hints: PackedStringArray) -> void:
+func show_window(target_node_id: int, property_hints: PackedStringArray, path: String) -> void:
 	update_ui()
 	super._open()
 	visible = true
@@ -35,6 +36,7 @@ func show_window(target_node_id: int, property_hints: PackedStringArray) -> void
 	spawnable_m = scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager")
 
 	_node_db_entry = spawnable_m.get_by_id(target_node_id)
+	_path = path
 
 	_clear_window()
 	_populate_window(property_hints)
@@ -77,5 +79,5 @@ func _populate_window(property_hints: PackedStringArray) -> void:
 
 func _resource_button_clicked(resource_class: String) -> void:
 	var _resource: Resource = await spawnable_m.create_asset(resource_class, [])
-	spawnable_m.set_resource(_node_db_entry.id, "mesh", int(_resource.get_name()))
+	spawnable_m.set_resource(_node_db_entry.id, _path, int(_resource.get_name()))
 	return

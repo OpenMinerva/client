@@ -13,6 +13,7 @@ signal value_changed(new_value)
 @export var valid_classes: PackedStringArray = []
 @export var _resource: Resource
 @export var node_id: int = -1
+@export var _path: String = ""
 
 @onready var _label = get_node("VBoxContainer/Label")
 @onready var _edit_object = get_node("VBoxContainer/HBoxContainer/Edit")
@@ -34,8 +35,9 @@ func set_hint_string(string: String) -> void:
 	return
 
 
-func set_resource(resource: Resource) -> void:
+func set_resource(resource: Resource, path: String) -> void:
 	_resource = resource
+	_path = path
 	return
 
 
@@ -55,7 +57,7 @@ func _on_value_changed(new_value: int) -> void:
 
 
 func _on_button_clicked() -> void:
-	Events.cem_open_rem_window.emit(node_id, valid_classes)
+	Events.cem_open_rem_window.emit(node_id, valid_classes, _path)
 	return
 
 

@@ -58,7 +58,7 @@ func get_node_properties(node: Node) -> void:
 				_sub_property.node_id = int(node.name)
 
 				if _node[_prop.name] != null:
-					_sub_property.set_resource(_node[_prop.name])
+					_sub_property.set_resource(_node[_prop.name], _prop.name)
 
 			_sub_property.set_value(node.get(_prop.name))
 			_sub_property.set_label(_prop.name.capitalize())
