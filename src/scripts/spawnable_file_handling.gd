@@ -67,6 +67,7 @@ func load_spawnable(path: String) -> Node:
 	var session_spawnable_manager = scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager")
 	var _tasks: Array[Dictionary] = []
 	var _path_parent_dictionary: Dictionary = { }
+	var _material_references: Dictionary = { }
 
 	# Check if file exists at the given path.
 	if FileManager.file_exists(path) == false:
@@ -89,6 +90,7 @@ func load_spawnable(path: String) -> Node:
 		_task.metadata = []
 		_task.resources = []
 		_task.properties = []
+		_task.materials = []
 
 		for _prop_id in range(_num_properties):
 			var _prop_name: String = _state.get_node_property_name(_node_id, _prop_id)
@@ -103,6 +105,21 @@ func load_spawnable(path: String) -> Node:
 
 			if typeof(_prop_name) != TYPE_STRING_NAME && _prop_name.begins_with("metadata/") == false:
 				_task.properties.append({ "name": _prop_name, "value": _prop_value })
+
+			# Check if we need to spawn in materials
+			# FIXME: Invalid syntax.
+			if _prop_value is Dictionary and _prop_value.properties is Array:
+				for _sub_property in _prop_value.properties:
+					if _sub_property.name == "material":
+						var _material_id: int = -1
+
+						var _material_name: String = str(abs(_sub_property.value.get_instance_id()))
+
+						if _material_references.get(_material_name) == null:
+							_material_references[_material_name] = { "references": [], "id": _material_name, "material": _sub_property.value }
+
+						_task.materials.append({ "name": "material", "value": _material_name })
+						_sub_property.value = _material_name
 
 			_task.set(_prop_name, _prop_value)
 
@@ -127,6 +144,11 @@ func load_spawnable(path: String) -> Node:
 
 		# Set the parent task of this task based upon previously discovered values.
 		_task.parent = _path_parent_dictionary[_task_base_path]
+
+	# Spawn in materials
+	for _material in _material_references.keys():
+		var _asset: Resource = await session_spawnable_manager.create_asset("ShaderMaterial", [{ "name": "shader", "value": _material_references[_material].material.shader }])
+		_material_references[_material].value = _asset
 
 	# Finally, we spawn in the nodes.
 	for _task in _tasks:
@@ -156,6 +178,11 @@ func load_spawnable(path: String) -> Node:
 
 		for _prop in _task.resources:
 			var _prop_dict = _task[_prop]
+
+			# Update the material references from the previously created materials.
+			for _sub_property in _prop_dict.properties:
+				if _sub_property.name == "material":
+					_sub_property.value = _material_references[_sub_property.value].material
 
 			# First we should create the asset on the server
 			var _asset: Resource = await session_spawnable_manager.create_asset(_prop_dict.class, _prop_dict.properties)

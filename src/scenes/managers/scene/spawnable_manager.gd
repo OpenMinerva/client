@@ -166,6 +166,8 @@ func set_metadata(node_id: int, metadata_name: String, metadata_value: Variant) 
 
 @rpc("call_local", "any_peer", "reliable")
 func set_property(node_id: int, property_name: String, property_value: Variant) -> void:
+	# I think this function might need to get axed. I am now working on editing resources directly instead of though a path. 
+	# That, or this function should be renamed to a more specific role as this function is still used for translating physical nodes in the scene and other surface-level node values.
 	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
 	var _caller_id: int = multiplayer.get_remote_sender_id()
 
@@ -173,6 +175,19 @@ func set_property(node_id: int, property_name: String, property_value: Variant) 
 		set_property_on_spawnable.rpc(node_id, property_name, property_value)
 	else:
 		await rpcawaiter.send_rpc(1, set_property.bind(node_id, property_name, property_value))
+		return
+	return
+
+
+@rpc("call_local", "any_peer", "reliable")
+func set_property_on_resource(resource_id: int, property_name: String, property_value: Variant) -> void:
+	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
+	var _caller_id: int = multiplayer.get_remote_sender_id()
+
+	if _my_id == 1:
+		set_property_on_resource_internal.rpc(resource_id, property_name, property_value)
+	else:
+		await rpcawaiter.send_rpc(1, set_property_on_resource.bind(resource_id, property_name, property_value))
 		return
 	return
 
@@ -277,6 +292,17 @@ func set_property_on_spawnable(node_id: int, property_name: String, property_val
 		return
 
 	_entity_db.node.set_indexed(property_name, property_value)
+	return
+
+
+@rpc("call_local", "authority", "reliable")
+func set_property_on_resource_internal(resource_id: int, property_name: String, property_value: Variant):
+	var _entity_db = get_resource_by_id(resource_id)
+
+	if _entity_db == { }:
+		return
+
+	_entity_db.resource.set_indexed(property_name, property_value)
 	return
 
 

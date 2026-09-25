@@ -53,6 +53,13 @@ func get_node_properties(node: Node) -> void:
 				continue
 
 			_category_node.get_node("VBoxContainer").add_child(_sub_property)
+			if type_string(_prop.type) == "Object":
+				_sub_property.set_hint_string(_prop.hint_string)
+				_sub_property.node_id = int(node.name)
+
+				if _node[_prop.name] != null:
+					_sub_property.set_resource(_node[_prop.name])
+
 			_sub_property.set_value(node.get(_prop.name))
 			_sub_property.set_label(_prop.name.capitalize())
 			_sub_property.value_changed.connect(func(new_value): _property_changed(_prop.name, new_value))
