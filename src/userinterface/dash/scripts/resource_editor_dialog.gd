@@ -79,8 +79,7 @@ func _populate_window() -> void:
 		if type_string(_item.type) == "Object":
 			_partial.set_hint_string(_item.hint_string)
 
-			if _item.hint_string == "Mesh" || _item.name == "material":
-				_partial.set_resource(_resource[_item.name], _item.name)
+			_partial.set_resource(_resource[_item.name], _item.name)
 
 		_partial.value_changed.connect(_partial_value_changed.bind(_item.name))
 	return

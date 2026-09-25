@@ -78,6 +78,14 @@ func _populate_window(property_hints: PackedStringArray) -> void:
 
 
 func _resource_button_clicked(resource_class: String) -> void:
+	if _node_db_entry == { }:
+		GlobalLogger.log("Could not create a resource '%s'. No node found!" % [resource_class], Enum.LogLevel.WARNING)
+		return
+	if _path.is_empty() == true:
+		GlobalLogger.log("Could not create a resource '%s'. No path supplied!" % [resource_class], Enum.LogLevel.WARNING)
+		return
+
+	GlobalLogger.log("Creating resource '%s' to path '%s'." % [resource_class, _path])
 	var _resource: Resource = await spawnable_m.create_asset(resource_class, [])
 	spawnable_m.set_resource(_node_db_entry.id, _path, int(_resource.get_name()))
 	return

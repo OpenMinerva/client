@@ -24,7 +24,7 @@
 [ext_resource type="Texture2D" uid="uid://blnd7x2qc6b7q" path="res://resources/icons/godot/Save.svg" id="18_k3kne"]
 [ext_resource type="PackedScene" uid="uid://bnimj67377v8l" path="res://userinterface/client_edit_mode/desktop/partial/add_node_window.tscn" id="21_q5c3n"]
 [ext_resource type="PackedScene" uid="uid://b6qb2oq26yooy" path="res://userinterface/client_edit_mode/desktop/partial/movable_window.tscn" id="24_73wcm"]
-[ext_resource type="Script" uid="uid://cg4kxcrqgeiar" path="res://userinterface/dash/scripts/resource_selector_dialog.gd" id="25_40omq"]
+[ext_resource type="Script" uid="uid://d1sxdinbgh3ad" path="res://userinterface/dash/scripts/resource_selector_dialog.gd" id="25_40omq"]
 [ext_resource type="Script" uid="uid://sow3t1rn2l4e" path="res://userinterface/dash/scripts/resource_editor_dialog.gd" id="26_mhmia"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_bstjd"]
@@ -391,7 +391,7 @@ size_flags_vertical = 3
 [node name="ResourceSelector" parent="." unique_id=1271960799 instance=ExtResource("24_73wcm")]
 visible = false
 layout_mode = 1
-offset_right = -500.0
+offset_right = -1500.0
 offset_bottom = -600.0
 script = ExtResource("25_40omq")
 window_name = "Resource Editor"
