@@ -67,7 +67,7 @@ static func get_entry(node_name: String) -> Dictionary:
 	return _schema[node_name]
 
 
-static func build(node_name: String) -> Node:
+static func build(node_name: String, spawnable_manager: Node) -> Node:
 	if node_name == "":
 		return
 
@@ -80,7 +80,7 @@ static func build(node_name: String) -> Node:
 
 	if node_name == "Box":
 		var _work_node = MeshInstance3D.new()
-		_work_node.mesh = BoxMesh.new()
+		_work_node.mesh = await spawnable_manager.create_asset("BoxMesh", [])
 		_add_node_metadata(_work_node, node_name)
 		return _work_node
 
@@ -90,7 +90,7 @@ static func build(node_name: String) -> Node:
 
 	if node_name == "Capsule":
 		var _work_node = MeshInstance3D.new()
-		_work_node.mesh = CapsuleMesh.new()
+		_work_node.mesh = await spawnable_manager.create_asset("CapsuleMesh", [])
 		_add_node_metadata(_work_node, node_name)
 		return _work_node
 

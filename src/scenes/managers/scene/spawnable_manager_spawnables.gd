@@ -30,7 +30,7 @@ func server_create_spawnable(node_type: String, node_parent: int, forced_node_id
 	if _parent == { }:
 		_parent = { "node": get_node("../../root") }
 
-	var _spawnable: Node = create(node_type, _caller_id, int(_parent.node.name), _node_id)
+	var _spawnable: Node = await create(node_type, _caller_id, int(_parent.node.name), _node_id)
 	create.rpc(node_type, _caller_id, int(_parent.node.name), _node_id)
 
 	# Emit session-wide event.
@@ -48,6 +48,7 @@ func create(node_type: String, spawner_peer_id: int, parent_id: int, node_id: in
 	var _node_schema: Dictionary = NSB.get_entry(node_type)
 	var _parent_node: Dictionary = _registry.get_spawnable(parent_id)
 	var _use_root: bool = false
+	var _spawnable_manager: Node = get_parent()
 
 	var _node_exists: bool = _registry.get_spawnable(node_id) != { }
 	if _node_exists == true:
@@ -60,7 +61,7 @@ func create(node_type: String, spawner_peer_id: int, parent_id: int, node_id: in
 		_parent_node = { "node": get_node("../../root") }
 		_use_root = true
 
-	_node = NSB.build(node_type)
+	_node = await NSB.build(node_type, _spawnable_manager)
 
 	var _db_id: int = _registry.add_spawnable(_node, node_type, spawner_peer_id, node_id)
 

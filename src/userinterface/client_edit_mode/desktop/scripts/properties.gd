@@ -127,7 +127,6 @@ func _clear_node_properties() -> void:
 
 
 func _property_changed(property_name: String, property_value: Variant) -> void:
-	# TODO: Network change
 	if _node == null:
 		return
 
