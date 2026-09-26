@@ -303,6 +303,7 @@ func set_property_on_resource_internal(resource_id: int, property_name: String, 
 		return
 
 	_entity_db.resource.set_indexed(property_name, property_value)
+	registry.update_asset(resource_id, property_name, property_value)
 	return
 
 

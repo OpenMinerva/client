@@ -182,7 +182,9 @@ func load_spawnable(path: String) -> Node:
 			# Update the material references from the previously created materials.
 			for _sub_property in _prop_dict.properties:
 				if _sub_property.name == "material":
-					_sub_property.value = _material_references[_sub_property.value].material
+					_sub_property.value = _material_references[_sub_property.value].value
+					session_spawnable_manager.set_resource(int(_task.node.name), _prop, int(_sub_property.value.get_name()))
+					session_spawnable_manager.set_property_on_resource(int(_sub_property.value.get_name()), "shader", _sub_property.value.shader)
 
 			# First we should create the asset on the server
 			var _asset: Resource = await session_spawnable_manager.create_asset(_prop_dict.class, _prop_dict.properties)

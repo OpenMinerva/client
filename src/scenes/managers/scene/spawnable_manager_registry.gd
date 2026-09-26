@@ -133,6 +133,15 @@ func remove_asset() -> void:
 	return
 
 
+func update_asset(asset_id: int, key: String, value: Variant) -> void:
+	var _db_index: int = _assets.find_custom(func(entry): return entry.id == asset_id)
+
+	# TODO: Error handling.
+
+	_assets[_db_index][key] = value
+	return
+
+
 func get_all_asset() -> Array[Dictionary]:
 	return _assets
 
