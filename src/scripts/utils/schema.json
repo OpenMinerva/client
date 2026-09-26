@@ -64,22 +64,6 @@
 		"hidden": false,
 		"deep_delete": true
 	},
-	"Box": {
-		"requires_setup": true,
-		"pretty_name": "Box",
-		"node": null,
-		"icon": "godot/MeshInstance3D.svg",
-		"hidden": false,
-		"deep_delete": true
-	},
-	"Capsule": {
-		"requires_setup": true,
-		"pretty_name": "Capsule",
-		"node": null,
-		"icon": "godot/MeshInstance3D.svg",
-		"hidden": false,
-		"deep_delete": true
-	},
 	"RigidBody3D": {
 		"requires_setup": true,
 		"pretty_name": "RigidBody3D",
