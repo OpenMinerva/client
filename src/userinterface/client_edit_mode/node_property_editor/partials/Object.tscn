@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://dr4mc2gw53nb6"]
+
+[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="1_ijfgb"]
+[ext_resource type="Script" uid="uid://bgvut4go5q67q" path="res://userinterface/client_edit_mode/node_property_editor/partials/Object.gd" id="2_dt7qw"]
+[ext_resource type="PackedScene" uid="uid://sntuc3p6k4s6" path="res://userinterface/dash/partials/generic_button.tscn" id="3_hei4x"]
+[ext_resource type="Texture2D" uid="uid://csi6ucctnlhaf" path="res://resources/icons/at-icons/wrench.svg" id="4_u5ctn"]
+[ext_resource type="Texture2D" uid="uid://b0iqb578la8vd" path="res://resources/icons/godot/RotateLeft.svg" id="5_u5ctn"]
+
+[node name="Object" type="Control" unique_id=933711176]
+custom_minimum_size = Vector2(80, 30)
+layout_mode = 3
+anchor_right = 1.0
+anchor_bottom = 0.027777778
+offset_bottom = -30.0
+grow_horizontal = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_ijfgb")
+script = ExtResource("2_dt7qw")
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="HBoxContainer" parent="." unique_id=1972995258]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.053703703
+grow_horizontal = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="VBoxContainer" unique_id=482404396]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Int"
+clip_text = true
+text_overrun_behavior = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=1547362875]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Edit" parent="VBoxContainer/HBoxContainer" unique_id=649942124 instance=ExtResource("3_hei4x")]
+layout_mode = 2
+label = "Edit"
+icon = ExtResource("4_u5ctn")
+
+[node name="Change" parent="VBoxContainer/HBoxContainer" unique_id=1050624366 instance=ExtResource("3_hei4x")]
+layout_mode = 2
+size_flags_horizontal = 1
+label = "Edit"
+icon = ExtResource("5_u5ctn")
+only_icon = true
