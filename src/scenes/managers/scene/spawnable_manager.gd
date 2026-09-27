@@ -24,7 +24,7 @@ func _physics_process(_delta):
 		return
 
 	for spawnable in registry.get_all_spawnable():
-		if spawnable.type != "RigidBody3D":
+		if spawnable.get_class() != "RigidBody3D":
 			continue
 		if spawnable.node.sleeping == true:
 			continue
@@ -65,17 +65,19 @@ func create_spawnable(node_type: String, node_parent: int = -1) -> Node:
 	if multiplayer.is_server():
 		GlobalLogger.log("Spawning node '%s'" % node_type)
 		var _spawnable_id: int = spawnables.server_create_spawnable(node_type, node_parent)
-		var _spawnable_db_entry: Dictionary = registry.get_spawnable(_spawnable_id)
-		if _spawnable_db_entry.has("node") == false:
+		var _spawnable_db_entry: Node = registry.get_spawnable(_spawnable_id)
+
+		if _spawnable_db_entry == null:
 			return null
-		return _spawnable_db_entry.node
+
+		return _spawnable_db_entry
 	else:
 		GlobalLogger.log("Requesting a spawn of node '%s'" % node_type)
 		var _spawnable_id: int = await rpcawaiter.send_rpc(1, spawnables.server_create_spawnable.bind(node_type, node_parent))
-		var _spawnable_db_entry: Dictionary = registry.get_spawnable(_spawnable_id)
-		if _spawnable_db_entry.has("node") == false:
+		var _spawnable_db_entry: Node = registry.get_spawnable(_spawnable_id)
+		if _spawnable_db_entry == null:
 			return null
-		return _spawnable_db_entry.node
+		return _spawnable_db_entry
 
 
 ## Destroy a spawnable in the session. This is an abstraction that will automatically handle the networking between the host and the client. If the host attempts to call this function in a session, they will call `_server_destroy_spawnable` directly. If a client calls this function, the client will automatically `rpc` the `_server_destroy_spawnable` to the host.
@@ -123,18 +125,18 @@ func select_spawnable(node_id: int) -> Node:
 	if multiplayer.is_server():
 		GlobalLogger.log("Selecting node '%s'." % node_id)
 		var _gizmo_id: int = gizmos.server_select_spawnable(node_id)
-		var _spawnable_db_entry: Dictionary = registry.get_spawnable(_gizmo_id)
-		if _spawnable_db_entry.has("node") == false:
+		var _spawnable_db_entry: Node = registry.get_spawnable(_gizmo_id)
+		if _spawnable_db_entry == null:
 			return null
-		return _spawnable_db_entry.node
+		return _spawnable_db_entry
 	else:
 		GlobalLogger.log("Requesting a selection of node '%s'" % node_id)
 		var _gizmo_id: int = await rpcawaiter.send_rpc(1, gizmos.server_select_spawnable.bind(node_id))
 
-		var _spawnable_db_entry: Dictionary = registry.get_spawnable(_gizmo_id)
-		if _spawnable_db_entry.has("node") == false:
+		var _spawnable_db_entry: Node = registry.get_spawnable(_gizmo_id)
+		if _spawnable_db_entry == null:
 			return null
-		return _spawnable_db_entry.node
+		return _spawnable_db_entry
 
 
 ## Deselect a spawnable with a gizmo. This is an abstraction that will automatically handle the networking between the host and the client. Only one node can be selected at a time. In effect, this will destroy the gizmo, but it has some extra checks and function calls to make sure that the application does not have an error.
@@ -271,27 +273,27 @@ func create_asset(asset_type: String, properties: Array) -> Variant:
 
 @rpc("call_local", "authority", "reliable")
 func set_metadata_on_spawnable(node_id: int, metadata_name: String, metadata_value: Variant) -> void:
-	var _entity_db = get_by_id(node_id)
+	var _entity_db: Node = get_by_id(node_id)
 
 	# TODO: Error check.
-	if _entity_db == { }:
+	if _entity_db == null:
 		return
 
 	GlobalLogger.log("Adjusting metadata '%s' on node '%s'." % [metadata_name, node_id])
-	_entity_db.node.set_meta(metadata_name, metadata_value)
-	session_signalbus.node_metadata_change.emit(_entity_db.node)
+	_entity_db.set_meta(metadata_name, metadata_value)
+	session_signalbus.node_metadata_change.emit(_entity_db)
 
 	return
 
 
 @rpc("call_local", "authority", "reliable")
 func set_property_on_spawnable(node_id: int, property_name: String, property_value: Variant):
-	var _entity_db = get_by_id(node_id)
+	var _entity_db: Node = get_by_id(node_id)
 
-	if _entity_db == { }:
+	if _entity_db == null:
 		return
 
-	_entity_db.node.set_indexed(property_name, property_value)
+	_entity_db.set_indexed(property_name, property_value)
 	return
 
 
@@ -350,11 +352,11 @@ func receive_database(database: Array, players: Dictionary, assets: Array, asset
 	return
 
 
-func get_by_id(spawnable_id: int) -> Dictionary:
-	var _db_entry: Dictionary = registry.get_spawnable(spawnable_id)
+func get_by_id(spawnable_id: int) -> Node:
+	var _db_entry: Node = registry.get_spawnable(spawnable_id)
 
-	if _db_entry == { }:
-		return { }
+	if _db_entry == null:
+		return null
 
 	return _db_entry
 

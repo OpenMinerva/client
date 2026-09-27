@@ -27,75 +27,61 @@ const ASSET_RELATION_TEMPLATE: Dictionary = {
 	"node_property": "",
 }
 
+# New Variables
+var _spawnables: Array[Node] = []
+var _resources: Array[Resource] = []
+var _materials: Array[Material] = []
+var _relations: Array[Dictionary] = []
+var _gizmos: Array[int] = []
+
 @onready var _id: int = 1
-@onready var _spawnables: Array[Dictionary] = []
-@onready var _assets: Array[Dictionary] = []
-@onready var _asset_relations: Array[Dictionary] = []
-@onready var _gizmos: Array[int] = []
+@onready var _assets_old: Array[Dictionary] = []
+@onready var _asset_rel_old: Array[Dictionary] = []
 
 
-func add_spawnable(node: Node, type: String, spawner_peer_id: int, node_id: int = _id) -> int:
+func add_spawnable(node: Node) -> void:
 	GlobalLogger.log("Adding spawnable '%s' to database." % node.name)
-	var _db_entry = SPAWNABLE_TEMPLATE.duplicate()
 
-	_db_entry.id = node_id
-	_db_entry.node = node
-	_db_entry.type = type
-	_db_entry.spawner = spawner_peer_id
+	node.name = str(_id)
+	_spawnables.append(node)
 
-	_spawnables.append(_db_entry)
+	if node.has_method("select") == true:
+		_gizmos.append(int(node.name))
 
+	GlobalLogger.log("Spawnable '%s' successfully added to database as id '%s'." % [node.name, _id])
 	_id = _id + 1
-
-	if type == "Gizmo":
-		_gizmos.append(_db_entry.id)
-
-	GlobalLogger.log("Spawnable '%s' successfully added to database as id '%s'." % [node.name, _db_entry.id])
-	return _db_entry.id
+	return
 
 
-func get_spawnable(node_id: int) -> Dictionary:
-	# GlobalLogger.log("Getting spawnable '%s' from database." % node_id)
-	var _db_index: int = _spawnables.find_custom(func(entry): return entry.id == node_id)
+func get_spawnable(node_id: int) -> Node:
+	var _db_index: int = _spawnables.find_custom(func(entry): return int(entry.name) == node_id)
 
 	if _db_index == -1:
 		GlobalLogger.log("Could not find spawnable '%s' in database." % node_id, Enum.LogLevel.INFO)
-		return { }
-
-	var _db_entry: Dictionary = _spawnables[_db_index]
+		return null
 
 	return _spawnables[_db_index]
 
 
 func remove_spawnable(node_id: int) -> void:
 	GlobalLogger.log("Removing spawnable '%s' from database." % node_id)
-	var _db_index: int = _spawnables.find_custom(func(entry): return entry.id == node_id)
-
-	if _spawnables[_db_index].type == "Gizmo":
-		var _gizmo_database_index: int = _gizmos.find_custom(func(entry): return entry == node_id)
-		_gizmos.remove_at(_gizmo_database_index)
+	var _db_index: int = _spawnables.find_custom(func(entry): return int(entry.name) == node_id)
 
 	if _db_index != -1:
 		_spawnables.remove_at(_db_index)
 		GlobalLogger.log("Spawnable '%s' removed from database." % node_id)
+
+	if _gizmos.has(node_id) == true:
+		var _gizmos_db_index: int = _gizmos.find_custom(func(entry): return entry == node_id)
+		_gizmos.remove_at(_gizmos_db_index)
 	return
 
 
-func update_spawnable(node_id: int, key: String, value: Variant) -> void:
-	var _db_index: int = _spawnables.find_custom(func(entry): return entry.id == node_id)
-
-	# TODO: Error handling.
-
-	_spawnables[_db_index][key] = value
-	return
-
-
-func get_all_spawnable() -> Array[Dictionary]:
+func get_all_spawnable() -> Array[Node]:
 	return _spawnables
 
 
 func get_active_id() -> int:
-	GlobalLogger.log("Deprecated call '%s'" % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	return _id
 
 
@@ -108,7 +94,7 @@ func add_asset(asset_class: String, resource: Resource, properties: Array, asset
 	_db_entry.props = properties
 	_db_entry.asset_class = asset_class
 
-	_assets.append(_db_entry)
+	_assets_old.append(_db_entry)
 
 	_id = _id + 1
 
@@ -117,15 +103,15 @@ func add_asset(asset_class: String, resource: Resource, properties: Array, asset
 
 func get_asset(asset_id: int) -> Dictionary:
 	GlobalLogger.log("Getting asset '%s' from database." % asset_id)
-	var _db_index: int = _assets.find_custom(func(entry): return entry.id == asset_id)
+	var _db_index: int = _assets_old.find_custom(func(entry): return entry.id == asset_id)
 
 	if _db_index == -1:
 		GlobalLogger.log("Could not find asset '%s' in database." % asset_id, Enum.LogLevel.WARNING)
 		return { }
 
-	var _db_entry: Dictionary = _assets[_db_index]
+	var _db_entry: Dictionary = _assets_old[_db_index]
 
-	return _assets[_db_index]
+	return _assets_old[_db_index]
 
 
 func remove_asset() -> void:
@@ -134,16 +120,16 @@ func remove_asset() -> void:
 
 
 func update_asset(asset_id: int, key: String, value: Variant) -> void:
-	var _db_index: int = _assets.find_custom(func(entry): return entry.id == asset_id)
+	var _db_index: int = _assets_old.find_custom(func(entry): return entry.id == asset_id)
 
 	# TODO: Error handling.
 
-	_assets[_db_index][key] = value
+	_assets_old[_db_index][key] = value
 	return
 
 
 func get_all_asset() -> Array[Dictionary]:
-	return _assets
+	return _assets_old
 
 
 func add_relation(node_id: int, node_property: String, resourece_id: int) -> void:
@@ -154,7 +140,7 @@ func add_relation(node_id: int, node_property: String, resourece_id: int) -> voi
 	_db_entry.node_property = node_property
 	_db_entry.resource_id = resourece_id
 
-	_asset_relations.append(_db_entry)
+	_asset_rel_old.append(_db_entry)
 
 	_id = _id + 1
 
@@ -171,4 +157,4 @@ func remove_relation() -> void:
 
 
 func get_all_asset_relation() -> Array[Dictionary]:
-	return _asset_relations
+	return _asset_rel_old
