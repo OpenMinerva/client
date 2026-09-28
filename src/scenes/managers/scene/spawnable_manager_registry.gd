@@ -7,21 +7,13 @@
 # --- License
 extends Node
 
-const ASSET_RELATION_TEMPLATE: Dictionary = {
-	"node_id": -1,
-	"resource_id": -1,
-	"node_property": "",
-}
-
+var _id: int = 1
 # New Variables
 var _spawnables: Array[Node] = []
 var _resources: Array[Resource] = []
 var _materials: Array[Material] = []
 var _relations: Array[Dictionary] = []
 var _gizmos: Array[int] = []
-
-@onready var _id: int = 1
-@onready var _asset_rel_old: Array[Dictionary] = []
 
 
 func add_spawnable(node: Node, node_id: int = _id) -> void:
@@ -102,17 +94,11 @@ func get_all_asset() -> Array[Resource]:
 
 
 func add_relation(node_id: int, node_property: String, resourece_id: int) -> void:
-	GlobalLogger.log("Adding asset relation between '%s' and '%s' to database." % [node_id, resourece_id])
+	GlobalLogger.log("Adding resource relation between '%s' and '%s' to database." % [node_id, resourece_id])
 
-	var _db_entry = ASSET_RELATION_TEMPLATE.duplicate()
-	_db_entry.node_id = node_id
-	_db_entry.node_property = node_property
-	_db_entry.resource_id = resourece_id
+	_relations.append({ "node": node_id, "property": node_property, "value": resourece_id })
 
-	_asset_rel_old.append(_db_entry)
-
-	_id = _id + 1
-
+	GlobalLogger.log("Relation between '%s' and '%s' added." % [node_id, resourece_id])
 	return
 
 
@@ -126,4 +112,4 @@ func remove_relation() -> void:
 
 
 func get_all_asset_relation() -> Array[Dictionary]:
-	return _asset_rel_old
+	return _relations
