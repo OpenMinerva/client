@@ -202,9 +202,9 @@ func set_resource(node_id: int, property_name: String, resource_id: int) -> void
 	var _caller_id: int = multiplayer.get_remote_sender_id()
 
 	if _my_id == 1:
-		var _resource: Dictionary = get_resource_by_id(resource_id)
+		var _resource: Resource = get_resource_by_id(resource_id)
 
-		if _resource.has("resource") == false:
+		if _resource == null:
 			GlobalLogger.log("Resource '%s' is in invalid state." % resource_id, Enum.LogLevel.ERROR)
 			return
 
@@ -220,9 +220,9 @@ func set_resource(node_id: int, property_name: String, resource_id: int) -> void
 
 @rpc("call_local", "authority", "reliable")
 func set_resource_on_spawnable(node_id: int, property_name: String, resource_id: int) -> void:
-	var _resource: Dictionary = get_resource_by_id(resource_id)
+	var _resource: Resource = get_resource_by_id(resource_id)
 
-	set_property_on_spawnable(node_id, property_name, _resource.resource)
+	set_property_on_spawnable(node_id, property_name, _resource)
 	return
 
 
@@ -253,22 +253,22 @@ func create_asset(asset_type: String, properties: Array) -> Variant:
 		var _asset = spawn_asset(asset_type, properties, _target_id)
 		spawn_asset.rpc(asset_type, properties, _target_id)
 
-		var _asset_db_entry: Dictionary = registry.get_asset(_asset)
+		var _asset_db_entry: Resource = registry.get_asset(_asset)
 
 		if caller_id != 0 && caller_id != my_id:
 			# This call originated from a client, we need to return a reference to the spawned asset, and not the asset itself.
-			return int(_asset_db_entry.resource.get_name())
+			return int(_asset_db_entry.get_name())
 
-		return _asset_db_entry.resource
+		return _asset_db_entry
 	else:
 		# Call on the host to create (and sync) the resource.
 		var _asset: int = await rpcawaiter.send_rpc(1, create_asset.bind(asset_type, properties))
 
 		# We have the asset name (id), we need to find it in the asset_database.
 
-		var _asset_db_entry: Dictionary = registry.get_asset(_asset)
+		var _asset_db_entry: Resource = registry.get_asset(_asset)
 		# Return the resource directly.
-		return _asset_db_entry.resource
+		return _asset_db_entry
 
 
 @rpc("call_local", "authority", "reliable")
@@ -299,13 +299,12 @@ func set_property_on_spawnable(node_id: int, property_name: String, property_val
 
 @rpc("call_local", "authority", "reliable")
 func set_property_on_resource_internal(resource_id: int, property_name: String, property_value: Variant):
-	var _entity_db = get_resource_by_id(resource_id)
+	var _entity_db: Resource = get_resource_by_id(resource_id)
 
-	if _entity_db == { }:
+	if _entity_db == null:
 		return
 
-	_entity_db.resource.set_indexed(property_name, property_value)
-	registry.update_asset(resource_id, property_name, property_value)
+	_entity_db.set_indexed(property_name, property_value)
 	return
 
 
@@ -361,11 +360,11 @@ func get_by_id(spawnable_id: int) -> Node:
 	return _db_entry
 
 
-func get_resource_by_id(resource_id: int) -> Dictionary:
-	var _asset_db_entry: Dictionary = registry.get_asset(resource_id)
+func get_resource_by_id(resource_id: int) -> Resource:
+	var _asset_db_entry: Resource = registry.get_asset(resource_id)
 
-	if _asset_db_entry == { }:
-		return { }
+	if _asset_db_entry == null:
+		return null
 
 	return _asset_db_entry
 
@@ -395,15 +394,7 @@ func _spawn_resource(resource_class: String, properties: Array, asset_id: String
 		_resource.set_indexed(_prop.name, _prop.value)
 
 	# Add the resource to the database
-	var _db_id: int = _add_asset_to_database(resource_class, _resource, properties, int(asset_id))
-
-	# Set the resource name
-	_resource.set_name(str(_db_id))
+	registry.add_asset(_resource, int(asset_id))
 
 	# Return the resource
 	return _resource
-
-
-func _add_asset_to_database(asset_class: String, resource: Resource, props: Array, asset_id: int = 0) -> int:
-	GlobalLogger.log("Deprecated call '%s'" % get_stack()[0]["function"], Enum.LogLevel.WARNING)
-	return registry.add_asset(asset_class, resource, props, asset_id)

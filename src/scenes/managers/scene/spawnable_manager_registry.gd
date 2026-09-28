@@ -7,20 +7,6 @@
 # --- License
 extends Node
 
-const SPAWNABLE_TEMPLATE: Dictionary = {
-	"type": -1,
-	"spawner": -1,
-	"physics_owner": 1,
-	"node": null,
-	"parent": -1,
-	"id": -1,
-	"pretty_name": "ERROR",
-}
-const ASSET_TEMPLATE: Dictionary = {
-	"id": -1,
-	"asset_class": "",
-	"properties": { },
-}
 const ASSET_RELATION_TEMPLATE: Dictionary = {
 	"node_id": -1,
 	"resource_id": -1,
@@ -35,20 +21,19 @@ var _relations: Array[Dictionary] = []
 var _gizmos: Array[int] = []
 
 @onready var _id: int = 1
-@onready var _assets_old: Array[Dictionary] = []
 @onready var _asset_rel_old: Array[Dictionary] = []
 
 
-func add_spawnable(node: Node) -> void:
+func add_spawnable(node: Node, node_id: int = _id) -> void:
 	GlobalLogger.log("Adding spawnable '%s' to database." % node.name)
 
-	node.name = str(_id)
+	node.name = str(node_id)
 	_spawnables.append(node)
 
 	if node.has_method("select") == true:
 		_gizmos.append(int(node.name))
 
-	GlobalLogger.log("Spawnable '%s' successfully added to database as id '%s'." % [node.name, _id])
+	GlobalLogger.log("Spawnable '%s' successfully added to database as id '%s'." % [node.name, node_id])
 	_id = _id + 1
 	return
 
@@ -85,33 +70,26 @@ func get_active_id() -> int:
 	return _id
 
 
-func add_asset(asset_class: String, resource: Resource, properties: Array, asset_id: int = _id) -> int:
+func add_asset(resource: Resource, asset_id: int = _id) -> void:
 	GlobalLogger.log("Adding asset '%s' to database." % asset_id)
 
-	var _db_entry = ASSET_TEMPLATE.duplicate()
-	_db_entry.id = asset_id
-	_db_entry.resource = resource
-	_db_entry.props = properties
-	_db_entry.asset_class = asset_class
+	resource.set_name(str(asset_id))
+	_resources.append(resource)
 
-	_assets_old.append(_db_entry)
-
+	GlobalLogger.log("Resource '%s' successfully added to database as id '%s'." % [resource.get_name(), asset_id])
 	_id = _id + 1
+	return
 
-	return _db_entry.id
 
-
-func get_asset(asset_id: int) -> Dictionary:
-	GlobalLogger.log("Getting asset '%s' from database." % asset_id)
-	var _db_index: int = _assets_old.find_custom(func(entry): return entry.id == asset_id)
+func get_asset(asset_id: int) -> Resource:
+	GlobalLogger.log("Getting resource '%s' from database." % asset_id)
+	var _db_index: int = _resources.find_custom(func(entry): return int(entry.get_name()) == asset_id)
 
 	if _db_index == -1:
-		GlobalLogger.log("Could not find asset '%s' in database." % asset_id, Enum.LogLevel.WARNING)
-		return { }
+		GlobalLogger.log("Could not find resource '%s' in database." % asset_id, Enum.LogLevel.WARNING)
+		return null
 
-	var _db_entry: Dictionary = _assets_old[_db_index]
-
-	return _assets_old[_db_index]
+	return _resources[_db_index]
 
 
 func remove_asset() -> void:
@@ -119,17 +97,8 @@ func remove_asset() -> void:
 	return
 
 
-func update_asset(asset_id: int, key: String, value: Variant) -> void:
-	var _db_index: int = _assets_old.find_custom(func(entry): return entry.id == asset_id)
-
-	# TODO: Error handling.
-
-	_assets_old[_db_index][key] = value
-	return
-
-
-func get_all_asset() -> Array[Dictionary]:
-	return _assets_old
+func get_all_asset() -> Array[Resource]:
+	return _resources
 
 
 func add_relation(node_id: int, node_property: String, resourece_id: int) -> void:
