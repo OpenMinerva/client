@@ -113,3 +113,74 @@ func remove_relation() -> void:
 
 func get_all_asset_relation() -> Array[Dictionary]:
 	return _relations
+
+
+func get_encoded_database() -> Dictionary:
+	const ignore_property_name: Array[String] = ["multiplayer", "script", "owner"]
+	var _response: Dictionary = { "spawnables": [], "resources": [], "relations": [] }
+
+	for _spawnable in _spawnables:
+		var _entry: Dictionary = { "id": -1, "parent": -1, "properties": { }, "metadata": { } }
+
+		_entry.id = str(_spawnable.name)
+
+		if _spawnable.get_parent().name.is_valid_int() == true:
+			_entry.parent = int(_spawnable.get_parent().name)
+
+		for _property in _spawnable.get_property_list():
+			var _property_value: Variant
+
+			if _property.class_name == "":
+				continue
+
+			if ignore_property_name.has(_property.name):
+				continue
+
+			_property_value = _spawnable[_property.name]
+
+			if typeof(_property_value) == TYPE_OBJECT:
+				if is_instance_of(_property_value, Node) == true:
+					_property_value = int(_property_value.name)
+				elif is_instance_of(_property_value, Resource) == true:
+					_property_value = int(_property_value.get_name())
+				else:
+					continue
+
+			_entry.properties[_property.name] = _property_value
+
+		for _metadata in _spawnable.get_meta_list():
+			_entry.metadata[_metadata] = _spawnable.get_meta(_metadata)
+
+		_response.spawnables.append(_entry)
+
+	for _resource in _resources:
+		var _entry: Dictionary = { "id": -1, "properties": { }, "metadata": { } }
+		_entry.id = _resource.get_name()
+
+		for _property in _resource.get_property_list():
+			var _property_value: Variant
+
+			if _property.name not in _resource:
+				continue
+
+			_property_value = _resource[_property.name]
+
+			if typeof(_property_value) == TYPE_OBJECT:
+				if is_instance_of(_property_value, Node) == true:
+					_property_value = int(_property_value.name)
+				elif is_instance_of(_property_value, Resource) == true:
+					_property_value = int(_property_value.get_name())
+				else:
+					continue
+
+			_entry.properties[_property.name] = _property_value
+
+		for _metadata in _resource.get_meta_list():
+			_entry.metadata[_metadata] = _resource.get_meta(_metadata)
+
+		_response.resources.append(_entry)
+
+	for _relation in _relations:
+		_response.relations.append(_relation)
+
+	return _response

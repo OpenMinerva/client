@@ -56,23 +56,22 @@ func on_banned():
 func req_spawnable_db() -> void:
 	# A peer wants the server database.
 	var caller_id = multiplayer.get_remote_sender_id()
-	var _database: Array[Dictionary] = spawnable_m.registry.get_all_spawnable()
-	var _assets: Array[Dictionary] = spawnable_m.registry.get_all_asset()
-	var _asset_relations: Array[Dictionary] = spawnable_m.registry.get_all_asset_relation()
 
-	GlobalLogger.log("Sending spawnable database to peer %d: %d entries" % [caller_id, _database.size()])
+	var _state: Dictionary = spawnable_m.registry.get_encoded_database()
+
+	GlobalLogger.log("Sending spawnable database to peer %d: %d entries" % [caller_id, -1])
 
 	# Send the spawnable and player database to the client.
-	rec_spawnable_db.rpc_id(caller_id, _database, player_m.players, _assets, _asset_relations)
+	rec_spawnable_db.rpc_id(caller_id, _state)
 
 	return
 
 
 @rpc("authority", "reliable")
-func rec_spawnable_db(db: Array, players: Dictionary, assets: Array, asset_relations: Array) -> void:
+func rec_spawnable_db(state: Dictionary) -> void:
 	GlobalLogger.log("Received the spawnable database.")
 	# We have the database, set it.
-	await spawnable_m.receive_database(db, players, assets, asset_relations)
+	await spawnable_m.receive_database(state)
 
 	# Tell the server we have finished spawning the nodes, tell the server to sync the transforms.
 	spawnable_m.sync_all.rpc_id(1)

@@ -63,6 +63,9 @@ func set_player_node(peer_id: int, node_id: int) -> void:
 	if _target == null:
 		return
 
+	if node == null:
+		return
+
 	_target.node = node
 	_target.node_id = node.name
 

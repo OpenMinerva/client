@@ -80,6 +80,8 @@ static func build(node_name: String, spawnable_manager: Node) -> Node:
 
 	if node_name == "OM_PlayerController":
 		var _work_node = load("res://scenes/players/player.tscn").instantiate()
+		_add_node_metadata(_work_node, node_name)
+		_work_node.set_meta("spawnable_type", node_name)
 		return _work_node
 
 	if node_name == "RigidBody3D":

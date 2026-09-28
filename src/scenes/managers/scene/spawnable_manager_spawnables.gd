@@ -63,7 +63,7 @@ func create(node_type: String, spawner_peer_id: int, parent_id: int, node_id: in
 
 	_node = await NSB.build(node_type, _spawnable_manager)
 
-	_registry.add_spawnable(_node)
+	_registry.add_spawnable(_node, node_id)
 
 	# HACK: Spawn the node at origin.
 	if _node.get("position") != null:

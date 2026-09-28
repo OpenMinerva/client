@@ -38,23 +38,19 @@ func sync_all() -> void:
 	if !is_multiplayer_authority():
 		return
 
-	var _database: Array[Dictionary] = registry.get_all_spawnable()
+	var _database: Array[Node] = registry.get_all_spawnable()
 	var _caller_id: int = spawnables._get_caller_id()
 	GlobalLogger.log("Received a request to sync all nodes from '%s'" % _caller_id, Enum.LogLevel.INFO)
 	GlobalLogger.log("Database size: '%s'" % _database.size())
 
 	for spawnable in _database:
-		if spawnable.node == null:
-			GlobalLogger.log("Node does not exist.", Enum.LogLevel.WARNING)
-			continue
-
-		if ("transform" in spawnable.node) == false:
+		if ("transform" in spawnable) == false:
 			# We can't transform something without a transform field!
-			GlobalLogger.log("'%s' does not have a transform. Not sending a transform." % spawnable.id)
+			GlobalLogger.log("'%s' does not have a transform. Not sending a transform." % spawnable.name)
 			continue
 
-		GlobalLogger.log("Sending transform for '%s'" % spawnable.id)
-		spawnables.set_transform.rpc_id(_caller_id, spawnable.id, spawnable.node.transform)
+		GlobalLogger.log("Sending transform for '%s'" % spawnable.name)
+		spawnables.set_transform.rpc_id(_caller_id, int(spawnable.name), spawnable.transform)
 	return
 
 
@@ -188,6 +184,7 @@ func set_property_on_resource(resource_id: int, property_name: String, property_
 
 	if _my_id == 1:
 		set_property_on_resource_internal.rpc(resource_id, property_name, property_value)
+		registry.add_relation(resource_id, property_name, int(property_value.get_name()))
 	else:
 		await rpcawaiter.send_rpc(1, set_property_on_resource.bind(resource_id, property_name, property_value))
 		return
@@ -321,32 +318,36 @@ func set_authority_on_spawnable(node_id: int, peer_id: int) -> void:
 	return
 
 
-func receive_database(database: Array, players: Dictionary, assets: Array, asset_relations: Array) -> void:
+func receive_database(state: Dictionary) -> void:
 	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
 
-	GlobalLogger.log("[%s] Receiving spawnable database with %d entries" % [_my_id, database.size()])
+	GlobalLogger.log("[%s] Receiving spawnable database with %d entries" % [_my_id, -1])
 
-	# Spawn in all of the nodes
-	for spawnable in database:
-		GlobalLogger.log("Spawning '%s' as '%s'." % [spawnable.id, spawnable.type])
-		spawnables.create(spawnable.type, spawnable.spawner, int(spawnable.parent), int(spawnable.id), true)
+	for _spawnable in state.spawnables:
+		var _spawnable_type = "Node3D"
 
-	# Spawn in all of the assets
-	for asset in assets:
-		GlobalLogger.log("Spawning asset '%s'." % [asset.id])
-		spawn_asset(asset.asset_class, asset.props, str(asset.id))
+		if _spawnable.metadata.has("spawnable_type") == true:
+			_spawnable_type = _spawnable.metadata.spawnable_type
 
-	# Set the relations of the assets to the nodes.
-	for relation in asset_relations:
-		var _asset = get_resource_by_id(relation.resource_id)
+		GlobalLogger.log("Spawning '%s' as '%s'." % [_spawnable.id, _spawnable_type])
+		spawnables.create(_spawnable_type, 0, int(_spawnable.parent), int(_spawnable.id), true)
 
-		set_property_on_spawnable(relation.node_id, relation.node_property, _asset.resource)
-		continue
+	for _resource in state.resources:
+		var _formatted_array: Array[Dictionary] = []
+
+		for _key in _resource.properties.keys():
+			var _dictionary: Dictionary = { "name": null, "value": null }
+			_dictionary.name = _key
+			_dictionary.value = _resource.properties[_key]
+			_formatted_array.append(_dictionary)
+
+		spawn_asset(_resource.metadata.class, _formatted_array, str(_resource.id))
+
+	for _relation in state.relations:
+		var _resource: Resource = get_resource_by_id(_relation.value)
+		set_property_on_spawnable(_relation.node, _relation.property, _resource)
 
 	GlobalLogger.log("[%s] Database sync complete." % _my_id)
-
-	# Update the player database.
-	player_m.set_player_database(players)
 
 	return
 
@@ -395,6 +396,9 @@ func _spawn_resource(resource_class: String, properties: Array, asset_id: String
 
 	# Add the resource to the database
 	registry.add_asset(_resource, int(asset_id))
+
+	# Save the resource class as a metadata field to keep track of what it is.
+	_resource.set_meta("class", resource_class)
 
 	# Return the resource
 	return _resource
