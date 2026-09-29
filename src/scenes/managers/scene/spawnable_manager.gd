@@ -184,7 +184,6 @@ func set_property_on_resource(resource_id: int, property_name: String, property_
 
 	if _my_id == 1:
 		set_property_on_resource_internal.rpc(resource_id, property_name, property_value)
-		registry.add_relation(resource_id, property_name, int(property_value.get_name()))
 	else:
 		await rpcawaiter.send_rpc(1, set_property_on_resource.bind(resource_id, property_name, property_value))
 		return

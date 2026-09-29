@@ -11,13 +11,13 @@ var _runner: GdUnitSceneRunner
 var _scene_container: Node3D
 
 
-func before_test(_do_skip: bool = true) -> void:
+func before(_do_skip: bool = true) -> void:
 	_runner = scene_runner("res://scenes/master.tscn")
 	_scene_container = _runner.find_child("Scenes")
 	return
 
 
-func after_test() -> void:
+func after() -> void:
 	_runner = null
 	return
 
