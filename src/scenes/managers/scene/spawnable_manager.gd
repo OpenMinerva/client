@@ -389,8 +389,9 @@ func _spawn_resource(resource_class: String, properties: Array, asset_id: String
 	# Set the resource properties
 	for _prop in properties:
 		if _prop.name == "resource_path":
-			# Don't set the resource path property, this causes an error, and is not required anyways.
+			_resource.take_over_path(_prop.value)
 			continue
+
 		_resource.set_indexed(_prop.name, _prop.value)
 
 	# Add the resource to the database
