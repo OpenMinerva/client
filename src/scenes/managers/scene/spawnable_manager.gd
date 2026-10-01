@@ -184,6 +184,8 @@ func set_property_on_resource(resource_id: int, property_name: String, property_
 
 	if _my_id == 1:
 		set_property_on_resource_internal.rpc(resource_id, property_name, property_value)
+		if property_value is Resource:
+			registry.add_relation(resource_id, property_name, int(property_value.get_name()))
 	else:
 		await rpcawaiter.send_rpc(1, set_property_on_resource.bind(resource_id, property_name, property_value))
 		return
@@ -345,6 +347,10 @@ func receive_database(state: Dictionary) -> void:
 	for _relation in state.relations:
 		var _resource: Resource = get_resource_by_id(_relation.value)
 		set_property_on_spawnable(_relation.node, _relation.property, _resource)
+
+		# HACK: Shaders get a different code path. This should be improved to a more robust solution.
+		if _relation.property == "shader":
+			set_property_on_resource_internal(_relation.node, _relation.property, _resource)
 
 	GlobalLogger.log("[%s] Database sync complete." % _my_id)
 
