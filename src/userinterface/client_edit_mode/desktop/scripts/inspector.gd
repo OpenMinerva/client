@@ -244,7 +244,7 @@ func _on_node_created(_node: Node) -> void:
 	return
 
 
-func _on_node_destroyed(_node_entry: Dictionary) -> void:
+func _on_node_destroyed(_node_entry: Node) -> void:
 	if session_root == null:
 		session_root = app_scene_m.get_master_root(app_scene_m.active_session)
 
@@ -286,7 +286,7 @@ func _inspector_build(root_node: Node = session_root) -> void:
 		GlobalLogger.log("Invalid root node: '%s'" % root_node, Enum.LogLevel.WARNING)
 		return
 
-	var _database: Array[Dictionary] = session_spawnable_m.registry.get_all_spawnable()
+	var _database: Array[Node] = session_spawnable_m.registry.get_all_spawnable()
 
 	var _total_spawnable_label: String = str(_database.size())
 	var _total_player_label: String = str(session_players_m.get_player_count())
@@ -503,17 +503,17 @@ func _select(target_node: int) -> void:
 		GlobalLogger.log("Invalid node selected", Enum.LogLevel.WARNING)
 		return
 
-	var _node_db_entry = session_spawnable_m.get_by_id(target_node)
+	var _node_db_entry: Node = session_spawnable_m.get_by_id(target_node)
 	my_gizmo = await session_spawnable_m.select_spawnable(target_node)
 
 	my_gizmo.mode = _gizmo_mode
 	my_gizmo.use_local_space = _gizmo_space_local
 
-	_node_property_editor.get_node_properties(_node_db_entry.node)
+	_node_property_editor.get_node_properties(_node_db_entry)
 
 	# HACK: Update ALL of the node properties after a transformation was done.
 	# This should be happening somewhere else that is more stable / live.
-	my_gizmo.transform_end.connect(func(_mode): _node_property_editor.update_node_properties(_node_db_entry.node))
+	my_gizmo.transform_end.connect(func(_mode): _node_property_editor.update_node_properties(_node_db_entry))
 
 	return
 

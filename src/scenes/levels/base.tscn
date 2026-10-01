@@ -1,12 +1,12 @@
 [gd_scene format=3 uid="uid://bysrhijnau31g"]
 
-[ext_resource type="Script" uid="uid://clq1gdtfyjdcc" path="res://scenes/managers/scene/spawnable_manager.gd" id="1_5on25"]
+[ext_resource type="Script" uid="uid://bts7ymeobvton" path="res://scenes/managers/scene/spawnable_manager.gd" id="1_5on25"]
 [ext_resource type="Script" uid="uid://c13l6ywhxq6n5" path="res://scenes/managers/scene/player.gd" id="1_c3hqj"]
 [ext_resource type="Script" uid="uid://bmm4mxv8pm5gh" path="res://scenes/managers/scene/network.gd" id="1_fundk"]
 [ext_resource type="Script" uid="uid://b8y61adv3jap4" path="res://scenes/managers/scene/base.gd" id="1_qmew7"]
 [ext_resource type="Script" uid="uid://cxbdjoelope42" path="res://scenes/managers/scene/signalbus.gd" id="2_fundk"]
-[ext_resource type="Script" uid="uid://b4ulg37adbihd" path="res://scenes/managers/scene/spawnable_manager_registry.gd" id="2_qmew7"]
-[ext_resource type="Script" uid="uid://dc0kn2wwi23j4" path="res://scenes/managers/scene/spawnable_manager_spawnables.gd" id="4_g3oah"]
+[ext_resource type="Script" uid="uid://drk8jcq2lnr6k" path="res://scenes/managers/scene/spawnable_manager_registry.gd" id="2_qmew7"]
+[ext_resource type="Script" uid="uid://c84njieow1ftk" path="res://scenes/managers/scene/spawnable_manager_spawnables.gd" id="4_g3oah"]
 [ext_resource type="Script" uid="uid://b0dicnumx46f8" path="res://addons/rpc-await/rpc_await.gd" id="5_nd5i0"]
 [ext_resource type="Script" uid="uid://bt0e1jyahxvpy" path="res://scenes/managers/scene/spawnable_manager_gizmos.gd" id="5_tp863"]
 
