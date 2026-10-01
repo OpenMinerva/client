@@ -137,6 +137,9 @@ func get_encoded_database() -> Dictionary:
 				continue
 
 			_property_value = _spawnable[_property.name]
+			if _property_value == null:
+				GlobalLogger.log("Invalid _property_value.", Enum.LogLevel.WARNING)
+				continue
 
 			if typeof(_property_value) == TYPE_OBJECT:
 				if is_instance_of(_property_value, Node) == true:
