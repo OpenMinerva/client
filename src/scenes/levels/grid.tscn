@@ -17,6 +17,12 @@ ssr_enabled = true
 ssao_enabled = true
 glow_enabled = true
 
+[sub_resource type="QuadMesh" id="QuadMesh_8gpll"]
+size = Vector2(1000, 1000)
+subdivide_width = 10
+subdivide_depth = 10
+orientation = 1
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_gbca3"]
 render_priority = 0
 shader = ExtResource("1_ikf4c")
@@ -41,13 +47,6 @@ shader_parameter/in_dashed_scale_y = 0.3
 shader_parameter/in_dashed_count_x = 6.0
 shader_parameter/in_dashed_count_y = 6.0
 
-[sub_resource type="QuadMesh" id="QuadMesh_8gpll"]
-material = SubResource("ShaderMaterial_gbca3")
-size = Vector2(1000, 1000)
-subdivide_width = 10
-subdivide_depth = 10
-orientation = 1
-
 [sub_resource type="BoxShape3D" id="BoxShape3D_8gpll"]
 size = Vector3(1000, 0.001, 1000)
 
@@ -67,6 +66,7 @@ metadata/spawnable_type = "WorldEnvironment"
 
 [node name="Ground" type="MeshInstance3D" parent="." unique_id=1644270184]
 mesh = SubResource("QuadMesh_8gpll")
+surface_material_override/0 = SubResource("ShaderMaterial_gbca3")
 metadata/scene_node = true
 metadata/spawnable_type = "MeshInstance3D"
 

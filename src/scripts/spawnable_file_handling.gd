@@ -67,12 +67,13 @@ func load_spawnable(path: String) -> Node:
 	var session_spawnable_manager = scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager")
 	var _tasks: Array[Dictionary] = []
 	var _path_parent_dictionary: Dictionary = { }
-	var _material_references: Dictionary = { }
+
+	var _shaders: Dictionary = { }
 
 	# Check if file exists at the given path.
 	if FileManager.file_exists(path) == false:
 		GlobalLogger.log("File '%s' does not exist." % path, Enum.LogLevel.INFO)
-		return
+		return null
 
 	var _scene = ResourceLoader.load(path)
 	var _state = _scene.get_state()
@@ -91,35 +92,25 @@ func load_spawnable(path: String) -> Node:
 		_task.resources = []
 		_task.properties = []
 		_task.materials = []
+		_task.shaders = []
 
 		for _prop_id in range(_num_properties):
 			var _prop_name: String = _state.get_node_property_name(_node_id, _prop_id)
 			var _prop_value: Variant = _state.get_node_property_value(_node_id, _prop_id)
 
 			if _prop_value is Resource:
-				_task.resources.append(_prop_name)
-				_prop_value = _flatten_resource(_prop_value)
+				_task.resources.append({ "name": _prop_name, "resource": _prop_value, "class": _prop_value.get_class() })
+				if _prop_value.get_class() == "ShaderMaterial":
+					_task.shaders.append({ "target_material": _prop_value.get_instance_id(), "resource": _prop_value.shader, "class": _prop_value.shader.get_class() })
+				_prop_value = _prop_value.get_instance_id()
 
 			if _prop_name.begins_with("metadata/") == true:
 				_task.metadata.append({ "name": _prop_name.replace("metadata/", ""), "value": _prop_value })
+				continue
 
 			if typeof(_prop_name) != TYPE_STRING_NAME && _prop_name.begins_with("metadata/") == false:
 				_task.properties.append({ "name": _prop_name, "value": _prop_value })
-
-			# Check if we need to spawn in materials
-			# FIXME: Invalid syntax.
-			if _prop_value is Dictionary and _prop_value.properties is Array:
-				for _sub_property in _prop_value.properties:
-					if _sub_property.name == "material":
-						var _material_id: int = -1
-
-						var _material_name: String = str(abs(_sub_property.value.get_instance_id()))
-
-						if _material_references.get(_material_name) == null:
-							_material_references[_material_name] = { "references": [], "id": _material_name, "material": _sub_property.value }
-
-						_task.materials.append({ "name": "material", "value": _material_name })
-						_sub_property.value = _material_name
+				continue
 
 			_task.set(_prop_name, _prop_value)
 
@@ -145,11 +136,6 @@ func load_spawnable(path: String) -> Node:
 		# Set the parent task of this task based upon previously discovered values.
 		_task.parent = _path_parent_dictionary[_task_base_path]
 
-	# Spawn in materials
-	for _material in _material_references.keys():
-		var _asset: Resource = await session_spawnable_manager.create_asset("ShaderMaterial", [{ "name": "shader", "value": _material_references[_material].material.shader }])
-		_material_references[_material].value = _asset
-
 	# Finally, we spawn in the nodes.
 	for _task in _tasks:
 		var _node: Node
@@ -163,7 +149,9 @@ func load_spawnable(path: String) -> Node:
 		else:
 			var _parent_task_index_id: int = _tasks.find_custom(func(_entry): return _entry.id == _task.parent)
 			var _parent_task: Dictionary = _tasks[_parent_task_index_id]
-			_node = await session_spawnable_manager.create_spawnable(_task["metadata/spawnable_type"], int(_parent_task.node.name))
+			var _spawnable_type_index: int = _task.metadata.find_custom(func(entry): return entry.name == "spawnable_type")
+			var _spawnable_type: String = _task.metadata[_spawnable_type_index].value
+			_node = await session_spawnable_manager.create_spawnable(_spawnable_type, int(_parent_task.node.name))
 
 		_task.node = _node
 
@@ -176,21 +164,34 @@ func load_spawnable(path: String) -> Node:
 		for _prop in _task.properties:
 			session_spawnable_manager.set_property.rpc_id(1, int(_task.node.name), _prop.name, _prop.value)
 
-		for _prop in _task.resources:
-			var _prop_dict = _task[_prop]
+		for _resource in _task.resources:
+			var _flat_resource: Dictionary = _flatten_resource(_resource.resource)
+			var _resource_name: String = _resource.name
+			var _resource_value: Variant = _resource.resource
 
-			# Update the material references from the previously created materials.
-			for _sub_property in _prop_dict.properties:
-				if _sub_property.name == "material":
-					_sub_property.value = _material_references[_sub_property.value].value
-					session_spawnable_manager.set_resource(int(_task.node.name), _prop, int(_sub_property.value.get_name()))
-					session_spawnable_manager.set_property_on_resource(int(_sub_property.value.get_name()), "shader", _sub_property.value.shader)
+			var _asset: Resource = await session_spawnable_manager.create_asset(_flat_resource.class, _flat_resource.properties)
 
-			# First we should create the asset on the server
-			var _asset: Resource = await session_spawnable_manager.create_asset(_prop_dict.class, _prop_dict.properties)
+			if _flat_resource.class == "ShaderMaterial":
+				var _property_index: int = _flat_resource.properties.find_custom(func(entry): return entry.name == "shader")
+				var _shader_resource_name: int = _flat_resource.properties[_property_index].value.get_instance_id()
+				_shaders[_asset.get_name()] = { "resource": _asset, "id": _shader_resource_name }
+				_resource_value = int(_shader_resource_name)
 
-			# Then we set that resource as the value of the resource property.
-			session_spawnable_manager.set_resource(int(_task.node.name), _prop, int(_asset.get_name()))
+			await session_spawnable_manager.set_resource(int(_node.name), _resource.name, int(_asset.get_name()))
+
+		for _shader in _task.shaders:
+			var _raw_resource: Shader = _shader.resource
+			var _flatten_res: Dictionary = _flatten_resource(_raw_resource)
+			var _shader_asset: Resource = await session_spawnable_manager.create_asset("Shader", _flatten_res.properties)
+			var _shader_id: int = _shader.resource.get_instance_id()
+
+			var _target_association = null
+			for _saved_shader in _shaders.keys():
+				if _shaders[_saved_shader].id == _shader_id:
+					_target_association = _shaders[_saved_shader].resource
+					break
+
+			session_spawnable_manager.set_property_on_resource(int(_target_association.get_name()), "shader", _shader_asset)
 
 	var _parent_task_index: int = _tasks.find_custom(func(entry): return entry.id == 0)
 	var _parent_task = _tasks[_parent_task_index]
