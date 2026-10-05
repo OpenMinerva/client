@@ -24,7 +24,7 @@ func _physics_process(_delta):
 		return
 
 	for spawnable in registry.get_all_spawnable():
-		if spawnable.type != "RigidBody3D":
+		if spawnable.get_class() != "RigidBody3D":
 			continue
 		if spawnable.node.sleeping == true:
 			continue
@@ -38,23 +38,19 @@ func sync_all() -> void:
 	if !is_multiplayer_authority():
 		return
 
-	var _database: Array[Dictionary] = registry.get_all_spawnable()
+	var _database: Array[Node] = registry.get_all_spawnable()
 	var _caller_id: int = spawnables._get_caller_id()
 	GlobalLogger.log("Received a request to sync all nodes from '%s'" % _caller_id, Enum.LogLevel.INFO)
 	GlobalLogger.log("Database size: '%s'" % _database.size())
 
 	for spawnable in _database:
-		if spawnable.node == null:
-			GlobalLogger.log("Node does not exist.", Enum.LogLevel.WARNING)
-			continue
-
-		if ("transform" in spawnable.node) == false:
+		if ("transform" in spawnable) == false:
 			# We can't transform something without a transform field!
-			GlobalLogger.log("'%s' does not have a transform. Not sending a transform." % spawnable.id)
+			GlobalLogger.log("'%s' does not have a transform. Not sending a transform." % spawnable.name)
 			continue
 
-		GlobalLogger.log("Sending transform for '%s'" % spawnable.id)
-		spawnables.set_transform.rpc_id(_caller_id, spawnable.id, spawnable.node.transform)
+		GlobalLogger.log("Sending transform for '%s'" % spawnable.name)
+		spawnables.set_transform.rpc_id(_caller_id, int(spawnable.name), spawnable.transform)
 	return
 
 
@@ -65,17 +61,19 @@ func create_spawnable(node_type: String, node_parent: int = -1) -> Node:
 	if multiplayer.is_server():
 		GlobalLogger.log("Spawning node '%s'" % node_type)
 		var _spawnable_id: int = spawnables.server_create_spawnable(node_type, node_parent)
-		var _spawnable_db_entry: Dictionary = registry.get_spawnable(_spawnable_id)
-		if _spawnable_db_entry.has("node") == false:
+		var _spawnable_db_entry: Node = registry.get_spawnable(_spawnable_id)
+
+		if _spawnable_db_entry == null:
 			return null
-		return _spawnable_db_entry.node
+
+		return _spawnable_db_entry
 	else:
 		GlobalLogger.log("Requesting a spawn of node '%s'" % node_type)
 		var _spawnable_id: int = await rpcawaiter.send_rpc(1, spawnables.server_create_spawnable.bind(node_type, node_parent))
-		var _spawnable_db_entry: Dictionary = registry.get_spawnable(_spawnable_id)
-		if _spawnable_db_entry.has("node") == false:
+		var _spawnable_db_entry: Node = registry.get_spawnable(_spawnable_id)
+		if _spawnable_db_entry == null:
 			return null
-		return _spawnable_db_entry.node
+		return _spawnable_db_entry
 
 
 ## Destroy a spawnable in the session. This is an abstraction that will automatically handle the networking between the host and the client. If the host attempts to call this function in a session, they will call `_server_destroy_spawnable` directly. If a client calls this function, the client will automatically `rpc` the `_server_destroy_spawnable` to the host.
@@ -123,18 +121,18 @@ func select_spawnable(node_id: int) -> Node:
 	if multiplayer.is_server():
 		GlobalLogger.log("Selecting node '%s'." % node_id)
 		var _gizmo_id: int = gizmos.server_select_spawnable(node_id)
-		var _spawnable_db_entry: Dictionary = registry.get_spawnable(_gizmo_id)
-		if _spawnable_db_entry.has("node") == false:
+		var _spawnable_db_entry: Node = registry.get_spawnable(_gizmo_id)
+		if _spawnable_db_entry == null:
 			return null
-		return _spawnable_db_entry.node
+		return _spawnable_db_entry
 	else:
 		GlobalLogger.log("Requesting a selection of node '%s'" % node_id)
 		var _gizmo_id: int = await rpcawaiter.send_rpc(1, gizmos.server_select_spawnable.bind(node_id))
 
-		var _spawnable_db_entry: Dictionary = registry.get_spawnable(_gizmo_id)
-		if _spawnable_db_entry.has("node") == false:
+		var _spawnable_db_entry: Node = registry.get_spawnable(_gizmo_id)
+		if _spawnable_db_entry == null:
 			return null
-		return _spawnable_db_entry.node
+		return _spawnable_db_entry
 
 
 ## Deselect a spawnable with a gizmo. This is an abstraction that will automatically handle the networking between the host and the client. Only one node can be selected at a time. In effect, this will destroy the gizmo, but it has some extra checks and function calls to make sure that the application does not have an error.
@@ -166,6 +164,8 @@ func set_metadata(node_id: int, metadata_name: String, metadata_value: Variant) 
 
 @rpc("call_local", "any_peer", "reliable")
 func set_property(node_id: int, property_name: String, property_value: Variant) -> void:
+	# I think this function might need to get axed. I am now working on editing resources directly instead of though a path. 
+	# That, or this function should be renamed to a more specific role as this function is still used for translating physical nodes in the scene and other surface-level node values.
 	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
 	var _caller_id: int = multiplayer.get_remote_sender_id()
 
@@ -173,6 +173,21 @@ func set_property(node_id: int, property_name: String, property_value: Variant) 
 		set_property_on_spawnable.rpc(node_id, property_name, property_value)
 	else:
 		await rpcawaiter.send_rpc(1, set_property.bind(node_id, property_name, property_value))
+		return
+	return
+
+
+@rpc("call_local", "any_peer", "reliable")
+func set_property_on_resource(resource_id: int, property_name: String, property_value: Variant) -> void:
+	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
+	var _caller_id: int = multiplayer.get_remote_sender_id()
+
+	if _my_id == 1:
+		set_property_on_resource_internal.rpc(resource_id, property_name, property_value)
+		if property_value is Resource:
+			registry.add_relation(resource_id, property_name, int(property_value.get_name()))
+	else:
+		await rpcawaiter.send_rpc(1, set_property_on_resource.bind(resource_id, property_name, property_value))
 		return
 	return
 
@@ -185,9 +200,9 @@ func set_resource(node_id: int, property_name: String, resource_id: int) -> void
 	var _caller_id: int = multiplayer.get_remote_sender_id()
 
 	if _my_id == 1:
-		var _resource: Dictionary = get_resource_by_id(resource_id)
+		var _resource: Resource = get_resource_by_id(resource_id)
 
-		if _resource.has("resource") == false:
+		if _resource == null:
 			GlobalLogger.log("Resource '%s' is in invalid state." % resource_id, Enum.LogLevel.ERROR)
 			return
 
@@ -203,9 +218,9 @@ func set_resource(node_id: int, property_name: String, resource_id: int) -> void
 
 @rpc("call_local", "authority", "reliable")
 func set_resource_on_spawnable(node_id: int, property_name: String, resource_id: int) -> void:
-	var _resource: Dictionary = get_resource_by_id(resource_id)
+	var _resource: Resource = get_resource_by_id(resource_id)
 
-	set_property_on_spawnable(node_id, property_name, _resource.resource)
+	set_property_on_spawnable(node_id, property_name, _resource)
 	return
 
 
@@ -236,47 +251,58 @@ func create_asset(asset_type: String, properties: Array) -> Variant:
 		var _asset = spawn_asset(asset_type, properties, _target_id)
 		spawn_asset.rpc(asset_type, properties, _target_id)
 
-		var _asset_db_entry: Dictionary = registry.get_asset(_asset)
+		var _asset_db_entry: Resource = registry.get_asset(_asset)
 
 		if caller_id != 0 && caller_id != my_id:
 			# This call originated from a client, we need to return a reference to the spawned asset, and not the asset itself.
-			return int(_asset_db_entry.resource.get_name())
+			return int(_asset_db_entry.get_name())
 
-		return _asset_db_entry.resource
+		return _asset_db_entry
 	else:
 		# Call on the host to create (and sync) the resource.
 		var _asset: int = await rpcawaiter.send_rpc(1, create_asset.bind(asset_type, properties))
 
 		# We have the asset name (id), we need to find it in the asset_database.
 
-		var _asset_db_entry: Dictionary = registry.get_asset(_asset)
+		var _asset_db_entry: Resource = registry.get_asset(_asset)
 		# Return the resource directly.
-		return _asset_db_entry.resource
+		return _asset_db_entry
 
 
 @rpc("call_local", "authority", "reliable")
 func set_metadata_on_spawnable(node_id: int, metadata_name: String, metadata_value: Variant) -> void:
-	var _entity_db = get_by_id(node_id)
+	var _entity_db: Node = get_by_id(node_id)
 
 	# TODO: Error check.
-	if _entity_db == { }:
+	if _entity_db == null:
 		return
 
 	GlobalLogger.log("Adjusting metadata '%s' on node '%s'." % [metadata_name, node_id])
-	_entity_db.node.set_meta(metadata_name, metadata_value)
-	session_signalbus.node_metadata_change.emit(_entity_db.node)
+	_entity_db.set_meta(metadata_name, metadata_value)
+	session_signalbus.node_metadata_change.emit(_entity_db)
 
 	return
 
 
 @rpc("call_local", "authority", "reliable")
 func set_property_on_spawnable(node_id: int, property_name: String, property_value: Variant):
-	var _entity_db = get_by_id(node_id)
+	var _entity_db: Node = get_by_id(node_id)
 
-	if _entity_db == { }:
+	if _entity_db == null:
 		return
 
-	_entity_db.node.set_indexed(property_name, property_value)
+	_entity_db.set_indexed(property_name, property_value)
+	return
+
+
+@rpc("call_local", "authority", "reliable")
+func set_property_on_resource_internal(resource_id: int, property_name: String, property_value: Variant):
+	var _entity_db: Resource = get_resource_by_id(resource_id)
+
+	if _entity_db == null:
+		return
+
+	_entity_db.set_indexed(property_name, property_value)
 	return
 
 
@@ -293,50 +319,58 @@ func set_authority_on_spawnable(node_id: int, peer_id: int) -> void:
 	return
 
 
-func receive_database(database: Array, players: Dictionary, assets: Array, asset_relations: Array) -> void:
+func receive_database(state: Dictionary) -> void:
 	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
 
-	GlobalLogger.log("[%s] Receiving spawnable database with %d entries" % [_my_id, database.size()])
+	GlobalLogger.log("[%s] Receiving spawnable database with %d entries" % [_my_id, -1])
 
-	# Spawn in all of the nodes
-	for spawnable in database:
-		GlobalLogger.log("Spawning '%s' as '%s'." % [spawnable.id, spawnable.type])
-		spawnables.create(spawnable.type, spawnable.spawner, int(spawnable.parent), int(spawnable.id), true)
+	for _spawnable in state.spawnables:
+		var _spawnable_type = "Node3D"
 
-	# Spawn in all of the assets
-	for asset in assets:
-		GlobalLogger.log("Spawning asset '%s'." % [asset.id])
-		spawn_asset(asset.asset_class, asset.props, str(asset.id))
+		if _spawnable.metadata.has("spawnable_type") == true:
+			_spawnable_type = _spawnable.metadata.spawnable_type
 
-	# Set the relations of the assets to the nodes.
-	for relation in asset_relations:
-		var _asset = get_resource_by_id(relation.resource_id)
+		GlobalLogger.log("Spawning '%s' as '%s'." % [_spawnable.id, _spawnable_type])
+		spawnables.create(_spawnable_type, 0, int(_spawnable.parent), int(_spawnable.id), true)
 
-		set_property_on_spawnable(relation.node_id, relation.node_property, _asset.resource)
-		continue
+	for _resource in state.resources:
+		var _formatted_array: Array[Dictionary] = []
+
+		for _key in _resource.properties.keys():
+			var _dictionary: Dictionary = { "name": null, "value": null }
+			_dictionary.name = _key
+			_dictionary.value = _resource.properties[_key]
+			_formatted_array.append(_dictionary)
+
+		spawn_asset(_resource.metadata.class, _formatted_array, str(_resource.id))
+
+	for _relation in state.relations:
+		var _resource: Resource = get_resource_by_id(_relation.value)
+		set_property_on_spawnable(_relation.node, _relation.property, _resource)
+
+		# HACK: Shaders get a different code path. This should be improved to a more robust solution.
+		if _relation.property == "shader":
+			set_property_on_resource_internal(_relation.node, _relation.property, _resource)
 
 	GlobalLogger.log("[%s] Database sync complete." % _my_id)
-
-	# Update the player database.
-	player_m.set_player_database(players)
 
 	return
 
 
-func get_by_id(spawnable_id: int) -> Dictionary:
-	var _db_entry: Dictionary = registry.get_spawnable(spawnable_id)
+func get_by_id(spawnable_id: int) -> Node:
+	var _db_entry: Node = registry.get_spawnable(spawnable_id)
 
-	if _db_entry == { }:
-		return { }
+	if _db_entry == null:
+		return null
 
 	return _db_entry
 
 
-func get_resource_by_id(resource_id: int) -> Dictionary:
-	var _asset_db_entry: Dictionary = registry.get_asset(resource_id)
+func get_resource_by_id(resource_id: int) -> Resource:
+	var _asset_db_entry: Resource = registry.get_asset(resource_id)
 
-	if _asset_db_entry == { }:
-		return { }
+	if _asset_db_entry == null:
+		return null
 
 	return _asset_db_entry
 
@@ -361,20 +395,16 @@ func _spawn_resource(resource_class: String, properties: Array, asset_id: String
 	# Set the resource properties
 	for _prop in properties:
 		if _prop.name == "resource_path":
-			# Don't set the resource path property, this causes an error, and is not required anyways.
+			_resource.take_over_path(_prop.value)
 			continue
+
 		_resource.set_indexed(_prop.name, _prop.value)
 
 	# Add the resource to the database
-	var _db_id: int = _add_asset_to_database(resource_class, _resource, properties, int(asset_id))
+	registry.add_asset(_resource, int(asset_id))
 
-	# Set the resource name
-	_resource.set_name(str(_db_id))
+	# Save the resource class as a metadata field to keep track of what it is.
+	_resource.set_meta("class", resource_class)
 
 	# Return the resource
 	return _resource
-
-
-func _add_asset_to_database(asset_class: String, resource: Resource, props: Array, asset_id: int = 0) -> int:
-	GlobalLogger.log("Deprecated call '%s'" % get_stack()[0]["function"], Enum.LogLevel.WARNING)
-	return registry.add_asset(asset_class, resource, props, asset_id)

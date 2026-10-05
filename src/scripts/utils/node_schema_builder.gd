@@ -67,7 +67,7 @@ static func get_entry(node_name: String) -> Dictionary:
 	return _schema[node_name]
 
 
-static func build(node_name: String) -> Node:
+static func build(node_name: String, spawnable_manager: Node) -> Node:
 	if node_name == "":
 		return
 
@@ -78,20 +78,10 @@ static func build(node_name: String) -> Node:
 		_add_node_metadata(_work_node, node_name)
 		return _work_node
 
-	if node_name == "Box":
-		var _work_node = MeshInstance3D.new()
-		_work_node.mesh = BoxMesh.new()
-		_add_node_metadata(_work_node, node_name)
-		return _work_node
-
 	if node_name == "OM_PlayerController":
 		var _work_node = load("res://scenes/players/player.tscn").instantiate()
-		return _work_node
-
-	if node_name == "Capsule":
-		var _work_node = MeshInstance3D.new()
-		_work_node.mesh = CapsuleMesh.new()
 		_add_node_metadata(_work_node, node_name)
+		_work_node.set_meta("spawnable_type", node_name)
 		return _work_node
 
 	if node_name == "RigidBody3D":

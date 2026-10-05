@@ -56,11 +56,14 @@ func remove_player(peer_id: int) -> void:
 func set_player_node(peer_id: int, node_id: int) -> void:
 	var _target = players[str(peer_id)]
 
-	var _node_database_entry: Dictionary = spawnable_m.get_by_id(node_id)
-	var node = _node_database_entry.node
+	var _node_database_entry: Node = spawnable_m.get_by_id(node_id)
+	var node = _node_database_entry
 
 	# TODO: Error warnings
 	if _target == null:
+		return
+
+	if node == null:
 		return
 
 	_target.node = node

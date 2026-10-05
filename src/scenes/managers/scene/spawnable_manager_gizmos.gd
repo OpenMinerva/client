@@ -42,8 +42,8 @@ func server_select_spawnable(node_id: int) -> int:
 func select(node_id: int, gizmo_id: int) -> void:
 	# TODO: On gizmo transform, transform spawnable.
 
-	var _node: Node = _registry.get_spawnable(node_id).node
-	var _gizmo: Node = _registry.get_spawnable(gizmo_id).node
+	var _node: Node = _registry.get_spawnable(node_id)
+	var _gizmo: Node = _registry.get_spawnable(gizmo_id)
 
 	if _node.is_class("Node3D"):
 		_gizmo.select(_node)
@@ -69,7 +69,7 @@ func server_deselect_spawnable(gizmo_id: int) -> void:
 
 @rpc("call_local", "authority", "reliable")
 func deselect(gizmo_id: int) -> void:
-	var _gizmo: Node = _registry.get_spawnable(gizmo_id).node
+	var _gizmo: Node = _registry.get_spawnable(gizmo_id)
 
 	_gizmo.clear_selection()
 	return
@@ -78,7 +78,7 @@ func deselect(gizmo_id: int) -> void:
 # Session handling
 func show_session_gizmos() -> void:
 	for _gizmo_id in _registry._gizmos:
-		var _gizmo_node: Node = _registry.get_spawnable(_gizmo_id).node
+		var _gizmo_node: Node = _registry.get_spawnable(_gizmo_id)
 		_gizmo_node.mode = _legacy_last_gizmo_mode
 		_gizmo_node.show_selection_box = true
 		_gizmo_node.visible = true
@@ -88,7 +88,7 @@ func show_session_gizmos() -> void:
 
 func hide_session_gizmos() -> void:
 	for _gizmo_id in _registry._gizmos:
-		var _gizmo_node: Node = _registry.get_spawnable(_gizmo_id).node
+		var _gizmo_node: Node = _registry.get_spawnable(_gizmo_id)
 		_legacy_last_gizmo_mode = _gizmo_node.mode
 		_gizmo_node.mode = 0
 		_gizmo_node.show_selection_box = false
