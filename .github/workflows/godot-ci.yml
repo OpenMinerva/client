@@ -21,7 +21,9 @@ jobs:
     steps:
       - name: Generate timestamp
         id: stamp
-        run: echo "stamp=$(date -u +'%H%M%S.%d.%m.%Y')" >> "$GITHUB_OUTPUT"
+        run: |
+         echo "stamp=$(date -u +'%H%M%S.%d.%m.%Y')" >> "$GITHUB_OUTPUT"
+         echo "safe_ref=${GITHUB_REF_NAME//\//-}" >> "$GITHUB_OUTPUT"
 
   export-windows:
     name: Windows Export
@@ -49,7 +51,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: windows-${{ github.ref_name }}-${{ needs.timestamp.outputs.stamp }}
+          name: windows-${{ needs.timestamp.outputs.safe_ref }}-${{ needs.timestamp.outputs.stamp }}
           path: build/windows
 
   export-linux:
@@ -76,7 +78,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: linux-${{ github.ref_name }}-${{ needs.timestamp.outputs.stamp }}
+          name: linux-${{ needs.timestamp.outputs.safe_ref }}-${{ needs.timestamp.outputs.stamp }}
           path: build/linux
 
   # Mac exports are not currently supported as they can not be properly tested at all.
@@ -124,7 +126,7 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v3
         with:
-          tag_name: ${{ github.ref_name }}-${{ needs.timestamp.outputs.stamp }}
-          name: ${{ github.ref_name }}-${{ needs.timestamp.outputs.stamp }}
+          tag_name: ${{ needs.timestamp.outputs.safe_ref }}-${{ needs.timestamp.outputs.stamp }}
+          name: ${{ needs.timestamp.outputs.safe_ref }}-${{ needs.timestamp.outputs.stamp }}
           prerelease: ${{ github.ref_name != 'master' }}
           files: build/**/*
