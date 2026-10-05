@@ -23,6 +23,22 @@ Otherwise, this is a template you can quickly paste into the file.
 > Created Date: The date when the file was first committed to the git repository. (DD MMMM YYYY)
 > Copyright: Must be updated to the correct year whenever a change is made to the file. If the file says "2026", but you make a change in "2027", the file should be updated to reflect a copyright year in "2027".
 
+### Usage of "unrecommended" aliases
+This project makes use and encourages the use of "unrecommended" operator aliases as [defined by Godot](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html#operators).
+Instead of writing "and", use the symbols "&&". Instead of writing "not", use "!". This is to make this codebase more consistent with other languages that this project uses.
+Using the Godot recommended aliases "not" as well as "and" is not recommended for this project. Using Godot aliases *is* acceptable however and will not cause your pull request to be closed by itself.
+
+```gdscript
+# ✅ Good
+var is_contant_not_equal: bool = MY_AWESOME_CONSTANT != 35.25
+var trigger_action: bool = IS_FEATURE_ENABLED && action_just_pressed
+
+# ❌ Bad
+var is_contant_not_equal: bool = not MY_AWESOME_CONSTANT == 35.25
+var trigger_action: bool = IS_FEATURE_ENABLED and action_just_pressed
+
+```
+
 ## Naming Conventions
 ### Quick Reference
 | Type | Convention | Example |
@@ -37,6 +53,7 @@ Otherwise, this is a template you can quickly paste into the file.
 | Signals           | `snake_case`       | `session_joined`         |
 | Enums             | `PascalCase`       | `Enum.LogLevel.DEBUG`    |
 | File names        | `snake_case`       | `network_manager.gd`     |
+See [GDScript style guide](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_styleguide.html#naming-conventions).
 
 ### Signals
 Always use the `.emit()` syntax, never use `emit_signal()`
@@ -112,7 +129,7 @@ As the testing suite is relatively new compared to the rest of the code base, a 
 OpenMinerva separates the repository into four separate key branches. `alpha`, `beta`, `stable`, and `lts-XXXX`.
 
 - `alpha`: This is the bleeding edge of the application. This includes early implementations of upcoming features, hot-fixes and any other kind of development work. This is similar to the `nightly` branch in other projects or repositories. This branch will typically target the `beta` branch.
-- `beta`: This is mostly for feature-freezes. When the beta branch gets updated, it will typically be frequently updated exclusively with bug and issue fixes until the application is in a stable state for the `stable` branch.
+- `beta`: This is for feature-freezes. When the beta branch gets updated, it will typically be frequently updated exclusively with bug and issue fixes until the application is in a stable state for the `stable` branch.
 - `stable`: Recommended and default installations of the OpenMinerva software. This branch is the primarily distributed branch on all major distribution platforms.
 - `lts-XXXX`: LTS, or Long-Term-Support, is a special branch that is feature frozen and exclusively receives bug or issue fixes for a extended period of time. The branch name is a year in the format of YYYY. Example: `lts-2026`, `lts-2028`.
 - `lts-XXXX-beta`: This extension of the `lts-XXXX` branch is similar to the `beta` branch in that this branch only focuses on bugs and issues before being merged back into `lts-XXXX`.
