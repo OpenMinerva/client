@@ -134,6 +134,30 @@ if node_position == 32:
 var new_position: float = 105 + 32 / 2 * offset
 ```
 
+#### No Commented Code
+Do not leave code commented out. If code is not used, it should be removed.
+```gdscript
+func _log_to_file(message: String = "", level: int = 0):
+	if file_logging_enabled && log_file:
+		var formatted_log = "[%s] %s" % [log_level_names[level], message]
+		log_file.store_line(formatted_log)
+		log_file.flush()
+
+# ❌ Bad
+# func _parse_log_file_name(file_name: String) -> Dictionary:
+# 	GlobalLogger.log("Deprecated call '%s'" % get_stack()[0]["function"], Enum.LogLevel.WARNING)
+# 	var date = file_name.split(".")[1].split("-")
+# 	var year = date[0].split("_")[0]
+# 	var month = date[0].split("_")[1]
+# 	var day = date[0].split("_")[2]
+# 	var hour = date[1].split("_")[0]
+# 	var minute = date[1].split("_")[1]
+# 	var second = date[1].split("_")[2]
+# 	var time_dictionary = Time.get_datetime_dict_from_datetime_string("%s-%s-%sT%s:%s:%s" % [year, month, day, hour, minute, second], true)
+# 	return time_dictionary
+```
+[Example of bad practice](https://github.com/OpenMinerva/client/blob/f2a96a0ded2723f2e1960aa510055596e50a26f1/src/scripts/logger.gd#L97)
+
 
 ## Testing Requirements
 Before making a commit, you should test your changes by launching the application and testing your new feature. While testing you should monitor the logs to make sure there are no new errors caused by your changes.
