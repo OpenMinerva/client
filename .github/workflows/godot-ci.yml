@@ -72,9 +72,10 @@ jobs:
       - name: Linux Build
         run: |
           mkdir -v -p build/linux
-          EXPORT_DIR="$(readlink -f build)"
           cd $PROJECT_PATH
-          godot --headless --verbose --export-release "Linux" "$EXPORT_DIR/linux/${EXPORT_NAME}-${{ github.ref_name }}-${{ needs.timestamp.outputs.stamp }}.x86_64"
+          OUT="$GITHUB_WORKSPACE/build/linux/${EXPORT_NAME}-${{ needs.timestamp.outputs.safe_ref }}-${{ needs.timestamp.outputs.stamp }}.x86_64"
+          echo "EXPORT PATH: $OUT"
+          godot --headless --verbose --export-release "Linux" "$OUT"
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
