@@ -158,7 +158,7 @@ func _log_to_file(message: String = "", level: int = 0):
 ```
 [Example of bad practice](https://github.com/OpenMinerva/client/blob/f2a96a0ded2723f2e1960aa510055596e50a26f1/src/scripts/logger.gd#L97)
 
-#### Variables must be defined at the top of the scope
+#### Variables Definition 
 Variables should be defined at the top of their respective scope, and assigned a `null` value if they can not be immediately defined.
 
 ```gdscript
@@ -177,6 +177,38 @@ func not_great_function() -> void:
 
     # ...
     return
+```
+
+#### Conditionals 
+Conditionals should explicitly declare their target value. Alternatively, they should explicitly declare that the value is not null / is defined.
+
+```gdscript
+# ✅ Good 
+func handle_something() -> void:
+    var some_node: Node3D = get_node_or_null("Target")
+    if some_node != null:
+        # ...
+
+func next_thing() -> void:
+    var something_that_is_true: bool = true
+
+    if something_that_is_true == true:
+        # ...
+    return
+
+# ❌ Bad
+func handle_something() -> void:
+    var some_node: Node3D = get_node_or_null("Target")
+    if some_node:
+        # ...
+
+func next_thing() -> void:
+    var something_that_is_true: bool = true
+
+    if something_that_is_true:
+        # ...
+    return
+
 ```
 
 ## Testing Requirements
