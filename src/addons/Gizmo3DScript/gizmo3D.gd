@@ -1,3 +1,10 @@
+# --- License
+# File: /client/src/addons/Gizmo3DScript/gizmo3D.gd
+# Project: OpenMinerva
+# Created Date: 02 July 2026
+# Copyright (c) 2026 OpenMinerva Contributors
+# License: MIT License
+# --- License
 class_name Gizmo3D
 extends Node3D
 ## Gizmo3D encapsulates the Godot Engines 3D move/scale/rotation gizmos into a customizable node for use at runtime.
@@ -88,7 +95,10 @@ var _editing: bool:
 		if _editing and not value:
 			emit_signal("transform_end", _edit.mode)
 		_editing = value
-		if !value:
+		if value:
+			_cache_edit_camera_transform()
+		else:
+			_edit_camera_id = 0
 			_message = ""
 ## If the user is currently interacting with is gizmo.
 var editing: bool:
@@ -205,6 +215,8 @@ var _selection_box_xray_mat : StandardMaterial3D
 
 var _edit := EditData.new()
 var _gizmo_scale := 1.0
+var _edit_camera_id: int
+var _edit_camera_transform: Transform3D
 
 var _surface : Control
 
@@ -425,8 +437,7 @@ func _unhandled_input(event : InputEvent) -> void:
 		if _editing:
 			if event.button_mask & MOUSE_BUTTON_MASK_LEFT:
 				_edit.mouse_pos = event.position
-				var value := _update_transform(false)
-				emit_signal("transform_changed", _edit.mode, value)
+				_update_active_transform()
 				get_viewport().set_input_as_handled()
 			return
 		_hovering = _transform_gizmo_select(event.position, true)
@@ -476,6 +487,8 @@ func _enter_tree() -> void:
 	get_tree().root.focus_exited.connect(_on_focus_exited)
 
 func _process(delta : float) -> void:
+	if _editing and _did_edit_camera_move():
+		_update_active_transform()
 	_update_transform_gizmo()
 	_draw()
 
@@ -497,6 +510,28 @@ func _on_focus_exited() -> void:
 	_hovering = false
 	_snapping = false
 	_shift_snap = false
+
+func _cache_edit_camera_transform() -> void:
+	var camera: Camera3D = get_viewport().get_camera_3d()
+	if camera == null:
+		_edit_camera_id = 0
+		return
+	_edit_camera_id = camera.get_instance_id()
+	_edit_camera_transform = camera.global_transform
+
+func _did_edit_camera_move() -> bool:
+	var camera: Camera3D = get_viewport().get_camera_3d()
+	if camera == null:
+		return false
+	return (
+		camera.get_instance_id() != _edit_camera_id
+		or not camera.global_transform.is_equal_approx(_edit_camera_transform)
+	)
+
+func _update_active_transform() -> void:
+	_cache_edit_camera_transform()
+	var value := _update_transform(false)
+	transform_changed.emit(_edit.mode, value)
 
 func _init_gizmo_instance() -> void:
 	for i in range(3):
