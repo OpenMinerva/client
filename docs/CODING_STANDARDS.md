@@ -23,22 +23,6 @@ Otherwise, this is a template you can quickly paste into the file.
 > Created Date: The date when the file was first committed to the git repository. (DD MMMM YYYY)
 > Copyright: Must be updated to the correct year whenever a change is made to the file. If the file says "2026", but you make a change in "2027", the file should be updated to reflect a copyright year in "2027".
 
-### Usage of "unrecommended" aliases
-This project makes use and encourages the use of "unrecommended" operator aliases as [defined by Godot](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html#operators).
-Instead of writing "and", use the symbols "&&". Instead of writing "not", use "!". This is to make this codebase more consistent with other languages that this project uses.
-Using the Godot recommended aliases "not" as well as "and" is not recommended for this project. Using Godot aliases *is* acceptable however and will not cause your pull request to be closed by itself.
-
-```gdscript
-# ✅ Good
-var is_contant_not_equal: bool = MY_AWESOME_CONSTANT != 35.25
-var trigger_action: bool = IS_FEATURE_ENABLED && action_just_pressed
-
-# ❌ Bad
-var is_contant_not_equal: bool = not MY_AWESOME_CONSTANT == 35.25
-var trigger_action: bool = IS_FEATURE_ENABLED and action_just_pressed
-
-```
-
 ## Naming Conventions
 ### Quick Reference
 | Type | Convention | Example |
@@ -113,6 +97,42 @@ const MAGIC_NUMBER = 52
 #### Documentation and Comments
 Try to avoid useless or redundant comments. The goal is to write self-explanatory enough code that comments are unnecessary.
 The primary documentation provider for this project is the Godot supported [Documentation Comments](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_documentation_comments.html). It is necessary to write descriptive comments here so that the intention of the functions, parameters, or variables is crystal clear.
+
+#### Usage of "unrecommended" aliases
+This project makes use and encourages the use of "unrecommended" operator aliases as [defined by Godot](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html#operators).
+Instead of writing "and", use the symbols "&&". Instead of writing "not", use "!". This is to make this codebase more consistent with other languages that this project uses.
+Using the Godot recommended aliases "not" as well as "and" is not recommended for this project. Using Godot aliases *is* acceptable however and will not cause your pull request to be closed by itself.
+
+```gdscript
+# ✅ Good
+var is_contant_not_equal: bool = MY_AWESOME_CONSTANT != 35.25
+var trigger_action: bool = IS_FEATURE_ENABLED && action_just_pressed
+
+# ❌ Bad
+var is_contant_not_equal: bool = not MY_AWESOME_CONSTANT == 35.25
+var trigger_action: bool = IS_FEATURE_ENABLED and action_just_pressed
+```
+
+#### No Magic Numbers / Values
+Do not use magic numbers or magic "values". All constant values must be defined as a variable or constant.
+
+```gdscript
+# ✅ Good
+# ...
+const TARGET_POSITION = 32
+if node_positon == TARGET_POSITION:
+# ...
+const initial_height: int = 105
+const height_of_target_node_half: int = 32 / 2
+var new_position: float = initial_height + height_of_target_node_half * offset
+# ...
+
+# ❌ Bad
+# ...
+if node_position == 32:
+# ...
+var new_position: float = 105 + 32 / 2 * offset
+```
 
 
 ## Testing Requirements
