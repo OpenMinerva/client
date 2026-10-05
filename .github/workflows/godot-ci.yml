@@ -1,0 +1,130 @@
+name: "godot-ci export"
+on:
+ push:
+  branches:
+   - alpha
+   - beta
+   - master
+
+env:
+  GODOT_VERSION: 4.7
+  EXPORT_NAME: OpenMinerva
+  PROJECT_PATH: src
+
+jobs:
+  timestamp:
+    name: Timestamp
+    runs-on: ubuntu-24.04
+    outputs:
+      stamp: ${{ steps.stamp.outputs.stamp }}
+    steps:
+      - name: Generate timestamp
+        id: stamp
+        run: |
+         echo "stamp=$(date -u +'%H%M%S.%d.%m.%Y')" >> "$GITHUB_OUTPUT"
+         echo "safe_ref=${GITHUB_REF_NAME//\//-}" >> "$GITHUB_OUTPUT"
+
+  export-windows:
+    name: Windows Export
+    needs: timestamp
+    runs-on: ubuntu-24.04
+    container:
+      image: barichello/godot-ci:4.7
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Setup
+        run: |
+          mkdir -v -p ~/.local/share/godot/export_templates/
+          mkdir -v -p ~/.config/
+          mv /root/.config/godot ~/.config/godot
+          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+      - name: Windows Build
+        run: |
+          mkdir -v -p build/windows
+          OUT="$GITHUB_WORKSPACE/build/windows/${EXPORT_NAME}-${{ needs.timestamp.outputs.safe_ref }}-${{ needs.timestamp.outputs.stamp }}.exe"
+          cd $PROJECT_PATH
+          godot --headless --verbose --export-release "Windows Desktop" "$OUT"
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-${{ needs.timestamp.outputs.safe_ref }}-${{ needs.timestamp.outputs.stamp }}
+          path: build/windows
+
+  export-linux:
+    name: Linux Export
+    needs: timestamp
+    runs-on: ubuntu-24.04
+    container:
+      image: barichello/godot-ci:4.7
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Setup
+        run: |
+          mkdir -v -p ~/.local/share/godot/export_templates/
+          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+      - name: Linux Build
+        run: |
+          mkdir -v -p build/linux
+          cd $PROJECT_PATH
+          OUT="$GITHUB_WORKSPACE/build/linux/${EXPORT_NAME}-${{ needs.timestamp.outputs.safe_ref }}-${{ needs.timestamp.outputs.stamp }}.x86_64"
+          godot --headless --verbose --export-release "Linux" "$OUT"
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-${{ needs.timestamp.outputs.safe_ref }}-${{ needs.timestamp.outputs.stamp }}
+          path: build/linux
+
+  # Mac exports are not currently supported as they can not be properly tested at all.
+  # This exporter code has not been touched since this file was created, so please double check for any previous changes to the other exporters before blindly re-enabling this!
+  #
+  # export-mac:
+  #   name: Mac Export
+  #   needs: timestamp
+  #   runs-on: ubuntu-24.04
+  #   container:
+  #     image: barichello/godot-ci:4.7
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #       with:
+  #         lfs: true
+  #     - name: Setup
+  #       run: |
+  #         mkdir -v -p ~/.local/share/godot/export_templates/
+  #         mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+  #     - name: Mac Build
+  #       run: |
+  #         mkdir -v -p build/mac
+  #         EXPORT_DIR="$(readlink -f build)"
+  #         cd $PROJECT_PATH
+  #         godot --headless --verbose --export-release "macOS" "$EXPORT_DIR/mac/${EXPORT_NAME}-${{ needs.timestamp.outputs.stamp }}.zip"
+  #     - name: Upload Artifact
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: mac-${{ needs.timestamp.outputs.stamp }}
+  #         path: build/mac
+  release:
+    name: Create Release
+    needs: [timestamp, export-windows, export-linux ] # Add this back when mac support is added: 'export-mac'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: build
+          merge-multiple: true
+      - name: Create release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ needs.timestamp.outputs.safe_ref }}-${{ needs.timestamp.outputs.stamp }}
+          name: ${{ needs.timestamp.outputs.safe_ref }}-${{ needs.timestamp.outputs.stamp }}
+          prerelease: ${{ github.ref_name != 'master' }}
+          files: build/**/*
