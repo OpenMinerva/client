@@ -53,6 +53,10 @@ window/size/viewport_height=1080
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
+[editor]
+
+export/convert_text_resources_to_binary=false
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/Gizmo3DScript/plugin.cfg", "res://addons/discord-rpc-gd/plugin.cfg", "res://addons/gdUnit4/plugin.cfg", "res://addons/godot-oauth2client/plugin.cfg", "res://addons/godot-sqlite/plugin.cfg", "res://addons/godot-urlparser/plugin.cfg", "res://addons/rpc-await/plugin.cfg")
