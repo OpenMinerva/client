@@ -2,6 +2,7 @@ name: "godot-ci export"
 on:
  push:
   branches:
+   - fix/actions
    - alpha
    - beta
    - master
