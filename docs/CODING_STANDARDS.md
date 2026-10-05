@@ -158,6 +158,26 @@ func _log_to_file(message: String = "", level: int = 0):
 ```
 [Example of bad practice](https://github.com/OpenMinerva/client/blob/f2a96a0ded2723f2e1960aa510055596e50a26f1/src/scripts/logger.gd#L97)
 
+#### Variables must be defined at the top of the scope
+Variables should be defined at the top of their respective scope, and assigned a `null` value if they can not be immediately defined.
+
+```gdscript
+# ✅ Good - Defined at the top of the scope.
+func awesome_function() -> void:
+    var good_position: Vector3 = Vector3(10, 5, 12)
+    var second_position: Vector3 = Vector3()
+    # ...
+    return
+
+# ❌ Bad - Defined as they are used in the function.
+func not_great_function() -> void:
+    # Code ...
+
+    var good_position = Vector3(10, 5, 12)
+
+    # ...
+    return
+```
 
 ## Testing Requirements
 Before making a commit, you should test your changes by launching the application and testing your new feature. While testing you should monitor the logs to make sure there are no new errors caused by your changes.
