@@ -2,7 +2,6 @@ name: "godot-ci export"
 on:
  push:
   branches:
-   - feature/action-test
    - alpha
    - beta
    - master
@@ -112,7 +111,6 @@ jobs:
   #         path: build/mac
   release:
     name: Create Release
-    if: github.ref_name != 'feature/action-test'
     needs: [timestamp, export-windows, export-linux ] # Add this back when mac support is added: 'export-mac'
     runs-on: ubuntu-24.04
     permissions:
