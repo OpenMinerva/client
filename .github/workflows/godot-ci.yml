@@ -122,11 +122,17 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: build
-          merge-multiple: true
+      - name: Package each platform
+        run: |
+          cd build
+          for dir in */; do
+            platform="${dir%/}"
+            (cd "$platform" && zip -r "../${platform}.zip" .)
+          done
       - name: Create release
         uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ needs.timestamp.outputs.safe_ref }}-${{ needs.timestamp.outputs.stamp }}
           name: ${{ needs.timestamp.outputs.safe_ref }}-${{ needs.timestamp.outputs.stamp }}
           prerelease: ${{ github.ref_name != 'master' }}
-          files: build/**/*
+          files: build/*.zip
