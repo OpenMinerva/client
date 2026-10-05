@@ -17,6 +17,7 @@ jobs:
     runs-on: ubuntu-24.04
     outputs:
       stamp: ${{ steps.stamp.outputs.stamp }}
+      safe_ref: ${{ steps.stamp.outputs.safe_ref }}
     steps:
       - name: Generate timestamp
         id: stamp
