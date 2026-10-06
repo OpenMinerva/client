@@ -13,8 +13,8 @@ var _server_id: String = ""
 
 @onready var player_m = get_node("../PlayerManager")
 @onready var spawnable_m = get_node("../SpawnableManager")
-@onready var scene_m = get_tree().current_scene.get_node("AppSceneManager")
-@onready var network_m = get_tree().current_scene.get_node("AppNetworkManager")
+@onready var scene_m: Node = get_tree().root.find_child("AppSceneManager", true, false)
+@onready var network_m: Node = get_tree().root.find_child("AppNetworkManager", true, false)
 
 
 func _process(_delta):

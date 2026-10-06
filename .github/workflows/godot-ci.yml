@@ -32,6 +32,9 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+      - name: Set up environment
+        run: ./setup_environment.sh
+        working-directory: src
       - uses: godot-gdunit-labs/gdUnit4-action@v1
         with:
           godot-version: '4.7'
