@@ -48,7 +48,7 @@ This repository does not ship some required addons in order to prevent unnecessa
 
 For simplicity, here is a list of the missing addons:
 - [godot-sqlite](https://github.com/2shady4u/godot-sqlite) - Tagged `v4.8` - [Download](https://github.com/2shady4u/godot-sqlite/releases/download/v4.8/addons.zip)
-- [gdUnit4](https://github.com/godot-gdunit-labs/gdUnit4) - Tagged v6.2.1 - [Download](https://github.com/godot-gdunit-labs/gdUnit4/archive/refs/tags/v6.2.1.zip)
+- [gdUnit4](https://github.com/godot-gdunit-labs/gdUnit4) - Tagged `v6.2.1` - [Download](https://github.com/godot-gdunit-labs/gdUnit4/archive/refs/tags/v6.2.1.zip)
 
 Download these addons into the `/src/addons/` folder of this repository. 
 Example:
@@ -66,6 +66,9 @@ Example:
 - Navigate to the location where the source code was downloaded to.
 - Navigate to the sub-directory `/src`.
 - Select `project.godot` to import this project.
+
+### Need help with getting set up?
+Make an [issue](https://github.com/OpenMinerva/client/issues/new/choose)! You may select `Documentation Issue` as your reason. 
 
 ## Contributing
 See [CONTRIBUTING.md](https://github.com/OpenMinerva/client/blob/alpha/docs/CONTRIBUTING.md) for guidelines, and information.
