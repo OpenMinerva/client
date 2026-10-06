@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dr4mc2gw53nb6"]
 
 [ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="1_ijfgb"]
-[ext_resource type="Script" uid="uid://bgvut4go5q67q" path="res://userinterface/client_edit_mode/node_property_editor/partials/Object.gd" id="2_dt7qw"]
+[ext_resource type="Script" uid="uid://oct75t31xkan" path="res://userinterface/client_edit_mode/node_property_editor/partials/Object.gd" id="2_dt7qw"]
 [ext_resource type="PackedScene" uid="uid://sntuc3p6k4s6" path="res://userinterface/dash/partials/generic_button.tscn" id="3_hei4x"]
 [ext_resource type="Texture2D" uid="uid://csi6ucctnlhaf" path="res://resources/icons/at-icons/wrench.svg" id="4_u5ctn"]
 [ext_resource type="Texture2D" uid="uid://b0iqb578la8vd" path="res://resources/icons/godot/RotateLeft.svg" id="5_u5ctn"]

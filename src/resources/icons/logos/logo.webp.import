@@ -3,11 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://du7qkxsv0v82d"
-valid=false
+path="res://.godot/imported/logo.webp-6520eb3abc08867793d16c77e6107e36.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://resources/icons/logos/logo.webp"
+dest_files=["res://.godot/imported/logo.webp-6520eb3abc08867793d16c77e6107e36.ctex"]
 
 [params]
 
