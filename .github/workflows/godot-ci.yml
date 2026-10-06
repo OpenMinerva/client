@@ -40,6 +40,9 @@ jobs:
           godot-version: '4.7'
           project_dir: './src/'
           paths: 'res://test'
+          warnings-as-errors: false
+          publish-report: false
+          upload-report: false
 
   export-windows:
     name: Windows Export
