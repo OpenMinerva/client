@@ -2,7 +2,6 @@ name: "godot-ci export"
 on:
  push:
   branches:
-   - feature/run-tests-in-runner
    - alpha
    - beta
    - master
