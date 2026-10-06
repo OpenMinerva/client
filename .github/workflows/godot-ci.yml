@@ -28,8 +28,10 @@ jobs:
 
   test:
     name: GdUnit4 Test
+    needs: timestamp
     runs-on: ubuntu-24.04
     steps:
+      - uses: actions/checkout@v4
       - uses: godot-gdunit-labs/gdUnit4-action@v1
         with:
           godot-version: '4.7'
