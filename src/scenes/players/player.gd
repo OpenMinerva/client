@@ -33,9 +33,10 @@ var _speed: float = 0
 @onready var _node_camera = get_node("Head/Camera3D")
 @onready var _node_cem_camera: Node3D = null
 @onready var _node_cem_camera_camera: Camera3D = null
-@onready var _inspector_tree_node: Node = get_tree().current_scene.get_node("Inspector/VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer")
-@onready var _inspector_properties_node: Node = get_tree().current_scene.get_node("Inspector/VBoxContainer/HBoxContainer/HSplitContainer/Properties")
-@onready var _inspector_toolbar_node: Node = get_tree().current_scene.get_node("Inspector/VBoxContainer/Toolbar")
+@onready var _inspector: Node = get_tree().root.find_child("Inspector", true, false).get_node("VBoxContainer")
+@onready var _inspector_tree_node: Node = _inspector.get_node("HBoxContainer/HSplitContainer/MarginContainer")
+@onready var _inspector_properties_node: Node = _inspector.get_node("HBoxContainer/HSplitContainer/Properties")
+@onready var _inspector_toolbar_node: Node = _inspector.get_node("Toolbar")
 
 
 func _enter_tree() -> void:
