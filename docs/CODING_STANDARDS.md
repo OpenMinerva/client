@@ -18,6 +18,8 @@ Otherwise, this is a template you can quickly paste into the file.
 # --- License
 ```
 
+Please note that any addons (Found under `/client/src/addons`) are exempt from this license header as not everything in this directory is owned by OpenMinerva. Unless you are adding a new addon, assume that everything under this directory to be set up correctly in regards to licenses and headers.
+
 > [!IMPORTANT] 
 > File: Must always start with /client/src/
 > Created Date: The date when the file was first committed to the git repository. (DD MMMM YYYY)
