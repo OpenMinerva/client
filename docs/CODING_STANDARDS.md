@@ -208,7 +208,30 @@ func next_thing() -> void:
     if something_that_is_true:
         # ...
     return
+```
 
+#### Valid / Intended Function Exits
+All intended function exists should be marked explicitly with a `return` statement, even when the return statement would otherwise be implied.
+This means that all functions must end with a `return` statement.
+
+```gdscript
+# ✅ Good
+func example_function() -> void:
+    if day_of_the_week == "Friday":
+        GlobalLogger.log("This function refuses to work on Friday.")
+        return
+
+    GlobalLogger.log("Now that Friday is not in the room, lets talk about our favorite day of the week.")
+    return
+
+# ❌ Bad
+func example_function() -> void:
+    if day_of_the_week == "Friday":
+        GlobalLogger.log("This function refuses to work on Friday.")
+        return
+
+    GlobalLogger.log("Now that Friday is not in the room, lets talk about our favorite day of the week.")
+    # Missing `return`
 ```
 
 ## Testing Requirements
