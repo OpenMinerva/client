@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="16"
+   height="16"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="Gizmo.svg"
+   inkscape:version="1.4.4 (dcaf3e7d9e, 2026-05-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1">
+    <marker
+       style="overflow:visible"
+       id="Triangle"
+       refX="-2"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Triangle arrow"
+       markerWidth="0.30000001"
+       markerHeight="0.30000001"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path135" />
+    </marker>
+    <marker
+       markerWidth="0.52999997"
+       markerHeight="1.00952375"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       id="CapTriangle"
+       viewBox="0 0 0.525 1"
+       inkscape:stockid="Triangle cap"
+       style="overflow:visible"
+       preserveAspectRatio="xMidYMid"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       markerUnits="strokeWidth">
+      <path
+         style="fill:context-stroke;stroke-linecap:butt"
+         d="M 0,-1 1,0 0,1 -0.05,0 Z"
+         sodipodi:nodetypes="sssssscsss"
+         transform="scale(0.5)"
+         id="path61" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:zoom="37.8125"
+     inkscape:cx="8.7669421"
+     inkscape:cy="9.8909091"
+     inkscape:window-width="2560"
+     inkscape:window-height="1412"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1" />
+  <g
+     id="path1"
+     style="display:inline;opacity:1;stroke-width:1.83852;stroke-dasharray:none"
+     transform="matrix(0.81587258,0,0,0.81587258,1.4729204,1.4725399)" />
+  <g
+     id="g19"
+     transform="matrix(1.2428029,0,0,1.2428029,-1.9415432,0.33463463)">
+    <path
+       style="display:none;opacity:1;fill:#0000ff;fill-opacity:1;stroke:#ff4d4d;stroke-width:1;stroke-linecap:round;stroke-linejoin:bevel;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Triangle)"
+       d="M 3.9195034,6.3672525 8.0010709,8.4089696"
+       id="path11" />
+    <path
+       style="display:none;opacity:1;fill:#0000ff;fill-opacity:1;stroke:#594dff;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Triangle)"
+       d="M 12.079451,6.3677993 7.9957433,8.4140235"
+       id="path10" />
+    <path
+       style="display:inline;opacity:1;fill:#0000ff;fill-opacity:1;stroke:#5fff4d;stroke-width:1.83852;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
+       d="m 8.0468087,8.3702996 c 0.00574,-1.5648857 0.00319,-6.3866737 0.00319,-6.3866737"
+       id="path19"
+       transform="matrix(0.81587258,0,0,0.81587258,1.4729204,1.4725399)" />
+    <path
+       style="display:none;opacity:1;fill:#0000ff;fill-opacity:1;stroke:#5fff4d;stroke-width:1.22568;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Triangle)"
+       d="m 7.9938987,14.010508 c 0.033146,-5.7673391 0.047171,-4.0753227 0.05291,-5.6402084"
+       id="path9"
+       inkscape:label="path9"
+       transform="matrix(0.81587258,0,0,0.81587258,1.4729204,1.4725399)" />
+    <path
+       style="display:inline;opacity:1;fill:#0000ff;fill-opacity:1;stroke:#594dff;stroke-width:1.83852;stroke-linecap:butt;stroke-linejoin:bevel;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#CapTriangle);marker-end:url(#Triangle)"
+       d="M 7.9831851,8.4963299 2.9895788,11.016068"
+       id="path12"
+       transform="matrix(0.81587258,0,0,0.81587258,1.4729204,1.4725399)" />
+    <path
+       style="display:inline;opacity:1;fill:#0000ff;fill-opacity:1;stroke:#ff4d4d;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:bevel;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#CapTriangle);marker-end:url(#Triangle);paint-order:fill markers stroke"
+       d="M 8.0010709,8.4089696 12.082638,10.450687"
+       id="path13" />
+  </g>
+</svg>

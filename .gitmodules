@@ -1,0 +1,6 @@
+[submodule "src/addons/godot-oauth2client"]
+	path = src/addons/godot-oauth2client
+	url = https://github.com/OpenMinerva/godot-oauth2client.git
+[submodule "src/addons/godot-urlparser"]
+	path = src/addons/godot-urlparser
+	url = https://github.com/OpenMinerva/godot-urlparser.git

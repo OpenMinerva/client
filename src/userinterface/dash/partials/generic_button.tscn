@@ -1,0 +1,56 @@
+[gd_scene format=3 uid="uid://sntuc3p6k4s6"]
+
+[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="1_aa5td"]
+[ext_resource type="Script" uid="uid://c1smfaq23k6wn" path="res://userinterface/dash/partials/generic_button.gd" id="2_c3px3"]
+[ext_resource type="Texture2D" uid="uid://m8l5vx1j58kj" path="res://resources/icons/godot/Error.svg" id="3_4dmhx"]
+
+[node name="GenericButton" type="Control" unique_id=649942124]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 3
+anchors_preset = 0
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme = ExtResource("1_aa5td")
+script = ExtResource("2_c3px3")
+metadata/_edit_use_anchors_ = true
+
+[node name="Button" type="Button" parent="." unique_id=1422381468]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("1_aa5td")
+
+[node name="MarginContainer" type="MarginContainer" parent="Button" unique_id=665374152]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="HBoxContainer" parent="Button/MarginContainer" unique_id=86696220]
+clip_contents = true
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TextureRect" type="TextureRect" parent="Button/MarginContainer/VBoxContainer" unique_id=1429445374]
+layout_mode = 2
+texture = ExtResource("3_4dmhx")
+expand_mode = 2
+
+[node name="Label" type="Label" parent="Button/MarginContainer/VBoxContainer" unique_id=1807295119]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Button"
+clip_text = true
+text_overrun_behavior = 3

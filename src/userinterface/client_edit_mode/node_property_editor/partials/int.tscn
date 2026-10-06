@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://c08ywv1r18wq4"]
+
+[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="1_ecork"]
+[ext_resource type="Script" uid="uid://066ucgk4rilk" path="res://userinterface/client_edit_mode/node_property_editor/partials/int.gd" id="2_7lgys"]
+[ext_resource type="PackedScene" uid="uid://b58b25jtckb2c" path="res://userinterface/client_edit_mode/node_property_editor/partials/spin_box.tscn" id="3_fivcc"]
+
+[node name="int" type="Control" unique_id=933711176]
+custom_minimum_size = Vector2(80, 30)
+layout_mode = 3
+anchor_right = 1.0
+anchor_bottom = 0.027777778
+offset_bottom = -30.0
+grow_horizontal = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_ecork")
+script = ExtResource("2_7lgys")
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="HBoxContainer" parent="." unique_id=1972995258]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.053703703
+grow_horizontal = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="VBoxContainer" unique_id=482404396]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Int"
+clip_text = true
+text_overrun_behavior = 3
+
+[node name="SpinBox" parent="VBoxContainer" unique_id=1631362233 instance=ExtResource("3_fivcc")]
+layout_mode = 2
+max_decimals = 0
+is_int = true

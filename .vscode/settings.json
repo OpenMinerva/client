@@ -1,0 +1,53 @@
+{
+    "psi-header.config": {
+        "forceToTop": true,
+        "blankLinesAfter": 1,
+        "spacesBetweenYears": false,
+        "license": "MIT",
+        "company": "OpenMinerva",
+        "creationDateZero": "asIs",
+    },
+    "psi-header.lang-config": [
+        {
+            "language": "gdscript",
+            "begin": "# --- License",
+            "prefix": "# ",
+            "lineLength": 80,
+            "end": "# --- License",
+            "forceToTop": true,
+            "blankLinesAfter": 1,
+            "beforeHeader": [],
+            "afterHeader": [],
+            "rootDirFileName": "client",
+            "modAuthor": "Modified By:",
+            "modDate": "Last Modified:",
+            "modDateFormat": "dd/MM/yyyy hh:nn:ss",
+            "replace": [
+                "Filename:",
+                "Project"
+            ],
+            "ignoreLines": []
+        }
+    ],
+    "psi-header.templates": [
+        {
+            "language": "gdscript",
+            "template": [
+                "File: <<filerelativepath>>",
+                "Project: <<projectname>>",
+                "Created Date: <<filecreated('DD MMMM YYYY')>>",
+                "Copyright (c) <<yeartoyear(fc, now)>> <<company>>",
+                "License: <<licensename>>",
+                "Authors: <<author>>",
+            ],
+            "changeLogCaption": "HISTORY",
+            "changeLogHeaderLineCount": 2,
+            "changeLogEntryTemplate": [
+                "",
+                "<<dateformat(DD-MM-YYYY)>>\t<<initials>>\t"
+            ],
+            "changeLogNaturalOrder": false,
+            "changeLogFooterLineCount": 0
+        }
+    ],
+}

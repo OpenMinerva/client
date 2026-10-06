@@ -1,0 +1,57 @@
+[gd_scene format=3 uid="uid://dg8ypxmuk8rv"]
+
+[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="1_w26cx"]
+[ext_resource type="Script" uid="uid://8iy160ceicvi" path="res://userinterface/dash/partials/input_string.gd" id="1_yd6t6"]
+
+[node name="InputString" type="Control" unique_id=1236567120]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 3
+anchor_top = 0.4814815
+anchor_right = 1.0
+anchor_bottom = 0.5185185
+offset_top = 20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_yd6t6")
+metadata/_edit_use_anchors_ = true
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=382665771]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_w26cx")
+theme_type_variation = &"SolidBackground"
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=169083657]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_right = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer" unique_id=358122007]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="PanelContainer/MarginContainer/HBoxContainer" unique_id=144539274]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "ERROR"
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/HBoxContainer" unique_id=514760511]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 5
+
+[node name="LineEdit" type="LineEdit" parent="PanelContainer/MarginContainer/HBoxContainer/MarginContainer" unique_id=828836954]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_w26cx")
+placeholder_text = "ERROR"
+clear_button_enabled = true

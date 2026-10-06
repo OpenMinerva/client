@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://dog17wkc4h48c"]
+
+[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="1_wevnc"]
+
+[node name="LeftNavContainer" type="Control" unique_id=17586745]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBox" type="HBoxContainer" parent="." unique_id=839834062]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="Left" type="VBoxContainer" parent="HBox" unique_id=1799305671]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="Right" type="ScrollContainer" parent="HBox" unique_id=892180341]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_wevnc")
