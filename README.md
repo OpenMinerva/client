@@ -29,7 +29,10 @@ OpenMinerva aims to be a platform-agnostic flatscreen / virtual reality / augmen
 To learn more about the OpenMinerva project, please read the [PHILOSOPHY.md](./docs/PHILOSOPHY.md) document. This document provides use-cases targets and other reasoning for this project.
 
 ## Installation
-It is not currently possible to install OpenMinerva client as a stand-alone executable, as the application is still in early alpha. For now, please download and install OpenMinerva as a developer. Please see [Development Quick Start](#development-quick-start)
+To obtain a binary of this application, please visit the [Releases](https://github.com/OpenMinerva/client/releases) page and find the version you need. 
+If you are wanting the latest stable release of this application please look for Releases tagged in the order of "master", "beta", "alpha".
+If you are needing another version of this application, please see [Key Branches](https://github.com/OpenMinerva/client/blob/alpha/docs/CODING_STANDARDS.md#key-branches) for help with locating your desired version.
+There are no other ways to obtain a compiled binary outside of this repository. There are currently no official distributions of OpenMinerva though package managers or game launchers.
 
 ## Development Quick Start
 
