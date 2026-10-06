@@ -36,7 +36,7 @@ jobs:
         with:
           godot-version: '4.7'
           project_dir: './src/'
-          paths: 'res://tests'
+          paths: 'res://test'
 
   export-windows:
     name: Windows Export
