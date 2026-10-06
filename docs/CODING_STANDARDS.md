@@ -18,6 +18,8 @@ Otherwise, this is a template you can quickly paste into the file.
 # --- License
 ```
 
+Please note that any addons (Found under `/client/src/addons`) are exempt from this license header as not everything in this directory is owned by OpenMinerva. Unless you are adding a new addon, assume that everything under this directory to be set up correctly in regards to licenses and headers.
+
 > [!IMPORTANT] 
 > File: Must always start with /client/src/
 > Created Date: The date when the file was first committed to the git repository. (DD MMMM YYYY)
@@ -37,6 +39,7 @@ Otherwise, this is a template you can quickly paste into the file.
 | Signals           | `snake_case`       | `session_joined`         |
 | Enums             | `PascalCase`       | `Enum.LogLevel.DEBUG`    |
 | File names        | `snake_case`       | `network_manager.gd`     |
+See [GDScript style guide](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_styleguide.html#naming-conventions).
 
 ### Signals
 Always use the `.emit()` syntax, never use `emit_signal()`
@@ -97,6 +100,141 @@ const MAGIC_NUMBER = 52
 Try to avoid useless or redundant comments. The goal is to write self-explanatory enough code that comments are unnecessary.
 The primary documentation provider for this project is the Godot supported [Documentation Comments](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_documentation_comments.html). It is necessary to write descriptive comments here so that the intention of the functions, parameters, or variables is crystal clear.
 
+#### Usage of "unrecommended" aliases
+This project makes use and encourages the use of "unrecommended" operator aliases as [defined by Godot](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html#operators).
+Instead of writing "and", use the symbols "&&". Instead of writing "not", use "!". This is to make this codebase more consistent with other languages that this project uses.
+Using the Godot recommended aliases "not" as well as "and" is not recommended for this project. Using Godot aliases *is* acceptable however and will not cause your pull request to be closed by itself.
+
+```gdscript
+# ✅ Good
+var is_contant_not_equal: bool = MY_AWESOME_CONSTANT != 35.25
+var trigger_action: bool = IS_FEATURE_ENABLED && action_just_pressed
+
+# ❌ Bad
+var is_contant_not_equal: bool = not MY_AWESOME_CONSTANT == 35.25
+var trigger_action: bool = IS_FEATURE_ENABLED and action_just_pressed
+```
+
+#### No Magic Numbers / Values
+Do not use magic numbers or magic "values". All constant values must be defined as a variable or constant.
+
+```gdscript
+# ✅ Good
+# ...
+const TARGET_POSITION = 32
+if node_positon == TARGET_POSITION:
+# ...
+const initial_height: int = 105
+const height_of_target_node_half: int = 32 / 2
+var new_position: float = initial_height + height_of_target_node_half * offset
+# ...
+
+# ❌ Bad
+# ...
+if node_position == 32:
+# ...
+var new_position: float = 105 + 32 / 2 * offset
+```
+
+#### No Commented Code
+Do not leave code commented out. If code is not used, it should be removed.
+```gdscript
+func _log_to_file(message: String = "", level: int = 0):
+	if file_logging_enabled && log_file:
+		var formatted_log = "[%s] %s" % [log_level_names[level], message]
+		log_file.store_line(formatted_log)
+		log_file.flush()
+
+# ❌ Bad
+# func _parse_log_file_name(file_name: String) -> Dictionary:
+# 	GlobalLogger.log("Deprecated call '%s'" % get_stack()[0]["function"], Enum.LogLevel.WARNING)
+# 	var date = file_name.split(".")[1].split("-")
+# 	var year = date[0].split("_")[0]
+# 	var month = date[0].split("_")[1]
+# 	var day = date[0].split("_")[2]
+# 	var hour = date[1].split("_")[0]
+# 	var minute = date[1].split("_")[1]
+# 	var second = date[1].split("_")[2]
+# 	var time_dictionary = Time.get_datetime_dict_from_datetime_string("%s-%s-%sT%s:%s:%s" % [year, month, day, hour, minute, second], true)
+# 	return time_dictionary
+```
+[Example of bad practice](https://github.com/OpenMinerva/client/blob/f2a96a0ded2723f2e1960aa510055596e50a26f1/src/scripts/logger.gd#L97)
+
+#### Variables Definition 
+Variables should be defined at the top of their respective scope, and assigned a `null` value if they can not be immediately defined.
+
+```gdscript
+# ✅ Good - Defined at the top of the scope.
+func awesome_function() -> void:
+    var good_position: Vector3 = Vector3(10, 5, 12)
+    var second_position: Vector3 = Vector3()
+    # ...
+    return
+
+# ❌ Bad - Defined as they are used in the function.
+func not_great_function() -> void:
+    # Code ...
+
+    var good_position = Vector3(10, 5, 12)
+
+    # ...
+    return
+```
+
+#### Conditionals 
+Conditionals should explicitly declare their target value. Alternatively, they should explicitly declare that the value is not null / is defined.
+
+```gdscript
+# ✅ Good 
+func handle_something() -> void:
+    var some_node: Node3D = get_node_or_null("Target")
+    if some_node != null:
+        # ...
+
+func next_thing() -> void:
+    var something_that_is_true: bool = true
+
+    if something_that_is_true == true:
+        # ...
+    return
+
+# ❌ Bad
+func handle_something() -> void:
+    var some_node: Node3D = get_node_or_null("Target")
+    if some_node:
+        # ...
+
+func next_thing() -> void:
+    var something_that_is_true: bool = true
+
+    if something_that_is_true:
+        # ...
+    return
+```
+
+#### Valid / Intended Function Exits
+All intended function exists should be marked explicitly with a `return` statement, even when the return statement would otherwise be implied.
+This means that all functions must end with a `return` statement.
+
+```gdscript
+# ✅ Good
+func example_function() -> void:
+    if day_of_the_week == "Friday":
+        GlobalLogger.log("This function refuses to work on Friday.")
+        return
+
+    GlobalLogger.log("Now that Friday is not in the room, lets talk about our favorite day of the week.")
+    return
+
+# ❌ Bad
+func example_function() -> void:
+    if day_of_the_week == "Friday":
+        GlobalLogger.log("This function refuses to work on Friday.")
+        return
+
+    GlobalLogger.log("Now that Friday is not in the room, lets talk about our favorite day of the week.")
+    # Missing `return`
+```
 
 ## Testing Requirements
 Before making a commit, you should test your changes by launching the application and testing your new feature. While testing you should monitor the logs to make sure there are no new errors caused by your changes.
@@ -112,7 +250,7 @@ As the testing suite is relatively new compared to the rest of the code base, a 
 OpenMinerva separates the repository into four separate key branches. `alpha`, `beta`, `stable`, and `lts-XXXX`.
 
 - `alpha`: This is the bleeding edge of the application. This includes early implementations of upcoming features, hot-fixes and any other kind of development work. This is similar to the `nightly` branch in other projects or repositories. This branch will typically target the `beta` branch.
-- `beta`: This is mostly for feature-freezes. When the beta branch gets updated, it will typically be frequently updated exclusively with bug and issue fixes until the application is in a stable state for the `stable` branch.
+- `beta`: This is for feature-freezes. When the beta branch gets updated, it will typically be frequently updated exclusively with bug and issue fixes until the application is in a stable state for the `stable` branch.
 - `stable`: Recommended and default installations of the OpenMinerva software. This branch is the primarily distributed branch on all major distribution platforms.
 - `lts-XXXX`: LTS, or Long-Term-Support, is a special branch that is feature frozen and exclusively receives bug or issue fixes for a extended period of time. The branch name is a year in the format of YYYY. Example: `lts-2026`, `lts-2028`.
 - `lts-XXXX-beta`: This extension of the `lts-XXXX` branch is similar to the `beta` branch in that this branch only focuses on bugs and issues before being merged back into `lts-XXXX`.

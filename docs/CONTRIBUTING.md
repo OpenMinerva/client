@@ -33,7 +33,7 @@ Before contributing code to this project, please read the following information 
   - "Bug I found in editor mode" is not descriptive enough.
   - "Setting a node visible to false while on a Wednesday crashes all clients in a different time zone" is perfect.
 - When using an AI agent to report bugs or otherwise interact with this repository, the AI agent must include the exact phrase "This issue was created with the use of an AI agent." at the very top of the issue or post. Failure to include this phrase at the top of the post will result in a permanent ban from the project. 
-- AI powered issues, bug reports, feature requests, or any form of autonomous interaction utilizing these AI agents in the issues or discussion area with this repository is prohibited. Do not use an autonomous agent.
+- AI powered issues, bug reports, feature requests, or any form of autonomous interaction utilizing these AI agents with this repository is prohibited.
 - Include reproduction steps. The faster a bug can be replicated, the faster it can be fixed.
 - Include logs where applicable. When reporting a bug, please try to replicate the issue using the appropriate debug level.
 - Include platform, operating system, relevant hardware information, etc.
@@ -50,13 +50,18 @@ After you submit your issue, a maintainer will apply the appropriate tags for yo
   - Can your feature be implemented in-application without official support?
   - Is your idea worth shipping for everyone opposed to individually?
 - When using an AI agent to request features or otherwise interact with this repository, the AI agent must include the exact phrase "This issue was created with the use of an AI agent." at the very top of the issue or post. Failure to include this phrase at the top of the post will result in a permanent ban from the project.
-- AI powered issues, bug reports, feature requests, or any form of autonomous interaction utilizing these AI agents in the issues or discussion area with this repository is prohibited.
+- AI powered issues, bug reports, feature requests, or any form of autonomous interaction utilizing these AI agents with this repository is prohibited.
 - Provide images or video if applicable, or if it will make explaining your feature easier.
 - Describe alternative ideas you have thought of.
 
 When suggesting a feature, be prepared to discuss this feature for some amount of time. It is important that a feature meets your expectations, the projects expectations, and further pushes OpenMinerva towards the goal of the project.
 
 ### Submitting a Pull Request
+
+#### Following the rules
+- When using an AI agent to request features or otherwise interact with this repository, the AI agent must include the exact phrase "This issue was created with the use of an AI agent." at the very top of the issue or post. Failure to include this phrase at the top of the post will result in a permanent ban from the project.
+- AI powered issues, bug reports, feature requests, or any form of autonomous interaction utilizing these AI agents with this repository is prohibited.
+
 
 #### Document first
 Before submitting a pull request, you should have a target issue you are addressing. If you are not trying to fix a documented issue, you should first document the issue using the [Issues](https://github.com/OpenMinerva/client/issues/new/choose). 
@@ -69,3 +74,6 @@ After reading through [Coding Standards](./CODING_STANDARDS.md), please tag the 
 
 #### Discuss
 It is extremely likely that your pull request will need to be discussed first before merging. Expect to exchange some talk and have some feedback received. This discussion will often times be in the form of the code review. When receiving feedback for your code, please do not take feedback personally nor assume that you are being explicitly picked on. Your code will likely affect real people so it is important that your code is the best it can be.
+
+#### Run the tests!
+Run the tests before sending your pull request. Tests will be ran at other points in the pull request discussion, but if it doesn't run on your machine it probably won't run anywhere else.
