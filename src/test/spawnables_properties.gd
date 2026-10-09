@@ -15,7 +15,7 @@ var _mesh_resource: Resource
 
 
 func before() -> void:
-	_runner = scene_runner("res://scenes/master.tscn")
+	_runner = scene_runner("res://scenes/base.tscn")
 	_scene_container = _runner.find_child("Sessions")
 	_spawnable_manager = _scene_container.get_child(0).get_node("SpawnableManager")
 	_mesh_instance = await _spawnable_manager.create_spawnable("MeshInstance3D")

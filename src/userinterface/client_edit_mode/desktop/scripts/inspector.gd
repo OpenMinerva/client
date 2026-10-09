@@ -261,11 +261,11 @@ func _on_node_metadata_changed(_node_entry: Node) -> void:
 
 
 func _on_session_changed(_session_id: String) -> void:
-	var _session_master: Node3D = app_scene_m.get_master_scene(_session_id)
+	var _session_master: Node3D = app_scene_m.get_session_master(_session_id)
 	session_signalbus = _session_master.get_node("SignalBus")
 	session_spawnable_m = _session_master.get_node("SpawnableManager")
 	session_players_m = _session_master.get_node("PlayerManager")
-	session_root = app_scene_m.get_master_root(app_scene_m.active_session)
+	session_root = app_scene_m.get_session_master_root(app_scene_m.active_session)
 
 	_inspector_selected = null
 	_inspector_editing = null

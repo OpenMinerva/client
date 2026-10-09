@@ -11,19 +11,19 @@ extends Node
 var active_session: String = ""
 
 # Game managers
-@onready var network_m: Node = get_tree().root.find_child("AppNetworkManager", true, false)
+@onready var app_network_m: Node = get_tree().root.find_child("AppNetworkManager", true, false)
 @onready var scene_container: Node = get_tree().root.find_child("Sessions", true, false)
 @onready var spawnable_file_handling: Node = get_tree().root.find_child("SpawnableFileHandling", true, false)
 
 
 func _ready():
-	network_m.start_session(0, Enum.BaseLevel.HOME)
+	app_network_m.start_session(0, Enum.BaseLevel.HOME)
 	return
 
 
-func create_master_scene():
+func create_session_master():
 	var _scene_id = Random.string(6)
-	var _base_scene = preload("res://scenes/levels/base.tscn")
+	var _base_scene = preload("res://scenes/levels/session.tscn")
 
 	_base_scene = _base_scene.instantiate()
 	_base_scene.name = _scene_id
@@ -35,12 +35,12 @@ func create_master_scene():
 	return _scene_id
 
 
-func get_master_scene(id: String) -> Node3D:
+func get_session_master(id: String) -> Node3D:
 	var _scene = scene_container.get_node(id)
 	return _scene
 
 
-func destroy_master_scene(id: String):
+func destroy_session_master(id: String):
 	var _scene = scene_container.get_node_or_null(id)
 
 	if _scene == null:
@@ -51,15 +51,15 @@ func destroy_master_scene(id: String):
 	return
 
 
-func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel, scene_dir: String = "", set_up_root: bool = true) -> void:
+func set_session_master_root_from_program(id: String, scene_type: Enum.BaseLevel, scene_dir: String = "", set_up_root: bool = true) -> void:
 	GlobalLogger.log("Setting master root from program.")
-	var _scene = get_master_scene(id)
+	var _scene = get_session_master(id)
 
 	var _root_scene: String = _get_scene_by_type(scene_type)
-	var _root_node = get_master_root(id)
+	var _root_node = get_session_master_root(id)
 
 	# Stop everything
-	stop_master_scene(id)
+	stop_session_master(id)
 
 	# Remove everything
 	_scene.remove_child(_root_node)
@@ -98,21 +98,21 @@ func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel, scene_
 	_root_scene_node.set_meta("scene_node", true)
 
 	# Start everything
-	start_master_scene(id)
+	start_session_master(id)
 
 	Events.emit_signal("instance_root_changed")
 	return
 
 
-func get_master_root(id: String) -> Node3D:
-	var _scene: Node3D = get_master_scene(id)
+func get_session_master_root(id: String) -> Node3D:
+	var _scene: Node3D = get_session_master(id)
 	var _root = _scene.get_node_or_null("root")
 	return _root
 
 
-func set_master_root_from_inventory(_id: String, _scene_type: Enum.BaseLevel) -> bool:
+func set_session_master_root_from_inventory(_id: String, _scene_type: Enum.BaseLevel) -> bool:
 	GlobalLogger.log("'%s' is not implemented." % get_stack()[0]["function"], Enum.LogLevel.WARNING)
-	# get_master_scene
+	# get_session_master
 	# Find scene from inventory.
 	# Validate scene integrity.
 	# Find node "root".
@@ -121,10 +121,10 @@ func set_master_root_from_inventory(_id: String, _scene_type: Enum.BaseLevel) ->
 	return false
 
 
-func start_master_scene(id: String):
+func start_session_master(id: String):
 	const MANAGERS = ["PlayerManager", "SignalBus"]
 
-	var _scene = get_master_scene(id)
+	var _scene = get_session_master(id)
 
 	for node_name in MANAGERS:
 		var _scene_manager = _scene.get_node_or_null(node_name)
@@ -136,10 +136,10 @@ func start_master_scene(id: String):
 	return
 
 
-func stop_master_scene(id: String):
+func stop_session_master(id: String):
 	const MANAGERS = ["PlayerManager", "SignalBus"]
 
-	var _scene = get_master_scene(id)
+	var _scene = get_session_master(id)
 
 	for node_name in MANAGERS:
 		var _scene_manager = _scene.get_node_or_null(node_name)
@@ -156,7 +156,7 @@ func set_active_session(session_id: String):
 
 	active_session = session_id
 
-	for _scene in network_m.get_connected_sessions():
+	for _scene in app_network_m.get_connected_sessions():
 		# Each session gets disabled
 		var _target_scene = scene_container.get_node(_scene.id)
 		_target_scene.visible = false
@@ -172,7 +172,7 @@ func set_active_session(session_id: String):
 	_set_camera_active_state(session_id, true)
 	_scene_node.visible = true
 	_set_player_authority_state(session_id, true)
-	network_m.registry.set_recent(session_id)
+	app_network_m.registry.set_recent(session_id)
 	Events.dash_session_changed.emit(session_id)
 	_scene_node.get_node("SpawnableManager/Gizmos").show_session_gizmos()
 
@@ -180,7 +180,7 @@ func set_active_session(session_id: String):
 
 
 func is_scene_ready(session_id: String) -> bool:
-	var _scene: Node3D = get_master_scene(session_id)
+	var _scene: Node3D = get_session_master(session_id)
 	return _scene.is_ready
 
 
@@ -189,7 +189,7 @@ func await_session_ready(session_id: String) -> void:
 	var _session_ready: bool = false
 	while _session_ready == false:
 		var _scene_ready: bool = is_scene_ready(session_id)
-		var _active_session_set: bool = network_m.scene_m.active_session.is_empty() == false
+		var _active_session_set: bool = app_network_m.app_scene_m.active_session.is_empty() == false
 		_session_ready = _scene_ready == true && _active_session_set == true
 		await get_tree().process_frame
 
@@ -216,8 +216,8 @@ func _get_scene_by_type(scene_type: Enum.BaseLevel) -> String:
 
 func _set_camera_active_state(session_id, state: bool = false) -> void:
 	# TODO: check if session exists.
-	var _my_peer_id: String = str(network_m.registry.get_peer_id(session_id))
-	var master_scene: Node3D = get_master_scene(session_id)
+	var _my_peer_id: String = str(app_network_m.registry.get_peer_id(session_id))
+	var master_scene: Node3D = get_session_master(session_id)
 	# HACK: If my_id = 0, we get the desired result. This is not safe though.
 	if _my_peer_id == "0":
 		GlobalLogger.log("Could not set active state for session '%s', is session open?" % [session_id], Enum.LogLevel.WARNING)
@@ -235,8 +235,8 @@ func _set_camera_active_state(session_id, state: bool = false) -> void:
 
 
 func _set_player_authority_state(session_id, is_active: bool = false) -> void:
-	var _my_peer_id: String = str(network_m.registry.get_peer_id(session_id))
-	var master_scene: Node3D = get_master_scene(session_id)
+	var _my_peer_id: String = str(app_network_m.registry.get_peer_id(session_id))
+	var master_scene: Node3D = get_session_master(session_id)
 	# HACK: If my_id = 0, we get the desired result. This is not safe though.
 	if _my_peer_id == "0":
 		GlobalLogger.log("Could not set player authority for session '%s', is session open?" % [session_id], Enum.LogLevel.WARNING)

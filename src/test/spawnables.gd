@@ -12,7 +12,7 @@ var _scene_container: Node3D
 
 
 func before(_do_skip: bool = true) -> void:
-	_runner = scene_runner("res://scenes/master.tscn")
+	_runner = scene_runner("res://scenes/base.tscn")
 	_scene_container = _runner.find_child("Sessions")
 	return
 

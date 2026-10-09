@@ -33,7 +33,7 @@ func show_window(target_node_id: int, property_hints: PackedStringArray, path: S
 	super._open()
 	visible = true
 
-	spawnable_m = scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager")
+	spawnable_m = scene_m.get_session_master(scene_m.active_session).get_node("SpawnableManager")
 
 	_node_db_entry = spawnable_m.get_by_id(target_node_id)
 	_path = path

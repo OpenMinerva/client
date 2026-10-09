@@ -64,7 +64,7 @@ func save_spawnable(root: Node, type: Enum.SpawnableType = Enum.SpawnableType.IT
 
 
 func load_spawnable(path: String) -> Node:
-	var session_spawnable_manager = scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager")
+	var session_spawnable_manager = scene_m.get_session_master(scene_m.active_session).get_node("SpawnableManager")
 	var _tasks: Array[Dictionary] = []
 	var _path_parent_dictionary: Dictionary = { }
 

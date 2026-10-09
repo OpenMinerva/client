@@ -195,7 +195,7 @@ func _handle_dash_state(state: bool) -> void:
 
 
 func _cem_camera_state(state: bool) -> void:
-	_scene_root = _app_scene_m.get_master_root(_app_scene_m.active_session)
+	_scene_root = _app_scene_m.get_session_master_root(_app_scene_m.active_session)
 	_cem_camera = state
 
 	if _cem_camera == true:
