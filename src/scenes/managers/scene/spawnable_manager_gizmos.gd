@@ -18,7 +18,7 @@ var _legacy_last_gizmo_mode: int = 0
 
 # Selecting
 @rpc("any_peer", "call_remote", "reliable")
-func server_select_spawnable(node_id: int) -> int:
+func session_select_spawnable(node_id: int) -> int:
 	var _caller_id: int = _spawnables._get_caller_id()
 
 	# TODO: Permission check and handling.
@@ -55,7 +55,7 @@ func select(node_id: int, gizmo_id: int) -> void:
 
 # Deselecting
 @rpc("any_peer", "call_remote", "reliable")
-func server_deselect_spawnable(gizmo_id: int) -> void:
+func session_deselect_spawnable(gizmo_id: int) -> void:
 	var _caller_id: int = _spawnables._get_caller_id()
 
 	# TODO: Permission check and handling.

@@ -9,7 +9,7 @@ extends Node
 
 var _specific_api: SceneMultiplayer = null
 var _my_id: int = 0
-var _server_id: String = ""
+var _session_id: String = ""
 
 @onready var player_m = get_node("../PlayerManager")
 @onready var spawnable_m = get_node("../SpawnableManager")
@@ -26,12 +26,12 @@ func _process(_delta):
 func setup_connection(api: SceneMultiplayer, id: String):
 	GlobalLogger.log("Setting up connection to '%s'" % id)
 	_specific_api = api
-	_server_id = id
+	_session_id = id
 
-	_specific_api.connected_to_server.connect(_on_connected_to_server)
+	_specific_api.connected_to_server.connect(_on_connected_to_session)
 	_specific_api.peer_connected.connect(_on_peer_connected)
 	_specific_api.peer_disconnected.connect(_on_peer_disconnected)
-	_specific_api.server_disconnected.connect(_on_server_disconnected)
+	_specific_api.server_disconnected.connect(_on_session_disconnected)
 
 	_my_id = multiplayer.get_unique_id()
 
@@ -54,7 +54,7 @@ func on_banned():
 
 @rpc("any_peer", "reliable")
 func req_spawnable_db() -> void:
-	# A peer wants the server database.
+	# A peer wants the session database.
 	var caller_id = multiplayer.get_remote_sender_id()
 
 	var _state: Dictionary = spawnable_m.registry.get_encoded_database()
@@ -73,26 +73,26 @@ func rec_spawnable_db(state: Dictionary) -> void:
 	# We have the database, set it.
 	await spawnable_m.receive_database(state)
 
-	# Tell the server we have finished spawning the nodes, tell the server to sync the transforms.
+	# Tell the session we have finished spawning the nodes, tell the session to sync the transforms.
 	spawnable_m.sync_all.rpc_id(1)
 
 	return
 
 
-func _on_connected_to_server():
-	# When the client is connected to the server, request the database from the server.
-	GlobalLogger.log("[%s] Connected to a server." % _my_id)
+func _on_connected_to_session():
+	# When the client is connected to the session, request the database from the session.
+	GlobalLogger.log("[%s] Connected to a session." % _my_id)
 
 	# Set the scene root to empty.
-	scene_m.set_master_root_from_program(_server_id, Enum.BaseLevel.EMPTY, "", false)
+	scene_m.set_master_root_from_program(_session_id, Enum.BaseLevel.EMPTY, "", false)
 
 	# Request the spawnable database from host
 	req_spawnable_db.rpc_id(1)
 
 
-func _on_server_disconnected():
-	GlobalLogger.log("Disconnected from '%s'" % _server_id)
-	network_m.leave_server(_server_id)
+func _on_session_disconnected():
+	GlobalLogger.log("Disconnected from '%s'" % _session_id)
+	network_m.leave_session(_session_id)
 	return
 
 
@@ -115,7 +115,7 @@ func _on_peer_connected(peer_id: int):
 	# The host adds a listener for the on_delete, then spawns the player back in.
 	_entity.connect("tree_exiting", _on_peer_player_node_destroyed.bind(peer_id))
 
-	GlobalLogger.log("[%s] Peer '%s' connected to our server." % [_my_id, peer_id])
+	GlobalLogger.log("[%s] Peer '%s' connected to our session." % [_my_id, peer_id])
 
 	return
 
@@ -124,7 +124,7 @@ func _on_peer_disconnected(peer_id: int) -> void:
 	if is_multiplayer_authority() == false:
 		return
 
-	GlobalLogger.log("[%s] Peer '%s' disconnected to our server." % [_my_id, peer_id])
+	GlobalLogger.log("[%s] Peer '%s' disconnected from our session." % [_my_id, peer_id])
 
 	player_m.remove_player.rpc(peer_id)
 

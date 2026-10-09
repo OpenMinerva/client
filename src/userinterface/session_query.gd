@@ -8,6 +8,7 @@
 # --- License
 extends Node
 
+
 func authenticate(url: String) -> Dictionary:
 	var _return_dict: Dictionary = { "ok": false, "error": "" }
 
@@ -40,6 +41,7 @@ func authenticate(url: String) -> Dictionary:
 
 	return _return_dict
 
+
 func get_sessions() -> Array:
 	var _return_arr = []
 	var _session_servers = SettingsManager.get_session_servers()
@@ -68,6 +70,7 @@ func get_sessions() -> Array:
 
 	return _return_arr
 
+
 func _session_request_received(_host: String, response: Dictionary) -> Dictionary:
 	var _return_arr = { "ok": false, "error": "", "data": null }
 
@@ -81,7 +84,9 @@ func _session_request_received(_host: String, response: Dictionary) -> Dictionar
 
 	return _return_arr
 
+
 func _authentication_request_received(_host: String, response: Dictionary) -> Dictionary:
+	# TODO: Remove this weird communication
 	var _return_arr = { "ok": false, "error": "", "data": null }
 
 	# TODO: If response.ok

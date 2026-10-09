@@ -1,23 +1,25 @@
 # --- License
-# File: /client/src/scrips/libs/server_peer_helper.gd
+# File: /client/src/scrips/libs/session_peer_helper.gd
 # Project: OpenMinerva
 # Created Date: 26 July 2026
 # Copyright (c) 2026 OpenMinerva
 # License: MIT License
 # Authors: Armored Dragon
 # --- License
-class_name ServerPeerHelper
+class_name SessionPeerHelper
 
 # TODO: Is this safe?
 static var tree = Engine.get_main_loop() as SceneTree
 
-static func create_server(port: int, max_clients: int, master_scene_path: String) -> SceneMultiplayer:
+
+static func create_session(port: int, max_clients: int, master_scene_path: String) -> SceneMultiplayer:
 	var _session_peer = ENetMultiplayerPeer.new()
 	var _create_response = _session_peer.create_server(port, max_clients)
 
 	var _session_api = _setup_peer(_create_response, _session_peer, master_scene_path)
 
 	return _session_api
+
 
 static func create_client(ip: String, port: int, master_scene_path: String) -> SceneMultiplayer:
 	var _session_peer = ENetMultiplayerPeer.new()
@@ -26,6 +28,7 @@ static func create_client(ip: String, port: int, master_scene_path: String) -> S
 	var _session_api = _setup_peer(_create_response, _session_peer, master_scene_path)
 
 	return _session_api
+
 
 static func _setup_peer(_create_response, _session_peer, master_scene_path) -> SceneMultiplayer:
 	var _session_api = SceneMultiplayer.new()

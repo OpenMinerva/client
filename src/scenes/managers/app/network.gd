@@ -16,35 +16,35 @@ const MAX_CLIENTS = 1000
 
 
 func _ready():
-	Events.action_start_server.connect(start_server)
+	Events.action_start_session.connect(start_session)
 	return
 
 
-func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRID, scene_dir: String = "") -> bool:
-	GlobalLogger.log("Starting a new server.")
+func start_session(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRID, scene_dir: String = "") -> bool:
+	GlobalLogger.log("Starting a new session.")
 
 	# Get an available port. If port was defined, force that port or fail.
 	if port != 0:
 		GlobalLogger.log("Forcing port '%s'" % port)
 		var port_available = !port_scanner.is_port_in_use(port)
 		if !port_available:
-			GlobalLogger.log("Could not open server on port '%s', unavailable." % port)
+			GlobalLogger.log("Could not open session on port '%s', unavailable." % port)
 			return false
 	else:
 		port = port_scanner.find_available_port()
 
-	# Create server master scene.
+	# Create session master scene.
 	var _scene: String = scene_m.create_master_scene()
 
 	# Get a reference to the master scene from our scene ID.
 	var master_scene: Node3D = scene_m.get_master_scene(_scene)
 
-	# Create a new server and peer.
-	var _mp_api = ServerPeerHelper.create_server(port, MAX_CLIENTS, master_scene.get_path())
+	# Create a new session and peer.
+	var _mp_api = SessionPeerHelper.create_session(port, MAX_CLIENTS, master_scene.get_path())
 
 	# Check if _mp_api was successfull.
 	if _mp_api == null:
-		GlobalLogger.log("Failed to start server.", Enum.LogLevel.INFO)
+		GlobalLogger.log("Failed to start session.", Enum.LogLevel.INFO)
 		scene_m.destroy_master_scene(_scene)
 		return false
 
@@ -53,7 +53,7 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 
 	registry.add_session(_scene, "", registry.SessionConnectionType.HOST, port, 1, Enum.PrivacyLevel.INVITE, _mp_api)
 
-	# Create server root scene.
+	# Create session root scene.
 	scene_m.set_master_root_from_program(_scene, root_scene, scene_dir)
 
 	scene_m.start_master_scene(_scene)
@@ -74,14 +74,14 @@ func start_server(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRI
 	return true
 
 
-func stop_server(session_id: String):
+func stop_session(session_id: String):
 	var _is_valid: bool = registry.has_session(session_id)
-	GlobalLogger.log("Stopping server '%s'." % session_id)
+	GlobalLogger.log("Stopping session '%s'." % session_id)
 
-	# TODO: Disable join requests to server.
+	# TODO: Disable join requests to session.
 
 	if _is_valid == false:
-		GlobalLogger.log("Session '%s' does not exist, cannot stop the server." % session_id, Enum.LogLevel.WARNING)
+		GlobalLogger.log("Session '%s' does not exist in the registry, cannot stop the session." % session_id, Enum.LogLevel.WARNING)
 		return
 
 	var session: Dictionary = registry.get_session(session_id)
@@ -91,9 +91,9 @@ func stop_server(session_id: String):
 
 	# Kick all players
 	for _peer in all_peers:
-		kick_player(session_id, _peer, "Server Closing")
+		kick_player(session_id, _peer, "Session Closing")
 
-	# Close the server
+	# Close the session
 	mp_api.multiplayer_peer.close()
 	mp_api.multiplayer_peer = null
 
@@ -120,50 +120,50 @@ func stop_server(session_id: String):
 	return
 
 
-func update_server(session_id: String, server_info: Dictionary):
-	GlobalLogger.log("Updating server '%s'." % session_id)
+func update_session(session_id: String, session_info: Dictionary):
+	GlobalLogger.log("Updating session '%s'." % session_id)
 
 	var _saved_session_servers = SettingsManager.get_session_servers()
-	var _server: Dictionary = registry.get_session(session_id)
+	var _session: Dictionary = registry.get_session(session_id)
 	var _current_listings: Array[String] = []
 
 	# Update our current listings.
-	for _listing in _server.session_server_keys:
-		GlobalLogger.log("Updating session '%s'" % _server.id)
+	for _listing in _session.session_server_keys:
+		GlobalLogger.log("Updating session '%s'" % _session.id)
 		_current_listings.append(_listing.url)
 
 		# Invite only sessions are completely delisted
-		if server_info.privacy == Enum.PrivacyLevel.INVITE:
+		if session_info.privacy == Enum.PrivacyLevel.INVITE:
 			advertiser.destroy_session(session_id, _listing.key, _listing.url)
 			continue
 
 		# Otherwise send an update request to the server
-		await advertiser.update_session(server_info, _listing.key, _listing.url)
+		await advertiser.update_session(session_info, _listing.key, _listing.url)
 		continue
 
-	if server_info.privacy > Enum.PrivacyLevel.INVITE:
+	if session_info.privacy > Enum.PrivacyLevel.INVITE:
 		# List on session servers we were not on before.
 		for _session_server in _saved_session_servers:
 			if _current_listings.has(_session_server.url) == true:
 				continue
 
-			var _server_key = await advertiser.create_session(server_info, _session_server.url)
-			if _server_key != "":
-				registry.add_session_server_key(session_id, _session_server.url, _server_key)
+			var _session_key = await advertiser.create_session(session_info, _session_server.url)
+			if _session_key != "":
+				registry.add_session_server_key(session_id, _session_server.url, _session_key)
 
 	Events.emit_signal("instance_updated")
 	return
 
 
-func join_server(ip: String = "", port: int = 0) -> bool:
-	GlobalLogger.log("Joining server at '%s:%s'" % [ip, port], Enum.LogLevel.INFO)
+func join_session(ip: String = "", port: int = 0) -> bool:
+	GlobalLogger.log("Joining session at '%s:%s'" % [ip, port], Enum.LogLevel.INFO)
 	var _port_is_valid = port > 0 && port < 65535
 
 	if ip.is_empty() || !_port_is_valid:
-		GlobalLogger.log("Server information is invalid '%s:%s'." % [ip, port], Enum.LogLevel.INFO)
+		GlobalLogger.log("Session information is invalid '%s:%s'." % [ip, port], Enum.LogLevel.INFO)
 		return false
 
-	# Create server master scene.
+	# Create session master scene.
 	var _scene: String = scene_m.create_master_scene()
 
 	await scene_m.await_session_ready(_scene)
@@ -172,11 +172,11 @@ func join_server(ip: String = "", port: int = 0) -> bool:
 	var master_scene: Node3D = scene_m.get_master_scene(_scene)
 
 	# Create a new client peer.
-	var _mp_api = ServerPeerHelper.create_client(ip, port, master_scene.get_path())
+	var _mp_api = SessionPeerHelper.create_client(ip, port, master_scene.get_path())
 
 	# Check if _mp_api was successfull.
 	if _mp_api == null:
-		GlobalLogger.log("Failed to join server.", Enum.LogLevel.INFO)
+		GlobalLogger.log("Failed to join session.", Enum.LogLevel.INFO)
 		scene_m.destroy_master_scene(_scene)
 		return false
 
@@ -191,8 +191,8 @@ func join_server(ip: String = "", port: int = 0) -> bool:
 	return true
 
 
-func leave_server(session_id: String):
-	GlobalLogger.log("Trying to leave server '%s'." % session_id)
+func leave_session(session_id: String):
+	GlobalLogger.log("Trying to leave session '%s'." % session_id)
 
 	var _is_valid: bool = registry.has_session(session_id)
 
@@ -204,8 +204,8 @@ func leave_server(session_id: String):
 	var mp_api: SceneMultiplayer = session.api
 
 	if mp_api.is_server():
-		GlobalLogger.log("Tried to leave a server we are the host of, stopping the server.")
-		stop_server(session_id)
+		GlobalLogger.log("Tried to leave a session we are the host of, stopping the session.")
+		stop_session(session_id)
 		return
 
 	if mp_api.multiplayer_peer:
@@ -230,13 +230,13 @@ func leave_server(session_id: String):
 	return
 
 
-func kick_player(server_id: String, peer_id: int, reason: String):
-	GlobalLogger.log("Kicking peer '%s' from '%s' for reason '%s'" % [peer_id, server_id, reason], Enum.LogLevel.DEBUG)
-	var _is_valid: bool = registry.has_session(server_id)
+func kick_player(session_id: String, peer_id: int, reason: String):
+	GlobalLogger.log("Kicking peer '%s' from '%s' for reason '%s'" % [peer_id, session_id, reason], Enum.LogLevel.DEBUG)
+	var _is_valid: bool = registry.has_session(session_id)
 
 	# TODO: Check if peer exists
 	if _is_valid == true:
-		var session: Dictionary = registry.get_session(server_id)
+		var session: Dictionary = registry.get_session(session_id)
 		var mp_api: SceneMultiplayer = session.api
 		# TODO: Notify user of kick
 		mp_api.disconnect_peer(peer_id)

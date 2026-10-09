@@ -54,13 +54,13 @@ func sync_all() -> void:
 	return
 
 
-## Create a spawnable in the session. This is an abstraction that will automatically handle the networking between the host and the client. If the host attempts to call this function in a session, they will call `_server_create_spawnable` directly. If a client calls this function, the client will automatically `rpc` the `_server_create_spawnable` to the host.
+## Create a spawnable in the session. This is an abstraction that will automatically handle the networking between the host and the client. If the host attempts to call this function in a session, they will call `_session_create_spawnable` directly. If a client calls this function, the client will automatically `rpc` the `_session_create_spawnable` to the host.
 ## [param node_type] is a string name of the type of node to spawn.
 ## [param node_parent] is the node id of the parent node to spawn. When the node is spawned, the node is automatically parented.
 func create_spawnable(node_type: String, node_parent: int = -1) -> Node:
 	if multiplayer.is_server():
 		GlobalLogger.log("Spawning node '%s'" % node_type)
-		var _spawnable_id: int = spawnables.server_create_spawnable(node_type, node_parent)
+		var _spawnable_id: int = spawnables.session_create_spawnable(node_type, node_parent)
 		var _spawnable_db_entry: Node = registry.get_spawnable(_spawnable_id)
 
 		if _spawnable_db_entry == null:
@@ -69,49 +69,49 @@ func create_spawnable(node_type: String, node_parent: int = -1) -> Node:
 		return _spawnable_db_entry
 	else:
 		GlobalLogger.log("Requesting a spawn of node '%s'" % node_type)
-		var _spawnable_id: int = await rpcawaiter.send_rpc(1, spawnables.server_create_spawnable.bind(node_type, node_parent))
+		var _spawnable_id: int = await rpcawaiter.send_rpc(1, spawnables.session_create_spawnable.bind(node_type, node_parent))
 		var _spawnable_db_entry: Node = registry.get_spawnable(_spawnable_id)
 		if _spawnable_db_entry == null:
 			return null
 		return _spawnable_db_entry
 
 
-## Destroy a spawnable in the session. This is an abstraction that will automatically handle the networking between the host and the client. If the host attempts to call this function in a session, they will call `_server_destroy_spawnable` directly. If a client calls this function, the client will automatically `rpc` the `_server_destroy_spawnable` to the host.
+## Destroy a spawnable in the session. This is an abstraction that will automatically handle the networking between the host and the client. If the host attempts to call this function in a session, they will call `_session_destroy_spawnable` directly. If a client calls this function, the client will automatically `rpc` the `_session_destroy_spawnable` to the host.
 ## [param node_id] is the id of the node to destroy.
 func destroy_spawnable(node_id: int) -> void:
 	if multiplayer.is_server():
 		GlobalLogger.log("Destroying node '%s'" % node_id)
-		spawnables.server_destroy_spawnable(node_id)
+		spawnables.session_destroy_spawnable(node_id)
 		return
 	else:
 		GlobalLogger.log("Requesting a destroy of node '%s'" % node_id)
-		await rpcawaiter.send_rpc(1, spawnables.server_destroy_spawnable.bind(node_id))
+		await rpcawaiter.send_rpc(1, spawnables.session_destroy_spawnable.bind(node_id))
 		return
 
 
-## Parent a spawnable in the session to another spawnable. This is an abstraction that will automatically handle the networking between the host and the client. If the host attempts to call this function in a session, they will call `server_parent_spawnable` directly. If a client calls this function, the client will automatically `rpc` the `server_parent_spawnable` to the host.
+## Parent a spawnable in the session to another spawnable. This is an abstraction that will automatically handle the networking between the host and the client. If the host attempts to call this function in a session, they will call `session_parent_spawnable` directly. If a client calls this function, the client will automatically `rpc` the `session_parent_spawnable` to the host.
 ## [param node_id] is the id of the node to parent.
 ## [param parent_id] is the id of the node to parent to.
 func parent_spawnable(node_id: int, parent_id: int = -1) -> void:
 	if multiplayer.is_server():
 		GlobalLogger.log("Parenting node '%s' to '%s'" % [node_id, parent_id])
-		spawnables.server_parent_spawnable(node_id, parent_id)
+		spawnables.session_parent_spawnable(node_id, parent_id)
 		return
 	else:
 		GlobalLogger.log("Requesting a parent of node '%s' to '%s'" % [node_id, parent_id])
-		await rpcawaiter.send_rpc(1, spawnables.server_parent_spawnable.bind(node_id, parent_id))
+		await rpcawaiter.send_rpc(1, spawnables.session_parent_spawnable.bind(node_id, parent_id))
 		return
 
 
-## Transform a spawnable in the session in 3D space. This is an abstraction that will automatically handle the networking between the host and the client. If the host attempts to call this function in a session, they will call `server_transform_spawnable` directly. If a client calls this function, the client will automatically `rpc` the `server_transform_spawnable` to the host.
+## Transform a spawnable in the session in 3D space. This is an abstraction that will automatically handle the networking between the host and the client. If the host attempts to call this function in a session, they will call `session_transform_spawnable` directly. If a client calls this function, the client will automatically `rpc` the `session_transform_spawnable` to the host.
 func transform_spawnable(node_id: int, transform: Transform3D, ignore_sender: bool = true) -> void:
 	if multiplayer.is_server():
 		# GlobalLogger.log("Transforming node '%s'." % node_id)
-		spawnables.server_transform_spawnable(node_id, transform, ignore_sender)
+		spawnables.session_transform_spawnable(node_id, transform, ignore_sender)
 		return
 	else:
 		# GlobalLogger.log("Requesting a transform of node '%s'" % node_id)
-		await rpcawaiter.send_rpc(1, spawnables.server_transform_spawnable.bind(node_id, transform, ignore_sender))
+		await rpcawaiter.send_rpc(1, spawnables.session_transform_spawnable.bind(node_id, transform, ignore_sender))
 		return
 
 
@@ -120,14 +120,14 @@ func transform_spawnable(node_id: int, transform: Transform3D, ignore_sender: bo
 func select_spawnable(node_id: int) -> Node:
 	if multiplayer.is_server():
 		GlobalLogger.log("Selecting node '%s'." % node_id)
-		var _gizmo_id: int = gizmos.server_select_spawnable(node_id)
+		var _gizmo_id: int = gizmos.session_select_spawnable(node_id)
 		var _spawnable_db_entry: Node = registry.get_spawnable(_gizmo_id)
 		if _spawnable_db_entry == null:
 			return null
 		return _spawnable_db_entry
 	else:
 		GlobalLogger.log("Requesting a selection of node '%s'" % node_id)
-		var _gizmo_id: int = await rpcawaiter.send_rpc(1, gizmos.server_select_spawnable.bind(node_id))
+		var _gizmo_id: int = await rpcawaiter.send_rpc(1, gizmos.session_select_spawnable.bind(node_id))
 
 		var _spawnable_db_entry: Node = registry.get_spawnable(_gizmo_id)
 		if _spawnable_db_entry == null:
@@ -140,11 +140,11 @@ func select_spawnable(node_id: int) -> Node:
 func deselect_spawnable(gizmo_id: int) -> void:
 	if multiplayer.is_server():
 		GlobalLogger.log("Destroying gizmo '%s'." % gizmo_id)
-		gizmos.server_deselect_spawnable(gizmo_id)
+		gizmos.session_deselect_spawnable(gizmo_id)
 		return
 	else:
 		GlobalLogger.log("Requesting a destruction of gizmo '%s'." % gizmo_id)
-		await rpcawaiter.send_rpc(1, gizmos.server_deselect_spawnable.bind(gizmo_id))
+		await rpcawaiter.send_rpc(1, gizmos.session_deselect_spawnable.bind(gizmo_id))
 		return
 
 
@@ -194,7 +194,7 @@ func set_property_on_resource(resource_id: int, property_name: String, property_
 
 @rpc("any_peer", "reliable")
 func set_resource(node_id: int, property_name: String, resource_id: int) -> void:
-	# NOTE: This resource settter is very basic and only works as a way for initializing a joining peer on the server.
+	# NOTE: This resource settter is very basic and only works as a way for initializing a joining peer on the session.
 	# There is not a complex nor complete lifecycle management for these assets.
 	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
 	var _caller_id: int = multiplayer.get_remote_sender_id()

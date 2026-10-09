@@ -17,7 +17,7 @@ var active_session: String = ""
 
 
 func _ready():
-	network_m.start_server(0, Enum.BaseLevel.HOME)
+	network_m.start_session(0, Enum.BaseLevel.HOME)
 	return
 
 
@@ -92,7 +92,7 @@ func set_master_root_from_program(id: String, scene_type: Enum.BaseLevel, scene_
 			_spawnable_manager.parent_spawnable(int(_world_node.name), -1)
 
 		# Delete the initial fake root from the loaded world.
-		_spawnable_manager.spawnables.server_destroy_spawnable(int(_target_node.name))
+		_spawnable_manager.spawnables.session_destroy_spawnable(int(_target_node.name))
 
 	# Allow scene to be visible in the inspector
 	_root_scene_node.set_meta("scene_node", true)
@@ -129,10 +129,10 @@ func start_master_scene(id: String):
 	for node_name in MANAGERS:
 		var _scene_manager = _scene.get_node_or_null(node_name)
 		if _scene_manager:
-			GlobalLogger.log("'%s' started in server '%s'" % [node_name, id])
+			GlobalLogger.log("'%s' started in session '%s'" % [node_name, id])
 			continue
 
-		GlobalLogger.log("Could not start invalid manager '%s' in server '%s'" % [node_name, id], Enum.LogLevel.ERROR)
+		GlobalLogger.log("Could not start invalid manager '%s' in session '%s'" % [node_name, id], Enum.LogLevel.ERROR)
 	return
 
 
@@ -144,10 +144,10 @@ func stop_master_scene(id: String):
 	for node_name in MANAGERS:
 		var _scene_manager = _scene.get_node_or_null(node_name)
 		if _scene_manager:
-			GlobalLogger.log("'%s' stopped in server '%s'" % [node_name, id])
+			GlobalLogger.log("'%s' stopped in session '%s'" % [node_name, id])
 			continue
 
-		GlobalLogger.log("Could not stop invalid manager '%s' in server '%s'" % [node_name, id], Enum.LogLevel.ERROR)
+		GlobalLogger.log("Could not stop invalid manager '%s' in session '%s'" % [node_name, id], Enum.LogLevel.ERROR)
 	return
 
 

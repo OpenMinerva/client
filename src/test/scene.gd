@@ -51,8 +51,8 @@ func test_home_world_layout() -> void:
 	return
 
 
-func test_start_server() -> void:
-	Events.action_start_server.emit()
+func test_start_session() -> void:
+	Events.action_start_session.emit()
 
 	var _new_scene: Node3D = _scene_container.get_children()[1]
 	await _test_world_layout(_new_scene)
@@ -61,12 +61,12 @@ func test_start_server() -> void:
 	return
 
 
-func test_stop_server(_do_skip: bool = true) -> void:
+func test_stop_session(_do_skip: bool = true) -> void:
 	return
 
 
-func test_stop_home_server(_do_skip: bool = true) -> void:
-	# NOTE: Should not be allowed to stop the home server.
+func test_stop_home_session(_do_skip: bool = true) -> void:
+	# NOTE: Should not be allowed to stop the home session.
 	return
 
 
@@ -82,7 +82,7 @@ func test_close_application() -> void:
 	# Application is in a closing state.
 	assert(StateManager.app_closing == true)
 
-	# We are not in any more servers.
+	# We are not in any more sessions.
 	assert(Bootstrap.network_m.registry.get_all().size() == 0)
 
 	# Make sure we do not have any more scene nodes.
