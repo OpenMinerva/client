@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://clxgcncfyislv"]
 
-[ext_resource type="Shader" uid="uid://bwr4b0mhgi4w6" path="res://userinterface/dash/shaders/blur.gdshader" id="1_i1jlm"]
+[ext_resource type="Shader" uid="uid://bwr4b0mhgi4w6" path="res://resources/shaders/blur.gdshader" id="1_i1jlm"]
 [ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="2_l5h25"]
 [ext_resource type="Script" uid="uid://bsuywy3ql6bof" path="res://userinterface/client_edit_mode/desktop/scripts/toolbar_info_entry.gd" id="3_l5h25"]
 [ext_resource type="Texture2D" uid="uid://dbh1x1f04arga" path="res://resources/icons/godot/Object.svg" id="3_uolk7"]
