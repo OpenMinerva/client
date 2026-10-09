@@ -13,7 +13,7 @@ var _scene_container: Node3D
 
 func before_test() -> void:
 	_runner = scene_runner("res://scenes/master.tscn")
-	_scene_container = _runner.find_child("Scenes")
+	_scene_container = _runner.find_child("Sessions")
 	return
 
 

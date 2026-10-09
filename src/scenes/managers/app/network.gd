@@ -113,7 +113,7 @@ func stop_session(session_id: String):
 	for _listing in session.session_server_keys:
 		advertiser.destroy_session(session.id, _listing.key, _listing.url)
 
-	# Database cleanup
+	# Registry cleanup
 	registry.remove_session(session_id)
 
 	Events.emit_signal("session_left")

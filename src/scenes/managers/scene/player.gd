@@ -55,26 +55,24 @@ func remove_player(peer_id: int) -> void:
 @rpc("call_local", "authority", "reliable")
 func set_player_node(peer_id: int, node_id: int) -> void:
 	var _target = players[str(peer_id)]
-
-	var _node_database_entry: Node = spawnable_m.get_by_id(node_id)
-	var node = _node_database_entry
+	var _node: Node = spawnable_m.get_by_id(node_id)
 
 	# TODO: Error warnings
 	if _target == null:
 		return
 
-	if node == null:
+	if _node == null:
 		return
 
-	_target.node = node
-	_target.node_id = node.name
+	_target.node = _node
+	_target.node_id = _node.name
 
 	# If this is our own player node being set, ensure we have authority
 	if peer_id == multiplayer.get_unique_id():
-		if node and node.has_method("set_multiplayer_authority"):
-			node.set_multiplayer_authority(peer_id)
+		if _node and _node.has_method("set_multiplayer_authority"):
+			_node.set_multiplayer_authority(peer_id)
 			# HACK: Force set the camera to active.
-			node._node_camera.current = true
+			_node._node_camera.current = true
 	return
 
 

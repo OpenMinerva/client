@@ -286,9 +286,9 @@ func _inspector_build(root_node: Node = session_root) -> void:
 		GlobalLogger.log("Invalid root node: '%s'" % root_node, Enum.LogLevel.WARNING)
 		return
 
-	var _database: Array[Node] = session_spawnable_m.registry.get_all_spawnable()
+	var _registry: Array[Node] = session_spawnable_m.registry.get_all_spawnable()
 
-	var _total_spawnable_label: String = str(_database.size())
+	var _total_spawnable_label: String = str(_registry.size())
 	var _total_player_label: String = str(session_players_m.get_player_count())
 
 	GlobalLogger.log("Generating the inspector view with parent '%s'." % root_node)
@@ -578,7 +578,7 @@ func _cem_camera_state(state: bool) -> void:
 	var _player_node: Node3D
 
 	# HACK: Hardcoded fix for force host spawn.
-	# The host is forcefully spawned into a instance as it is created, bypassing the database entirely.
+	# The host is forcefully spawned into a instance as it is created, bypassing the registry entirely.
 	if _player_db == null:
 		_player_node = session_root.get_node("1")
 	else:

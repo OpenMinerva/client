@@ -13,7 +13,6 @@ extends Node
 @onready var instance_root: Node = get_parent().get_node("root")
 @onready var rpcawaiter: Node = get_parent().get_node("RpcAwaiter")
 @onready var session_signalbus: Node = get_node("../SignalBus")
-@onready var player_m: Node = get_node("../PlayerManager")
 @onready var registry: Node = get_node("./Registry")
 @onready var spawnables: Node = get_node("Spawnables")
 @onready var gizmos: Node = get_node("Gizmos")
@@ -38,12 +37,12 @@ func sync_all() -> void:
 	if !is_multiplayer_authority():
 		return
 
-	var _database: Array[Node] = registry.get_all_spawnable()
+	var _registry: Array[Node] = registry.get_all_spawnable()
 	var _caller_id: int = spawnables._get_caller_id()
 	GlobalLogger.log("Received a request to sync all nodes from '%s'" % _caller_id, Enum.LogLevel.INFO)
-	GlobalLogger.log("Database size: '%s'" % _database.size())
+	GlobalLogger.log("Registry size: '%s'" % _registry.size())
 
-	for spawnable in _database:
+	for spawnable in _registry:
 		if ("transform" in spawnable) == false:
 			# We can't transform something without a transform field!
 			GlobalLogger.log("'%s' does not have a transform. Not sending a transform." % spawnable.name)
@@ -208,7 +207,7 @@ func set_resource(node_id: int, property_name: String, resource_id: int) -> void
 
 		set_resource_on_spawnable.rpc(node_id, property_name, resource_id)
 
-		# FIXME: When a node gets deleted, there is no cleanup for the database.
+		# FIXME: When a node gets deleted, there is no cleanup for the Registry.
 		registry.add_relation(node_id, property_name, resource_id)
 	else:
 		await rpcawaiter.send_rpc(1, set_resource.bind(node_id, property_name, resource_id))
@@ -322,7 +321,7 @@ func set_authority_on_spawnable(node_id: int, peer_id: int) -> void:
 func receive_database(state: Dictionary) -> void:
 	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
 
-	GlobalLogger.log("[%s] Receiving spawnable database with %d entries" % [_my_id, -1])
+	GlobalLogger.log("[%s] Receiving spawnable registry with %d entries" % [_my_id, -1])
 
 	for _spawnable in state.spawnables:
 		var _spawnable_type = "Node3D"
@@ -352,7 +351,7 @@ func receive_database(state: Dictionary) -> void:
 		if _relation.property == "shader":
 			set_property_on_resource_internal(_relation.node, _relation.property, _resource)
 
-	GlobalLogger.log("[%s] Database sync complete." % _my_id)
+	GlobalLogger.log("[%s] Registry sync complete." % _my_id)
 
 	return
 
@@ -379,7 +378,7 @@ func get_resource_by_id(resource_id: int) -> Resource:
 func spawn_asset(asset_type, properties, id: String = "") -> int:
 	GlobalLogger.log("Spawning '%s'." % asset_type)
 
-	# Create the resource on our end, and include it in the database.
+	# Create the resource on our end, and include it in the registry.
 	var _resource: Resource = _spawn_resource(asset_type, properties, id)
 
 	# Return the _asset_database id of the resource.
@@ -400,7 +399,7 @@ func _spawn_resource(resource_class: String, properties: Array, asset_id: String
 
 		_resource.set_indexed(_prop.name, _prop.value)
 
-	# Add the resource to the database
+	# Add the resource to the registry
 	registry.add_asset(_resource, int(asset_id))
 
 	# Save the resource class as a metadata field to keep track of what it is.

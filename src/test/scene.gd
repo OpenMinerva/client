@@ -13,14 +13,14 @@ var _scene_container: Node3D
 
 func before_test() -> void:
 	_runner = scene_runner("res://scenes/master.tscn")
-	_scene_container = _runner.find_child("Scenes")
+	_scene_container = _runner.find_child("Sessions")
 	return
 
 
 ## Make sure that the "master" scene containing all of our UI elements exists.
 func test_initial_scene() -> void:
 	var _inspector: Control = _runner.find_child("Inspector")
-	_scene_container = _runner.find_child("Scenes")
+	_scene_container = _runner.find_child("Sessions")
 	var _app_network_manager: Node = _runner.find_child("AppNetworkManager")
 	var _app_scene_manager: Node = _runner.find_child("AppSceneManager")
 	var _app_spawnable_file_handling: Node = _runner.find_child("SpawnableFileHandling")

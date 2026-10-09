@@ -12,7 +12,7 @@ var active_session: String = ""
 
 # Game managers
 @onready var network_m: Node = get_tree().root.find_child("AppNetworkManager", true, false)
-@onready var scene_container: Node = get_tree().root.find_child("Scenes", true, false)
+@onready var scene_container: Node = get_tree().root.find_child("Sessions", true, false)
 @onready var spawnable_file_handling: Node = get_tree().root.find_child("SpawnableFileHandling", true, false)
 
 
@@ -223,14 +223,14 @@ func _set_camera_active_state(session_id, state: bool = false) -> void:
 		GlobalLogger.log("Could not set active state for session '%s', is session open?" % [session_id], Enum.LogLevel.WARNING)
 		return
 	var player_manager: Node = master_scene.get_node("PlayerManager")
-	var player_database = player_manager.players
-	var my_database_entry = player_database.get(_my_peer_id)
-	if my_database_entry != null:
-		if my_database_entry.node == null:
+	var player_registry = player_manager.players
+	var my_registry_entry = player_registry.get(_my_peer_id)
+	if my_registry_entry != null:
+		if my_registry_entry.node == null:
 			# FIXME: This error should not be necessary, there is a bigger problem somewhere else.
 			return
 
-		my_database_entry.node.set_camera_state(state)
+		my_registry_entry.node.set_camera_state(state)
 	return
 
 
@@ -242,11 +242,11 @@ func _set_player_authority_state(session_id, is_active: bool = false) -> void:
 		GlobalLogger.log("Could not set player authority for session '%s', is session open?" % [session_id], Enum.LogLevel.WARNING)
 		return
 	var player_manager: Node = master_scene.get_node("PlayerManager")
-	var player_database = player_manager.players
-	var my_database_entry = player_database.get(_my_peer_id)
+	var player_registry = player_manager.players
+	var my_registry_entry = player_registry.get(_my_peer_id)
 
-	if my_database_entry != null:
-		var player = my_database_entry.node
+	if my_registry_entry != null:
+		var player = my_registry_entry.node
 
 		if player == null:
 			# FIXME: This error should not be necessary, there is a bigger problem somewhere else.

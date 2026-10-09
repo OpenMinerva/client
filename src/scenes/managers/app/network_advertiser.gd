@@ -9,12 +9,12 @@
 extends Node
 ## This file contains all of the session advertisement functionality for listing our session among session servers.
 
-## The internal database for keeping track of open sessions.
+## The internal registry for keeping track of open sessions.
 var _open_sessions = []
 
 
 ## List a session with a given session server.
-## [param session_info] contains the session database information.
+## [param session_info] contains the session registry information.
 ## [param session_server_url] is the target session server to list the session with.
 func create_session(session_info: Dictionary, session_server_url: String) -> String:
 	GlobalLogger.log("Attempting to list session '%s' to session server '%s'." % [session_info.id, session_server_url], Enum.LogLevel.INFO)

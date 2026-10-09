@@ -54,14 +54,14 @@ func on_banned():
 
 @rpc("any_peer", "reliable")
 func req_spawnable_db() -> void:
-	# A peer wants the session database.
+	# A peer wants the session registry.
 	var caller_id = multiplayer.get_remote_sender_id()
 
 	var _state: Dictionary = spawnable_m.registry.get_encoded_database()
 
-	GlobalLogger.log("Sending spawnable database to peer %d: %d entries" % [caller_id, -1])
+	GlobalLogger.log("Sending spawnable registry to peer %d: %d entries" % [caller_id, -1])
 
-	# Send the spawnable and player database to the client.
+	# Send the spawnable and player registry to the client.
 	rec_spawnable_db.rpc_id(caller_id, _state)
 
 	return
@@ -69,8 +69,8 @@ func req_spawnable_db() -> void:
 
 @rpc("authority", "reliable")
 func rec_spawnable_db(state: Dictionary) -> void:
-	GlobalLogger.log("Received the spawnable database.")
-	# We have the database, set it.
+	GlobalLogger.log("Received the spawnable registry.")
+	# We have the registry, set it.
 	await spawnable_m.receive_database(state)
 
 	# Tell the session we have finished spawning the nodes, tell the session to sync the transforms.
@@ -80,13 +80,13 @@ func rec_spawnable_db(state: Dictionary) -> void:
 
 
 func _on_connected_to_session():
-	# When the client is connected to the session, request the database from the session.
+	# When the client is connected to the session, request the registry from the session.
 	GlobalLogger.log("[%s] Connected to a session." % _my_id)
 
 	# Set the scene root to empty.
 	scene_m.set_master_root_from_program(_session_id, Enum.BaseLevel.EMPTY, "", false)
 
-	# Request the spawnable database from host
+	# Request the spawnable registry from host
 	req_spawnable_db.rpc_id(1)
 
 
@@ -103,13 +103,13 @@ func _on_peer_connected(peer_id: int):
 
 	GlobalLogger.log("Peer '%s' is connected! Creating a player controller." % [peer_id])
 
-	# Add player to the database.
+	# Add player to the registry.
 	player_m.add_player.rpc(peer_id)
 
 	# Spawn the player controller.
 	var _entity = await spawnable_m.create_spawnable("OM_PlayerController", -1)
 
-	# Set the player node in the player database.
+	# Set the player node in the player registry.
 	player_m.set_player_node.rpc(peer_id, int(_entity.name))
 
 	# The host adds a listener for the on_delete, then spawns the player back in.
@@ -142,7 +142,7 @@ func _on_peer_player_node_destroyed(peer_id: int) -> void:
 	_timer.timeout.connect(
 		func() -> void:
 			if player_m.players.keys().has(str(peer_id)) == false:
-				# Check to see if player still exists in the database, don't spawn if they are gone.
+				# Check to see if player still exists in the registry, don't spawn if they are gone.
 				GlobalLogger.log("Peer '%s' was disconnected, not respawning a player controller." % [peer_id])
 				return
 

@@ -59,7 +59,7 @@ func start_world() -> void:
 	var _world_privacy: Enum.PrivacyLevel = dashboard.get_node("%PrivacyVal").selected
 	var _world_load_dir: String = dashboard.get_node("%WorldLoadDirVal").text
 
-	Events.action_start_server.emit(0, _world_base, _world_load_dir)
+	Events.action_start_session.emit(0, _world_base, _world_load_dir)
 
 	# HACK: For some reason, the active session does not get updated when I expect it to. This will force the active session to switch to the newly created session.
 	var _sessions: Array = network_m.get_connected_sessions()
