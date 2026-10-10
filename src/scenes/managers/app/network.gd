@@ -22,6 +22,7 @@ func _ready():
 
 func start_session(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GRID, scene_dir: String = "") -> bool:
 	GlobalLogger.log("Starting a new session.")
+	var _session_ready: bool = false
 
 	# Get an available port. If port was defined, force that port or fail.
 	if port != 0:
@@ -34,50 +35,46 @@ func start_session(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GR
 		port = port_scanner.find_available_port()
 
 	# Create session master scene.
-	var _scene: String = app_scene_m.create_session_master()
-
-	# Get a reference to the master scene from our scene ID.
-	var master_scene: Node3D = app_scene_m.get_session_master(_scene)
+	var _session_id: String = app_scene_m.create_session_master()
+	var _session_master_node: Node3D = app_scene_m.get_session_master(_session_id)
+	var _sess_network_m: Node = _session_master_node.get_manager(_session_master_node.MANAGER_TYPE.NETWORK)
 
 	# Create a new session and peer.
-	var _mp_api = SessionPeerHelper.create_session(port, MAX_CLIENTS, master_scene.get_path())
+	var _mp_api = SessionPeerHelper.create_session(port, MAX_CLIENTS, _session_master_node.get_path())
 
-	# Check if _mp_api was successfull.
+	# Check if _mp_api was successful.
 	if _mp_api == null:
 		GlobalLogger.log("Failed to start session.", Enum.LogLevel.INFO)
-		app_scene_m.destroy_master_scene(_scene)
+		app_scene_m.destroy_master_scene(_session_id)
 		return false
 
-	var net_manager = master_scene.get_node("NetworkManager")
-	net_manager.setup_connection(_mp_api, _scene)
+	_sess_network_m.setup_connection(_mp_api, _session_id)
 
-	registry.add_session(_scene, "", registry.SessionConnectionType.HOST, port, 1, Enum.PrivacyLevel.INVITE, _mp_api)
+	registry.add_session(_session_id, "", registry.SessionConnectionType.HOST, port, 1, Enum.PrivacyLevel.INVITE, _mp_api)
 
 	# Create session root scene.
-	app_scene_m.set_session_master_root_from_program(_scene, root_scene, scene_dir)
+	app_scene_m.set_session_master_root_from_program(_session_id, root_scene, scene_dir)
 
-	app_scene_m.set_active_session(_scene)
+	app_scene_m.set_active_session(_session_id)
 
-	var _session_ready: bool = false
 	while _session_ready == false:
 		# TODO: Safety and breakout.
-		_session_ready = app_scene_m.is_scene_ready(_scene)
+		_session_ready = app_scene_m.is_scene_ready(_session_id)
 		await get_tree().process_frame
 
 	# FIXME: Force spawn the host. This is probably bad design.
-	app_scene_m.get_session_master(_scene).get_node("NetworkManager")._on_peer_connected(1)
+	_sess_network_m._on_peer_connected(1)
 
-	Events.dash_session_changed.emit(_scene)
+	Events.dash_session_changed.emit(_session_id)
 	Events.session_joined.emit()
 
 	return true
 
 
 func stop_session(session_id: String):
-	var _is_valid: bool = registry.has_session(session_id)
 	GlobalLogger.log("Stopping session '%s'." % session_id)
 
-	# TODO: Disable join requests to session.
+	var _is_valid: bool = registry.has_session(session_id)
 
 	if _is_valid == false:
 		GlobalLogger.log("Session '%s' does not exist in the registry, cannot stop the session." % session_id, Enum.LogLevel.WARNING)
@@ -162,28 +159,26 @@ func join_session(ip: String = "", port: int = 0) -> bool:
 		return false
 
 	# Create session master scene.
-	var _scene: String = app_scene_m.create_session_master()
+	var _session_id: String = app_scene_m.create_session_master()
 
-	await app_scene_m.await_session_ready(_scene)
+	await app_scene_m.await_session_ready(_session_id)
 
 	# Get a reference to the master scene from our scene ID.
-	var master_scene: Node3D = app_scene_m.get_session_master(_scene)
+	var _session_master_node: Node3D = app_scene_m.get_session_master(_session_id)
+	var _sess_network_m: Node = _session_master_node.get_manager(_session_master_node.MANAGER_TYPE.NETWORK)
+	var _mp_api = SessionPeerHelper.create_client(ip, port, _session_master_node.get_path())
 
-	# Create a new client peer.
-	var _mp_api = SessionPeerHelper.create_client(ip, port, master_scene.get_path())
-
-	# Check if _mp_api was successfull.
+	# Check if _mp_api was successful.
 	if _mp_api == null:
 		GlobalLogger.log("Failed to join session.", Enum.LogLevel.INFO)
-		app_scene_m.destroy_master_scene(_scene)
+		app_scene_m.destroy_master_scene(_session_id)
 		return false
 
-	var net_manager = master_scene.get_node("NetworkManager")
-	net_manager.setup_connection(_mp_api, _scene)
+	_sess_network_m.setup_connection(_mp_api, _session_id)
 
-	registry.add_session(_scene, "", registry.SessionConnectionType.CLIENT, port, 1, Enum.PrivacyLevel.INVITE, _mp_api)
+	registry.add_session(_session_id, "", registry.SessionConnectionType.CLIENT, port, 1, Enum.PrivacyLevel.INVITE, _mp_api)
 
-	app_scene_m.set_active_session(_scene)
+	app_scene_m.set_active_session(_session_id)
 
 	Events.emit_signal("session_joined")
 	return true
@@ -192,22 +187,20 @@ func join_session(ip: String = "", port: int = 0) -> bool:
 func leave_session(session_id: String):
 	GlobalLogger.log("Trying to leave session '%s'." % session_id)
 
-	var _is_valid: bool = registry.has_session(session_id)
-
-	if _is_valid == false:
+	if registry.has_session(session_id) == false:
 		GlobalLogger.log("Session '%s' does not exist, cannot disconnect." % session_id, Enum.LogLevel.WARNING)
 		return
 
-	var session: Dictionary = registry.get_session(session_id)
-	var mp_api: SceneMultiplayer = session.api
+	var _session: Dictionary = registry.get_session(session_id)
+	var _mp_api: SceneMultiplayer = _session.api
 
-	if mp_api.is_server():
+	if _mp_api.is_server():
 		GlobalLogger.log("Tried to leave a session we are the host of, stopping the session.")
 		stop_session(session_id)
 		return
 
-	if mp_api.multiplayer_peer:
-		mp_api.multiplayer_peer.close()
+	if _mp_api.multiplayer_peer:
+		_mp_api.multiplayer_peer.close()
 		GlobalLogger.log("Disconnected from session '%s'." % session_id, Enum.LogLevel.DEBUG)
 
 	if app_scene_m.active_session == session_id:
@@ -244,24 +237,3 @@ func kick_player(session_id: String, peer_id: int, reason: String):
 func get_connected_sessions():
 	GlobalLogger.log("Deprecated call '%s'" % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	return registry.get_all()
-
-
-func set_active_session(session_id: String):
-	var _is_valid: bool = registry.has_session(session_id)
-
-	if _is_valid:
-		GlobalLogger.log("Tried to mark an invalid session as active: '%s'" % session_id, Enum.LogLevel.WARNING)
-		return
-
-	for _connected_session_id in registry.get_all_ids():
-		var _session: Dictionary = registry.get_session(_connected_session_id)
-		var _my_session_id = _session.api.multiplayer.get_unique_id()
-		app_scene_m.get_master_root(_connected_session_id).get_node("PlayerManager").players.get(_my_session_id).get("node").camera.current = false
-
-	var _target_session: Dictionary = registry.get_session(session_id)
-
-	var my_id = _target_session.api.multiplayer.get_unique_id()
-	app_scene_m.get_master_root(session_id).get_node("PlayerManager").players.get(my_id).get("node").camera.current = true
-	app_scene_m.set_active_session(session_id)
-	Events.dash_session_changed.emit(session_id)
-	return

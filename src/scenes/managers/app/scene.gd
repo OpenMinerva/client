@@ -99,6 +99,11 @@ func get_session_master_root(id: String) -> Node3D:
 	return _root
 
 
+func get_session_manager(session_id: String, manager: String) -> Node:
+	var _session_master_node: Node3D = get_session_master(session_id)
+	return _session_master_node.get_manager(manager)
+
+
 func set_active_session(session_id: String):
 	GlobalLogger.log("Setting session '%s' active." % session_id)
 
