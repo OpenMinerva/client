@@ -1,7 +1,7 @@
 # --- License
-# File: /client/src/test/spawnables_properties.gd
+# File: /client/src/test/spawnables.gd
 # Project: OpenMinerva
-# Created Date: 29 September 2026
+# Created Date: 17 September 2026
 # Copyright (c) 2026 OpenMinerva Contributors
 # License: MIT License
 # --- License
