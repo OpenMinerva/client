@@ -17,7 +17,7 @@ const PLAYER_TEMPLATE = {
 var players = { }
 
 @onready var session_master_node: Node3D = get_parent()
-@onready var spawnable_m = session_master_node.get_manager(session_master_node.MANAGER_TYPE.SPAWNABLE)
+@onready var _sess_spawnable_m: Node = session_master_node.get_manager(session_master_node.MANAGER_TYPE.SPAWNABLE)
 
 
 @rpc("call_local", "authority", "reliable")
@@ -37,7 +37,7 @@ func set_player_database(database: Dictionary) -> void:
 	# Fix the database references
 	for _player in players.keys():
 		var _entry = players[_player]
-		var _db_entry = spawnable_m.get_by_id(int(_entry.node_id))
+		var _db_entry = _sess_spawnable_m.get_by_id(int(_entry.node_id))
 		_entry.node = _db_entry.node
 
 	return
@@ -50,13 +50,13 @@ func remove_player(peer_id: int) -> void:
 
 	GlobalLogger.log("[%s] Removing peer '%s' from the player list" % [caller_id, peer_id])
 	players.erase(str(peer_id))
-	spawnable_m.destroy_spawnable(int(player_entry.node.name))
+	_sess_spawnable_m.destroy_spawnable(int(player_entry.node.name))
 
 
 @rpc("call_local", "authority", "reliable")
 func set_player_node(peer_id: int, node_id: int) -> void:
 	var _target = players[str(peer_id)]
-	var _node: Node = spawnable_m.get_by_id(node_id)
+	var _node: Node = _sess_spawnable_m.get_by_id(node_id)
 
 	# TODO: Error warnings
 	if _target == null:
