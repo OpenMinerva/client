@@ -54,7 +54,7 @@ func set_session_master_root_from_program(id: String, scene_type: Enum.BaseLevel
 	GlobalLogger.log("Setting master root from program.")
 
 	var _session_master_node: Node3D = get_session_master(id)
-	var _spawnable_manager: Node = _session_master_node.get_node("SpawnableManager")
+	var _spawnable_manager: Node = _session_master_node.get_manager(_session_master_node.MANAGER_TYPE.SPAWNABLE)
 	var _world_path: String = _get_scene_by_type(scene_type)
 	var _session_root_node: Node3D = get_session_master_root(id)
 	var _session_empty_root: Node3D = Node3D.new()
@@ -173,7 +173,7 @@ func _set_camera_active_state(session_id, state: bool = false) -> void:
 
 	var _my_peer_id: String = str(app_network_m.registry.get_peer_id(session_id))
 	var _session_master_node: Node3D = get_session_master(session_id)
-	var _sess_player_m: Node = _session_master_node.get_node("PlayerManager")
+	var _sess_player_m: Node = _session_master_node.get_manager(_session_master_node.MANAGER_TYPE.PLAYER)
 	var _session_player_info = _sess_player_m.players.get(_my_peer_id)
 
 	if _my_peer_id == "0" && state == true:

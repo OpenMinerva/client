@@ -11,8 +11,9 @@ var _specific_api: SceneMultiplayer = null
 var _my_id: int = 0
 var _session_id: String = ""
 
-@onready var player_m = get_node("../PlayerManager")
-@onready var spawnable_m = get_node("../SpawnableManager")
+@onready var session_master_node: Node3D = get_parent()
+@onready var player_m = session_master_node.get_manager(session_master_node.MANAGER_TYPE.PLAYER)
+@onready var spawnable_m = session_master_node.get_manager(session_master_node.MANAGER_TYPE.SPAWNABLE)
 @onready var scene_m: Node = get_tree().root.find_child("AppSceneManager", true, false)
 @onready var network_m: Node = get_tree().root.find_child("AppNetworkManager", true, false)
 

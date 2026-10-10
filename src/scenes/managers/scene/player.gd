@@ -16,7 +16,8 @@ const PLAYER_TEMPLATE = {
 
 var players = { }
 
-@onready var spawnable_m = get_node("../SpawnableManager")
+@onready var session_master_node: Node3D = get_parent()
+@onready var spawnable_m = session_master_node.get_manager(session_master_node.MANAGER_TYPE.SPAWNABLE)
 
 
 @rpc("call_local", "authority", "reliable")
