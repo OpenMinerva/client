@@ -228,7 +228,7 @@ func _set_state(state: bool) -> void:
 	GlobalLogger.log("Inspector state is being set to '%s'." % state)
 	_gizmo_visibility(state)
 	if session_root == null && app_scene_m.active_session.is_empty() == false:
-		session_root = app_scene_m.get_master_root(app_scene_m.active_session)
+		session_root = app_scene_m.get_session_master_root(app_scene_m.active_session)
 	_inspector_build()
 	visible = state
 	_node_crosshair.visible = !state
@@ -237,7 +237,7 @@ func _set_state(state: bool) -> void:
 
 func _on_node_created(_node: Node) -> void:
 	if session_root == null:
-		session_root = app_scene_m.get_master_root(app_scene_m.active_session)
+		session_root = app_scene_m.get_session_master_root(app_scene_m.active_session)
 
 	GlobalLogger.log("Node created.")
 	_inspector_build()
@@ -246,7 +246,7 @@ func _on_node_created(_node: Node) -> void:
 
 func _on_node_destroyed(_node_entry: Node) -> void:
 	if session_root == null:
-		session_root = app_scene_m.get_master_root(app_scene_m.active_session)
+		session_root = app_scene_m.get_session_master_root(app_scene_m.active_session)
 
 	GlobalLogger.log("Node destroyed.")
 

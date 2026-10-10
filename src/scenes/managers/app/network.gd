@@ -56,7 +56,6 @@ func start_session(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GR
 	# Create session root scene.
 	app_scene_m.set_session_master_root_from_program(_scene, root_scene, scene_dir)
 
-	app_scene_m.start_session_master(_scene)
 	app_scene_m.set_active_session(_scene)
 
 	var _session_ready: bool = false
@@ -107,7 +106,6 @@ func stop_session(session_id: String):
 			app_scene_m.set_active_session(_next_session)
 
 	# Application cleanup
-	app_scene_m.stop_session_master(session_id)
 	app_scene_m.destroy_session_master(session_id)
 
 	for _listing in session.session_server_keys:
@@ -220,7 +218,6 @@ func leave_session(session_id: String):
 			return
 		app_scene_m.set_active_session(_previous_session)
 
-	app_scene_m.stop_session_master(session_id)
 	app_scene_m.destroy_session_master(session_id)
 
 	registry.remove_session(session_id)

@@ -17,6 +17,8 @@ This document outlines all of the terminology used both in the client applicatio
     - "session_root" or "root" is the node of the session in which all players and other interactions take place. Everything except the session managers are expected to be under this explicit node. This node is always expected to carry the name "root". In the codebase this specific node will often times be called explicitly "session_root". This is not to be confused with "session_master" which is the actual node that contains the session managers as direct children.
 - `session_master`:
     - "session_master" is the explicit node that contains the session in the client application. This is expected to be a direct child of the node `Sessions` in the master scene. This node should only be interacted with in the core codebase, and session clients or the session host should not be able to interact with this specific node in any way outside of using proxies. Example: Leaving a session removes a `session_master` node from the "Sessions" node, joining a session will add a "session_master" node to the "Sessions" node.
+- `scene`:
+    - "scene" or "scenes" is the name to a physical instance of a node or group of nodes. The "scene" specifically refers to the nodes themselves and not the greater session.
 
 #### Modules
 The client uses several different modules in different locations in the application. Some modules live in the absolute root of the "game scene". These modules are named with the word "App" prepended to the name. Some other modules are created per-session and are also prepended with the string "Session" in the name.

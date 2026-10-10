@@ -12,7 +12,7 @@
 		"pretty_name": "Player",
 		"node": null,
 		"icon": "godot/CharacterBody3D.svg",
-		"hidden": true,
+		"hidden": false,
 		"deep_delete": false
 	},
 	"CollisionShape3D": {

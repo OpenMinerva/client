@@ -1,41 +1,41 @@
 [gd_scene format=3 uid="uid://bysrhijnau31g"]
 
-[ext_resource type="Script" uid="uid://bts7ymeobvton" path="res://scenes/managers/scene/spawnable_manager.gd" id="1_5on25"]
-[ext_resource type="Script" uid="uid://c13l6ywhxq6n5" path="res://scenes/managers/scene/player.gd" id="1_c3hqj"]
-[ext_resource type="Script" uid="uid://bmm4mxv8pm5gh" path="res://scenes/managers/scene/network.gd" id="1_fundk"]
-[ext_resource type="Script" uid="uid://b8y61adv3jap4" path="res://scenes/managers/scene/base.gd" id="1_qmew7"]
-[ext_resource type="Script" uid="uid://cxbdjoelope42" path="res://scenes/managers/scene/signalbus.gd" id="2_fundk"]
-[ext_resource type="Script" uid="uid://c5x033r1du1oh" path="res://scenes/managers/scene/spawnable_manager_registry.gd" id="2_qmew7"]
-[ext_resource type="Script" uid="uid://c84njieow1ftk" path="res://scenes/managers/scene/spawnable_manager_spawnables.gd" id="4_g3oah"]
-[ext_resource type="Script" uid="uid://b0dicnumx46f8" path="res://addons/rpc-await/rpc_await.gd" id="5_nd5i0"]
-[ext_resource type="Script" uid="uid://bt0e1jyahxvpy" path="res://scenes/managers/scene/spawnable_manager_gizmos.gd" id="5_tp863"]
+[ext_resource type="Script" uid="uid://b8y61adv3jap4" path="res://scenes/managers/scene/base.gd" id="1_68yxt"]
+[ext_resource type="Script" uid="uid://bts7ymeobvton" path="res://scenes/managers/scene/spawnable_manager.gd" id="2_lercj"]
+[ext_resource type="Script" uid="uid://c5x033r1du1oh" path="res://scenes/managers/scene/spawnable_manager_registry.gd" id="3_ctb5p"]
+[ext_resource type="Script" uid="uid://c84njieow1ftk" path="res://scenes/managers/scene/spawnable_manager_spawnables.gd" id="4_sb7py"]
+[ext_resource type="Script" uid="uid://bt0e1jyahxvpy" path="res://scenes/managers/scene/spawnable_manager_gizmos.gd" id="5_kdks8"]
+[ext_resource type="Script" uid="uid://bmm4mxv8pm5gh" path="res://scenes/managers/scene/network.gd" id="6_owur1"]
+[ext_resource type="Script" uid="uid://c13l6ywhxq6n5" path="res://scenes/managers/scene/player.gd" id="7_cyxdx"]
+[ext_resource type="Script" uid="uid://cxbdjoelope42" path="res://scenes/managers/scene/signalbus.gd" id="8_vvuik"]
+[ext_resource type="Script" uid="uid://b0dicnumx46f8" path="res://addons/rpc-await/rpc_await.gd" id="9_2xiah"]
 
 [node name="Base" type="Node3D" unique_id=2084163635]
-script = ExtResource("1_qmew7")
+script = ExtResource("1_68yxt")
 
 [node name="SpawnableManager" type="Node" parent="." unique_id=1378414814]
-script = ExtResource("1_5on25")
+script = ExtResource("2_lercj")
 
 [node name="Registry" type="Node" parent="SpawnableManager" unique_id=990125222]
-script = ExtResource("2_qmew7")
+script = ExtResource("3_ctb5p")
 
 [node name="Spawnables" type="Node" parent="SpawnableManager" unique_id=1540259170]
-script = ExtResource("4_g3oah")
+script = ExtResource("4_sb7py")
 
 [node name="Gizmos" type="Node" parent="SpawnableManager" unique_id=1355478220]
-script = ExtResource("5_tp863")
+script = ExtResource("5_kdks8")
 
 [node name="NetworkManager" type="Node" parent="." unique_id=2144728320]
-script = ExtResource("1_fundk")
+script = ExtResource("6_owur1")
 
 [node name="PlayerManager" type="Node" parent="." unique_id=412138074]
-script = ExtResource("1_c3hqj")
+script = ExtResource("7_cyxdx")
 
 [node name="SignalBus" type="Node" parent="." unique_id=165926833]
-script = ExtResource("2_fundk")
+script = ExtResource("8_vvuik")
 
 [node name="RpcAwaiter" type="Node" parent="." unique_id=742842153]
-script = ExtResource("5_nd5i0")
+script = ExtResource("9_2xiah")
 metadata/_custom_type_script = "uid://b0dicnumx46f8"
 
 [node name="root" type="Node3D" parent="." unique_id=345927695]

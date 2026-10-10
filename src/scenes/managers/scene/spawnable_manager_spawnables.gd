@@ -131,7 +131,7 @@ func destroy(node_id: int) -> void:
 
 	_session_signalbus.node_destroyed.emit(_db_entry)
 	_registry.remove_spawnable(node_id)
-	_db_entry.queue_free()
+	_db_entry.free()
 	return
 
 

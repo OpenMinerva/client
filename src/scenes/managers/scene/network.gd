@@ -84,7 +84,7 @@ func _on_connected_to_session():
 	GlobalLogger.log("[%s] Connected to a session." % _my_id)
 
 	# Set the scene root to empty.
-	scene_m.set_master_root_from_program(_session_id, Enum.BaseLevel.EMPTY, "", false)
+	scene_m.set_session_master_root_from_program(_session_id, Enum.BaseLevel.EMPTY, "", false)
 
 	# Request the spawnable registry from host
 	req_spawnable_db.rpc_id(1)
