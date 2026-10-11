@@ -33,9 +33,6 @@ func session_create_spawnable(node_type: String, node_parent: int, forced_node_i
 	var _spawnable: Node = await create(node_type, _caller_id, int(_parent.name), _node_id)
 	create.rpc(node_type, _caller_id, int(_parent.name), _node_id)
 
-	# Emit session-wide event.
-	_session_signalbus.node_created.emit(_spawnable)
-
 	if is_instance_valid(_spawnable) == false:
 		return -1
 
@@ -64,6 +61,8 @@ func create(node_type: String, spawner_peer_id: int, parent_id: int, node_id: in
 	_node = await NSB.build(node_type, _spawnable_manager)
 
 	_registry.add_spawnable(_node, node_id)
+
+	_session_signalbus.node_created.emit(_node)
 
 	# HACK: Spawn the node at origin.
 	if _node.get("position") != null:
