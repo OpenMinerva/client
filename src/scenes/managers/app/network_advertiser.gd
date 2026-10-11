@@ -10,7 +10,7 @@ extends Node
 ## This file contains all of the session advertisement functionality for listing our session among session servers.
 
 ## The internal registry for keeping track of open sessions.
-var _open_sessions = []
+var _open_sessions: Array[String] = []
 
 
 ## List a session with a given session server.
@@ -19,27 +19,27 @@ var _open_sessions = []
 func create_session(session_info: Dictionary, session_server_url: String) -> String:
 	GlobalLogger.log("Attempting to list session '%s' to session server '%s'." % [session_info.id, session_server_url], Enum.LogLevel.INFO)
 
-	var _full_url = "%s/api/v1/postSession" % session_server_url
-	var _request_url = UrlParser.deconstruct(_full_url)
+	var _full_url: String = "%s/api/v1/postSession" % session_server_url
+	var _request_url: Dictionary = UrlParser.deconstruct(_full_url)
 
 	if _request_url.ok != true:
 		GlobalLogger.log("'%s' is not a valid URL." % _request_url, Enum.LogLevel.WARNING)
 		return ""
 
 	var _deconstructed_url: Dictionary = _request_url.data
-	var _api_key = Accounts.get_session_server_token(_deconstructed_url.host)
+	var _api_key: String = Accounts.get_session_server_token(_deconstructed_url.host)
 	if _api_key == "":
 		GlobalLogger.log("Could not get our account server token.", Enum.LogLevel.INFO)
 		return ""
 
-	var _body = {
+	var _body: Dictionary = {
 		"session_name": session_info.name,
 		"session_description": session_info.description,
 		"session_privacy": session_info.privacy,
 		"session_port": session_info.port,
 	}
 
-	var _advertise_response = await HTTP.req(
+	var _advertise_response: Dictionary = await HTTP.req(
 		HTTPClient.Method.METHOD_POST,
 		_deconstructed_url.host,
 		_deconstructed_url.path,
@@ -52,7 +52,7 @@ func create_session(session_info: Dictionary, session_server_url: String) -> Str
 		GlobalLogger.log("Request to session server '%s' failed." % session_server_url, Enum.LogLevel.INFO)
 		return ""
 
-	var _advertise_response_json = JSON.parse_string(_advertise_response.body)
+	var _advertise_response_json: Variant = JSON.parse_string(_advertise_response.body)
 	if _advertise_response_json == null:
 		GlobalLogger.log("Failed to parse listing response. Unknown error.", Enum.LogLevel.ERROR)
 		GlobalLogger.log(str(_advertise_response), Enum.LogLevel.ERROR)
@@ -63,7 +63,7 @@ func create_session(session_info: Dictionary, session_server_url: String) -> Str
 		GlobalLogger.log(_advertise_response_json.to_string(), Enum.LogLevel.ERROR)
 		return ""
 
-	var _session_key = _advertise_response_json.data.id
+	var _session_key: String = _advertise_response_json.data.id
 	_open_sessions.append(_session_key)
 	_create_heartbeat(_session_key, session_server_url, 20)
 	return _session_key
@@ -122,21 +122,21 @@ func update_session(session_info: Dictionary, session_key: String, session_serve
 ## [param session_key] is our private session server key we were given when we originally listed the session to the server.
 ## [param session_server_url] is the url for the session server.
 func destroy_session(session_id: String, session_key: String, session_server_url: String) -> bool:
-	var _full_url = "%s/api/v1/deleteSession" % session_server_url
+	var _full_url: String = "%s/api/v1/deleteSession" % session_server_url
 	GlobalLogger.log("Attempting to remove session '%s' from the server '%s'" % [session_id, session_server_url], Enum.LogLevel.INFO)
 
-	var _request_url = UrlParser.deconstruct(_full_url)
+	var _request_url: Dictionary = UrlParser.deconstruct(_full_url)
 
 	if _request_url.ok != true:
 		GlobalLogger.log("'%s' is not a valid URL." % _request_url, Enum.LogLevel.WARNING)
 		return false
 
 	var _deconstructed_url: Dictionary = _request_url.data
-	var _api_key = Accounts.get_session_server_token(_deconstructed_url.host)
-	var _body = {
+	var _api_key: String = Accounts.get_session_server_token(_deconstructed_url.host)
+	var _body: Dictionary = {
 		"id": session_key,
 	}
-	var _removal_response = await HTTP.req(
+	var _removal_response: Dictionary = await HTTP.req(
 		HTTPClient.Method.METHOD_DELETE,
 		_deconstructed_url.host,
 		_deconstructed_url.path,
@@ -153,7 +153,7 @@ func destroy_session(session_id: String, session_key: String, session_server_url
 		return true
 
 	GlobalLogger.log("Unknown error removing listing '%s' from session server '%s'." % [session_id, session_server_url], Enum.LogLevel.ERROR)
-	GlobalLogger.log(_removal_response, Enum.LogLevel.ERROR)
+	GlobalLogger.log(JSON.stringify(_removal_response), Enum.LogLevel.ERROR)
 	return false
 
 
@@ -181,11 +181,11 @@ func _send_heartbeat(session_key: String, session_server_url: String) -> void:
 		GlobalLogger.log("'%s' is not a valid URL." % _request_url, Enum.LogLevel.WARNING)
 		return
 
-	var _deconstructed_url = _request_url.data
+	var _deconstructed_url: Dictionary = _request_url.data
 	var _api_key: String = Accounts.get_session_server_token(_deconstructed_url.host)
-	var _body = { "session_id": session_key }
+	var _body: Dictionary = { "session_id": session_key }
 
-	var _heartbeat_response = await HTTP.req(
+	var _heartbeat_response: Dictionary = await HTTP.req(
 		HTTPClient.Method.METHOD_POST,
 		_deconstructed_url.host,
 		_deconstructed_url.path,

@@ -24,9 +24,9 @@ var _cem_camera: bool = false
 
 # FIXME: You can select the selected spawnable. (Safe but probably should be changed)
 # External Libraries / scripts
-@onready var _app_spawnable_file_handling_m = get_tree().root.find_child("SpawnableFileHandling", true, false)
-@onready var app_network_m = get_tree().root.find_child("AppNetworkManager", true, false)
-@onready var app_scene_m = get_tree().root.find_child("AppSceneManager", true, false)
+@onready var _app_spawnable_file_handling_m: Node = get_tree().root.find_child("SpawnableFileHandling", true, false)
+@onready var app_network_m: Node = get_tree().root.find_child("AppNetworkManager", true, false)
+@onready var app_scene_m: Node = get_tree().root.find_child("AppSceneManager", true, false)
 @onready var session_spawnable_m: Node
 @onready var session_signalbus: Node
 @onready var session_players_m: Node
@@ -66,14 +66,14 @@ func _ready() -> void:
 func _input(event: InputEvent):
 	# Used to remove focus of the search area when clicking inside of the scene.
 	if event is InputEventMouseButton && event.pressed:
-		var focused = get_viewport().gui_get_focus_owner()
+		var focused: Control = get_viewport().gui_get_focus_owner()
 		if focused:
 			focused.release_focus()
 
 		# Close the inspector popup
 		if _inspector_popup.visible == true:
-			var _rect = _inspector_popup.get_global_rect()
-			var _mouse_pos = event.position
+			var _rect: Rect2 = _inspector_popup.get_global_rect()
+			var _mouse_pos: Vector2 = event.position
 
 			if _rect.has_point(_mouse_pos) == false:
 				_inspector_popup.visible = false
@@ -107,7 +107,7 @@ func _can_drop_data(mouse_position: Vector2, data: Variant):
 
 	# Don't parent to any of own children.
 	# FIXME: Find safe ways to escape this while loop.
-	var _checking = _target_item
+	var _checking: TreeItem = _target_item
 	while _checking:
 		if _checking == _dragged_item:
 			return false
@@ -166,7 +166,7 @@ func _add_gizmo_event_listeners() -> void:
 	var _misc_node_children: Array[Node] = _node_toolbar_gizmo_control_container_misc.get_children()
 
 	for node_index in _node_children.size():
-		var _node = _node_children[node_index]
+		var _node: Node = _node_children[node_index]
 		_node.get_node("Button").pressed.connect(_gizmo_set_mode)
 
 	_misc_node_children[0].get_node("Button").pressed.connect(_gizmo_set_mode)
@@ -218,7 +218,7 @@ func _inspector_tree_item_mouse_selected(mouse_position: Vector2, mouse_button_i
 		_inspector_selected_node = _inspector_selected.get_metadata(0)
 		_set_npe_state(_inspector_selected_node != null)
 
-		var _mouse_pos = _inspector_tree.get_global_mouse_position()
+		var _mouse_pos: Vector2 = _inspector_tree.get_global_mouse_position()
 		_inspector_popup.position = _mouse_pos
 		_inspector_popup.visible = true
 	return
@@ -294,8 +294,9 @@ func _inspector_build(root_node: Node = session_root) -> void:
 	GlobalLogger.log("Generating the inspector view with parent '%s'." % root_node)
 	_inspector_save_openness()
 	_inspector_clear()
-	var _inspector_root = _inspector_tree.create_item()
+	var _inspector_root: TreeItem = _inspector_tree.create_item()
 	_inspector_add_node(root_node, _inspector_root)
+	return
 
 	if _inspector_tree_filters.size() > 0 || _inspector_tree_search != "":
 		_inspector_apply_filters()
@@ -310,18 +311,16 @@ func _inspector_build(root_node: Node = session_root) -> void:
 func _inspector_save_openness() -> void:
 	# Parse the entire tree, and save node values that are open
 	_inspector_opened_tree_nodes = []
-	var _item = _inspector_tree.get_root()
-
-	# TODO: Breakout / Safety!
+	var _item: TreeItem = _inspector_tree.get_root()
 	while _item:
 		if _item.is_collapsed() == true:
 			_item = _item.get_next_in_tree()
 			continue
 
 		# Save the item to the list
-		var _node = _item.get_metadata(0)
+		var _node: Node = _item.get_metadata(0)
 		if _node != null:
-			_inspector_opened_tree_nodes.append(_item.get_metadata(0))
+			_inspector_opened_tree_nodes.append(_node)
 
 		_item = _item.get_next_in_tree()
 
@@ -332,13 +331,13 @@ func _inspector_add_node(node: Node, parent: TreeItem) -> void:
 	if node.get_meta("scene_node", false) == false:
 		return
 
-	var _tree_node = _inspector_tree.create_item(parent)
+	var _tree_node: TreeItem = _inspector_tree.create_item(parent)
 
 	if _tree_node == null:
 		return
 
-	var _tree_icon = NSB.get_entry(node.get_class()).icon
-	var _is_collapsed = !_inspector_opened_tree_nodes.has(node)
+	var _tree_icon: Texture2D = NSB.get_entry(node.get_class()).icon
+	var _is_collapsed: bool = !_inspector_opened_tree_nodes.has(node)
 
 	_tree_node.set_text(0, node.get_meta("pretty_name", node.name))
 	_tree_node.set_icon(0, _tree_icon)
@@ -357,17 +356,17 @@ func _inspector_add_node(node: Node, parent: TreeItem) -> void:
 # Inspector filters
 func _inspector_apply_filters():
 	var _all_tree_items: Array[TreeItem] = _inspector_get_all_tree_entries(_inspector_tree)
-	var _valid_nodes: Array = []
+	var _valid_nodes: Array[TreeItem] = []
 
 	for _tree_item in _all_tree_items:
-		var _tree_item_node = _tree_item.get_metadata(0)
+		var _tree_item_node: Node = _tree_item.get_metadata(0)
 		if _tree_item_node == null:
 			GlobalLogger.log("Could not find the associated node for entry '%s'" % _tree_item.get_text(0), Enum.LogLevel.WARNING)
 			continue
 
 		# TODO: This is probably expensive to run, surely there is a better way to get this information.
 		# Would adding this to the metadata of the tree listing be more performant?
-		var _nsb_entry = NSB.get_entry(_tree_item_node.get_class())
+		var _nsb_entry: Variant = NSB.get_entry(_tree_item_node.get_class())
 
 		if _tree_item_node.get_meta("pretty_name", "").contains(_inspector_tree_search):
 			# If the pretty name in the node contains text that matches the search.
@@ -421,9 +420,7 @@ func _inspector_search_changed(text) -> void:
 
 func _inspector_get_all_tree_entries(tree: Tree) -> Array[TreeItem]:
 	var _tree_items: Array[TreeItem] = []
-	var _tree_current = tree.get_root()
-
-	# NOTE: There is not a safety check for this, I hope I wont need one here.
+	var _tree_current: TreeItem = tree.get_root()
 	while _tree_current:
 		_tree_items.append(_tree_current)
 		_tree_current = _tree_current.get_next_in_tree()
@@ -466,7 +463,7 @@ func _inspector_popup_button_pressed(label: String) -> void:
 	GlobalLogger.log("Pressed button: '%s' on '%s'" % [label, _inspector_selected.get_text(0)])
 	_inspector_popup.visible = false
 
-	var _node = _inspector_selected.get_metadata(0)
+	var _node: Node = _inspector_selected.get_metadata(0)
 	if _node == null:
 		GlobalLogger.log("Tried to preform an action on an invalid node.", Enum.LogLevel.WARNING)
 		_inspector_build()
@@ -492,7 +489,7 @@ func _inspector_popup_button_pressed(label: String) -> void:
 
 func _inspector_spawn_node(type: String, parent: int) -> void:
 	GlobalLogger.log("Spawning node type '%s' with parent '%s'" % [type, parent])
-	var _entity = await session_spawnable_m.create_spawnable(type, parent)
+	var _entity: Node = await session_spawnable_m.create_spawnable(type, parent)
 	_select(int(_entity.name))
 	# TODO: Gizmo select the new entity
 	return
@@ -530,9 +527,9 @@ func _gizmo_set_mode() -> void:
 	var _misc_node_children: Array[Node] = _node_toolbar_gizmo_control_container_misc.get_children()
 
 	for node_index in _node_children.size():
-		var _node = _node_children[node_index]
-		var _dict_name = _node.name.to_lower()
-		var _is_active = _node.get_node("Button").button_pressed
+		var _node: Node = _node_children[node_index]
+		var _dict_name: String = _node.name.to_lower()
+		var _is_active: bool = _node.get_node("Button").button_pressed
 
 		_gizmo_modes[_dict_name] = _is_active
 
@@ -554,7 +551,7 @@ func _gizmo_set_mode() -> void:
 
 
 func _gizmo_visibility(to_set_visible: bool = false) -> void:
-	var _gizmo_target_mode = 0
+	var _gizmo_target_mode: int = 0
 
 	if to_set_visible == true:
 		_gizmo_target_mode = _gizmo_mode
@@ -571,10 +568,10 @@ func _gizmo_visibility(to_set_visible: bool = false) -> void:
 
 # CEM Camera
 func _cem_camera_state(state: bool) -> void:
-	var _active_session_id = app_scene_m.active_session
-	var _session_api = app_network_m.registry.get_session(_active_session_id).api
+	var _active_session_id: String = app_scene_m.active_session
+	var _session_api: SceneMultiplayer = app_network_m.registry.get_session(_active_session_id).api
 	var _player_id: int = _session_api.get_unique_id()
-	var _player_db = session_players_m.players[str(_player_id)]
+	var _player_db: Dictionary = session_players_m.players[str(_player_id)]
 	var _player_node: Node3D
 
 	# HACK: Hardcoded fix for force host spawn.

@@ -36,12 +36,12 @@ func log(message: String = "", level: Enum.LogLevel = Enum.LogLevel.DEBUG):
 	_log_to_file(message, level)
 
 	if console_logging_enabled:
-		var stack := get_stack()
+		var stack: Array[Dictionary] = get_stack()
 		print_rich("[[color=%s]%s[/color]] %s [[color=lightyellow]%s[/color]]" % [log_level_colors[level], log_level_names[level], message, stack[1]["function"]])
 		if level == 3:
 			# We are skipping the first frame, otherwise this function will be logged.
 			for i in range(1, stack.size()):
-				var frame = stack[i]
+				var frame: Dictionary = stack[i]
 				print(
 					"%s:%d @ %s()" % [
 						frame.source,
