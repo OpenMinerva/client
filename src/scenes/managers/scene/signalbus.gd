@@ -12,3 +12,6 @@ extends Node
 signal node_created(node: Node)
 signal node_destroyed(node: Node)
 signal node_metadata_change(node: Node)
+signal resource_created(resource: Resource)
+signal resource_destroyed(resource: Resource)
+signal resource_metadata_change(resource: Resource)

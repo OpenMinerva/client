@@ -7,9 +7,22 @@
 # --- License
 extends Node3D
 
+const MANAGER_TYPE = {
+	SPAWNABLE = "SpawnableManager",
+	NETWORK = "NetworkManager",
+	PLAYER = "PlayerManager",
+	SIGNAL_BUS = "SignalBus",
+	RPC = "RpcAwaiter",
+}
+
 var is_ready: bool = false
 
 
 func _ready():
 	is_ready = true
 	return
+
+
+func get_manager(manager: String) -> Node:
+	var _found_manager_node: Node = get_node_or_null(manager)
+	return _found_manager_node

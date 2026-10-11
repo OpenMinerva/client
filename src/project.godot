@@ -8,10 +8,6 @@
 
 config_version=5
 
-[animation]
-
-compatibility/default_parent_skeleton_in_mesh_instance_3d=true
-
 [application]
 
 config/name="OpenMinerva Client"
@@ -32,13 +28,13 @@ GlobalLogger="*uid://dgmfafi41y1nk"
 FileManager="*res://scripts/utils/files.gd"
 SettingsManager="*uid://cgvvntx8o26ds"
 Accounts="*uid://sdrs0dnojnes"
-DiscordRPCLoader="*uid://xq58uo0nw0gq"
 Bootstrap="*uid://cvj10vdw6hlqw"
 HTTP="*uid://d3cnfdwjxopsx"
 FileDrop="*uid://btgqgfpx0av4m"
 Events="*uid://ctky04bq2os82"
 StateManager="*uid://b5vvw77bmn4yc"
 Database="*uid://cbm5uyffux8ca"
+DiscordRPCLoader="*uid://xq58uo0nw0gq"
 OAuth2Client="*uid://c4b880pwgfrty"
 UrlParser="*uid://budprjmmpally"
 
@@ -51,7 +47,6 @@ gdscript/warnings/unused_signal=0
 window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/stretch/mode="canvas_items"
-window/stretch/aspect="expand"
 
 [editor]
 
@@ -154,7 +149,6 @@ common/physics_interpolation=true
 
 [rendering]
 
-textures/canvas_textures/default_texture_filter=0
 textures/default_filters/use_nearest_mipmap_filter=true
 anti_aliasing/quality/msaa_2d=3
 anti_aliasing/quality/msaa_3d=3

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b6qb2oq26yooy"]
 
 [ext_resource type="Script" uid="uid://fpegx2jfo73q" path="res://userinterface/client_edit_mode/desktop/scripts/movable_window.gd" id="1_le5nq"]
-[ext_resource type="Shader" uid="uid://bwr4b0mhgi4w6" path="res://userinterface/dash/shaders/blur.gdshader" id="2_4cmho"]
+[ext_resource type="Shader" uid="uid://bwr4b0mhgi4w6" path="res://resources/shaders/blur.gdshader" id="2_4cmho"]
 [ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="3_ddx82"]
 [ext_resource type="PackedScene" uid="uid://sntuc3p6k4s6" path="res://userinterface/dash/partials/generic_button.tscn" id="4_l1byb"]
 [ext_resource type="Texture2D" uid="uid://bmjw8t1c6bi75" path="res://resources/icons/godot/Close.svg" id="5_752f5"]

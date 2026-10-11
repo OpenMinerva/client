@@ -228,7 +228,7 @@ func _set_state(state: bool) -> void:
 	GlobalLogger.log("Inspector state is being set to '%s'." % state)
 	_gizmo_visibility(state)
 	if session_root == null && app_scene_m.active_session.is_empty() == false:
-		session_root = app_scene_m.get_master_root(app_scene_m.active_session)
+		session_root = app_scene_m.get_session_master_root(app_scene_m.active_session)
 	_inspector_build()
 	visible = state
 	_node_crosshair.visible = !state
@@ -237,7 +237,7 @@ func _set_state(state: bool) -> void:
 
 func _on_node_created(_node: Node) -> void:
 	if session_root == null:
-		session_root = app_scene_m.get_master_root(app_scene_m.active_session)
+		session_root = app_scene_m.get_session_master_root(app_scene_m.active_session)
 
 	GlobalLogger.log("Node created.")
 	_inspector_build()
@@ -246,7 +246,7 @@ func _on_node_created(_node: Node) -> void:
 
 func _on_node_destroyed(_node_entry: Node) -> void:
 	if session_root == null:
-		session_root = app_scene_m.get_master_root(app_scene_m.active_session)
+		session_root = app_scene_m.get_session_master_root(app_scene_m.active_session)
 
 	GlobalLogger.log("Node destroyed.")
 
@@ -261,11 +261,11 @@ func _on_node_metadata_changed(_node_entry: Node) -> void:
 
 
 func _on_session_changed(_session_id: String) -> void:
-	var _session_master: Node3D = app_scene_m.get_master_scene(_session_id)
+	var _session_master: Node3D = app_scene_m.get_session_master(_session_id)
 	session_signalbus = _session_master.get_node("SignalBus")
 	session_spawnable_m = _session_master.get_node("SpawnableManager")
 	session_players_m = _session_master.get_node("PlayerManager")
-	session_root = app_scene_m.get_master_root(app_scene_m.active_session)
+	session_root = app_scene_m.get_session_master_root(app_scene_m.active_session)
 
 	_inspector_selected = null
 	_inspector_editing = null
@@ -286,9 +286,9 @@ func _inspector_build(root_node: Node = session_root) -> void:
 		GlobalLogger.log("Invalid root node: '%s'" % root_node, Enum.LogLevel.WARNING)
 		return
 
-	var _database: Array[Node] = session_spawnable_m.registry.get_all_spawnable()
+	var _registry: Array[Node] = session_spawnable_m.registry.get_all_spawnable()
 
-	var _total_spawnable_label: String = str(_database.size())
+	var _total_spawnable_label: String = str(_registry.size())
 	var _total_player_label: String = str(session_players_m.get_player_count())
 
 	GlobalLogger.log("Generating the inspector view with parent '%s'." % root_node)
@@ -578,7 +578,7 @@ func _cem_camera_state(state: bool) -> void:
 	var _player_node: Node3D
 
 	# HACK: Hardcoded fix for force host spawn.
-	# The host is forcefully spawned into a instance as it is created, bypassing the database entirely.
+	# The host is forcefully spawned into a instance as it is created, bypassing the registry entirely.
 	if _player_db == null:
 		_player_node = session_root.get_node("1")
 	else:

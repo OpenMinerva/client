@@ -98,7 +98,7 @@ func send_rpc_timeout(timeout: float, net_id: int, callable: Callable, default_r
 
 	# HACK: Bypass the mismatched scene ids by just looking at the scene root.
 	var regex = RegEx.new()
-	regex.compile("/root/Master/Scenes/[A-Za-z0-9]+/")
+	regex.compile("/root/Master/Sessions/[A-Za-z0-9]+/")
 	var result = regex.sub(source_obj.get_path(), "")
 
 	_handle_callable_request.rpc_id(

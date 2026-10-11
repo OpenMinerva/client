@@ -14,7 +14,7 @@ var _dashboard_pages: Array[Node]
 
 
 func before_test() -> void:
-	_runner = scene_runner("res://scenes/master.tscn")
+	_runner = scene_runner("res://scenes/base.tscn")
 	_dashboard = _runner.find_child("Dashboard")
 	_dashboard_pages = _dashboard.get_node(_dashboard_content_root).get_children()
 

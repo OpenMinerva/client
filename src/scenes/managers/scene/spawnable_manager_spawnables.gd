@@ -13,7 +13,7 @@ extends Node
 
 # Create
 @rpc("any_peer", "call_remote", "reliable")
-func server_create_spawnable(node_type: String, node_parent: int, forced_node_id: int = -1) -> int:
+func session_create_spawnable(node_type: String, node_parent: int, forced_node_id: int = -1) -> int:
 	var _caller_id: int = _get_caller_id()
 
 	# TODO: Permission check and handling.
@@ -89,7 +89,7 @@ func create(node_type: String, spawner_peer_id: int, parent_id: int, node_id: in
 
 # Destroy
 @rpc("any_peer", "call_remote", "reliable")
-func server_destroy_spawnable(node_id: int) -> void:
+func session_destroy_spawnable(node_id: int) -> void:
 	var _caller_id: int = _get_caller_id()
 
 	# TODO: Permissions
@@ -131,13 +131,13 @@ func destroy(node_id: int) -> void:
 
 	_session_signalbus.node_destroyed.emit(_db_entry)
 	_registry.remove_spawnable(node_id)
-	_db_entry.queue_free()
+	_db_entry.free()
 	return
 
 
 # Parenting
 @rpc("any_peer", "call_remote", "reliable")
-func server_parent_spawnable(node_id: int, parent_id: int) -> void:
+func session_parent_spawnable(node_id: int, parent_id: int) -> void:
 	var _caller_id: int = _get_caller_id()
 
 	# TODO: Permissions
@@ -178,7 +178,7 @@ func parent(node_id: int, parent_id: int) -> void:
 
 # Transforming
 @rpc("any_peer", "call_remote", "reliable")
-func server_transform_spawnable(node_id: int, transform: Transform3D, ignore_sender: bool = true) -> void:
+func session_transform_spawnable(node_id: int, transform: Transform3D, ignore_sender: bool = true) -> void:
 	var _caller_id: int = _get_caller_id()
 
 	# TODO: Permissions
