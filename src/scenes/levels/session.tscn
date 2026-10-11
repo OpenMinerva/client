@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://c13l6ywhxq6n5" path="res://scenes/managers/scene/player.gd" id="7_cyxdx"]
 [ext_resource type="Script" uid="uid://cxbdjoelope42" path="res://scenes/managers/scene/signalbus.gd" id="8_vvuik"]
 [ext_resource type="Script" uid="uid://b0dicnumx46f8" path="res://addons/rpc-await/rpc_await.gd" id="9_2xiah"]
+[ext_resource type="Script" uid="uid://duc6djekn7pqy" path="res://scenes/managers/scene/player_registry.gd" id="9_ctb5p"]
 
 [node name="Base" type="Node3D" unique_id=2084163635]
 script = ExtResource("1_68yxt")
@@ -34,6 +35,9 @@ script = ExtResource("6_owur1")
 
 [node name="PlayerManager" type="Node" parent="." unique_id=412138074]
 script = ExtResource("7_cyxdx")
+
+[node name="Registry" type="Node" parent="PlayerManager" unique_id=2059449499]
+script = ExtResource("9_ctb5p")
 
 [node name="SignalBus" type="Node" parent="." unique_id=165926833]
 script = ExtResource("8_vvuik")

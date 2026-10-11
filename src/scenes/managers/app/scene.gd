@@ -175,13 +175,13 @@ func _set_camera_active_state(session_id, state: bool = false) -> void:
 	var _my_peer_id: String = str(app_network_m.registry.get_peer_id(session_id))
 	var _session_master_node: Node3D = get_session_master(session_id)
 	var _sess_player_m: Node = _session_master_node.get_manager(_session_master_node.MANAGER_TYPE.PLAYER)
-	var _session_player_info = _sess_player_m.players.get(_my_peer_id)
+	var _session_player_info: Dictionary = _sess_player_m.registry.get_player(int(_my_peer_id))
 
 	if _my_peer_id == "0" && state == true:
 		GlobalLogger.log("Could not set active state for session '%s' to 'true', is session open?" % [session_id], Enum.LogLevel.WARNING)
 		return
 
-	if _session_player_info == null:
+	if _session_player_info == { }:
 		GlobalLogger.log("There is no player information for this player in session '%s'." % [session_id], Enum.LogLevel.WARNING)
 		return
 

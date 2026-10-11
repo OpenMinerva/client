@@ -38,6 +38,7 @@ func start_session(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GR
 	var _session_id: String = app_scene_m.create_session_master()
 	var _session_master_node: Node3D = app_scene_m.get_session_master(_session_id)
 	var _sess_network_m: Node = _session_master_node.get_manager(_session_master_node.MANAGER_TYPE.NETWORK)
+	var _sess_player_m: Node = _session_master_node.get_manager(_session_master_node.MANAGER_TYPE.PLAYER)
 
 	# Create a new session and peer.
 	var _mp_api = SessionPeerHelper.create_session(port, MAX_CLIENTS, _session_master_node.get_path())
@@ -55,15 +56,15 @@ func start_session(port: int = 0, root_scene: Enum.BaseLevel = Enum.BaseLevel.GR
 	# Create session root scene.
 	app_scene_m.set_session_master_root_from_program(_session_id, root_scene, scene_dir)
 
-	app_scene_m.set_active_session(_session_id)
-
 	while _session_ready == false:
 		# TODO: Safety and breakout.
 		_session_ready = app_scene_m.is_scene_ready(_session_id)
 		await get_tree().process_frame
 
-	# FIXME: Force spawn the host. This is probably bad design.
-	_sess_network_m._on_peer_connected(1)
+	# The host doesn't "Connect" to itself, so let's pretend.
+	await _sess_network_m._on_peer_connected(1)
+
+	app_scene_m.set_active_session(_session_id)
 
 	Events.dash_session_changed.emit(_session_id)
 	Events.session_joined.emit()

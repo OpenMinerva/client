@@ -571,15 +571,8 @@ func _cem_camera_state(state: bool) -> void:
 	var _active_session_id: String = app_scene_m.active_session
 	var _session_api: SceneMultiplayer = app_network_m.registry.get_session(_active_session_id).api
 	var _player_id: int = _session_api.get_unique_id()
-	var _player_db: Dictionary = session_players_m.players[str(_player_id)]
-	var _player_node: Node3D
-
-	# HACK: Hardcoded fix for force host spawn.
-	# The host is forcefully spawned into a instance as it is created, bypassing the registry entirely.
-	if _player_db == null:
-		_player_node = session_root.get_node("1")
-	else:
-		_player_node = session_players_m.players[str(_player_id)].node
+	var _player_db: Dictionary = session_players_m.registry.get_player(_player_id)
+	var _player_node: Node3D = _player_db.node
 
 	_player_node._cem_camera_state(state)
 	Events.emit_signal("cem_camera_state", state)

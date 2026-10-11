@@ -142,7 +142,7 @@ func _on_peer_player_node_destroyed(peer_id: int) -> void:
 
 	_timer.timeout.connect(
 		func() -> void:
-			if _sess_player_m.players.keys().has(str(peer_id)) == false:
+			if _sess_player_m.registry.has_player(peer_id) == false:
 				# Check to see if player still exists in the registry, don't spawn if they are gone.
 				GlobalLogger.log("Peer '%s' was disconnected, not respawning a player controller." % [peer_id])
 				return
