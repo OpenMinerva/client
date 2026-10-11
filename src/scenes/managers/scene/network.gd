@@ -148,7 +148,6 @@ func _on_peer_player_node_destroyed(peer_id: int) -> void:
 				return
 
 			var _entity = await _sess_spawnable_m.create("OM_PlayerController")
-			_sess_spawnable_m.set_authority.rpc(int(_entity.name), peer_id)
 			_sess_player_m.set_player_node.rpc(peer_id, int(_entity.name))
 			_entity.connect("tree_exiting", _on_peer_player_node_destroyed.bind(peer_id))
 	)

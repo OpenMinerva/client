@@ -224,19 +224,9 @@ func set_resource_on_spawnable(node_id: int, property_name: String, resource_id:
 	return
 
 
-@rpc("any_peer", "reliable")
-func set_authority(node_id: int, peer_id: int) -> void:
-	# TODO: Only allow the host to call this function.
-	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
-	var _caller_id: int = multiplayer.get_remote_sender_id()
-
-	if _my_id == 1:
-		set_authority_on_spawnable.rpc(node_id, peer_id)
-	else:
-		await rpcawaiter.send_rpc(1, set_authority.bind(node_id, peer_id))
-	return
-
-
+## Create a resource in the session. This is an abstraction that will automatically handling networking.
+## [param resource_type] is a string name of the type of the resource to spawn.
+## [param properties] is an array of properties to set in the resource when creating it.
 func create_resource(resource_type: String, properties: Array = []) -> Resource:
 	if multiplayer.is_server():
 		var _resource_id: int = resources.session_create_resource(resource_type, properties)
@@ -291,19 +281,6 @@ func set_property_on_resource_internal(resource_id: int, property_name: String, 
 		return
 
 	_entity_db.set_indexed(property_name, property_value)
-	return
-
-
-@rpc("call_local", "authority", "reliable")
-func set_authority_on_spawnable(node_id: int, peer_id: int) -> void:
-	# TODO: Only allow the host to call this function.
-	var _entity_db = get_by_id(node_id)
-
-	# TODO: Error Check
-
-	_entity_db.node.set_multiplayer_authority(peer_id)
-
-	GlobalLogger.log("Giving peer '%s' authority for node '%s'." % [peer_id, node_id])
 	return
 
 
