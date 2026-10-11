@@ -15,6 +15,7 @@ extends Node
 @onready var session_signalbus: Node = get_node("../SignalBus")
 @onready var registry: Node = get_node("./Registry")
 @onready var spawnables: Node = get_node("Spawnables")
+@onready var resources: Node = get_node("Resources")
 @onready var gizmos: Node = get_node("Gizmos")
 
 
@@ -236,36 +237,24 @@ func set_authority(node_id: int, peer_id: int) -> void:
 	return
 
 
-@rpc("call_local", "any_peer", "reliable")
-func create_asset(asset_type: String, properties: Array) -> Variant:
-	var my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
-	var caller_id: int = multiplayer.get_remote_sender_id()
-	GlobalLogger.log("[%s] Creating Asset '%s'." % [my_id, asset_type])
+func create_resource(resource_type: String, properties: Array = []) -> Resource:
+	if multiplayer.is_server():
+		var _resource_id: int = resources.session_create_resource(resource_type, properties)
+		var _resource_db_entry: Resource = registry.get_asset(_resource_id)
 
-	if my_id == 1:
-		# This was a host calling this function.
-		var _target_id: String = str(registry.get_active_id())
+		if _resource_db_entry == null:
+			return null
 
-		# Actually spawn in the asset for us, and all clients.
-		var _asset = spawn_asset(asset_type, properties, _target_id)
-		spawn_asset.rpc(asset_type, properties, _target_id)
-
-		var _asset_db_entry: Resource = registry.get_asset(_asset)
-
-		if caller_id != 0 && caller_id != my_id:
-			# This call originated from a client, we need to return a reference to the spawned asset, and not the asset itself.
-			return int(_asset_db_entry.get_name())
-
-		return _asset_db_entry
+		return _resource_db_entry
 	else:
-		# Call on the host to create (and sync) the resource.
-		var _asset: int = await rpcawaiter.send_rpc(1, create_asset.bind(asset_type, properties))
+		GlobalLogger.log("Requesting a spawn of resource '%s'" % resource_type)
+		var _resource_id: int = await rpcawaiter.send_rpc(1, resources.session_create_resource.bind(resource_type, properties))
+		var _resource_db_entry: Resource = registry.get_asset(_resource_id)
 
-		# We have the asset name (id), we need to find it in the asset_database.
+		if _resource_db_entry == null:
+			return null
 
-		var _asset_db_entry: Resource = registry.get_asset(_asset)
-		# Return the resource directly.
-		return _asset_db_entry
+		return _resource_db_entry
 
 
 @rpc("call_local", "authority", "reliable")
@@ -341,7 +330,7 @@ func receive_database(state: Dictionary) -> void:
 			_dictionary.value = _resource.properties[_key]
 			_formatted_array.append(_dictionary)
 
-		spawn_asset(_resource.metadata.class, _formatted_array, str(_resource.id))
+		resources.create(_resource.metadata.class, _formatted_array, int(_resource.id))
 
 	for _relation in state.relations:
 		var _resource: Resource = get_resource_by_id(_relation.value)
@@ -372,38 +361,3 @@ func get_resource_by_id(resource_id: int) -> Resource:
 		return null
 
 	return _asset_db_entry
-
-
-@rpc("authority", "reliable")
-func spawn_asset(asset_type, properties, id: String = "") -> int:
-	GlobalLogger.log("Spawning '%s'." % asset_type)
-
-	# Create the resource on our end, and include it in the registry.
-	var _resource: Resource = _spawn_resource(asset_type, properties, id)
-
-	# Return the _asset_database id of the resource.
-	return int(_resource.get_name())
-
-
-func _spawn_resource(resource_class: String, properties: Array, asset_id: String = str(registry.get_active_id())) -> Resource:
-	var _resource: Resource = null
-
-	# Create the resource
-	_resource = ClassDB.instantiate(resource_class)
-
-	# Set the resource properties
-	for _prop in properties:
-		if _prop.name == "resource_path":
-			_resource.take_over_path(_prop.value)
-			continue
-
-		_resource.set_indexed(_prop.name, _prop.value)
-
-	# Add the resource to the registry
-	registry.add_asset(_resource, int(asset_id))
-
-	# Save the resource class as a metadata field to keep track of what it is.
-	_resource.set_meta("class", resource_class)
-
-	# Return the resource
-	return _resource

@@ -230,7 +230,7 @@ func _cem_camera_build() -> Node3D:
 	# TODO: Reuse assets instead of creating them every time.
 	# Create assets
 	var _mesh_instance: Node3D = await _session_spawnable_m.create_spawnable("MeshInstance3D", int(_cem_root.name))
-	var _mesh_resource = await _session_spawnable_m.create_asset("BoxMesh", [])
+	var _mesh_resource = await _session_spawnable_m.create_resource("BoxMesh", [])
 	_session_spawnable_m.set_resource(int(_mesh_instance.name), "mesh", int(_mesh_resource.get_name()))
 
 	_cem_root.set_meta("persistent", false)

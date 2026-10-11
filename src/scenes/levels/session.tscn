@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://c5x033r1du1oh" path="res://scenes/managers/scene/spawnable_manager_registry.gd" id="3_ctb5p"]
 [ext_resource type="Script" uid="uid://c84njieow1ftk" path="res://scenes/managers/scene/spawnable_manager_spawnables.gd" id="4_sb7py"]
 [ext_resource type="Script" uid="uid://bt0e1jyahxvpy" path="res://scenes/managers/scene/spawnable_manager_gizmos.gd" id="5_kdks8"]
+[ext_resource type="Script" uid="uid://ngqncip1xf1n" path="res://scenes/managers/scene/spawnable_manager_resources.gd" id="6_lercj"]
 [ext_resource type="Script" uid="uid://bmm4mxv8pm5gh" path="res://scenes/managers/scene/network.gd" id="6_owur1"]
 [ext_resource type="Script" uid="uid://c13l6ywhxq6n5" path="res://scenes/managers/scene/player.gd" id="7_cyxdx"]
 [ext_resource type="Script" uid="uid://cxbdjoelope42" path="res://scenes/managers/scene/signalbus.gd" id="8_vvuik"]
@@ -24,6 +25,9 @@ script = ExtResource("4_sb7py")
 
 [node name="Gizmos" type="Node" parent="SpawnableManager" unique_id=1355478220]
 script = ExtResource("5_kdks8")
+
+[node name="Resources" type="Node" parent="SpawnableManager" unique_id=121441797]
+script = ExtResource("6_lercj")
 
 [node name="NetworkManager" type="Node" parent="." unique_id=2144728320]
 script = ExtResource("6_owur1")

@@ -40,7 +40,7 @@ func test_spawn_meshinstance3d() -> void:
 
 
 func test_set_meshinstance3d_mesh() -> void:
-	_mesh_resource = await _spawnable_manager.create_asset("BoxMesh", [])
+	_mesh_resource = await _spawnable_manager.create_resource("BoxMesh", [])
 
 	assert(_mesh_resource != null)
 	assert(is_instance_of(_mesh_resource, BoxMesh) == true)

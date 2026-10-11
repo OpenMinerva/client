@@ -139,6 +139,7 @@ func is_scene_ready(session_id: String) -> bool:
 
 # TODO: Safety! Replace with function that resolves with boolean. If timeout is reached, resolve false otherwise true.
 func await_session_ready(session_id: String) -> void:
+	GlobalLogger.log("Deprecated call '%s'" % get_stack()[0]["function"], Enum.LogLevel.WARNING)
 	var _session_ready: bool = false
 	while _session_ready == false:
 		var _scene_ready: bool = is_scene_ready(session_id)

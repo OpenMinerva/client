@@ -86,6 +86,6 @@ func _resource_button_clicked(resource_class: String) -> void:
 		return
 
 	GlobalLogger.log("Creating resource '%s' to path '%s'." % [resource_class, _path])
-	var _resource: Resource = await spawnable_m.create_asset(resource_class, [])
+	var _resource: Resource = await spawnable_m.create_resource(resource_class, [])
 	spawnable_m.set_resource(int(_node_db_entry.name), _path, int(_resource.get_name()))
 	return

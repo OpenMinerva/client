@@ -170,7 +170,7 @@ func load_spawnable(path: String) -> Node:
 			var _resource_name: String = _resource.name
 			var _resource_value: Variant = _resource.resource
 
-			var _asset: Resource = await _sess_spawnable_m.create_asset(_flat_resource.class, _flat_resource.properties)
+			var _asset: Resource = await _sess_spawnable_m.create_resource(_flat_resource.class, _flat_resource.properties)
 
 			if _flat_resource.class == "ShaderMaterial":
 				var _property_index: int = _flat_resource.properties.find_custom(func(entry): return entry.name == "shader")
@@ -183,7 +183,7 @@ func load_spawnable(path: String) -> Node:
 		for _shader in _task.shaders:
 			var _raw_resource: Shader = _shader.resource
 			var _flatten_res: Dictionary = _flatten_resource(_raw_resource)
-			var _shader_asset: Resource = await _sess_spawnable_m.create_asset("Shader", _flatten_res.properties)
+			var _shader_asset: Resource = await _sess_spawnable_m.create_resource("Shader", _flatten_res.properties)
 			var _shader_id: int = _shader.resource.get_instance_id()
 
 			var _target_association = null
