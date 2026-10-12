@@ -219,7 +219,7 @@ func session_set_property(node_id: int, property_name: String, property_value: V
 
 	# TODO: Logging (https://github.com/OpenMinerva/client/issues/191)
 
-	set_property(node_id, property_name, property_value)
+	set_property.rpc(node_id, property_name, property_value)
 
 	return
 
@@ -233,7 +233,7 @@ func set_property(node_id: int, property_name: String, property_value: Variant) 
 		return
 
 	_db_entry.set_indexed(property_name, property_value)
-
+	_session_signalbus.node_metadata_change.emit(_db_entry)
 	return
 
 

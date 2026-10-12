@@ -206,7 +206,7 @@ func set_resource(node_id: int, property_name: String, resource_id: int) -> void
 func set_resource_on_spawnable(node_id: int, property_name: String, resource_id: int) -> void:
 	var _resource: Resource = get_resource_by_id(resource_id)
 
-	set_property_on_spawnable(node_id, property_name, _resource)
+	spawnables.set_property(node_id, property_name, _resource)
 	return
 
 
@@ -231,32 +231,6 @@ func create_resource(resource_type: String, properties: Array = []) -> Resource:
 			return null
 
 		return _resource_db_entry
-
-
-@rpc("call_local", "authority", "reliable")
-func set_metadata_on_spawnable(node_id: int, metadata_name: String, metadata_value: Variant) -> void:
-	var _entity_db: Node = get_by_id(node_id)
-
-	# TODO: Error check.
-	if _entity_db == null:
-		return
-
-	GlobalLogger.log("Adjusting metadata '%s' on node '%s'." % [metadata_name, node_id])
-	_entity_db.set_meta(metadata_name, metadata_value)
-	session_signalbus.node_metadata_change.emit(_entity_db)
-
-	return
-
-
-@rpc("call_local", "authority", "reliable")
-func set_property_on_spawnable(node_id: int, property_name: String, property_value: Variant):
-	var _entity_db: Node = get_by_id(node_id)
-
-	if _entity_db == null:
-		return
-
-	_entity_db.set_indexed(property_name, property_value)
-	return
 
 
 @rpc("call_local", "authority", "reliable")
@@ -297,7 +271,7 @@ func receive_database(state: Dictionary) -> void:
 
 	for _relation in state.relations:
 		var _resource: Resource = get_resource_by_id(_relation.value)
-		set_property_on_spawnable(_relation.node, _relation.property, _resource)
+		spawnables.set_property(_relation.node, _relation.property, _resource)
 
 		# HACK: Shaders get a different code path. This should be improved to a more robust solution.
 		if _relation.property == "shader":

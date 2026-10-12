@@ -103,7 +103,7 @@ func test_signalbus_node_metadata_change() -> void:
 	assert(_node_metadata_reference == null)
 
 	var _mesh_instance = await _spawnable_manager.create_spawnable("MeshInstance3D")
-	await _spawnable_manager.set_metadata(int(_mesh_instance.name), "test_meta", "test_value")
+	await _spawnable_manager.set_property(int(_mesh_instance.name), "test_meta", "test_value")
 
 	assert(_node_metadata_reference == _mesh_instance)
 	assert(_node_metadata_change_called == true)

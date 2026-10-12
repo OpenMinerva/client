@@ -160,10 +160,10 @@ func load_spawnable(path: String) -> Node:
 			_sess_spawnable_m.transform_spawnable(int(_task.node.name), _task.transform)
 
 		for _prop in _task.metadata:
-			_sess_spawnable_m.spawnables.session_set_property.rpc_id(1, int(_node.name), _prop.name, _prop.value)
+			_sess_spawnable_m.set_property(int(_node.name), _prop.name, _prop.value)
 
 		for _prop in _task.properties:
-			_sess_spawnable_m.set_property.rpc_id(1, int(_task.node.name), _prop.name, _prop.value)
+			_sess_spawnable_m.set_property(int(_task.node.name), _prop.name, _prop.value)
 
 		for _resource in _task.resources:
 			var _flat_resource: Dictionary = _flatten_resource(_resource.resource)
