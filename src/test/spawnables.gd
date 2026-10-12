@@ -87,7 +87,7 @@ func test_set_meshinstance3d_mesh_scale() -> void:
 	assert(_mesh_resource.size == _initial_scale)
 
 	# Change the resource scale.
-	_spawnable_manager.set_property_on_resource(int(_mesh_resource.get_name()), "size", _target_scale)
+	_spawnable_manager.set_property(int(_mesh_resource.get_name()), "size", _target_scale)
 
 	# Make sure the resource is set.
 	assert(_mesh_resource.size == _target_scale)

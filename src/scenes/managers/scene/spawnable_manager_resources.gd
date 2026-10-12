@@ -55,5 +55,32 @@ func create(resource_type: String, properties: Array, resource_id: int) -> Resou
 
 	# Return the resource
 	return _resource
+
+
 # Destroy
 # Change
+# Property
+@rpc("any_peer", "call_remote", "reliable")
+func session_set_property(resource_id: int, property_name: String, property_value: Variant) -> void:
+	# TODO: Permissions
+	# TODO: Logging (https://github.com/OpenMinerva/client/issues/191)
+
+	set_property.rpc(resource_id, property_name, property_value)
+
+	if property_value is Resource:
+		_registry.add_relation(resource_id, property_name, int(property_value.get_name()))
+
+	return
+
+
+@rpc("call_local", "authority", "reliable")
+func set_property(resource_id: int, property_name: String, property_value: Variant) -> void:
+	var _db_entry: Resource = _registry.get_asset(resource_id)
+
+	if _db_entry == null:
+		GlobalLogger.log("Could not locate resource id '%s'" % resource_id, Enum.LogLevel.WARNING)
+		return
+
+	_db_entry.set_indexed(property_name, property_value)
+	_sess_signalbus_m.resource_metadata_change.emit(_db_entry)
+	return

@@ -148,34 +148,26 @@ func deselect_spawnable(gizmo_id: int) -> void:
 		return
 
 
-## Set a property on a spawnable in the session. This is an abstraction that will automatically handle the networking between the host and the client. If the host attempts to call this function in a session, they will call `session_set_property` directly. If a client calls this function, the client will automatically `rpc` the `session_set_property` to the host.
-## [param node_id] is the id of the node to set the property on.
+## Set a property on a spawnable or on a resource in the session. This is an abstraction that will automatically handle the networking between the host and the client.
+## [param target_id] is the id of the spawnable or resource to set the property on.
 ## [param property_name] is the name of the property to set.
 ## [param property_value] is the value to set for the property.
-func set_property(node_id: int, property_name: String, property_value: Variant) -> void:
+func set_property(target_id: int, property_name: String, property_value: Variant) -> void:
+	var _property_function_call: Callable
+
+	if registry.is_asset(target_id) == true:
+		_property_function_call = resources.session_set_property
+	else:
+		_property_function_call = spawnables.session_set_property
+
 	if multiplayer.is_server() == true:
-		GlobalLogger.log("Setting property '%s' on node '%s' to '%s'" % [property_name, node_id, property_value])
-		await spawnables.session_set_property(node_id, property_name, property_value)
+		GlobalLogger.log("Setting property '%s' on '%s' to '%s'" % [property_name, target_id, property_value])
+		await _property_function_call.callv([target_id, property_name, property_value])
 		return
 	else:
-		GlobalLogger.log("Requesting property set '%s' on node '%s' to '%s'" % [property_name, node_id, property_value])
-		await rpcawaiter.send_rpc(1, spawnables.session_set_property.bind(node_id, property_name, property_value))
+		GlobalLogger.log("Requesting property set '%s' on '%s' to '%s'" % [property_name, target_id, property_value])
+		await rpcawaiter.send_rpc(1, _property_function_call.bind(target_id, property_name, property_value))
 		return
-
-
-@rpc("call_local", "any_peer", "reliable")
-func set_property_on_resource(resource_id: int, property_name: String, property_value: Variant) -> void:
-	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
-	var _caller_id: int = multiplayer.get_remote_sender_id()
-
-	if _my_id == 1:
-		set_property_on_resource_internal.rpc(resource_id, property_name, property_value)
-		if property_value is Resource:
-			registry.add_relation(resource_id, property_name, int(property_value.get_name()))
-	else:
-		await rpcawaiter.send_rpc(1, set_property_on_resource.bind(resource_id, property_name, property_value))
-		return
-	return
 
 
 @rpc("any_peer", "reliable")
@@ -233,17 +225,6 @@ func create_resource(resource_type: String, properties: Array = []) -> Resource:
 		return _resource_db_entry
 
 
-@rpc("call_local", "authority", "reliable")
-func set_property_on_resource_internal(resource_id: int, property_name: String, property_value: Variant):
-	var _entity_db: Resource = get_resource_by_id(resource_id)
-
-	if _entity_db == null:
-		return
-
-	_entity_db.set_indexed(property_name, property_value)
-	return
-
-
 func receive_database(state: Dictionary) -> void:
 	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
 
@@ -275,7 +256,7 @@ func receive_database(state: Dictionary) -> void:
 
 		# HACK: Shaders get a different code path. This should be improved to a more robust solution.
 		if _relation.property == "shader":
-			set_property_on_resource_internal(_relation.node, _relation.property, _resource)
+			resources.set_property(_relation.node, _relation.property, _resource)
 
 	GlobalLogger.log("[%s] Registry sync complete." % _my_id)
 

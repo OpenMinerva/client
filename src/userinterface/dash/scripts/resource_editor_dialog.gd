@@ -86,7 +86,7 @@ func _populate_window() -> void:
 
 
 func _partial_value_changed(value: Variant, property: String) -> void:
-	spawnable_m.set_property_on_resource(int(_resource.get_name()), property, value)
+	spawnable_m.set_property(int(_resource.get_name()), property, value)
 	return
 
 

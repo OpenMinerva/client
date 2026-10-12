@@ -192,7 +192,7 @@ func load_spawnable(path: String) -> Node:
 					_target_association = _shaders[_saved_shader].resource
 					break
 
-			_sess_spawnable_m.set_property_on_resource(int(_target_association.get_name()), "shader", _shader_asset)
+			_sess_spawnable_m.set_property(int(_target_association.get_name()), "shader", _shader_asset)
 
 	var _parent_task_index: int = _tasks.find_custom(func(entry): return entry.id == 0)
 	var _parent_task = _tasks[_parent_task_index]
