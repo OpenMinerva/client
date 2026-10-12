@@ -72,6 +72,10 @@ func deselect(gizmo_id: int) -> void:
 	var _gizmo: Node = _registry.get_spawnable(gizmo_id)
 
 	_gizmo.clear_selection()
+
+	if _gizmo.get_selected_count() == 0:
+		# Gizmo does not need to exist anymore!
+		_spawnables.destroy(int(_gizmo.name))
 	return
 
 

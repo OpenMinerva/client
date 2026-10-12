@@ -38,12 +38,12 @@ func sync_all() -> void:
 	if !is_multiplayer_authority():
 		return
 
-	var _registry: Array[Node] = registry.get_all_spawnable()
+	var _spawnable_list: Array[Node] = registry.get_all_spawnable()
 	var _caller_id: int = spawnables._get_caller_id()
 	GlobalLogger.log("Received a request to sync all nodes from '%s'" % _caller_id, Enum.LogLevel.INFO)
-	GlobalLogger.log("Registry size: '%s'" % _registry.size())
+	GlobalLogger.log("Registry size: '%s'" % _spawnable_list.size())
 
-	for spawnable in _registry:
+	for spawnable in _spawnable_list:
 		if ("transform" in spawnable) == false:
 			# We can't transform something without a transform field!
 			GlobalLogger.log("'%s' does not have a transform. Not sending a transform." % spawnable.name)
