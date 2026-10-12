@@ -89,8 +89,6 @@ func create(node_type: String, spawner_peer_id: int, parent_id: int, node_id: in
 # Destroy
 @rpc("any_peer", "call_remote", "reliable")
 func session_destroy_spawnable(node_id: int) -> void:
-	var _caller_id: int = _get_caller_id()
-
 	# TODO: Permissions
 
 	# TODO: Logging (https://github.com/OpenMinerva/client/issues/191)
@@ -137,8 +135,6 @@ func destroy(node_id: int) -> void:
 # Parenting
 @rpc("any_peer", "call_remote", "reliable")
 func session_parent_spawnable(node_id: int, parent_id: int) -> void:
-	var _caller_id: int = _get_caller_id()
-
 	# TODO: Permissions
 
 	# TODO: Logging (https://github.com/OpenMinerva/client/issues/191)
@@ -212,6 +208,31 @@ func set_transform(node_id: int, transform: Transform3D) -> void:
 		return
 
 	_db_entry.transform = transform
+
+	return
+
+
+# Property
+@rpc("any_peer", "call_remote", "reliable")
+func session_set_property(node_id: int, property_name: String, property_value: Variant) -> void:
+	# TODO: Permissions
+
+	# TODO: Logging (https://github.com/OpenMinerva/client/issues/191)
+
+	set_property(node_id, property_name, property_value)
+
+	return
+
+
+@rpc("call_local", "authority", "reliable")
+func set_property(node_id: int, property_name: String, property_value: Variant) -> void:
+	var _db_entry: Node = _registry.get_spawnable(node_id)
+
+	if _db_entry == null:
+		GlobalLogger.log("Could not locate node id '%s'" % node_id, Enum.LogLevel.WARNING)
+		return
+
+	_db_entry.set_indexed(property_name, property_value)
 
 	return
 

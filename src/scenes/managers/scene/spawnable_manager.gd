@@ -148,33 +148,19 @@ func deselect_spawnable(gizmo_id: int) -> void:
 		return
 
 
-@rpc("call_local", "any_peer", "reliable")
-func set_metadata(node_id: int, metadata_name: String, metadata_value: Variant) -> void:
-	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
-	var _caller_id: int = multiplayer.get_remote_sender_id()
-
-	if _my_id == 1:
-		set_metadata_on_spawnable.rpc(node_id, metadata_name, metadata_value)
-	else:
-		await rpcawaiter.send_rpc(1, set_property.bind(node_id, metadata_name, metadata_value))
-		return
-
-	return
-
-
-@rpc("call_local", "any_peer", "reliable")
+## Set a property on a spawnable in the session. This is an abstraction that will automatically handle the networking between the host and the client. If the host attempts to call this function in a session, they will call `session_set_property` directly. If a client calls this function, the client will automatically `rpc` the `session_set_property` to the host.
+## [param node_id] is the id of the node to set the property on.
+## [param property_name] is the name of the property to set.
+## [param property_value] is the value to set for the property.
 func set_property(node_id: int, property_name: String, property_value: Variant) -> void:
-	# I think this function might need to get axed. I am now working on editing resources directly instead of though a path. 
-	# That, or this function should be renamed to a more specific role as this function is still used for translating physical nodes in the scene and other surface-level node values.
-	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
-	var _caller_id: int = multiplayer.get_remote_sender_id()
-
-	if _my_id == 1:
-		set_property_on_spawnable.rpc(node_id, property_name, property_value)
-	else:
-		await rpcawaiter.send_rpc(1, set_property.bind(node_id, property_name, property_value))
+	if multiplayer.is_server() == true:
+		GlobalLogger.log("Setting property '%s' on node '%s' to '%s'" % [property_name, node_id, property_value])
+		await spawnables.session_set_property(node_id, property_name, property_value)
 		return
-	return
+	else:
+		GlobalLogger.log("Requesting property set '%s' on node '%s' to '%s'" % [property_name, node_id, property_value])
+		await rpcawaiter.send_rpc(1, spawnables.session_set_property.bind(node_id, property_name, property_value))
+		return
 
 
 @rpc("call_local", "any_peer", "reliable")
