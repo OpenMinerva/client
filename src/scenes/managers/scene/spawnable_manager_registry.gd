@@ -84,6 +84,12 @@ func get_asset(asset_id: int) -> Resource:
 	return _resources[_db_index]
 
 
+## Returns whether the given id belongs to a resource in the registry.
+func is_asset(asset_id: int) -> bool:
+	var _db_index: int = _resources.find_custom(func(entry): return int(entry.get_name()) == asset_id)
+	return _db_index != -1
+
+
 func remove_asset() -> void:
 	# GlobalLogger.log("Removing asset '%s' from database."%)
 	return

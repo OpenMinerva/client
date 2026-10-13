@@ -195,7 +195,7 @@ func _handle_dash_state(state: bool) -> void:
 
 
 func _cem_camera_state(state: bool) -> void:
-	_scene_root = _app_scene_m.get_master_root(_app_scene_m.active_session)
+	_scene_root = _app_scene_m.get_session_master_root(_app_scene_m.active_session)
 	_cem_camera = state
 
 	if _cem_camera == true:
@@ -230,7 +230,7 @@ func _cem_camera_build() -> Node3D:
 	# TODO: Reuse assets instead of creating them every time.
 	# Create assets
 	var _mesh_instance: Node3D = await _session_spawnable_m.create_spawnable("MeshInstance3D", int(_cem_root.name))
-	var _mesh_resource = await _session_spawnable_m.create_asset("BoxMesh", [])
+	var _mesh_resource = await _session_spawnable_m.create_resource("BoxMesh", [])
 	_session_spawnable_m.set_resource(int(_mesh_instance.name), "mesh", int(_mesh_resource.get_name()))
 
 	_cem_root.set_meta("persistent", false)

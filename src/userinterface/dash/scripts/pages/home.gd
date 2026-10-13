@@ -28,7 +28,7 @@ func _ready() -> void:
 func _show_joined_sessions() -> void:
 	var _sessions = network_m.get_connected_sessions()
 
-	# Remove existing server listings
+	# Remove existing session listings
 	for node in active_sessions_container.get_children():
 		node.queue_free()
 
@@ -40,6 +40,6 @@ func _show_joined_sessions() -> void:
 
 		_entry_label.text = session.id
 		_entry.pressed.connect(scene_m.set_active_session.bind(session.id))
-		_entry_close.pressed.connect(network_m.leave_server.bind(session.id))
+		_entry_close.pressed.connect(network_m.leave_session.bind(session.id))
 		active_sessions_container.add_child(_entry)
 	return

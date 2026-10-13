@@ -54,7 +54,7 @@ func _post_update() -> void:
 	_current_session.set("name", _session_name)
 	_current_session.set("privacy", session_settings.privacy)
 
-	network_m.update_server(_current_session_id, _current_session)
+	network_m.update_session(_current_session_id, _current_session)
 
 	return
 

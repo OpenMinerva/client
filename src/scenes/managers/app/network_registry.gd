@@ -7,7 +7,7 @@
 # Authors: Armored Dragon
 # --- License
 extends Node
-## This submodule contains the database in which sessions are officially registered with the client.
+## This submodule contains the registry in which sessions are officially registered with the client.
 
 enum SessionConnectionType {
 	HOST = 0,
@@ -37,7 +37,7 @@ const DATABASE_TEMPLATE: Dictionary = {
 	},
 }
 
-## The internal database to store and keep track of the active and connected sessions.
+## The internal registry to store and keep track of the active and connected sessions.
 var _database: Array[Dictionary] = []
 ## The order of the sessions. Normally used for when we disconnect from one session, and go to the previous in the stack.
 var _session_stack: Array[String] = []
@@ -145,7 +145,7 @@ func get_previous() -> String:
 	return ""
 
 
-## Adds a session server private key to a database entry so that the app can publish and update information about the target session to that session server.
+## Adds a session server private key to a registry entry so that the app can publish and update information about the target session to that session server.
 ## [param session_id] is the ID of the session to add the key to.
 ## [param url] is the URL of the target session server.
 ## [param key] is the key provided by the session server to allow us to update the listing.
@@ -154,7 +154,7 @@ func add_session_server_key(session_id: String, url: String, key: String) -> voi
 	GlobalLogger.log("Adding session server '%s' key to session '%s'" % [url, session_id])
 
 	if has_session(session_id) == false:
-		GlobalLogger.log("Could not add session server keys to '%s'. That server does not exist in our database.", Enum.LogLevel.WARNING)
+		GlobalLogger.log("Could not add session server keys to '%s'. That server does not exist in our registry.", Enum.LogLevel.WARNING)
 		return
 
 	var _session: Dictionary = get_session(session_id)

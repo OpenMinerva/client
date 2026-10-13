@@ -33,15 +33,15 @@ func _notification(what: int) -> void:
 
 
 func _cleanup() -> void:
-	var _connected_servers: Array = network_m.registry.get_all()
-	_connected_servers.reverse()
+	var _connected_sessions: Array = network_m.registry.get_all()
+	_connected_sessions.reverse()
 
-	for server in _connected_servers:
-		if server.type == network_m.registry.SessionConnectionType.HOST:
-			network_m.stop_server(server.id)
+	for session in _connected_sessions:
+		if session.type == network_m.registry.SessionConnectionType.HOST:
+			network_m.stop_session(session.id)
 			continue
-		if server.type == network_m.registry.SessionConnectionType.CLIENT:
-			network_m.leave_server(server.id)
+		if session.type == network_m.registry.SessionConnectionType.CLIENT:
+			network_m.leave_session(session.id)
 			continue
 
 	await get_tree().process_frame

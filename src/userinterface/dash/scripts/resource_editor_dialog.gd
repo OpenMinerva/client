@@ -32,7 +32,7 @@ func show_window(resource: Resource) -> void:
 	super._open()
 	visible = true
 
-	spawnable_m = scene_m.get_master_scene(scene_m.active_session).get_node("SpawnableManager")
+	spawnable_m = scene_m.get_session_master(scene_m.active_session).get_node("SpawnableManager")
 
 	_resource = resource
 
@@ -86,7 +86,7 @@ func _populate_window() -> void:
 
 
 func _partial_value_changed(value: Variant, property: String) -> void:
-	spawnable_m.set_property_on_resource(int(_resource.get_name()), property, value)
+	spawnable_m.set_property(int(_resource.get_name()), property, value)
 	return
 
 

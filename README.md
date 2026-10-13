@@ -49,6 +49,7 @@ This repository does not ship some required addons in order to prevent unnecessa
 For simplicity, here is a list of the missing addons:
 - [godot-sqlite](https://github.com/2shady4u/godot-sqlite) - Tagged `v4.8` - [Download](https://github.com/2shady4u/godot-sqlite/releases/download/v4.8/addons.zip)
 - [gdUnit4](https://github.com/godot-gdunit-labs/gdUnit4) - Tagged `v6.2.1` - [Download](https://github.com/godot-gdunit-labs/gdUnit4/archive/refs/tags/v6.2.1.zip)
+- [Gizmo3D](https://github.com/OpenMinerva/Gizmo3D) - Branch `main` - [Download](https://github.com/OpenMinerva/Gizmo3D/archive/refs/heads/main.zip)
 
 Download these addons into the `/src/addons/` folder of this repository. 
 Example:
@@ -78,7 +79,7 @@ These addons are used in building the OpenMinerva client:
 
 | Addon Name | Status | Code URL | License | Source URL |
 | ---------- | ------ | -------- | ------- | ---------- |
-| Gizmo3DScript   |  Forked   | [Usage](https://github.com/OpenMinerva/client/tree/alpha/src/addons/Gizmo3DScript) | MIT | [Source](https://github.com/chrisizeful/Gizmo3D) |
+| Gizmo3D   |  [Forked](https://github.com/OpenMinerva/Gizmo3D)   | Not included | MIT | [Source](https://github.com/chrisizeful/Gizmo3D) |
 | Discord-RPC-GD  | Forked   |  [Usage](https://github.com/OpenMinerva/client/tree/alpha/src/addons/discord-rpc-gd) | MIT | [Source](https://codeberg.org/DiscordGodot/RPC-Legacy) |
 | rpc-await | Forked | [Usage](https://github.com/OpenMinerva/client/tree/alpha/src/addons/rpc-await) | MIT | [Source](https://github.com/dominiks/rpc-await) |
 | at-icons     | Forked     | [Usage](https://github.com/OpenMinerva/client/tree/alpha/src/resources/icons/at-icons) | MIT | [Source](https://github.com/Voxybuns/at-icons) |

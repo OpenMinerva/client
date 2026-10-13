@@ -64,7 +64,7 @@ func _insert_world_into_session_listing(session: Dictionary) -> void:
 	_world_title.text = session.get("sessionName", "Unknown session name.")
 	_world_thumbnail.set_texture(load(session.get("sessionThumbnail", "res://resources/icons/1280x720.webp")))
 
-	_button.pressed.connect(network_m.join_server.bind(session.url, session.port))
+	_button.pressed.connect(network_m.join_session.bind(session.url, session.port))
 
 	world_listing_grid.add_child(_world)
 	return

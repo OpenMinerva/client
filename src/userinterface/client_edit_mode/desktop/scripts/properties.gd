@@ -148,5 +148,5 @@ func _get_partial(type: String) -> Node:
 
 
 func _on_session_changed(_session_id: String) -> void:
-	session_spawnable_m = app_scene_m.get_master_scene(app_scene_m.active_session).get_node("SpawnableManager")
+	session_spawnable_m = app_scene_m.get_session_master(app_scene_m.active_session).get_node("SpawnableManager")
 	return

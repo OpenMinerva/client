@@ -8,16 +8,17 @@
 # --- License
 extends Node
 
+
 func authenticate(url: String) -> Dictionary:
 	var _return_dict: Dictionary = { "ok": false, "error": "" }
 
 	# TODO: Do we need a new authentication key?
 	if Accounts.get_session_server_token(url) == "":
-		var url_deconstructed = UrlParser.deconstruct(url)
+		var url_deconstructed: Dictionary = UrlParser.deconstruct(url)
 		if url_deconstructed.ok == false:
-			var ERROR_MESSAGE = "Failed to deconstruct the url '%s'" % url
-			GlobalLogger.log(ERROR_MESSAGE, Enum.LogLevel.WARNING)
-			_return_dict.error = ERROR_MESSAGE
+			var _error_message: String = "Failed to deconstruct the url '%s'" % url
+			GlobalLogger.log(_error_message, Enum.LogLevel.WARNING)
+			_return_dict.error = _error_message
 			return _return_dict
 		url_deconstructed = url_deconstructed.data
 
@@ -39,6 +40,7 @@ func authenticate(url: String) -> Dictionary:
 	# Response contains api key, or error
 
 	return _return_dict
+
 
 func get_sessions() -> Array:
 	var _return_arr = []
@@ -68,6 +70,7 @@ func get_sessions() -> Array:
 
 	return _return_arr
 
+
 func _session_request_received(_host: String, response: Dictionary) -> Dictionary:
 	var _return_arr = { "ok": false, "error": "", "data": null }
 
@@ -81,7 +84,9 @@ func _session_request_received(_host: String, response: Dictionary) -> Dictionar
 
 	return _return_arr
 
+
 func _authentication_request_received(_host: String, response: Dictionary) -> Dictionary:
+	# TODO: Remove this weird communication
 	var _return_arr = { "ok": false, "error": "", "data": null }
 
 	# TODO: If response.ok

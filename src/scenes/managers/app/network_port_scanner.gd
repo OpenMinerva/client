@@ -18,11 +18,11 @@ const MINIMUM_INCREMENTAL_PORT = 20205
 ## [param target_port] is the port to start the search.
 func find_available_port(target_port: int = MINIMUM_INCREMENTAL_PORT) -> int:
 	GlobalLogger.log("Trying to find an available port starting at '%s'." % target_port)
-	var _found_port = null
-	var _is_found = false
+	var _found_port: int = -1
+	var _is_found: bool = false
 
 	while _is_found == false:
-		var port_available = !is_port_in_use(target_port)
+		var port_available: bool = !is_port_in_use(target_port)
 		if port_available:
 			_found_port = target_port
 			_is_found = true
@@ -38,10 +38,10 @@ func find_available_port(target_port: int = MINIMUM_INCREMENTAL_PORT) -> int:
 ## Checks to see if a single port is in use.
 ## [param port] is the target port to check.
 func is_port_in_use(port: int) -> bool:
-	var _udp_server = UDPServer.new()
-	var _err_udp = _udp_server.listen(port, "*")
-	var _tcp_server = TCPServer.new()
-	var _err_tcp = _tcp_server.listen(port, "*")
+	var _udp_server: UDPServer = UDPServer.new()
+	var _err_udp: int = _udp_server.listen(port, "*")
+	var _tcp_server: TCPServer = TCPServer.new()
+	var _err_tcp: int = _tcp_server.listen(port, "*")
 
 	if _err_udp == OK && _err_tcp == OK:
 		_udp_server.stop()

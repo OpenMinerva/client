@@ -13,7 +13,7 @@ extends Node
 
 # Create
 @rpc("any_peer", "call_remote", "reliable")
-func server_create_spawnable(node_type: String, node_parent: int, forced_node_id: int = -1) -> int:
+func session_create_spawnable(node_type: String, node_parent: int, forced_node_id: int = -1) -> int:
 	var _caller_id: int = _get_caller_id()
 
 	# TODO: Permission check and handling.
@@ -32,9 +32,6 @@ func server_create_spawnable(node_type: String, node_parent: int, forced_node_id
 
 	var _spawnable: Node = await create(node_type, _caller_id, int(_parent.name), _node_id)
 	create.rpc(node_type, _caller_id, int(_parent.name), _node_id)
-
-	# Emit session-wide event.
-	_session_signalbus.node_created.emit(_spawnable)
 
 	if is_instance_valid(_spawnable) == false:
 		return -1
@@ -65,6 +62,8 @@ func create(node_type: String, spawner_peer_id: int, parent_id: int, node_id: in
 
 	_registry.add_spawnable(_node, node_id)
 
+	_session_signalbus.node_created.emit(_node)
+
 	# HACK: Spawn the node at origin.
 	if _node.get("position") != null:
 		_node.position = Vector3(0, 0, 0)
@@ -89,9 +88,7 @@ func create(node_type: String, spawner_peer_id: int, parent_id: int, node_id: in
 
 # Destroy
 @rpc("any_peer", "call_remote", "reliable")
-func server_destroy_spawnable(node_id: int) -> void:
-	var _caller_id: int = _get_caller_id()
-
+func session_destroy_spawnable(node_id: int) -> void:
 	# TODO: Permissions
 
 	# TODO: Logging (https://github.com/OpenMinerva/client/issues/191)
@@ -131,15 +128,13 @@ func destroy(node_id: int) -> void:
 
 	_session_signalbus.node_destroyed.emit(_db_entry)
 	_registry.remove_spawnable(node_id)
-	_db_entry.queue_free()
+	_db_entry.free()
 	return
 
 
 # Parenting
 @rpc("any_peer", "call_remote", "reliable")
-func server_parent_spawnable(node_id: int, parent_id: int) -> void:
-	var _caller_id: int = _get_caller_id()
-
+func session_parent_spawnable(node_id: int, parent_id: int) -> void:
 	# TODO: Permissions
 
 	# TODO: Logging (https://github.com/OpenMinerva/client/issues/191)
@@ -178,7 +173,7 @@ func parent(node_id: int, parent_id: int) -> void:
 
 # Transforming
 @rpc("any_peer", "call_remote", "reliable")
-func server_transform_spawnable(node_id: int, transform: Transform3D, ignore_sender: bool = true) -> void:
+func session_transform_spawnable(node_id: int, transform: Transform3D, ignore_sender: bool = true) -> void:
 	var _caller_id: int = _get_caller_id()
 
 	# TODO: Permissions
@@ -214,6 +209,31 @@ func set_transform(node_id: int, transform: Transform3D) -> void:
 
 	_db_entry.transform = transform
 
+	return
+
+
+# Property
+@rpc("any_peer", "call_remote", "reliable")
+func session_set_property(node_id: int, property_name: String, property_value: Variant) -> void:
+	# TODO: Permissions
+
+	# TODO: Logging (https://github.com/OpenMinerva/client/issues/191)
+
+	set_property.rpc(node_id, property_name, property_value)
+
+	return
+
+
+@rpc("call_local", "authority", "reliable")
+func set_property(node_id: int, property_name: String, property_value: Variant) -> void:
+	var _db_entry: Node = _registry.get_spawnable(node_id)
+
+	if _db_entry == null:
+		GlobalLogger.log("Could not locate node id '%s'" % node_id, Enum.LogLevel.WARNING)
+		return
+
+	_db_entry.set_indexed(property_name, property_value)
+	_session_signalbus.node_metadata_change.emit(_db_entry)
 	return
 
 
