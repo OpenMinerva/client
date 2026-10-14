@@ -1,0 +1,4 @@
+sphinx
+colorama
+sphinx-breeze-theme
+sphinx-tabs
