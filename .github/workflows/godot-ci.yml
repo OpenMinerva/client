@@ -5,6 +5,7 @@ on:
    - alpha
    - beta
    - master
+   - fix/ci-building-for-real
 
 env:
   GODOT_VERSION: 4.7
@@ -54,6 +55,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           lfs: true
+      - name: Install curl
+        run: apt-get update && apt-get install -y --no-install-recommends curl
       - name: Set up environment
         run: ./setup_environment.sh
         working-directory: src
@@ -86,6 +89,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           lfs: true
+      - name: Install curl
+        run: apt-get update && apt-get install -y --no-install-recommends curl
       - name: Set up environment
         run: ./setup_environment.sh
         working-directory: src
