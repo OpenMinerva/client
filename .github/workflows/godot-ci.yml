@@ -69,7 +69,8 @@ jobs:
       - name: Windows Build
         run: |
           OUT="${EXPORT_NAME}-${{ needs.timestamp.outputs.safe_ref }}-${{ needs.timestamp.outputs.stamp }}"
-          mkdir -v -p build/windows
+          mkdir -v -p build/windows/release
+          mkdir -v -p build/windows/debug
           cd $PROJECT_PATH
           godot --headless --verbose --export-release "Windows Desktop" "$GITHUB_WORKSPACE/build/windows/release/${OUT}-release.exe"
           godot --headless --verbose --export-debug "Windows Desktop" "$GITHUB_WORKSPACE/build/windows/debug/${OUT}-debug.exe"
@@ -101,7 +102,8 @@ jobs:
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
       - name: Linux Build
         run: |
-          mkdir -v -p build/linux
+          mkdir -v -p build/linux/release
+          mkdir -v -p build/linux/debug
           cd $PROJECT_PATH
           OUT="${EXPORT_NAME}-${{ needs.timestamp.outputs.safe_ref }}-${{ needs.timestamp.outputs.stamp }}"
           godot --headless --verbose --export-release "Linux" "$GITHUB_WORKSPACE/build/linux/release/${OUT}-release.x86_64"
