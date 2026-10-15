@@ -40,6 +40,7 @@ UrlParser="*uid://budprjmmpally"
 
 [debug]
 
+settings/gdscript/always_track_call_stacks=true
 gdscript/warnings/unused_signal=0
 
 [display]
