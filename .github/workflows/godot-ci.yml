@@ -157,9 +157,10 @@ jobs:
       - name: Package each platform
         run: |
           cd build
-          for dir in */; do
-            platform="${dir%/}"
-            (cd "$platform" && zip -r "../${platform}.zip" .)
+          for dir in */*/; do
+            folder="${dir%/}"
+            name="${folder//\//-}"
+            (cd "$folder" && zip -r "../../${name}.zip" .)
           done
       - name: Create release
         uses: softprops/action-gh-release@v3
