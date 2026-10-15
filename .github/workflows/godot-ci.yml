@@ -5,7 +5,6 @@ on:
    - alpha
    - beta
    - master
-   - fix/ci-building-for-real
 
 env:
   GODOT_VERSION: 4.7
