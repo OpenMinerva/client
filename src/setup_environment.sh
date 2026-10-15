@@ -31,7 +31,7 @@ fi
 downloaded_godot_sql_hash=$(sha256sum "setup_downloads/godot-sqlite.zip" | awk '{print $1}' )
 if [ $downloaded_godot_sql_hash != $GODOT_SQL_HASH ]; then
 	echo "Hash check for downloaded 'godot-sqlite' zip failed"
-	exit
+	exit 1
 fi
 
 echo "godot-sqlite hash validated."
@@ -51,7 +51,7 @@ downloaded_gdunit4_hash=$(sha256sum "setup_downloads/gdUnit4.zip" | awk '{print 
 echo $downloaded_gdunit4_hash
 if [ $downloaded_gdunit4_hash != $GDUNIT4_HASH ]; then
 	echo "Hash check for downloaded 'gdUnit4' zip failed"
-	exit
+	exit 1
 fi
 
 echo "gdUnit4 hash validated."
@@ -73,7 +73,7 @@ downloaded_gizmo3d_hash=$(sha256sum "setup_downloads/Gizmo3D-main.zip" | awk '{p
 echo $downloaded_gizmo3d_hash
 if [ $downloaded_gizmo3d_hash != $GIZMO3D_HASH ]; then
 	echo "Hash check for downloaded 'Gizmo3D' zip failed"
-	exit
+	exit 1
 fi
 
 echo "Gizmo3D hash validated."
