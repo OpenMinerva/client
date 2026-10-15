@@ -68,10 +68,11 @@ jobs:
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
       - name: Windows Build
         run: |
+          OUT="${EXPORT_NAME}-${{ needs.timestamp.outputs.safe_ref }}-${{ needs.timestamp.outputs.stamp }}"
           mkdir -v -p build/windows
-          OUT="$GITHUB_WORKSPACE/build/windows/${EXPORT_NAME}-${{ needs.timestamp.outputs.safe_ref }}-${{ needs.timestamp.outputs.stamp }}.exe"
           cd $PROJECT_PATH
-          godot --headless --verbose --export-release "Windows Desktop" "$OUT"
+          godot --headless --verbose --export-release "Windows Desktop" "$GITHUB_WORKSPACE/build/windows/release/${OUT}-release.exe"
+          godot --headless --verbose --export-debug "Windows Desktop" "$GITHUB_WORKSPACE/build/windows/debug/${OUT}-debug.exe"
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -102,8 +103,9 @@ jobs:
         run: |
           mkdir -v -p build/linux
           cd $PROJECT_PATH
-          OUT="$GITHUB_WORKSPACE/build/linux/${EXPORT_NAME}-${{ needs.timestamp.outputs.safe_ref }}-${{ needs.timestamp.outputs.stamp }}.x86_64"
-          godot --headless --verbose --export-release "Linux" "$OUT"
+          OUT="${EXPORT_NAME}-${{ needs.timestamp.outputs.safe_ref }}-${{ needs.timestamp.outputs.stamp }}"
+          godot --headless --verbose --export-release "Linux" "$GITHUB_WORKSPACE/build/linux/release/${OUT}-release.x86_64"
+          godot --headless --verbose --export-debug "Linux" "$GITHUB_WORKSPACE/build/linux/debug/${OUT}-debug.x86_64"
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
