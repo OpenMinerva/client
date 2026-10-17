@@ -11,6 +11,11 @@ const RESOURCE_REFERENCE_TEMPLATE: Dictionary = {
 	"resource": null,
 	"spawnable_id": -1,
 }
+const RESOURCE_ASSOCIATION_TEMPLATE: Dictionary = {
+	"target": -1, # Task ID
+	"field": "",
+	"value": null, # Resource
+}
 
 @onready var app_scene_m: Node = get_tree().root.find_child("AppSceneManager", true, false)
 
@@ -76,13 +81,22 @@ func load_spawnable(path: String) -> Node:
 
 	var _shaders: Dictionary = { }
 
+	# Temporary variable to store the resources used in the base properties of a node.
+	var _scene_node_resources: Array = []
+
+	# Long-term storage of all resources used in the scene.
+	var _scene_resources: Dictionary = { }
+
+	# Contains the map to associate resources with property values.
+	var _scene_resource_association: Array[Dictionary] = []
+
 	# Check if file exists at the given path.
 	if FileManager.file_exists(path) == false:
 		GlobalLogger.log("File '%s' does not exist." % path, Enum.LogLevel.INFO)
 		return null
 
-	var _scene = ResourceLoader.load(path)
-	var _state = _scene.get_state()
+	var _scene: PackedScene = ResourceLoader.load(path)
+	var _state: SceneState = _scene.get_state()
 	var _num_nodes_in_state: int = _state.get_node_count()
 
 	# Generate the list of tasks we need to preform as well as include the information about the node.
@@ -95,20 +109,22 @@ func load_spawnable(path: String) -> Node:
 		_task.parent = -1
 		_task.path = _node_path
 		_task.metadata = []
-		_task.resources = []
 		_task.properties = []
-		_task.materials = []
-		_task.shaders = []
 
 		for _prop_id in range(_num_properties):
 			var _prop_name: String = _state.get_node_property_name(_node_id, _prop_id)
 			var _prop_value: Variant = _state.get_node_property_value(_node_id, _prop_id)
 
 			if _prop_value is Resource:
-				_task.resources.append({ "name": _prop_name, "resource": _prop_value, "class": _prop_value.get_class() })
-				if _prop_value.get_class() == "ShaderMaterial":
-					_task.shaders.append({ "target_material": _prop_value.get_instance_id(), "resource": _prop_value.shader, "class": _prop_value.shader.get_class() })
-				_prop_value = _prop_value.get_instance_id()
+				# TODO: Associations are happening at the node root level, but not for the entire scene.
+				# This works for the root, but more work is needed to get nested resources.
+				var _association_entry: Dictionary = RESOURCE_ASSOCIATION_TEMPLATE.duplicate()
+				_association_entry.target = _node_id
+				_association_entry.field = _prop_name
+				_association_entry.value = _prop_value.get_instance_id()
+				_scene_resource_association.append(_association_entry)
+
+				_scene_node_resources.append(_prop_value)
 
 			if _prop_name.begins_with("metadata/") == true:
 				_task.metadata.append({ "name": _prop_name.replace("metadata/", ""), "value": _prop_value })
@@ -121,6 +137,9 @@ func load_spawnable(path: String) -> Node:
 			_task.set(_prop_name, _prop_value)
 
 		_tasks.append(_task)
+
+	# Build the dictionary that is used to keep track of all resources to spawn in.
+	_scene_resources = _build_resource_reference_dictionary(_scene_node_resources)
 
 	# Sort the tasks array using the paths field, the array should be in such an order that the parent of a node is always at a lower index in the array. Meaning when its time for a given node to spawn, the parent already exists.
 	_tasks.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a["path"] < b["path"])
@@ -141,6 +160,13 @@ func load_spawnable(path: String) -> Node:
 
 		# Set the parent task of this task based upon previously discovered values.
 		_task.parent = _path_parent_dictionary[_task_base_path]
+
+	for _resource_dictionary_key in _scene_resources:
+		var _resource_entry: Dictionary = _scene_resources[_resource_dictionary_key]
+		var _resource_value: Resource = _resource_entry.resource
+		var _flat_resource: Dictionary = _flatten_resource(_resource_value)
+		var _resource: Resource = await _sess_spawnable_m.create_resource(_flat_resource.class, _flat_resource.properties)
+		_scene_resources[_resource_dictionary_key].resource = _resource
 
 	# Finally, we spawn in the nodes.
 	for _task in _tasks:
@@ -170,34 +196,11 @@ func load_spawnable(path: String) -> Node:
 		for _prop in _task.properties:
 			_sess_spawnable_m.set_property(int(_task.node.name), _prop.name, _prop.value)
 
-		for _resource in _task.resources:
-			var _flat_resource: Dictionary = _flatten_resource(_resource.resource)
-			var _resource_name: String = _resource.name
-			var _resource_value: Variant = _resource.resource
-
-			var _asset: Resource = await _sess_spawnable_m.create_resource(_flat_resource.class, _flat_resource.properties)
-
-			if _flat_resource.class == "ShaderMaterial":
-				var _property_index: int = _flat_resource.properties.find_custom(func(entry): return entry.name == "shader")
-				var _shader_resource_name: int = _flat_resource.properties[_property_index].value.get_instance_id()
-				_shaders[_asset.get_name()] = { "resource": _asset, "id": _shader_resource_name }
-				_resource_value = int(_shader_resource_name)
-
-			await _sess_spawnable_m.set_resource(int(_node.name), _resource.name, int(_asset.get_name()))
-
-		for _shader in _task.shaders:
-			var _raw_resource: Shader = _shader.resource
-			var _flatten_res: Dictionary = _flatten_resource(_raw_resource)
-			var _shader_asset: Resource = await _sess_spawnable_m.create_resource("Shader", _flatten_res.properties)
-			var _shader_id: int = _shader.resource.get_instance_id()
-
-			var _target_association = null
-			for _saved_shader in _shaders.keys():
-				if _shaders[_saved_shader].id == _shader_id:
-					_target_association = _shaders[_saved_shader].resource
-					break
-
-			_sess_spawnable_m.set_property(int(_target_association.get_name()), "shader", _shader_asset)
+	for _association in _scene_resource_association:
+		var _task_reference_index: int = _tasks.find_custom(func(entry): return entry.id == _association.target)
+		var _task_reference: Dictionary = _tasks[_task_reference_index]
+		var _spawnable_resource: Resource = _scene_resources[_association.value].resource
+		_sess_spawnable_m.set_resource(int(_task_reference.node.name), _association.field, int(_spawnable_resource.get_name()))
 
 	var _parent_task_index: int = _tasks.find_custom(func(entry): return entry.id == 0)
 	var _parent_task = _tasks[_parent_task_index]
@@ -224,7 +227,7 @@ func _flatten_resource(resource: Resource):
 	return _response
 
 
-func _build_resource_reference_dictionary(flat_resource_array: Array[Resource]) -> Dictionary:
+func _build_resource_reference_dictionary(flat_resource_array: Array) -> Dictionary:
 	var _return_data: Dictionary = { }
 	var _index_of_array: int = 0
 
