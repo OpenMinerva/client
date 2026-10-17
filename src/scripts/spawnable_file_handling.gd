@@ -7,6 +7,11 @@
 # --- License
 extends Node
 
+const RESOURCE_REFERENCE_TEMPLATE: Dictionary = {
+	"resource": null,
+	"spawnable_id": -1,
+}
+
 @onready var app_scene_m: Node = get_tree().root.find_child("AppSceneManager", true, false)
 
 
@@ -217,6 +222,32 @@ func _flatten_resource(resource: Resource):
 		_response.properties.append({ "name": _name, "value": _value })
 
 	return _response
+
+
+func _build_resource_reference_dictionary(flat_resource_array: Array[Resource]) -> Dictionary:
+	var _return_data: Dictionary = { }
+	var _index_of_array: int = 0
+
+	while _index_of_array < flat_resource_array.size():
+		var _resource: Resource = flat_resource_array[_index_of_array]
+		var _resource_id: int = _resource.get_instance_id()
+		var _resource_registry_entry: Dictionary = RESOURCE_REFERENCE_TEMPLATE.duplicate()
+		var _resource_properties: Array[Dictionary] = _resource.get_property_list()
+
+		_resource_registry_entry.resource = _resource
+		_return_data[_resource_id] = _resource_registry_entry
+
+		for _property in _resource_properties:
+			var _target_property_name: String = _property.name
+			var _target_property_value: Variant = _resource.get(_target_property_name)
+
+			if _target_property_value is Resource:
+				# Add relation to property of parent _resource to this resource.
+				flat_resource_array.append(_target_property_value)
+
+		_index_of_array = _index_of_array + 1
+
+	return _return_data
 
 
 func _externalize_assets(root: Node, spawnable_hash: String) -> Node:
