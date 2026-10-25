@@ -251,12 +251,22 @@ func receive_database(state: Dictionary) -> void:
 		resources.create(_resource.metadata.class, _formatted_array, int(_resource.id))
 
 	for _relation in state.relations:
-		var _resource: Resource = get_resource_by_id(_relation.value)
-		spawnables.set_property(_relation.node, _relation.property, _resource)
+		# Get the target
+		var _target: Variant = get_by_id(_relation.node)
+		if _target == null:
+			_target = get_resource_by_id(_relation.node)
 
-		# HACK: Shaders get a different code path. This should be improved to a more robust solution.
-		if _relation.property == "shader":
-			resources.set_property(_relation.node, _relation.property, _resource)
+		# Get the value
+		var _value: Variant = get_by_id(_relation.value)
+		if _value == null:
+			_value = get_resource_by_id(_relation.value)
+
+		if _target is Resource:
+			resources.set_property(_relation.node, _relation.property, _value)
+			continue
+
+		if _target is Node:
+			spawnables.set_property(_relation.node, _relation.property, _value)
 
 	GlobalLogger.log("[%s] Registry sync complete." % _my_id)
 

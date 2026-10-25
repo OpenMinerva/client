@@ -11,10 +11,10 @@ const RESOURCE_REFERENCE_TEMPLATE: Dictionary = {
 	"resource": null,
 	"spawnable_id": -1,
 }
-const RESOURCE_ASSOCIATION_TEMPLATE: Dictionary = {
-	"target": -1, # Task ID
+const RESOURCE_RELATION_TEMPLATE: Dictionary = {
+	"target": -1,
 	"field": "",
-	"value": null, # Resource
+	"value": -1,
 }
 
 @onready var app_scene_m: Node = get_tree().root.find_child("AppSceneManager", true, false)
@@ -90,6 +90,9 @@ func load_spawnable(path: String) -> Node:
 	# Contains the map to associate resources with property values.
 	var _scene_resource_association: Array[Dictionary] = []
 
+	# Contains the map of resources that are a property of another resource.
+	var _scene_resource_relations: Array[Dictionary] = []
+
 	# Check if file exists at the given path.
 	if FileManager.file_exists(path) == false:
 		GlobalLogger.log("File '%s' does not exist." % path, Enum.LogLevel.INFO)
@@ -116,9 +119,7 @@ func load_spawnable(path: String) -> Node:
 			var _prop_value: Variant = _state.get_node_property_value(_node_id, _prop_id)
 
 			if _prop_value is Resource:
-				# TODO: Associations are happening at the node root level, but not for the entire scene.
-				# This works for the root, but more work is needed to get nested resources.
-				var _association_entry: Dictionary = RESOURCE_ASSOCIATION_TEMPLATE.duplicate()
+				var _association_entry: Dictionary = RESOURCE_RELATION_TEMPLATE.duplicate()
 				_association_entry.target = _node_id
 				_association_entry.field = _prop_name
 				_association_entry.value = _prop_value.get_instance_id()
@@ -139,7 +140,7 @@ func load_spawnable(path: String) -> Node:
 		_tasks.append(_task)
 
 	# Build the dictionary that is used to keep track of all resources to spawn in.
-	_scene_resources = _build_resource_reference_dictionary(_scene_node_resources)
+	_scene_resources = _build_resource_reference_dictionary(_scene_node_resources, _scene_resource_relations)
 
 	# Sort the tasks array using the paths field, the array should be in such an order that the parent of a node is always at a lower index in the array. Meaning when its time for a given node to spawn, the parent already exists.
 	_tasks.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a["path"] < b["path"])
@@ -167,6 +168,15 @@ func load_spawnable(path: String) -> Node:
 		var _flat_resource: Dictionary = _flatten_resource(_resource_value)
 		var _resource: Resource = await _sess_spawnable_m.create_resource(_flat_resource.class, _flat_resource.properties)
 		_scene_resources[_resource_dictionary_key].resource = _resource
+
+	for _relation in _scene_resource_relations:
+		if _scene_resources.has(_relation.target) == false || _scene_resources.has(_relation.value) == false:
+			continue
+
+		var _parent_resource: Resource = _scene_resources[_relation.target].resource
+		var _sub_resource: Resource = _scene_resources[_relation.value].resource
+
+		_sess_spawnable_m.set_property(int(_parent_resource.get_name()), _relation.field, _sub_resource)
 
 	# Finally, we spawn in the nodes.
 	for _task in _tasks:
@@ -227,7 +237,7 @@ func _flatten_resource(resource: Resource):
 	return _response
 
 
-func _build_resource_reference_dictionary(flat_resource_array: Array) -> Dictionary:
+func _build_resource_reference_dictionary(flat_resource_array: Array, resource_relations: Array[Dictionary]) -> Dictionary:
 	var _return_data: Dictionary = { }
 	var _index_of_array: int = 0
 
@@ -246,7 +256,14 @@ func _build_resource_reference_dictionary(flat_resource_array: Array) -> Diction
 
 			if _target_property_value is Resource:
 				# Add relation to property of parent _resource to this resource.
-				flat_resource_array.append(_target_property_value)
+				var _relation_entry: Dictionary = RESOURCE_RELATION_TEMPLATE.duplicate()
+				_relation_entry.target = _resource_id
+				_relation_entry.field = _target_property_name
+				_relation_entry.value = _target_property_value.get_instance_id()
+				resource_relations.append(_relation_entry)
+
+				if _return_data.has(_target_property_value.get_instance_id()) == false:
+					flat_resource_array.append(_target_property_value)
 
 		_index_of_array = _index_of_array + 1
 
