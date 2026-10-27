@@ -178,33 +178,8 @@ func load_spawnable(path: String) -> Node:
 
 		_sess_spawnable_m.set_property(int(_parent_resource.get_name()), _relation.field, _sub_resource)
 
-	# Finally, we spawn in the nodes.
-	for _task in _tasks:
-		var _node: Node
-		if _task.parent == -1:
-			if _task.has("metadata/spawnable_type") == false:
-				# HACK: Force unknown spawnable types to be Node3D (Empty).
-				GlobalLogger.log("Spawnable type not defined. Using Node3D.", Enum.LogLevel.WARNING)
-				_task["metadata/spawnable_type"] = "Node3D"
-
-			_node = await _sess_spawnable_m.create_spawnable(_task["metadata/spawnable_type"])
-		else:
-			var _parent_task_index_id: int = _tasks.find_custom(func(_entry): return _entry.id == _task.parent)
-			var _parent_task: Dictionary = _tasks[_parent_task_index_id]
-			var _spawnable_type_index: int = _task.metadata.find_custom(func(entry): return entry.name == "spawnable_type")
-			var _spawnable_type: String = _task.metadata[_spawnable_type_index].value
-			_node = await _sess_spawnable_m.create_spawnable(_spawnable_type, int(_parent_task.node.name))
-
-		_task.node = _node
-
-		if _task.has("transform") == true:
-			_sess_spawnable_m.transform_spawnable(int(_task.node.name), _task.transform)
-
-		for _prop in _task.metadata:
-			_sess_spawnable_m.set_property(int(_node.name), _prop.name, _prop.value)
-
-		for _prop in _task.properties:
-			_sess_spawnable_m.set_property(int(_task.node.name), _prop.name, _prop.value)
+	# Spawn nodes into the scene.
+	_tasks = await _spawn_nodes(_sess_spawnable_m, _tasks)
 
 	for _association in _scene_resource_association:
 		var _task_reference_index: int = _tasks.find_custom(func(entry): return entry.id == _association.target)
@@ -216,6 +191,56 @@ func load_spawnable(path: String) -> Node:
 	var _parent_task = _tasks[_parent_task_index]
 	var _parent_node: Node = _parent_task.node
 	return _parent_node
+
+
+# Helper functions for saving an loading spawnables.
+## Parse through all tasks provided by load_spawnable and instantiate all nodes into the scene.
+func _spawn_nodes(spawnable_manager: Node, task_list: Array[Dictionary]) -> Array[Dictionary]:
+	for _task in task_list:
+		var _node: Node
+
+		# If there is no parent to this node.
+		if _task.parent == -1:
+			# If there is not a spawnable type for this node.
+			# TODO: I want to remake the spawning system, so at some point this check will no longer be strictly necessary. Probably anyways.
+			if _task.has("metadata/spawnable_type") == false:
+				# Fallback to generic Node3D
+				GlobalLogger.log("Spawnable type not defined. Using Node3D.", Enum.LogLevel.WARNING)
+				_task["metadata/spawnable_type"] = "Node3D"
+
+			# This spawnable has a type defined. Create a new spawnable with that spawnable type.
+			_node = await spawnable_manager.create_spawnable(_task["metadata/spawnable_type"])
+		else:
+			# This spawnable is a child of another spawnable. Find the parent...
+			var _parent_task_index_id: int = task_list.find_custom(func(_entry): return _entry.id == _task.parent)
+			var _parent_task: Dictionary = task_list[_parent_task_index_id]
+
+			# Get the spawnable type of the spawnable we intend on spawning.
+			var _spawnable_type_index: int = _task.metadata.find_custom(func(entry): return entry.name == "spawnable_type")
+			var _spawnable_type: String = _task.metadata[_spawnable_type_index].value
+
+			# Create the spawnable.
+			_node = await spawnable_manager.create_spawnable(_spawnable_type, int(_parent_task.node.name))
+
+		# The Spawnable now exists in the scene. Add the spawnable to our dictionary.
+		_task.node = _node
+
+		# If we can transform the spawnable, update the transform.
+		if _task.has("transform") == true:
+			spawnable_manager.transform_spawnable(int(_task.node.name), _task.transform)
+
+		# For all of the defined metadata of the spawnable, update the metadata of the spawnable.
+		# TODO: This is identical to the properties setter. Why did I separate these two again? Maybe it was legacy code carried over?
+		for _prop in _task.metadata:
+			spawnable_manager.set_property(int(_node.name), _prop.name, _prop.value)
+
+		# For all of the defined properties of the spawnable, update the properties of the spawnable.
+		for _prop in _task.properties:
+			spawnable_manager.set_property(int(_task.node.name), _prop.name, _prop.value)
+
+	# We made some changes to the task list including adding references to the created nodes in the dictionary.
+	# Return the updated object so that we can update the task list in the load_spawnable function.
+	return task_list
 
 
 func _add_spawnable_asset_relation(spawnable_hash: String, asset_hash: String) -> void:
