@@ -1,0 +1,64 @@
+[gd_scene format=3 uid="uid://gopciccm8xx5"]
+
+[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="1_5ae8h"]
+[ext_resource type="Texture2D" uid="uid://5admxcll28y4" path="res://resources/icons/ui/trash.svg" id="2_5ae8h"]
+
+[sub_resource type="GDScript" id="GDScript_wtshq"]
+script/source = "extends Control
+
+
+#@onready var label_node = $PanelContainer/MarginContainer/HBoxContainer/Label
+#@export_enum(\"Danger\") var selected_theme_type: String
+
+func _ready():
+	return
+"
+
+[node name="RemovableStringListing" type="PanelContainer" unique_id=2057714596]
+custom_minimum_size = Vector2(0, 40)
+anchors_preset = -1
+anchor_top = 0.4814815
+anchor_right = 1.0
+anchor_bottom = 0.5185185
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_wtshq")
+metadata/_edit_use_anchors_ = true
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=169083657]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=2062898268]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer" unique_id=769532347]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "This is normal text"
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/HBoxContainer" unique_id=802951287]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="Button" type="Button" parent="MarginContainer/HBoxContainer/AspectRatioContainer" unique_id=1639558368]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("1_5ae8h")
+theme_type_variation = &"Danger"
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/HBoxContainer/AspectRatioContainer/Button" unique_id=1435786467]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/HBoxContainer/AspectRatioContainer/Button/AspectRatioContainer" unique_id=1147780876]
+layout_mode = 2
+texture = ExtResource("2_5ae8h")
+expand_mode = 2

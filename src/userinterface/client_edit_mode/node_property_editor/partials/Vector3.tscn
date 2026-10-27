@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://dkn0gmy8or4hq"]
+
+[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="1_fenjf"]
+[ext_resource type="Script" uid="uid://fo05ubo6hera" path="res://userinterface/client_edit_mode/node_property_editor/partials/vector_3.gd" id="2_iwkrw"]
+[ext_resource type="PackedScene" uid="uid://b58b25jtckb2c" path="res://userinterface/client_edit_mode/node_property_editor/partials/spin_box.tscn" id="3_yo0a0"]
+
+[node name="Vector3" type="Control" unique_id=933711176]
+custom_minimum_size = Vector2(80, 60)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme = ExtResource("1_fenjf")
+script = ExtResource("2_iwkrw")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1067102212]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.053703703
+grow_horizontal = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="VBoxContainer" unique_id=482404396]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Vector3"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=287908761]
+layout_mode = 2
+focus_behavior_recursive = 2
+
+[node name="X" parent="VBoxContainer/HBoxContainer" unique_id=1631362233 instance=ExtResource("3_yo0a0")]
+layout_mode = 2
+
+[node name="Y" parent="VBoxContainer/HBoxContainer" unique_id=1007326326 instance=ExtResource("3_yo0a0")]
+layout_mode = 2
+
+[node name="Z" parent="VBoxContainer/HBoxContainer" unique_id=1538313912 instance=ExtResource("3_yo0a0")]
+layout_mode = 2

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="117.96675mm"
+   height="176.14136mm"
+   viewBox="0 0 117.96675 176.14136"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.3 (0d15f75042, 2025-12-25)"
+   sodipodi:docname="om-logo.svg"
+   inkscape:export-filename="om-logo.webp"
+   inkscape:export-xdpi="288.40472"
+   inkscape:export-ydpi="288.40472"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm"
+     inkscape:zoom="1.5244262"
+     inkscape:cx="115.78127"
+     inkscape:cy="396.87064"
+     inkscape:window-width="2560"
+     inkscape:window-height="1412"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <inkscape:path-effect
+       effect="mirror_symmetry"
+       start_point="90,41.425785"
+       end_point="90,94.01852"
+       center_point="90,67.722152"
+       id="path-effect4"
+       is_visible="true"
+       lpeversion="1.2"
+       lpesatellites=""
+       mode="free"
+       discard_orig_path="false"
+       fuse_paths="false"
+       oposite_fuse="false"
+       split_items="false"
+       split_open="false"
+       link_styles="false" />
+    <inkscape:path-effect
+       effect="mirror_symmetry"
+       start_point="215.53802,185.86003"
+       end_point="215.53802,273.48266"
+       center_point="215.53802,229.67135"
+       id="path-effect3"
+       is_visible="true"
+       lpeversion="1.2"
+       lpesatellites=""
+       mode="free"
+       discard_orig_path="false"
+       fuse_paths="true"
+       oposite_fuse="false"
+       split_items="false"
+       split_open="false"
+       link_styles="false" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-46.016624,-55.367928)">
+    <circle
+       style="fill:#0080bf;fill-opacity:1;stroke:#0077b2;stroke-width:10;stroke-dasharray:none;stroke-opacity:1"
+       id="path2"
+       cx="105"
+       cy="113.34906"
+       r="52.981133" />
+    <path
+       style="fill:#0077b2;fill-opacity:1;stroke:#0078b2;stroke-width:4.99999;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1"
+       d="m 141.00401,185.86003 h 17.79709 l 56.40485,42.79902 0.26453,16.78159 -49.52595,-37.71308 21.4944,65.7551 H 176.4861 Z m 149.06802,0 h -17.79709 l -56.40485,42.79902 -0.26453,16.78159 49.52595,-37.71308 -21.4944,65.7551 h 10.95283 z"
+       id="path3"
+       inkscape:path-effect="#path-effect3"
+       inkscape:original-d="m 141.00401,185.86003 h 17.79709 l 56.40485,42.79902 0.26453,16.78159 -49.52595,-37.71308 21.4944,65.7551 H 176.4861 Z"
+       transform="matrix(0.76568094,0,0,0.76568094,-60.033353,20.194626)"
+       sodipodi:nodetypes="cccccccc" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:4.99999;stroke-linecap:butt;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       id="path4"
+       inkscape:path-effect="#path-effect4"
+       sodipodi:type="arc"
+       sodipodi:cx="67.181808"
+       sodipodi:cy="67.542038"
+       sodipodi:rx="15.597886"
+       sodipodi:ry="15.597886"
+       d="m 82.779695,67.542038 c 0,8.614475 -6.983412,15.597886 -15.597887,15.597886 -8.614474,0 -15.597886,-6.983411 -15.597886,-15.597886 0,-8.614475 6.983412,-15.597886 15.597886,-15.597886 8.614475,0 15.597887,6.983411 15.597887,15.597886 z m 14.44061,0 c 0,8.614475 6.983415,15.597886 15.597885,15.597886 8.61448,0 15.59789,-6.983411 15.59789,-15.597886 0,-8.614475 -6.98341,-15.597886 -15.59789,-15.597886 -8.61447,0 -15.597885,6.983411 -15.597885,15.597886 z"
+       transform="translate(15,34.321598)" />
+  </g>
+</svg>
