@@ -20,10 +20,6 @@ const RESOURCE_RELATION_TEMPLATE: Dictionary = {
 @onready var app_scene_m: Node = get_tree().root.find_child("AppSceneManager", true, false)
 
 
-func _ready() -> void:
-	return
-
-
 func save_spawnable(root: Node, type: Enum.SpawnableType = Enum.SpawnableType.ITEM, name_override: String = "") -> void:
 	# Take a node path from the scene, and save that node to the file
 	# In order to save nodes using the ResourceSaver, we need to make all nodes that are a child of the root have the owner of the root.
@@ -108,16 +104,20 @@ func load_spawnable(path: String) -> Node:
 		var _node_path: String = _state.get_node_path(_node_id)
 		var _task: Dictionary = { }
 
+		# Build the tasks dictionary that is used for
 		_task.id = _node_id
 		_task.parent = -1
 		_task.path = _node_path
 		_task.metadata = []
 		_task.properties = []
 
+		# For each of the properties in a given node in the scene state.
 		for _prop_id in range(_num_properties):
 			var _prop_name: String = _state.get_node_property_name(_node_id, _prop_id)
 			var _prop_value: Variant = _state.get_node_property_value(_node_id, _prop_id)
 
+			# If the property value of a node is a resource, we need to have special handing for this.
+			# We have to spawn in resources separately so they are networked.
 			if _prop_value is Resource:
 				var _association_entry: Dictionary = RESOURCE_RELATION_TEMPLATE.duplicate()
 				_association_entry.target = _node_id
@@ -127,14 +127,19 @@ func load_spawnable(path: String) -> Node:
 
 				_scene_node_resources.append(_prop_value)
 
+			# If the property is metadata, add it as a property.
+			# TODO: Why do I separate this? Surely if it is metadata, I can just add it as a property again because it is (or I think it is) a property.
 			if _prop_name.begins_with("metadata/") == true:
 				_task.metadata.append({ "name": _prop_name.replace("metadata/", ""), "value": _prop_value })
 				continue
 
+			# If the property is an actual property, add it to the properties list.
 			if typeof(_prop_name) != TYPE_STRING_NAME && _prop_name.begins_with("metadata/") == false:
 				_task.properties.append({ "name": _prop_name, "value": _prop_value })
 				continue
 
+			# FIXME: Why do I set this in the root of the dictionary? Pretty sure this would cause issues somewhere else.
+			# Though right now this seems to be unreachable due to the other checks effectively capturing all cases.
 			_task.set(_prop_name, _prop_value)
 
 		_tasks.append(_task)
@@ -162,6 +167,7 @@ func load_spawnable(path: String) -> Node:
 		# Set the parent task of this task based upon previously discovered values.
 		_task.parent = _path_parent_dictionary[_task_base_path]
 
+	# Create the resources in the scene.
 	for _resource_dictionary_key in _scene_resources:
 		var _resource_entry: Dictionary = _scene_resources[_resource_dictionary_key]
 		var _resource_value: Resource = _resource_entry.resource
@@ -169,6 +175,7 @@ func load_spawnable(path: String) -> Node:
 		var _resource: Resource = await _sess_spawnable_m.create_resource(_flat_resource.class, _flat_resource.properties)
 		_scene_resources[_resource_dictionary_key].resource = _resource
 
+	# After creating the resources, if any of these resources have a sub-resource as a value for the properties, add the relation.
 	for _relation in _scene_resource_relations:
 		if _scene_resources.has(_relation.target) == false || _scene_resources.has(_relation.value) == false:
 			continue
@@ -178,15 +185,18 @@ func load_spawnable(path: String) -> Node:
 
 		_sess_spawnable_m.set_property(int(_parent_resource.get_name()), _relation.field, _sub_resource)
 
-	# Spawn nodes into the scene.
+	# Spawn the nodes into the scene.
 	_tasks = await _spawn_nodes(_sess_spawnable_m, _tasks)
 
+	# Add resources to the nodes as properties.
+	# TODO: How does this differ from setting the nodes as properties?
 	for _association in _scene_resource_association:
 		var _task_reference_index: int = _tasks.find_custom(func(entry): return entry.id == _association.target)
 		var _task_reference: Dictionary = _tasks[_task_reference_index]
 		var _spawnable_resource: Resource = _scene_resources[_association.value].resource
 		_sess_spawnable_m.set_resource(int(_task_reference.node.name), _association.field, int(_spawnable_resource.get_name()))
 
+	# Return the parent of the spawned spawnable scene.
 	var _parent_task_index: int = _tasks.find_custom(func(entry): return entry.id == 0)
 	var _parent_task = _tasks[_parent_task_index]
 	var _parent_node: Node = _parent_task.node
