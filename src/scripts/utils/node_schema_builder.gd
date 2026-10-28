@@ -91,7 +91,8 @@ static func build(node_name: String, spawnable_manager: Node) -> Node:
 
 	if node_name == "RigidBody3D":
 		var _work_node = RigidBody3D.new()
-		_work_node.freeze = true
+		# TODO: Reenable this code when the inspector gets added into XR mode.
+		# _work_node.freeze = true
 		_add_node_metadata(_work_node, node_name)
 		return _work_node
 
