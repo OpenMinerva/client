@@ -51,6 +51,13 @@ func _ready() -> void:
 	_node_camera.fov = _DEFAULT_FOV
 
 	Events.connect("dash_set_state", _handle_dash_state)
+
+	# If we are in VR.
+	var xr_interface = XRServer.find_interface("OpenXR")
+	if xr_interface and xr_interface.is_initialized():
+		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
+		get_viewport().use_xr = true
+
 	return
 
 
