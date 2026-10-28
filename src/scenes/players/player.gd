@@ -37,6 +37,8 @@ var _speed: float = 0
 @onready var _inspector_tree_node: Node = _inspector.get_node("HBoxContainer/HSplitContainer/MarginContainer")
 @onready var _inspector_properties_node: Node = _inspector.get_node("HBoxContainer/HSplitContainer/Properties")
 @onready var _inspector_toolbar_node: Node = _inspector.get_node("Toolbar")
+@onready var _controller_left: Node3D = get_node("./XROrigin3D/LeftHand")
+@onready var _controller_right: Node3D = get_node("./XROrigin3D/RightHand")
 
 
 func _enter_tree() -> void:
@@ -51,7 +53,6 @@ func _ready() -> void:
 	_node_camera.fov = _DEFAULT_FOV
 
 	Events.connect("dash_set_state", _handle_dash_state)
-
 	# If we are in VR.
 	var xr_interface = XRServer.find_interface("OpenXR")
 	if xr_interface and xr_interface.is_initialized():
@@ -153,6 +154,12 @@ func _phys_buildmode() -> void:
 
 
 func _phys_normal(delta) -> void:
+	var _controller_movement: Vector2 = _controller_left.get_vector2("primary")
+
+	# TODO: Refactor
+	var _controller_rotation: Vector2 = _controller_right.get_vector2("primary")
+	_node_body.rotate_y(-_controller_rotation.x * _DEFAULT_SENSITIVITY * 0.1)
+
 	if is_on_floor() == false:
 		velocity.y -= _DEFAULT_GRAVITY * delta
 
@@ -174,7 +181,10 @@ func _phys_normal(delta) -> void:
 		_speed = _DEFAULT_SPRINT_SPEED
 
 	if _cem_camera == false:
-		var _input_dir = Input.get_vector("left", "right", "forward", "backward")
+		var _input_dir: Vector2 = Input.get_vector("left", "right", "forward", "backward")
+		_controller_movement.y = _controller_movement.y * -1
+
+		_input_dir += _controller_movement
 		var _direction = (transform.basis * Vector3(_input_dir.x, 0, _input_dir.y)).normalized()
 		velocity.x = _direction.x * _speed
 		velocity.z = _direction.z * _speed

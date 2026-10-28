@@ -102,6 +102,7 @@ func load_spawnable(path: String) -> Node:
 	for _node_id in range(_num_nodes_in_state):
 		var _num_properties: int = _state.get_node_property_count(_node_id)
 		var _node_path: String = _state.get_node_path(_node_id)
+		var _node_type: String = _state.get_node_type(_node_id)
 		var _task: Dictionary = { }
 
 		# Build the tasks dictionary that is used for
@@ -110,6 +111,8 @@ func load_spawnable(path: String) -> Node:
 		_task.path = _node_path
 		_task.metadata = []
 		_task.properties = []
+
+		_task.metadata.append({ "name": "spawnable_type", "value": _node_type })
 
 		# For each of the properties in a given node in the scene state.
 		for _prop_id in range(_num_properties):
@@ -130,6 +133,10 @@ func load_spawnable(path: String) -> Node:
 			# If the property is metadata, add it as a property.
 			# TODO: Why do I separate this? Surely if it is metadata, I can just add it as a property again because it is (or I think it is) a property.
 			if _prop_name.begins_with("metadata/") == true:
+				if _prop_name.contains("spawnable_type") == true:
+					# HACK:Ignore existing spawnable type metadata.
+					continue
+
 				_task.metadata.append({ "name": _prop_name.replace("metadata/", ""), "value": _prop_value })
 				continue
 

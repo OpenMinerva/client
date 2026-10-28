@@ -57,6 +57,28 @@ ssr_enabled = true
 ssao_enabled = true
 glow_enabled = true
 
+[sub_resource type="ViewportTexture" id="ViewportTexture_5uvba"]
+viewport_path = NodePath("17/18")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_q28r8"]
+resource_local_to_scene = true
+albedo_texture = SubResource("ViewportTexture_5uvba")
+
+[sub_resource type="QuadMesh" id="QuadMesh_ikf4c"]
+material = SubResource("StandardMaterial3D_q28r8")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_5uvba"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_2vl8h"]
+noise = SubResource("FastNoiseLite_5uvba")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yskkl"]
+albedo_texture = SubResource("NoiseTexture2D_2vl8h")
+
+[sub_resource type="BoxMesh" id="BoxMesh_pagie"]
+material = SubResource("StandardMaterial3D_yskkl")
+size = Vector3(0.01, 1, 1)
+
 [node name="Home" type="Node3D" unique_id=1178951762]
 metadata/spawnable_type = "Node3D"
 metadata/pretty_name = "Home"
@@ -86,3 +108,16 @@ metadata/pretty_name = "DirectionalLight3D"
 environment = SubResource("Environment_2vl8h")
 metadata/scene_node = true
 metadata/spawnable_type = "WorldEnvironment"
+
+[node name="17" type="MeshInstance3D" parent="." unique_id=1863158340]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 3.0149264, 1.6305884, 0)
+mesh = SubResource("QuadMesh_ikf4c")
+
+[node name="18" type="SubViewport" parent="17" unique_id=529246451]
+
+[node name="Camera3D" type="Camera3D" parent="17/18" unique_id=470457067]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 3.0149264, 1.6305884, 0)
+
+[node name="Noise" type="MeshInstance3D" parent="." unique_id=1733537956]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.0149264, 1.6305884, -1.4766006)
+mesh = SubResource("BoxMesh_pagie")

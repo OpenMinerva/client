@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dvx1vs2ig7st4"]
 
 [ext_resource type="Script" uid="uid://dtsnp57ihhiq5" path="res://scenes/players/player.gd" id="1_plyga"]
+[ext_resource type="PackedScene" uid="uid://dyhcbl556wosp" path="res://resources/models/vr_headset.glb" id="2_ldeu4"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_p1mvi"]
 
@@ -20,6 +21,7 @@ metadata/scene_node = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1660137540]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+visible = false
 mesh = SubResource("CapsuleMesh_p1mvi")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2036338215]
@@ -68,3 +70,6 @@ transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0
 mesh = SubResource("CylinderMesh_pagie")
 
 [node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D" unique_id=721750067]
+
+[node name="vr_headset" parent="XROrigin3D/XRCamera3D" unique_id=1356801485 instance=ExtResource("2_ldeu4")]
+transform = Transform3D(-4.371139e-09, 0, -0.1, 0, 0.1, 0, 0.1, 0, -4.371139e-09, 0, 1.7, -0.25)
