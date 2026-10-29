@@ -71,7 +71,12 @@ static func build(node_name: String, spawnable_manager: Node) -> Node:
 	if node_name == "":
 		return
 
-	var _entry = _schema[node_name]
+	var _entry = _schema.get(node_name, null)
+
+	if _entry == null:
+		var _work_node = ClassDB.instantiate(node_name)
+		_add_node_metadata(_work_node, node_name)
+		return _work_node
 
 	if _entry.requires_setup == false:
 		var _work_node = ClassDB.instantiate(_entry.node)
@@ -86,7 +91,8 @@ static func build(node_name: String, spawnable_manager: Node) -> Node:
 
 	if node_name == "RigidBody3D":
 		var _work_node = RigidBody3D.new()
-		_work_node.freeze = true
+		# TODO: Reenable this code when the inspector gets added into XR mode.
+		# _work_node.freeze = true
 		_add_node_metadata(_work_node, node_name)
 		return _work_node
 
@@ -110,7 +116,14 @@ static func build(node_name: String, spawnable_manager: Node) -> Node:
 
 static func _add_node_metadata(root: Node, schema_name: String) -> void:
 	var _class = root.get_class()
-	var _schema_entry = _schema[schema_name]
+	var _schema_entry = _schema.get(schema_name, null)
+
+	if _schema_entry == null:
+		root.set_meta("spawnable_type", schema_name)
+		root.set_meta("pretty_name", schema_name)
+		root.set_meta("deep_delete", false)
+		root.set_meta("scene_node", true)
+		return
 
 	root.set_meta("spawnable_type", _class)
 	root.set_meta("pretty_name", _schema_entry.pretty_name)

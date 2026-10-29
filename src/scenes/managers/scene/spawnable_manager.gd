@@ -26,10 +26,11 @@ func _physics_process(_delta):
 	for spawnable in registry.get_all_spawnable():
 		if spawnable.get_class() != "RigidBody3D":
 			continue
-		if spawnable.node.sleeping == true:
+
+		if spawnable.sleeping == true:
 			continue
 
-		transform_spawnable(spawnable.id, spawnable.node.transform)
+		transform_spawnable(int(spawnable.name), spawnable.transform)
 	return
 
 
