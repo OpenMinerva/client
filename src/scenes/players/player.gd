@@ -51,6 +51,7 @@ func _enter_tree() -> void:
 
 func _ready() -> void:
 	_node_camera.fov = _DEFAULT_FOV
+	_controller_right.connect("button_pressed", _controller_button_pressed)
 
 	Events.connect("dash_set_state", _handle_dash_state)
 	# If we are in VR.
@@ -112,6 +113,30 @@ func set_camera_state(state: bool = false) -> void:
 	return
 
 
+func _controller_button_pressed(action: String) -> void:
+	match action:
+		"ax_button":
+			# Physics
+			var _rigid: Node3D = await _session_spawnable_m.create_spawnable("RigidBody3D")
+			var _collision: Node3D = await _session_spawnable_m.create_spawnable("CollisionShape3D")
+			var _collision_resource: Resource = await _session_spawnable_m.create_resource("BoxShape3D")
+			_session_spawnable_m.set_resource(int(_collision.name), "shape", int(_collision_resource.get_name()))
+
+			# Visibility
+			var _mesh: Node3D = await _session_spawnable_m.create_spawnable("MeshInstance3D")
+			var _resource: Resource = await _session_spawnable_m.create_resource("BoxMesh")
+			_session_spawnable_m.set_resource(int(_mesh.name), "mesh", int(_resource.get_name()))
+
+			# Set parents
+			_session_spawnable_m.parent_spawnable(int(_collision.name), int(_rigid.name))
+			_session_spawnable_m.parent_spawnable(int(_mesh.name), int(_rigid.name))
+
+			# Transform
+			var _position = Transform3D(Basis.IDENTITY, Vector3(0, 3, 0))
+			_session_spawnable_m.transform_spawnable(int(_rigid.name), _position)
+	return
+
+
 func _phys_buildmode() -> void:
 	if _cem_camera == false:
 		return
@@ -154,9 +179,8 @@ func _phys_buildmode() -> void:
 
 
 func _phys_normal(delta) -> void:
-	var _controller_movement: Vector2 = _controller_left.get_vector2("primary")
-
 	# TODO: Refactor
+	var _controller_movement: Vector2 = _controller_left.get_vector2("primary")
 	var _controller_rotation: Vector2 = _controller_right.get_vector2("primary")
 	_node_body.rotate_y(-_controller_rotation.x * _DEFAULT_SENSITIVITY * 0.1)
 
