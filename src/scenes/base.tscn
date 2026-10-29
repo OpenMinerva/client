@@ -6,18 +6,6 @@
 [ext_resource type="Script" uid="uid://cpo2c2p75ot86" path="res://scripts/spawnable_file_handling.gd" id="4_vqfsp"]
 [ext_resource type="PackedScene" uid="uid://c4y1sb6lmdr0q" path="res://userinterface/dash/dashboard.tscn" id="5_i6jx3"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_40w10"]
-viewport_path = NodePath("MeshInstance3D/SubViewport")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2vl8h"]
-resource_local_to_scene = true
-transparency = 1
-albedo_texture = SubResource("ViewportTexture_40w10")
-
-[sub_resource type="QuadMesh" id="QuadMesh_xvvcp"]
-material = SubResource("StandardMaterial3D_2vl8h")
-size = Vector2(16, 9)
-
 [node name="Master" type="Node3D" unique_id=420526444]
 
 [node name="Inspector" parent="." unique_id=879206536 instance=ExtResource("1_40w10")]
@@ -71,13 +59,3 @@ script = ExtResource("4_vqfsp")
 [node name="Dashboard" parent="." unique_id=505457833 instance=ExtResource("5_i6jx3")]
 visible = false
 mouse_filter = 1
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1135821279]
-transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 1.3359053, -1.2588178)
-mesh = SubResource("QuadMesh_xvvcp")
-
-[node name="SubViewport" type="SubViewport" parent="MeshInstance3D" unique_id=205243597]
-transparent_bg = true
-size = Vector2i(1920, 1080)
-
-[node name="Dashboard" parent="MeshInstance3D/SubViewport" unique_id=1298649696 instance=ExtResource("5_i6jx3")]

@@ -57,15 +57,15 @@ ssr_enabled = true
 ssao_enabled = true
 glow_enabled = true
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_5uvba"]
-viewport_path = NodePath("17/18")
+[sub_resource type="ViewportTexture" id="ViewportTexture_ikf4c"]
+viewport_path = NodePath("Mirror/Subviewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_q28r8"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ikf4c"]
 resource_local_to_scene = true
-albedo_texture = SubResource("ViewportTexture_5uvba")
+albedo_texture = SubResource("ViewportTexture_ikf4c")
 
 [sub_resource type="QuadMesh" id="QuadMesh_ikf4c"]
-material = SubResource("StandardMaterial3D_q28r8")
+material = SubResource("StandardMaterial3D_ikf4c")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_5uvba"]
 
@@ -113,13 +113,13 @@ environment = SubResource("Environment_2vl8h")
 metadata/scene_node = true
 metadata/spawnable_type = "WorldEnvironment"
 
-[node name="17" type="MeshInstance3D" parent="." unique_id=1863158340]
+[node name="Mirror" type="MeshInstance3D" parent="." unique_id=1863158340]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 3.0149264, 1.6305884, 0)
 mesh = SubResource("QuadMesh_ikf4c")
 
-[node name="18" type="SubViewport" parent="17" unique_id=529246451]
+[node name="Subviewport" type="SubViewport" parent="Mirror" unique_id=529246451]
 
-[node name="Camera3D" type="Camera3D" parent="17/18" unique_id=470457067]
+[node name="Camera3D" type="Camera3D" parent="Mirror/Subviewport" unique_id=470457067]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 3.0149264, 1.6305884, 0)
 
 [node name="Noise" type="MeshInstance3D" parent="." unique_id=1733537956]

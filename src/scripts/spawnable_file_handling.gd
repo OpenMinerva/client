@@ -98,6 +98,19 @@ func load_spawnable(path: String) -> Node:
 	var _state: SceneState = _scene.get_state()
 	var _num_nodes_in_state: int = _state.get_node_count()
 
+	# FIXME: This is used to forcefuly delay part of this function until later in the application lifecycle.
+	# There is an influx of logs when the application starts, and this overflow causes some of the developer debug logs to not display.
+	# This is left here commented so that I can re-enable it whenever I need to read the logs. 
+	# Though I should probably fix what is causing the logs to not be displayed in the first place.
+	# XR-VR-Steam-Frame
+
+	# var _dev_skip_frames = 120
+	# var _dev_frames = 0
+	#
+	# while _dev_skip_frames > _dev_frames:
+	# 	await get_tree().process_frame
+	# 	_dev_frames = _dev_frames + 1
+
 	# Generate the list of tasks we need to preform as well as include the information about the node.
 	for _node_id in range(_num_nodes_in_state):
 		var _num_properties: int = _state.get_node_property_count(_node_id)
@@ -177,10 +190,36 @@ func load_spawnable(path: String) -> Node:
 	# Create the resources in the scene.
 	for _resource_dictionary_key in _scene_resources:
 		var _resource_entry: Dictionary = _scene_resources[_resource_dictionary_key]
+
 		var _resource_value: Resource = _resource_entry.resource
 		var _flat_resource: Dictionary = _flatten_resource(_resource_value)
 		var _resource: Resource = await _sess_spawnable_m.create_resource(_flat_resource.class, _flat_resource.properties)
 		_scene_resources[_resource_dictionary_key].resource = _resource
+
+	# Spawn the nodes into the scene.
+	_tasks = await _spawn_nodes(_sess_spawnable_m, _tasks)
+
+	# FIXME: XR-VR-Steam-Frame
+	# HACK: I probably won't keep this functionality as I really don't think I want to have "Extra operations after spawning" as a design practice. 
+	# From what I can find online, Godot really doesn't want viewportTextures to work in the same way normal resources would, so for now the mirror and UI will require this hard-fix.
+	# The major problem is that this only happens once by the person who spawned the UI, this fix is not networked. As a result the spawned meshInstance3D does not have a "texture" for all peers.
+	# This MUST be fixed before XR merger into alpha.
+
+	# Now that the nodes exist, preform any extra operations we need to do.
+	for _resource_dictionary_key in _scene_resources:
+		var _resource_entry: Dictionary = _scene_resources[_resource_dictionary_key]
+
+		# Viewports need to exist before we can update their data.
+		if _resource_entry.resource.get_class() == "ViewportTexture":
+			var _viewport_path: String = _resource_entry.resource.get_viewport_path_in_scene()
+			var _viewport_node: Node = _resolve_spawned_node(_viewport_path, _tasks)
+
+			if _viewport_node == null:
+				GlobalLogger.log("Could not locate the SubViewport '%s' referenced by a ViewportTexture." % _viewport_path, Enum.LogLevel.WARNING)
+				continue
+
+			# The texture we just got belongs to the Viewport, so it is not registered as an asset.
+			_resource_entry.resource = _viewport_node.get_texture()
 
 	# After creating the resources, if any of these resources have a sub-resource as a value for the properties, add the relation.
 	for _relation in _scene_resource_relations:
@@ -191,9 +230,6 @@ func load_spawnable(path: String) -> Node:
 		var _sub_resource: Resource = _scene_resources[_relation.value].resource
 
 		_sess_spawnable_m.set_property(int(_parent_resource.get_name()), _relation.field, _sub_resource)
-
-	# Spawn the nodes into the scene.
-	_tasks = await _spawn_nodes(_sess_spawnable_m, _tasks)
 
 	# Add resources to the nodes as properties.
 	# TODO: How does this differ from setting the nodes as properties?
@@ -258,6 +294,22 @@ func _spawn_nodes(spawnable_manager: Node, task_list: Array[Dictionary]) -> Arra
 	# We made some changes to the task list including adding references to the created nodes in the dictionary.
 	# Return the updated object so that we can update the task list in the load_spawnable function.
 	return task_list
+
+
+# INFO: XR-VR-Steam-Frame this is used in building a Viewport view from the spawned nodes.
+# This makes it so that the path in the viewport connects to the associated node as seen in the Godot editor.
+## Resolves a node path relative to the root of a spawnable to the node that was spawned for it.
+func _resolve_spawned_node(node_path: String, task_list: Array[Dictionary]) -> Node:
+	# Ensure that the node path is what we expect it to be.
+	if node_path != "." && node_path.begins_with("./") == false:
+		node_path = "./" + node_path
+
+	# Find the node by its path in the scene.
+	var _entry_index: int = task_list.find_custom(func(entry): return entry.path == node_path)
+	var _resolved_entry: Dictionary = task_list[_entry_index]
+	var _resolved_node: Node = _resolved_entry.get("node", null)
+
+	return _resolved_node
 
 
 func _add_spawnable_asset_relation(spawnable_hash: String, asset_hash: String) -> void:

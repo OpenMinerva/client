@@ -25,8 +25,9 @@ boot_splash/minimum_display_time=1500
 
 LaunchArguments="*uid://c45jrfmrjtnyn"
 GlobalLogger="*uid://dgmfafi41y1nk"
-FileManager="*res://scripts/utils/files.gd"
 SettingsManager="*uid://cgvvntx8o26ds"
+FileManager="*res://scripts/utils/files.gd"
+UrlParser="*uid://budprjmmpally"
 Accounts="*uid://sdrs0dnojnes"
 Bootstrap="*uid://cvj10vdw6hlqw"
 HTTP="*uid://d3cnfdwjxopsx"
@@ -36,7 +37,6 @@ StateManager="*uid://b5vvw77bmn4yc"
 Database="*uid://cbm5uyffux8ca"
 DiscordRPCLoader="*uid://xq58uo0nw0gq"
 OAuth2Client="*uid://c4b880pwgfrty"
-UrlParser="*uid://budprjmmpally"
 
 [debug]
 
@@ -51,6 +51,7 @@ window/stretch/mode="canvas_items"
 
 [editor]
 
+run/main_run_args="--xr-mode off"
 export/convert_text_resources_to_binary=false
 
 [editor_plugins]
