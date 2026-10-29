@@ -306,6 +306,8 @@ func _resolve_spawned_node(node_path: String, task_list: Array[Dictionary]) -> N
 
 	# Find the node by its path in the scene.
 	var _entry_index: int = task_list.find_custom(func(entry): return entry.path == node_path)
+	if _entry_index == -1:
+		return null
 	var _resolved_entry: Dictionary = task_list[_entry_index]
 	var _resolved_node: Node = _resolved_entry.get("node", null)
 

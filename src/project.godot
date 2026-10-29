@@ -25,12 +25,12 @@ boot_splash/minimum_display_time=1500
 
 LaunchArguments="*uid://c45jrfmrjtnyn"
 GlobalLogger="*uid://dgmfafi41y1nk"
-SettingsManager="*uid://cgvvntx8o26ds"
 FileManager="*res://scripts/utils/files.gd"
-UrlParser="*uid://budprjmmpally"
+SettingsManager="*uid://cgvvntx8o26ds"
 Accounts="*uid://sdrs0dnojnes"
 Bootstrap="*uid://cvj10vdw6hlqw"
 HTTP="*uid://d3cnfdwjxopsx"
+UrlParser="*uid://budprjmmpally"
 FileDrop="*uid://btgqgfpx0av4m"
 Events="*uid://ctky04bq2os82"
 StateManager="*uid://b5vvw77bmn4yc"
@@ -51,7 +51,7 @@ window/stretch/mode="canvas_items"
 
 [editor]
 
-run/main_run_args="--xr-mode off"
+run/main_run_args="--xr-mode on"
 export/convert_text_resources_to_binary=false
 
 [editor_plugins]
