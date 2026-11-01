@@ -30,14 +30,20 @@ func add_spawnable(node: Node, node_id: int = _id) -> void:
 	return
 
 
+# TODO: This function is extremely important and gets called extremely often. This is a great function to focus on optimization.
 func get_spawnable(node_id: int) -> Node:
-	var _db_index: int = _spawnables.find_custom(func(entry): return int(entry.name) == node_id)
+	var _target: Node = null
 
-	if _db_index == -1:
+	for _spawnable in _spawnables:
+		if int(_spawnable.name) == node_id:
+			_target = _spawnable
+			break
+
+	if _target == null:
 		GlobalLogger.log("Could not find spawnable '%s' in database." % node_id, Enum.LogLevel.INFO)
 		return null
 
-	return _spawnables[_db_index]
+	return _target
 
 
 func remove_spawnable(node_id: int) -> void:
