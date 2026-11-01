@@ -30,7 +30,7 @@ func session_create_spawnable(node_type: String, node_parent: int, forced_node_i
 	if _parent == null:
 		_parent = get_node("../../root")
 
-	var _spawnable: Node = await create(node_type, _caller_id, int(_parent.name), _node_id)
+	var _spawnable: Node = create(node_type, _caller_id, int(_parent.name), _node_id)
 	create.rpc(node_type, _caller_id, int(_parent.name), _node_id)
 
 	if is_instance_valid(_spawnable) == false:
@@ -58,15 +58,19 @@ func create(node_type: String, spawner_peer_id: int, parent_id: int, node_id: in
 		_parent_node = get_node("../../root")
 		_use_root = true
 
-	_node = await NSB.build(node_type, _spawnable_manager)
+	_node = NSB.build(node_type, _spawnable_manager)
 
 	_registry.add_spawnable(_node, node_id)
 
 	_session_signalbus.node_created.emit(_node)
 
 	# HACK: Spawn the node at origin.
-	if _node.get("position") != null:
-		_node.position = Vector3(0, 0, 0)
+	var _position: Variant = _node.get("position")
+	if _position != null:
+		if _position is Vector3:
+			_node.position = Vector3(0, 0, 0)
+		else:
+			_node.position = Vector2(0, 0)
 
 	_parent_node.add_child(_node)
 
@@ -105,6 +109,10 @@ func session_destroy_spawnable(node_id: int) -> void:
 		for _gizmo in _registry._gizmos:
 			if _node.is_class("Node3D") == true:
 				var _gizmo_db_entry: Node = _registry.get_spawnable(_gizmo)
+
+				if _gizmo_db_entry.has_method("is_selected") == false:
+					GlobalLogger.log("Tried to check if a gizmo was selecting another node, but we were assuming a non-gizmo was a gizmo!", Enum.LogLevel.WARNING)
+					continue
 
 				if _gizmo_db_entry.is_selected(_node):
 					await get_parent().deselect_spawnable(int(_gizmo_db_entry.name))
@@ -180,7 +188,6 @@ func session_transform_spawnable(node_id: int, transform: Transform3D, ignore_se
 
 	# TODO: Logging (https://github.com/OpenMinerva/client/issues/191)
 
-	var _db_entry = _registry.get_spawnable(node_id)
 	var _target_peers: PackedInt32Array = []
 
 	if ignore_sender == false:

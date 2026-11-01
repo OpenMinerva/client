@@ -332,11 +332,18 @@ func _inspector_add_node(node: Node, parent: TreeItem) -> void:
 		return
 
 	var _tree_node: TreeItem = _inspector_tree.create_item(parent)
+	var _fallback_icon: Texture2D = load("res:///resources/icons/godot/StatusError.svg")
 
 	if _tree_node == null:
 		return
 
-	var _tree_icon: Texture2D = NSB.get_entry(node.get_class()).icon
+	var _tree_icon: Texture2D = _fallback_icon
+
+	var _schema_entry = NSB.get_entry(node.get_class())
+
+	if _schema_entry.get("icon", null) != null:
+		_tree_icon = _schema_entry.icon
+
 	var _is_collapsed: bool = !_inspector_opened_tree_nodes.has(node)
 
 	_tree_node.set_text(0, node.get_meta("pretty_name", node.name))

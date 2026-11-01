@@ -30,13 +30,13 @@ SettingsManager="*uid://cgvvntx8o26ds"
 Accounts="*uid://sdrs0dnojnes"
 Bootstrap="*uid://cvj10vdw6hlqw"
 HTTP="*uid://d3cnfdwjxopsx"
+UrlParser="*uid://budprjmmpally"
 FileDrop="*uid://btgqgfpx0av4m"
 Events="*uid://ctky04bq2os82"
 StateManager="*uid://b5vvw77bmn4yc"
 Database="*uid://cbm5uyffux8ca"
 DiscordRPCLoader="*uid://xq58uo0nw0gq"
 OAuth2Client="*uid://c4b880pwgfrty"
-UrlParser="*uid://budprjmmpally"
 
 [debug]
 
@@ -51,6 +51,7 @@ window/stretch/mode="canvas_items"
 
 [editor]
 
+run/main_run_args="--xr-mode on"
 export/convert_text_resources_to_binary=false
 
 [editor_plugins]
@@ -79,21 +80,25 @@ jump={
 forward={
 "deadzone": 0.2,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":87,"key_label":0,"unicode":119,"location":0,"echo":false,"script":null)
+, Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":-1,"axis":5,"axis_value":-1.0,"script":null)
 ]
 }
 backward={
 "deadzone": 0.2,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":83,"key_label":0,"unicode":115,"location":0,"echo":false,"script":null)
+, Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":-1,"axis":1,"axis_value":1.0,"script":null)
 ]
 }
 left={
 "deadzone": 0.2,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":65,"key_label":0,"unicode":97,"location":0,"echo":false,"script":null)
+, Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":2,"pressure":0.0,"pressed":false,"script":null)
 ]
 }
 right={
 "deadzone": 0.2,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":68,"key_label":0,"unicode":100,"location":0,"echo":false,"script":null)
+, Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":-1,"axis":2,"axis_value":1.0,"script":null)
 ]
 }
 context={
@@ -154,3 +159,9 @@ textures/default_filters/use_nearest_mipmap_filter=true
 anti_aliasing/quality/msaa_2d=3
 anti_aliasing/quality/msaa_3d=3
 anti_aliasing/quality/use_debanding=true
+
+[xr]
+
+openxr/enabled=true
+openxr/startup_alert=false
+shaders/enabled=true

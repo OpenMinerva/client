@@ -19,17 +19,14 @@ extends Node
 @onready var gizmos: Node = get_node("Gizmos")
 
 
+# TODO: Create big transform function where you can pass in NodeIDs and their transforms so you send everything at once.
 func _physics_process(_delta):
 	if !is_multiplayer_authority():
 		return
 
 	for spawnable in registry.get_all_spawnable():
-		if spawnable.get_class() != "RigidBody3D":
-			continue
-		if spawnable.node.sleeping == true:
-			continue
-
-		transform_spawnable(spawnable.id, spawnable.node.transform)
+		if spawnable.get_class() == "RigidBody3D" && spawnable.sleeping == false:
+			transform_spawnable(int(spawnable.name), spawnable.transform)
 	return
 
 
@@ -228,6 +225,7 @@ func create_resource(resource_type: String, properties: Array = []) -> Resource:
 func receive_database(state: Dictionary) -> void:
 	var _my_id: int = app_network_m.registry.get_peer_id(app_scene_m.active_session)
 
+	var _viewports: Array = []
 	GlobalLogger.log("[%s] Receiving spawnable registry with %d entries" % [_my_id, -1])
 
 	for _spawnable in state.spawnables:
@@ -237,7 +235,9 @@ func receive_database(state: Dictionary) -> void:
 			_spawnable_type = _spawnable.metadata.spawnable_type
 
 		GlobalLogger.log("Spawning '%s' as '%s'." % [_spawnable.id, _spawnable_type])
-		spawnables.create(_spawnable_type, 0, int(_spawnable.parent), int(_spawnable.id), true)
+		var _new_spawnable: Node = spawnables.create(_spawnable_type, 0, int(_spawnable.parent), int(_spawnable.id), true)
+		if _spawnable_type == "SubViewport":
+			_viewports.append(_new_spawnable)
 
 	for _resource in state.resources:
 		var _formatted_array: Array[Dictionary] = []
@@ -270,6 +270,9 @@ func receive_database(state: Dictionary) -> void:
 
 	GlobalLogger.log("[%s] Registry sync complete." % _my_id)
 
+	for _viewport in _viewports:
+		var _parent = _viewport.get_parent()
+		_parent.mesh.material.albedo_texture = _viewport.get_texture()
 	return
 
 
