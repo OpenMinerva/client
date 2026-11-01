@@ -1,0 +1,258 @@
+[gd_scene format=3 uid="uid://d1d3o5bvykv6y"]
+
+[ext_resource type="Shader" uid="uid://bwr4b0mhgi4w6" path="res://resources/shaders/blur.gdshader" id="2_kskq3"]
+[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="3_fjxnr"]
+[ext_resource type="PackedScene" uid="uid://sntuc3p6k4s6" path="res://userinterface/dash/partials/generic_button.tscn" id="4_mnger"]
+[ext_resource type="Texture2D" uid="uid://bx7irvaofgk6n" path="res://resources/icons/godot/CharacterBody3D.svg" id="11_nlykx"]
+[ext_resource type="PackedScene" uid="uid://cyom30b1p54df" path="res://userinterface/dash/partials/search.tscn" id="12_4ych7"]
+[ext_resource type="Texture2D" uid="uid://fo1d37jtb6vk" path="res://resources/icons/godot/OmniLight3D.svg" id="13_kk1pd"]
+[ext_resource type="PackedScene" uid="uid://wmjsfgx486xa" path="res://userinterface/client_edit_mode/node_property_editor/partials/bool.tscn" id="15_uyrmr"]
+[ext_resource type="PackedScene" uid="uid://c7animyvghvk" path="res://userinterface/client_edit_mode/node_property_editor/partials/FoldableContainer.tscn" id="16_y3q7j"]
+[ext_resource type="PackedScene" uid="uid://dkn0gmy8or4hq" path="res://userinterface/client_edit_mode/node_property_editor/partials/Vector3.tscn" id="17_qo1cf"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_d1b6h"]
+viewport_path = NodePath("MeshInstance3D/SubViewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_snitx"]
+resource_local_to_scene = true
+transparency = 1
+shading_mode = 0
+albedo_texture = SubResource("ViewportTexture_d1b6h")
+
+[sub_resource type="QuadMesh" id="QuadMesh_n2avq"]
+lightmap_size_hint = Vector2i(7, 7)
+material = SubResource("StandardMaterial3D_snitx")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lsah3"]
+shader = ExtResource("2_kskq3")
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/blur_amount = 4.0
+shader_parameter/roughness = 0.2
+shader_parameter/roughness_affect = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bstjd"]
+shader = ExtResource("2_kskq3")
+shader_parameter/color = Color(0.4, 0.4, 0.4, 1)
+shader_parameter/blur_amount = 3.0000001392401203
+shader_parameter/roughness = 0.2
+shader_parameter/roughness_affect = 0.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_plsgj"]
+bg_color = Color(0.078431375, 0.078431375, 0.078431375, 0.78431374)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_plsgj"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q5c3n"]
+bg_color = Color(0, 0.42455268, 0.75621223, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8u8qu"]
+bg_color = Color(0, 0.37461048, 0.6717304, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_at34i"]
+bg_color = Color(0.046598867, 0.577127, 0.99997205, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k3kne"]
+bg_color = Color(1.540184e-06, 0.32559153, 0.56908864, 1)
+
+[node name="Inspector" type="Node3D" unique_id=1900311195]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=564219804]
+mesh = SubResource("QuadMesh_n2avq")
+
+[node name="SubViewport" type="SubViewport" parent="MeshInstance3D" unique_id=1379487234]
+transparent_bg = true
+size = Vector2i(1024, 1024)
+
+[node name="Inspector" type="Control" parent="MeshInstance3D/SubViewport" unique_id=879206536]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_behavior_recursive = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MeshInstance3D/SubViewport/Inspector" unique_id=1582463689]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MeshInstance3D/SubViewport/Inspector/VBoxContainer" unique_id=1142545073]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HSplitContainer" type="HSplitContainer" parent="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer" unique_id=234551977]
+layout_mode = 2
+size_flags_horizontal = 3
+split_offsets = PackedInt32Array(300)
+split_offset = 300
+
+[node name="MarginContainer" type="MarginContainer" parent="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer/HSplitContainer" unique_id=1929440074]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer" unique_id=989599199]
+layout_mode = 2
+
+[node name="Container" type="Control" parent="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer" unique_id=1148377667]
+material = SubResource("ShaderMaterial_lsah3")
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="BackgroundColor" type="Panel" parent="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container" unique_id=1608019550]
+material = SubResource("ShaderMaterial_bstjd")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+theme = ExtResource("3_fjxnr")
+theme_override_styles/panel = SubResource("StyleBoxFlat_plsgj")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container" unique_id=1984121645]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="InputString" parent="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer" unique_id=1236567120 instance=ExtResource("12_4ych7")]
+layout_mode = 2
+display_text = "Search..."
+
+[node name="LineEdit" parent="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/InputString/MarginContainer/HBoxContainer/MarginContainer" parent_id_path=PackedInt32Array(1236567120, 514760511) index="0" unique_id=828836954]
+focus_mode = 1
+
+[node name="Filters" type="MarginContainer" parent="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer" unique_id=104307759]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_right = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters" unique_id=831013929]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="Light" parent="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer" unique_id=237296741 instance=ExtResource("4_mnger")]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+size_flags_vertical = 1
+toggle = true
+icon = ExtResource("13_kk1pd")
+only_icon = true
+
+[node name="Player" parent="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/Filters/HBoxContainer" unique_id=448936197 instance=ExtResource("4_mnger")]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+size_flags_vertical = 1
+toggle = true
+icon = ExtResource("11_nlykx")
+only_icon = true
+
+[node name="MarginContainer" type="MarginContainer" parent="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer" unique_id=1666616570]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Tree" type="Tree" parent="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/MarginContainer" unique_id=1139166924]
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/draw_guides = 0
+theme_override_constants/draw_relationship_lines = 1
+theme_override_constants/relationship_line_width = 1
+theme_override_font_sizes/font_size = 14
+theme_override_styles/panel = SubResource("StyleBoxEmpty_plsgj")
+theme_override_styles/hovered = SubResource("StyleBoxFlat_q5c3n")
+theme_override_styles/hovered_dimmed = SubResource("StyleBoxFlat_8u8qu")
+theme_override_styles/hovered_selected = SubResource("StyleBoxFlat_at34i")
+theme_override_styles/selected = SubResource("StyleBoxFlat_k3kne")
+allow_rmb_select = true
+allow_search = false
+hide_root = true
+select_mode = 1
+
+[node name="Properties" type="MarginContainer" parent="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer/HSplitContainer" unique_id=1127572109]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer/HSplitContainer/Properties" unique_id=1772787264]
+layout_mode = 2
+
+[node name="Container" type="Control" parent="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer/HSplitContainer/Properties/VBoxContainer" unique_id=367695551]
+material = SubResource("ShaderMaterial_lsah3")
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="BackgroundColor" type="Panel" parent="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer/HSplitContainer/Properties/VBoxContainer/Container" unique_id=641370686]
+material = SubResource("ShaderMaterial_bstjd")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+theme = ExtResource("3_fjxnr")
+theme_override_styles/panel = SubResource("StyleBoxFlat_plsgj")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer/HSplitContainer/Properties/VBoxContainer/Container" unique_id=1256337211]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer/HSplitContainer/Properties/VBoxContainer/Container/ScrollContainer" unique_id=1523084746]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer/HSplitContainer/Properties/VBoxContainer/Container/ScrollContainer/MarginContainer" unique_id=413793585]
+layout_mode = 2
+
+[node name="Visible" parent="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer/HSplitContainer/Properties/VBoxContainer/Container/ScrollContainer/MarginContainer/VBoxContainer" unique_id=933711176 instance=ExtResource("15_uyrmr")]
+layout_mode = 2
+property_name = "Visible"
+
+[node name="FoldableContainer" parent="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer/HSplitContainer/Properties/VBoxContainer/Container/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1542739099 instance=ExtResource("16_y3q7j")]
+layout_mode = 2
+folded = false
+
+[node name="VBoxContainer" parent="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer/HSplitContainer/Properties/VBoxContainer/Container/ScrollContainer/MarginContainer/VBoxContainer/FoldableContainer" index="0" unique_id=238553897]
+visible = true
+
+[node name="Position" parent="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer/HSplitContainer/Properties/VBoxContainer/Container/ScrollContainer/MarginContainer/VBoxContainer/FoldableContainer/VBoxContainer" index="0" unique_id=352534286 instance=ExtResource("17_qo1cf")]
+layout_mode = 2
+size_flags_vertical = 1
+property_name = "Position"
+
+[node name="Rotation" parent="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer/HSplitContainer/Properties/VBoxContainer/Container/ScrollContainer/MarginContainer/VBoxContainer/FoldableContainer/VBoxContainer" index="1" unique_id=204239032 instance=ExtResource("17_qo1cf")]
+layout_mode = 2
+size_flags_vertical = 1
+property_name = "Rotation"
+
+[node name="Scale" parent="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer/HSplitContainer/Properties/VBoxContainer/Container/ScrollContainer/MarginContainer/VBoxContainer/FoldableContainer/VBoxContainer" index="2" unique_id=172565004 instance=ExtResource("17_qo1cf")]
+layout_mode = 2
+size_flags_vertical = 1
+property_name = "Scale"
+
+[editable path="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer/HSplitContainer/MarginContainer/VBoxContainer/Container/VBoxContainer/InputString"]
+[editable path="MeshInstance3D/SubViewport/Inspector/VBoxContainer/HBoxContainer/HSplitContainer/Properties/VBoxContainer/Container/ScrollContainer/MarginContainer/VBoxContainer/FoldableContainer"]
