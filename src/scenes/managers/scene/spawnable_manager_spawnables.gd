@@ -180,7 +180,6 @@ func session_transform_spawnable(node_id: int, transform: Transform3D, ignore_se
 
 	# TODO: Logging (https://github.com/OpenMinerva/client/issues/191)
 
-	var _db_entry = _registry.get_spawnable(node_id)
 	var _target_peers: PackedInt32Array = []
 
 	if ignore_sender == false:

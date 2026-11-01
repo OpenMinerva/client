@@ -9,7 +9,6 @@ extends Node
 
 const RESOURCE_REFERENCE_TEMPLATE: Dictionary = {
 	"resource": null,
-	"spawnable_id": -1,
 }
 const RESOURCE_RELATION_TEMPLATE: Dictionary = {
 	"target": -1,
@@ -69,6 +68,12 @@ func save_spawnable(root: Node, type: Enum.SpawnableType = Enum.SpawnableType.IT
 	return
 
 
+# TODO: Viewports require special handling.
+# Viewports are not suitable for the current syncronization step that happens when a client receives the database.
+# When we create a viewport, we will have to create a special relation.
+# SubViewport has a get_texture() function. Use the result of this function as a ViewportTexture Resource.
+# The result of this function by itself is enough to set as the albedo texture of something.
+# Some kind of way to get a reference to ViewportTextures and their sources is required at some stage.
 func load_spawnable(path: String) -> Node:
 	var _session_master_node: Node3D = app_scene_m.get_session_master(app_scene_m.active_session)
 	var _sess_spawnable_m = _session_master_node.get_manager(_session_master_node.MANAGER_TYPE.SPAWNABLE)
@@ -104,7 +109,7 @@ func load_spawnable(path: String) -> Node:
 	# Though I should probably fix what is causing the logs to not be displayed in the first place.
 	# XR-VR-Steam-Frame
 
-	# var _dev_skip_frames = 120
+	# var _dev_skip_frames = 80
 	# var _dev_frames = 0
 	#
 	# while _dev_skip_frames > _dev_frames:
@@ -218,7 +223,6 @@ func load_spawnable(path: String) -> Node:
 				GlobalLogger.log("Could not locate the SubViewport '%s' referenced by a ViewportTexture." % _viewport_path, Enum.LogLevel.WARNING)
 				continue
 
-			# The texture we just got belongs to the Viewport, so it is not registered as an asset.
 			_resource_entry.resource = _viewport_node.get_texture()
 
 	# After creating the resources, if any of these resources have a sub-resource as a value for the properties, add the relation.
@@ -350,6 +354,7 @@ func _build_resource_reference_dictionary(flat_resource_array: Array, resource_r
 			var _target_property_name: String = _property.name
 			var _target_property_value: Variant = _resource.get(_target_property_name)
 
+			# TODO: Clients do not get a relation ID from viewports.
 			if _target_property_value is Resource:
 				# Add relation to property of parent _resource to this resource.
 				var _relation_entry: Dictionary = RESOURCE_RELATION_TEMPLATE.duplicate()
