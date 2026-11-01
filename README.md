@@ -10,8 +10,10 @@
   <a href="https://discord.gg/Kx6avB52gK">
     <img src="https://dcbadge.limes.pink/api/server/https://discord.gg/Kx6avB52gK" alt="Discord" />
   </a>
+  <a href="https://www.patreon.com/c/OpenMinerva">
+    <img alt="Static Badge" src="https://img.shields.io/badge/Join-Join?style=for-the-badge&logo=patreon&label=Patreon&labelColor=%23BB4B00&color=%23555555">
+  </a>
   <br>
-  <a href="https://discord.gg/Kx6avB52gK">Join the Discord!</a>
 </p>
 
 # Client
