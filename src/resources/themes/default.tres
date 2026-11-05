@@ -45,6 +45,38 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7y767"]
+content_margin_left = 2.0
+content_margin_top = 2.0
+content_margin_right = 2.0
+content_margin_bottom = 2.0
+bg_color = Color(0.078431375, 0.078431375, 0.078431375, 0.78431374)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n3ooy"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0, 0, 0, 0.3137255)
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fhmfe"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.078431375, 0.078431375, 0.078431375, 0.78431374)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ipp3m"]
+bg_color = Color(0.078431375, 0.078431375, 0.078431375, 0.78431374)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hvbjw"]
 bg_color = Color(0.06, 0.06, 0.06, 0.39215687)
 corner_radius_top_left = 5
@@ -64,7 +96,7 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ipp3m"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_222dm"]
 bg_color = Color(0.078431375, 0.078431375, 0.078431375, 0.78431374)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
@@ -126,10 +158,18 @@ Danger/styles/focus = SubResource("StyleBoxFlat_nfgd4")
 Danger/styles/hover = SubResource("StyleBoxFlat_nfgd4")
 Danger/styles/hover_pressed = SubResource("StyleBoxFlat_nfgd4")
 Danger/styles/pressed = SubResource("StyleBoxFlat_hge1u")
+FoldableContainer/font_sizes/font_size = 20
+FoldableContainer/styles/focus = SubResource("StyleBoxFlat_7y767")
+FoldableContainer/styles/panel = SubResource("StyleBoxFlat_n3ooy")
+FoldableContainer/styles/title_collapsed_hover_panel = SubResource("StyleBoxFlat_7y767")
+FoldableContainer/styles/title_collapsed_panel = SubResource("StyleBoxFlat_7y767")
+FoldableContainer/styles/title_panel = SubResource("StyleBoxFlat_fhmfe")
+InspectorPanel/base_type = &"Panel"
+InspectorPanel/styles/panel = SubResource("StyleBoxFlat_ipp3m")
 LightButton/base_type = &"Button"
 LightButton/styles/normal = SubResource("StyleBoxFlat_hvbjw")
 LineEdit/styles/normal = SubResource("StyleBoxFlat_2d1ky")
-Panel/styles/panel = SubResource("StyleBoxFlat_ipp3m")
+Panel/styles/panel = SubResource("StyleBoxFlat_222dm")
 PopupMenu/constants/item_end_padding = 5
 PopupMenu/constants/item_start_padding = 5
 PopupMenu/constants/v_separation = 10

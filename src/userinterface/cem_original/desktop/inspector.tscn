@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://bqtqfooa7qncp"]
 
-[ext_resource type="Script" uid="uid://d1j72xb551aft" path="res://userinterface/client_edit_mode/desktop/scripts/inspector.gd" id="1_7pj7g"]
+[ext_resource type="Script" uid="uid://bere58701hp8b" path="res://userinterface/cem_original/desktop/scripts/inspector.gd" id="1_7pj7g"]
 [ext_resource type="Shader" uid="uid://bwr4b0mhgi4w6" path="res://resources/shaders/blur.gdshader" id="2_lsah3"]
 [ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="2_plsgj"]
-[ext_resource type="PackedScene" uid="uid://clxgcncfyislv" path="res://userinterface/client_edit_mode/desktop/partial/toolbar_info_entry.tscn" id="4_840b7"]
+[ext_resource type="PackedScene" uid="uid://clxgcncfyislv" path="res://userinterface/cem_original/desktop/partial/toolbar_info_entry.tscn" id="4_840b7"]
 [ext_resource type="PackedScene" uid="uid://cyom30b1p54df" path="res://userinterface/dash/partials/search.tscn" id="4_yi8pr"]
 [ext_resource type="Texture2D" uid="uid://ddy2wff6euii8" path="res://resources/icons/godot/ToolTransform.svg" id="5_0debx"]
 [ext_resource type="Texture2D" uid="uid://fo1d37jtb6vk" path="res://resources/icons/godot/OmniLight3D.svg" id="6_3dh21"]
@@ -12,18 +12,18 @@
 [ext_resource type="Texture2D" uid="uid://bu6vtb71stcjq" path="res://resources/icons/godot/ToolScale.svg" id="7_7pj7g"]
 [ext_resource type="Texture2D" uid="uid://8rvofwa4k380" path="res://resources/icons/godot/WorldEnvironment.svg" id="8_7pj7g"]
 [ext_resource type="Texture2D" uid="uid://bx7irvaofgk6n" path="res://resources/icons/godot/CharacterBody3D.svg" id="9_840b7"]
-[ext_resource type="PackedScene" uid="uid://wmjsfgx486xa" path="res://userinterface/client_edit_mode/node_property_editor/partials/bool.tscn" id="14_8u8qu"]
-[ext_resource type="Script" uid="uid://dtgktj72kbhrc" path="res://userinterface/client_edit_mode/desktop/scripts/properties.gd" id="14_at34i"]
-[ext_resource type="PackedScene" uid="uid://chbjqqcikq7aj" path="res://userinterface/client_edit_mode/desktop/partial/popup_selection.tscn" id="14_cuj5f"]
-[ext_resource type="PackedScene" uid="uid://dkn0gmy8or4hq" path="res://userinterface/client_edit_mode/node_property_editor/partials/Vector3.tscn" id="14_q5c3n"]
+[ext_resource type="PackedScene" uid="uid://wmjsfgx486xa" path="res://userinterface/cem_original/node_property_editor/partials/bool.tscn" id="14_8u8qu"]
+[ext_resource type="Script" uid="uid://dtgktj72kbhrc" path="res://userinterface/cem_original/desktop/scripts/properties.gd" id="14_at34i"]
+[ext_resource type="PackedScene" uid="uid://chbjqqcikq7aj" path="res://userinterface/cem_original/desktop/partial/popup_selection.tscn" id="14_cuj5f"]
+[ext_resource type="PackedScene" uid="uid://dkn0gmy8or4hq" path="res://userinterface/cem_original/node_property_editor/partials/Vector3.tscn" id="14_q5c3n"]
 [ext_resource type="Texture2D" uid="uid://cq2ec6jy8kynp" path="res://resources/icons/godot/Add.svg" id="15_3i2mc"]
-[ext_resource type="PackedScene" uid="uid://c7animyvghvk" path="res://userinterface/client_edit_mode/node_property_editor/partials/FoldableContainer.tscn" id="16_73wcm"]
+[ext_resource type="PackedScene" uid="uid://c7animyvghvk" path="res://userinterface/cem_original/node_property_editor/partials/FoldableContainer.tscn" id="16_73wcm"]
 [ext_resource type="PackedScene" uid="uid://sntuc3p6k4s6" path="res://userinterface/dash/partials/generic_button.tscn" id="16_j7nog"]
 [ext_resource type="Texture2D" uid="uid://b54viv8d54q83" path="res://resources/icons/godot/Remove.svg" id="17_akq5y"]
 [ext_resource type="Texture2D" uid="uid://dtwfvglraa8t7" path="res://resources/icons/godot/Edit.svg" id="18_akq5y"]
 [ext_resource type="Texture2D" uid="uid://blnd7x2qc6b7q" path="res://resources/icons/godot/Save.svg" id="18_k3kne"]
-[ext_resource type="PackedScene" uid="uid://bnimj67377v8l" path="res://userinterface/client_edit_mode/desktop/partial/add_node_window.tscn" id="21_q5c3n"]
-[ext_resource type="PackedScene" uid="uid://b6qb2oq26yooy" path="res://userinterface/client_edit_mode/desktop/partial/movable_window.tscn" id="24_73wcm"]
+[ext_resource type="PackedScene" uid="uid://bnimj67377v8l" path="res://userinterface/cem_original/desktop/partial/add_node_window.tscn" id="21_q5c3n"]
+[ext_resource type="PackedScene" uid="uid://b6qb2oq26yooy" path="res://userinterface/cem_original/desktop/partial/movable_window.tscn" id="24_73wcm"]
 [ext_resource type="Script" uid="uid://d1sxdinbgh3ad" path="res://userinterface/dash/scripts/resource_selector_dialog.gd" id="25_40omq"]
 [ext_resource type="Script" uid="uid://sow3t1rn2l4e" path="res://userinterface/dash/scripts/resource_editor_dialog.gd" id="26_mhmia"]
 
@@ -163,7 +163,7 @@ size_flags_vertical = 3
 [node name="HSplitContainer" type="HSplitContainer" parent="VBoxContainer/HBoxContainer" unique_id=234551977]
 layout_mode = 2
 size_flags_horizontal = 3
-split_offsets = PackedInt32Array(300)
+split_offsets = PackedInt32Array(300, 0)
 split_offset = 300
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer/HSplitContainer" unique_id=1929440074]
@@ -263,7 +263,6 @@ size_flags_horizontal = 3
 mouse_filter = 1
 
 [node name="Properties" type="MarginContainer" parent="VBoxContainer/HBoxContainer/HSplitContainer" unique_id=1127572109]
-visible = false
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 script = ExtResource("14_at34i")

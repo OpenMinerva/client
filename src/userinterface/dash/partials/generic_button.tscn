@@ -38,17 +38,17 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="VBoxContainer" type="HBoxContainer" parent="Button/MarginContainer" unique_id=86696220]
+[node name="HBoxContainer" type="HBoxContainer" parent="Button/MarginContainer" unique_id=86696220]
 clip_contents = true
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="TextureRect" type="TextureRect" parent="Button/MarginContainer/VBoxContainer" unique_id=1429445374]
+[node name="a" type="TextureRect" parent="Button/MarginContainer/HBoxContainer" unique_id=1429445374]
 layout_mode = 2
 texture = ExtResource("3_4dmhx")
 expand_mode = 2
 
-[node name="Label" type="Label" parent="Button/MarginContainer/VBoxContainer" unique_id=1807295119]
+[node name="b" type="Label" parent="Button/MarginContainer/HBoxContainer" unique_id=1807295119]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Button"

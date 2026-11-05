@@ -1,21 +1,10 @@
 [gd_scene format=3 uid="uid://cyom30b1p54df"]
 
+[ext_resource type="Script" uid="uid://b5bra8hcncap2" path="res://userinterface/dash/partials/search.gd" id="1_7dwh7"]
 [ext_resource type="Texture2D" uid="uid://rdp5i1i18jus" path="res://resources/icons/search.svg" id="1_ndgnd"]
 [ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="2_p0vin"]
 
-[sub_resource type="GDScript" id="GDScript_wtshq"]
-script/source = "extends Control
-
-@export var display_text: String = \"Default Text\"
-
-@onready var lineedit_node = $MarginContainer/HBoxContainer/MarginContainer/LineEdit
-#@export_enum(\"Danger\") var selected_theme_type: String
-
-func _ready():
-	lineedit_node.placeholder_text = display_text
-"
-
-[node name="InputString" type="Control" unique_id=1236567120]
+[node name="Search" type="Control" unique_id=1236567120]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 3
 anchor_top = 0.4814815
@@ -26,7 +15,7 @@ offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
-script = SubResource("GDScript_wtshq")
+script = ExtResource("1_7dwh7")
 metadata/_edit_use_anchors_ = true
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=169083657]

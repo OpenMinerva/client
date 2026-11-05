@@ -1,0 +1,193 @@
+[gd_scene format=3 uid="uid://d2idj4s67doyj"]
+
+[ext_resource type="Script" uid="uid://fwtb3phvv7uf" path="res://userinterface/session_inspector/scripts/session_inspector.gd" id="1_u3t61"]
+[ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="2_w5nx2"]
+[ext_resource type="Shader" uid="uid://bwr4b0mhgi4w6" path="res://resources/shaders/blur.gdshader" id="3_2et02"]
+[ext_resource type="Script" uid="uid://dl8ilo5o6uwb4" path="res://userinterface/session_inspector/scripts/toolbar.gd" id="4_3ds4v"]
+[ext_resource type="Script" uid="uid://bgbfw5xa5bhq4" path="res://userinterface/session_inspector/scripts/scene_tree.gd" id="5_k6mfo"]
+[ext_resource type="PackedScene" uid="uid://cyom30b1p54df" path="res://userinterface/dash/partials/search.tscn" id="6_k6mfo"]
+[ext_resource type="Script" uid="uid://c8quxc171mwa5" path="res://userinterface/session_inspector/scripts/spawnable_properties.gd" id="6_reshh"]
+[ext_resource type="PackedScene" uid="uid://sntuc3p6k4s6" path="res://userinterface/dash/partials/generic_button.tscn" id="7_reshh"]
+[ext_resource type="Texture2D" uid="uid://bx7irvaofgk6n" path="res://resources/icons/godot/CharacterBody3D.svg" id="8_4ybpg"]
+[ext_resource type="Texture2D" uid="uid://fo1d37jtb6vk" path="res://resources/icons/godot/OmniLight3D.svg" id="9_5axn8"]
+[ext_resource type="Texture2D" uid="uid://ms7inrk1pn1d" path="res://resources/icons/godot/RigidBody3D.svg" id="10_h46lv"]
+[ext_resource type="PackedScene" uid="uid://wmjsfgx486xa" path="res://userinterface/cem_original/node_property_editor/partials/bool.tscn" id="12_ry2px"]
+[ext_resource type="PackedScene" uid="uid://dkn0gmy8or4hq" path="res://userinterface/cem_original/node_property_editor/partials/Vector3.tscn" id="13_tvhnh"]
+[ext_resource type="PackedScene" uid="uid://c7animyvghvk" path="res://userinterface/cem_original/node_property_editor/partials/FoldableContainer.tscn" id="14_jydhv"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_s2wy4"]
+shader = ExtResource("3_2et02")
+shader_parameter/color = Color(0.4, 0.4, 0.4, 1)
+shader_parameter/blur_amount = 3.0000001392401203
+shader_parameter/roughness = 0.2
+shader_parameter/roughness_affect = 0.0
+
+[node name="SessionInspector" type="Control" unique_id=1574447288]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_behavior_recursive = 1
+script = ExtResource("1_u3t61")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=428853103]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 1
+
+[node name="Toolbar" type="Panel" parent="VBoxContainer" unique_id=513114874]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_s2wy4")
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme = ExtResource("2_w5nx2")
+theme_type_variation = &"InspectorPanel"
+script = ExtResource("4_3ds4v")
+
+[node name="Content" type="HSplitContainer" parent="VBoxContainer" unique_id=2069145277]
+layout_mode = 2
+size_flags_vertical = 3
+split_offsets = PackedInt32Array(350, -350)
+split_offset = 350
+
+[node name="SceneTree" type="Panel" parent="VBoxContainer/Content" unique_id=739935683]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_s2wy4")
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
+theme = ExtResource("2_w5nx2")
+theme_type_variation = &"InspectorPanel"
+script = ExtResource("5_k6mfo")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Content/SceneTree" unique_id=1050215529]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/Content/SceneTree/MarginContainer" unique_id=1147373549]
+layout_mode = 2
+
+[node name="FilterSearch" parent="VBoxContainer/Content/SceneTree/MarginContainer/VBoxContainer" unique_id=1236567120 instance=ExtResource("6_k6mfo")]
+layout_mode = 2
+display_text = "Search..."
+
+[node name="FilterContainer" type="VBoxContainer" parent="VBoxContainer/Content/SceneTree/MarginContainer/VBoxContainer" unique_id=1787181718]
+layout_mode = 2
+
+[node name="FilterRow1" type="FlowContainer" parent="VBoxContainer/Content/SceneTree/MarginContainer/VBoxContainer/FilterContainer" unique_id=916024671]
+layout_mode = 2
+alignment = 1
+
+[node name="Players" parent="VBoxContainer/Content/SceneTree/MarginContainer/VBoxContainer/FilterContainer/FilterRow1" unique_id=649942124 instance=ExtResource("7_reshh")]
+layout_mode = 2
+toggle = true
+icon = ExtResource("8_4ybpg")
+only_icon = true
+
+[node name="Lights" parent="VBoxContainer/Content/SceneTree/MarginContainer/VBoxContainer/FilterContainer/FilterRow1" unique_id=1229091617 instance=ExtResource("7_reshh")]
+layout_mode = 2
+toggle = true
+icon = ExtResource("9_5axn8")
+only_icon = true
+
+[node name="RigidBodies" parent="VBoxContainer/Content/SceneTree/MarginContainer/VBoxContainer/FilterContainer/FilterRow1" unique_id=1214368343 instance=ExtResource("7_reshh")]
+layout_mode = 2
+toggle = true
+icon = ExtResource("10_h46lv")
+only_icon = true
+
+[node name="FilterRow2" type="FlowContainer" parent="VBoxContainer/Content/SceneTree/MarginContainer/VBoxContainer/FilterContainer" unique_id=279096497]
+layout_mode = 2
+alignment = 1
+
+[node name="Space" type="Control" parent="VBoxContainer/Content" unique_id=76568351]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Properties" type="Panel" parent="VBoxContainer/Content" unique_id=1170314339]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_s2wy4")
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
+theme = ExtResource("2_w5nx2")
+theme_type_variation = &"InspectorPanel"
+script = ExtResource("6_reshh")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Content/Properties" unique_id=1482098949]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/Content/Properties/MarginContainer" unique_id=1894827910]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="VBoxContainer/Content/Properties/MarginContainer/VBoxContainer" unique_id=2057002593]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/Content/Properties/MarginContainer/VBoxContainer/Panel" unique_id=419931828]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "My Amazing Spawnable"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Visible" parent="VBoxContainer/Content/Properties/MarginContainer/VBoxContainer" unique_id=933711176 instance=ExtResource("12_ry2px")]
+layout_mode = 2
+property_name = "Visible"
+
+[node name="Position" parent="VBoxContainer/Content/Properties/MarginContainer/VBoxContainer" unique_id=737626495 instance=ExtResource("13_tvhnh")]
+layout_mode = 2
+property_name = "Position"
+
+[node name="Rotation" parent="VBoxContainer/Content/Properties/MarginContainer/VBoxContainer" unique_id=1602882946 instance=ExtResource("13_tvhnh")]
+layout_mode = 2
+property_name = "Rotation"
+
+[node name="Scale" parent="VBoxContainer/Content/Properties/MarginContainer/VBoxContainer" unique_id=659939885 instance=ExtResource("13_tvhnh")]
+layout_mode = 2
+property_name = "Scale"
+
+[node name="FoldableContainer" parent="VBoxContainer/Content/Properties/MarginContainer/VBoxContainer" unique_id=1542739099 instance=ExtResource("14_jydhv")]
+layout_mode = 2
+theme = ExtResource("2_w5nx2")
+folded = false
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/Content/Properties/MarginContainer/VBoxContainer/FoldableContainer" unique_id=1713047088]
+layout_mode = 2
+
+[node name="Position" parent="VBoxContainer/Content/Properties/MarginContainer/VBoxContainer/FoldableContainer/VBoxContainer2" unique_id=514270137 instance=ExtResource("13_tvhnh")]
+layout_mode = 2
+property_name = "Position"
+
+[node name="Rotation" parent="VBoxContainer/Content/Properties/MarginContainer/VBoxContainer/FoldableContainer/VBoxContainer2" unique_id=1288976973 instance=ExtResource("13_tvhnh")]
+layout_mode = 2
+property_name = "Rotation"
+
+[node name="Scale" parent="VBoxContainer/Content/Properties/MarginContainer/VBoxContainer/FoldableContainer/VBoxContainer2" unique_id=487690511 instance=ExtResource("13_tvhnh")]
+layout_mode = 2
+property_name = "Scale"

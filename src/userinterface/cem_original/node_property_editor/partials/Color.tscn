@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://c5iqs1ro62837"]
 
 [ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="1_0b8ag"]
-[ext_resource type="Script" uid="uid://dht8p10d785is" path="res://userinterface/client_edit_mode/node_property_editor/partials/color.gd" id="2_0b8ag"]
+[ext_resource type="Script" uid="uid://dht8p10d785is" path="res://userinterface/cem_original/node_property_editor/partials/color.gd" id="2_0b8ag"]
 
 [node name="Color" type="Control" unique_id=933711176]
 custom_minimum_size = Vector2(80, 30)

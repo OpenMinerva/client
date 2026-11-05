@@ -5,7 +5,7 @@
 # Copyright (c) 2026 OpenMinerva Contributors
 # License: MIT License
 # --- License
-extends "res://userinterface/client_edit_mode/desktop/scripts/movable_window.gd"
+extends "res://userinterface/cem_original/desktop/scripts/movable_window.gd"
 
 const icon_dir: String = "res://resources/icons/godot/"
 

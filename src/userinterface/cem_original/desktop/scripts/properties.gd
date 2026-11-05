@@ -138,7 +138,7 @@ func _get_partial(type: String) -> Node:
 	if partials.keys().has(type):
 		return partials[type].instantiate()
 
-	var _new_partial = load("res://userinterface/client_edit_mode/node_property_editor/partials/%s.tscn" % type)
+	var _new_partial = load("res://userinterface/cem_original/node_property_editor/partials/%s.tscn" % type)
 	if _new_partial == null:
 		GlobalLogger.log("Could not find partial for type '%s'" % type, Enum.LogLevel.WARNING)
 		return null

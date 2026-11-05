@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://dkn0gmy8or4hq"]
 
 [ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="1_fenjf"]
-[ext_resource type="Script" uid="uid://fo05ubo6hera" path="res://userinterface/client_edit_mode/node_property_editor/partials/vector_3.gd" id="2_iwkrw"]
-[ext_resource type="PackedScene" uid="uid://b58b25jtckb2c" path="res://userinterface/client_edit_mode/node_property_editor/partials/spin_box.tscn" id="3_yo0a0"]
+[ext_resource type="Script" uid="uid://fo05ubo6hera" path="res://userinterface/cem_original/node_property_editor/partials/vector_3.gd" id="2_iwkrw"]
+[ext_resource type="PackedScene" uid="uid://b58b25jtckb2c" path="res://userinterface/cem_original/node_property_editor/partials/spin_box.tscn" id="3_yo0a0"]
 
 [node name="Vector3" type="Control" unique_id=933711176]
 custom_minimum_size = Vector2(80, 60)
