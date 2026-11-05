@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://wmjsfgx486xa"]
 
 [ext_resource type="Theme" uid="uid://ckqsvvccivw0x" path="res://resources/themes/default.tres" id="1_h5new"]
-[ext_resource type="Script" uid="uid://dev0tv8ldaegm" path="res://userinterface/client_edit_mode/node_property_editor/partials/bool.gd" id="2_1puyx"]
+[ext_resource type="Script" uid="uid://dev0tv8ldaegm" path="res://userinterface/cem_original/node_property_editor/partials/bool.gd" id="2_1puyx"]
 
 [node name="Bool" type="Control" unique_id=933711176]
 custom_minimum_size = Vector2(80, 30)

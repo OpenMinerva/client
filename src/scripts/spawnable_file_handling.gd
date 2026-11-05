@@ -139,7 +139,7 @@ func load_spawnable(path: String) -> Node:
 
 			# If the property value of a node is a resource, we need to have special handing for this.
 			# We have to spawn in resources separately so they are networked.
-			if _prop_value is Resource:
+			if _prop_value is Resource or _prop_value is Script:
 				var _association_entry: Dictionary = RESOURCE_RELATION_TEMPLATE.duplicate()
 				_association_entry.target = _node_id
 				_association_entry.field = _prop_name
@@ -242,6 +242,11 @@ func load_spawnable(path: String) -> Node:
 		var _task_reference: Dictionary = _tasks[_task_reference_index]
 		var _spawnable_resource: Resource = _scene_resources[_association.value].resource
 		_sess_spawnable_m.set_resource(int(_task_reference.node.name), _association.field, int(_spawnable_resource.get_name()))
+
+	# Manually call _ready on all nodes that have spawned in
+	for _task in _tasks:
+		if _task.node != null && _task.node.has_method("_ready"):
+			_task.node._ready()
 
 	# Return the parent of the spawned spawnable scene.
 	var _parent_task_index: int = _tasks.find_custom(func(entry): return entry.id == 0)

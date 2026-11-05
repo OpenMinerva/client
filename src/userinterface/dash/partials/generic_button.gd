@@ -22,9 +22,14 @@ const DOUBLE_CLICK_TIME: float = 0.25
 var _click_count: int = 0
 var _last_click_time: float = 0
 
-@onready var _node_button: Button = get_node("Button")
-@onready var _node_label: Label = get_node("Button/MarginContainer/VBoxContainer/Label")
-@onready var _node_icon: TextureRect = get_node("Button/MarginContainer/VBoxContainer/TextureRect")
+#
+# @onready var _node_button: Button = get_node("Button")
+# @onready var _node_label: Label = get_node("Button/MarginContainer/HBoxContainer/Label")
+# @onready var _node_icon: TextureRect = get_node("Button/MarginContainer/HBoxContainer/TextureRect")
+@onready var _node_button: Button = get_child(0)
+@onready var _container: HBoxContainer = _node_button.get_child(0).get_child(0)
+@onready var _node_label: Label = _container.get_child(1)
+@onready var _node_icon: TextureRect = _container.get_child(0)
 
 
 func _ready() -> void:

@@ -33,10 +33,10 @@ var _speed: float = 0
 @onready var _node_camera = get_node("Head/Camera3D")
 @onready var _node_cem_camera: Node3D = null
 @onready var _node_cem_camera_camera: Camera3D = null
-@onready var _inspector: Node = get_tree().root.find_child("Inspector", true, false).get_node("VBoxContainer")
-@onready var _inspector_tree_node: Node = _inspector.get_node("HBoxContainer/HSplitContainer/MarginContainer")
-@onready var _inspector_properties_node: Node = _inspector.get_node("HBoxContainer/HSplitContainer/Properties")
-@onready var _inspector_toolbar_node: Node = _inspector.get_node("Toolbar")
+# @onready var _inspector: Node = get_tree().root.find_child("Inspector", true, false).get_node("VBoxContainer")
+# @onready var _inspector_tree_node: Node = _inspector.get_node("HBoxContainer/HSplitContainer/MarginContainer")
+# @onready var _inspector_properties_node: Node = _inspector.get_node("HBoxContainer/HSplitContainer/Properties")
+# @onready var _inspector_toolbar_node: Node = _inspector.get_node("Toolbar")
 @onready var _controller_left: Node3D = get_node("./XROrigin3D/LeftHand")
 @onready var _controller_right: Node3D = get_node("./XROrigin3D/RightHand")
 
@@ -155,9 +155,9 @@ func _phys_buildmode() -> void:
 	if Input.is_action_just_pressed("cem_camera_rotate"):
 		# Check if we are interacting with the inspector.
 		var _hovered_node = get_viewport().gui_get_hovered_control()
-		if _hovered_node:
-			if _inspector_tree_node.is_ancestor_of(_hovered_node) || _inspector_properties_node.is_ancestor_of(_hovered_node) || _inspector_toolbar_node.is_ancestor_of(_hovered_node):
-				return
+		# if _hovered_node:
+		# if _inspector_tree_node.is_ancestor_of(_hovered_node) || _inspector_properties_node.is_ancestor_of(_hovered_node) || _inspector_toolbar_node.is_ancestor_of(_hovered_node):
+		# return
 
 		_cem_rotating = true
 		Events.emit_signal("cem_camera_rotating", true)

@@ -32,7 +32,7 @@
 [ext_resource type="Texture2D" uid="uid://8fwxg1ipf0fp" path="res://resources/icons/exit.svg" id="24_nakrv"]
 [ext_resource type="Script" uid="uid://cnm74wceowx3y" path="res://userinterface/dash/scripts/pages/debug.gd" id="24_v7inj"]
 [ext_resource type="Script" uid="uid://cah3jpmu1x72b" path="res://userinterface/dash/scripts/pages/exit.gd" id="24_wvg7d"]
-[ext_resource type="PackedScene" uid="uid://b6qb2oq26yooy" path="res://userinterface/client_edit_mode/desktop/partial/movable_window.tscn" id="32_rmxmm"]
+[ext_resource type="PackedScene" uid="uid://b6qb2oq26yooy" path="res://userinterface/cem_original/desktop/partial/movable_window.tscn" id="32_rmxmm"]
 [ext_resource type="Texture2D" uid="uid://bb6karp2363a5" path="res://resources/icons/at-icons/rocketship.svg" id="33_h0jai"]
 [ext_resource type="Script" uid="uid://c2ljo75xjxkm6" path="res://userinterface/dash/scripts/new_world_dialog.gd" id="35_owuc4"]
 

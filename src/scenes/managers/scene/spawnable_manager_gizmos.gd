@@ -93,6 +93,8 @@ func show_session_gizmos() -> void:
 func hide_session_gizmos() -> void:
 	for _gizmo_id in _registry._gizmos:
 		var _gizmo_node: Node = _registry.get_spawnable(_gizmo_id)
+		if _gizmo_node.has_method("is_selected") == false:
+			return
 		_legacy_last_gizmo_mode = _gizmo_node.mode
 		_gizmo_node.mode = 0
 		_gizmo_node.show_selection_box = false
